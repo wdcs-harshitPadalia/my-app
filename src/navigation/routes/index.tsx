@@ -108,7 +108,8 @@ const Tab = createBottomTabNavigator();
 export const BeforeLoginRoutesRoot = () => (
 	<Stack.Navigator
 		screenOptions={{
-			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+			cardStyle: { flex: 1, backgroundColor: "red" }
 		}}
 		initialRouteName={ScreenNames.Login}>
 		<Stack.Screen
@@ -122,7 +123,8 @@ export const BeforeLoginRoutesRoot = () => (
 export const WalletTabRoutes = (_props: any) => (
 	<Stack.Navigator
 		screenOptions={{
-			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+			cardStyle: { flex: 1, backgroundColor: "red" }
 		}}
 		initialRouteName={ScreenNames.WalletScreen}>
 		<Stack.Screen
@@ -169,7 +171,8 @@ export const WalletTabRoutes = (_props: any) => (
 export const LiveTabRoutes = (_props: any) => (
 	<Stack.Navigator
 		screenOptions={{
-			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+			cardStyle: { flex: 1, backgroundColor: "red" }
 		}}
 		initialRouteName={ScreenNames.LiveStreamingScreen}>
 		<Stack.Screen
@@ -281,7 +284,7 @@ const FeedsRouter = () => (
 	<Stack.Navigator
 		screenOptions={{
 			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-			gestureResponseDistance: 100
+			cardStyle: { flex: 1, backgroundColor: "red" }
 		}}>
 		<Stack.Screen
 			name={ScreenNames.FeedScreen}
@@ -479,7 +482,8 @@ const FeedsRouter = () => (
 const DiscoverRouter = () => (
 	<Stack.Navigator
 		screenOptions={{
-			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+			cardStyle: { flex: 1, backgroundColor: "red" }
 		}}>
 		<Stack.Screen
 			name={ScreenNames.DiscoverScreen}
@@ -586,7 +590,8 @@ const DiscoverRouter = () => (
 const ProfileRouter = () => (
 	<Stack.Navigator
 		screenOptions={{
-			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+			cardStyle: { flex: 1, backgroundColor: "red" }
 		}}
 		initialRouteName={ScreenNames.ProfileScreen}>
 		<Stack.Screen
@@ -769,7 +774,8 @@ const RootRouter = () => {
 		return (
 			<Stack.Navigator
 				screenOptions={{
-					cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+					cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+					cardStyle: { flex: 1, backgroundColor: "red" }
 				}}>
 				{globalThis.firstTime && (
 					<Stack.Screen
@@ -797,7 +803,8 @@ const RootRouter = () => {
 		return (
 			<Stack.Navigator
 				screenOptions={{
-					cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+					cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+					cardStyle: { flex: 1, backgroundColor: "red" }
 				}}>
 				{/* {global.firstTime && (
 					<Stack.Screen
@@ -872,12 +879,12 @@ const Routes = () => {
 			onStateChange={async () => {
 				const previousRouteName = routeNameRef.current;
 				const currentRouteName = navigationRef.current.getCurrentRoute().name;
-				if (previousRouteName !== currentRouteName) {
-					await analytics().logScreenView({
-						screen_name: currentRouteName,
-						screen_class: currentRouteName
-					});
-				}
+				// if (previousRouteName !== currentRouteName) {
+				// 	await analytics().logScreenView({
+				// 		screen_name: currentRouteName,
+				// 		screen_class: currentRouteName
+				// 	});
+				// }
 				routeNameRef.current = currentRouteName;
 			}}>
 			{/* Render the Magic iframe! */}

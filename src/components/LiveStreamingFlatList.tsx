@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import {StyleSheet, RefreshControl, FlatList} from 'react-native';
+import {StyleSheet, RefreshControl, FlatList, View, ScrollView} from 'react-native';
 import React, {ReactElement, useEffect, useRef, useState} from 'react';
 
 import {moderateScale, verticalScale} from '../theme';
@@ -47,7 +47,6 @@ export default function LiveStreamingFlatList(
 	useScrollToTop(scrollRef);
 	return (
 		<>
-			{console.log(' props.isRefreshing?????', props.isRefreshing)}
 			<FlatList
 				ref={scrollRef}
 				//horizontal

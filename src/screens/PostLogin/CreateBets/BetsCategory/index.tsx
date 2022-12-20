@@ -887,11 +887,11 @@ const BetsCategoryScreen: React.FC<any> = () => {
 				bet_type: '0',
 				parent_bet_id: bet_id
 			};
-			await analytics().logEvent('calledP2pBetApi', {
-				id: bet_id,
-				item: 'p2pBetSmartContractCalled',
-				description: JSON.stringify(uploadData)
-			});
+			// await analytics().logEvent('calledP2pBetApi', {
+			// 	id: bet_id,
+			// 	item: 'p2pBetSmartContractCalled',
+			// 	description: JSON.stringify(uploadData)
+			// });
 		} else if (isSelectedLeagueType === 1) {
 			let betEndDate = Date.parse(moment.utc(customDate));
 			let participationEndDate = Date.parse(moment.utc(betEndTime));
@@ -932,11 +932,11 @@ const BetsCategoryScreen: React.FC<any> = () => {
 					).toFixed(decimalValue) + '',
 				parent_bet_id: bet_id
 			};
-			await analytics().logEvent('calledP2pBetApi', {
-				id: bet_id,
-				item: 'p2pBetSmartContractCalled',
-				description: JSON.stringify(uploadData)
-			});
+			// await analytics().logEvent('calledP2pBetApi', {
+			// 	id: bet_id,
+			// 	item: 'p2pBetSmartContractCalled',
+			// 	description: JSON.stringify(uploadData)
+			// });
 		} else if (isSelectedLeagueType === 2) {
 			uploadData = {
 				category_id: isCategoryId,
@@ -974,11 +974,11 @@ const BetsCategoryScreen: React.FC<any> = () => {
 				bet_type: '2',
 				parent_bet_id: bet_id
 			};
-			await analytics().logEvent('calledP2pBetApi', {
-				id: bet_id,
-				item: 'p2pBetSmartContractCalled',
-				description: JSON.stringify(uploadData)
-			});
+			// await analytics().logEvent('calledP2pBetApi', {
+			// 	id: bet_id,
+			// 	item: 'p2pBetSmartContractCalled',
+			// 	description: JSON.stringify(uploadData)
+			// });
 		}
 
 		addBet(uploadData)

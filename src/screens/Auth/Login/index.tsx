@@ -507,9 +507,23 @@ const Login: React.FC<any> = props => {
 					<Text style={styles.orConnectWithStyle}>{Strings.orconnectwith}</Text>
 					<ButtonGradient
 						onPress={async () => {
-							if (connector?.connected) {
-								await connector.killSession();
-							}
+							// callLoginApi({
+							// 	walletAddress: '0x31a740C5660FAD866C65b9E6f5620D085522D78D',
+							// 	//isSocialLogin: false,
+							// 	socialLoginType: 'MetaMask'.toLowerCase(),
+							// 	deviceToken: 'dskjfdsjlsdfjk' ?? '',
+							// 	loginActivity: [
+							// 		{
+							// 			device: DeviceInfo.getDeviceNameSync(),
+							// 			ipaddress: DeviceInfo.getIpAddressSync(),
+							// 			country: 'India'
+							// 		}
+							// 	]
+							// });
+							// return;
+							// if (connector?.connected) {
+							// 	await connector.killSession();
+							// }
 							connector.connect().then(async success => {
 								if (success.chainId !== chainIdPolygonNetwork) {
 									Alert.alert(

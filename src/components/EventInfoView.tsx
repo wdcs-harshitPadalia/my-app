@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import {View, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, TouchableOpacity, StyleSheet, ImageBackground} from 'react-native';
 import React, {useState} from 'react';
 import ExpoFastImage from 'expo-fast-image';
 
@@ -40,7 +40,7 @@ export const EventInfoView = ({
 				disabled={props?.disable}
 				activeOpacity={1}
 				onPress={() => props.cellTapped && props.cellTapped(item)}>
-				<ExpoFastImage
+				<ImageBackground
 					fallback={true}
 					style={props?.height ? {height: props?.height} : {}}
 					source={{
@@ -335,7 +335,7 @@ export const EventInfoView = ({
 								)}
 						</View>
 					</View>
-				</ExpoFastImage>
+				</ImageBackground>
 			</TouchableOpacity>
 			{!props.hideBottomView && (
 				<TouchableOpacity

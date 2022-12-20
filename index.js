@@ -20,7 +20,7 @@ import polyfill from '@amityco/react-native-formdata-polyfill';
 polyfill();
 
 //console.log = () => {};
-// LogBox.ignoreAllLogs();
+LogBox.ignoreAllLogs();
 if ('web' === Platform.OS) {
     // const rootTag = createRoot(document.getElementById('root') ?? document.getElementById('main'));
     // rootTag.render(createElement(App));

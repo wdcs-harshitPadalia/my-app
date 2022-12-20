@@ -227,18 +227,9 @@ export const BottomTabs = () => (
         headerShown: false,
       }}
     />
-    <Tab.Screen
-      name={ScreenNames.DiscoverRouter}
-      component={DiscoverRouter}
-      options={{
-        tabBarLabel: Strings.bottomTabDiscover,
-        selectedIconName: icons.discover_active,
-        unSelectedIconName: icons.discover_inActive,
-        headerShown: false,
-      }}
-    />
+   
 
-    <Tab.Screen
+    {/* <Tab.Screen
       name={ScreenNames.WalletTabRoutes}
       component={WalletTabRoutes}
       options={{
@@ -247,7 +238,7 @@ export const BottomTabs = () => (
         unSelectedIconName: icons.wallet_inActive,
         headerShown: false,
       }}
-    />
+    /> */}
     <Tab.Screen
       name={Strings.bottomTabCreate}
       component={() => <></>}
@@ -255,6 +246,17 @@ export const BottomTabs = () => (
         tabBarLabel: Strings.bottomTabCreate,
         selectedIconName: icons.ic_create_bet,
         unSelectedIconName: icons.ic_create_bet,
+        headerShown: false,
+      }}
+    />
+
+<Tab.Screen
+      name={ScreenNames.DiscoverRouter}
+      component={DiscoverRouter}
+      options={{
+        tabBarLabel: Strings.bottomTabDiscover,
+        selectedIconName: icons.discover_active,
+        unSelectedIconName: icons.discover_inActive,
         headerShown: false,
       }}
     />

@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
 	viewDetails: {
 		backgroundColor: defaultTheme.backGroundColor,
 		borderRadius: verticalScale(10),
-		alignItems: 'center',
+		// alignItems: 'center',
 		justifyContent: 'center',
 		paddingVertical: verticalScale(20),
 		width: Dimensions.get('screen').width * 0.88

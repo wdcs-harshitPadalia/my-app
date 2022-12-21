@@ -359,7 +359,7 @@ const Login: React.FC<any> = props => {
 						initialValues={{
 							// email: '',
 							// phone: '',
-							email_or_phone: ''
+							email_or_phone: 'harshittest@yopmail.com'
 						}}
 						validationSchema={Validation.signIn}
 						onSubmit={values => {
@@ -521,10 +521,10 @@ const Login: React.FC<any> = props => {
 							// 	]
 							// });
 							// return;
-							// if (connector?.connected) {
-							// 	await connector.killSession();
-							// }
-							connector.connect().then(async success => {
+							if (connector?.connected) {
+								await connector.killSession();
+							}
+							connector?.connect().then(async success => {
 								if (success.chainId !== chainIdPolygonNetwork) {
 									Alert.alert(
 										'Defibet',
@@ -533,7 +533,7 @@ const Login: React.FC<any> = props => {
 											') or add it via https://chainlist.org/'
 										// 'Please connect with this chain id ' + chainIdPolygonNetwork,
 									);
-									connector.killSession();
+									connector?.killSession();
 									return;
 								}
 

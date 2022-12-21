@@ -12,7 +12,8 @@ export const emailLogin = async (email, loaderMessage: any) => {
 	return new Promise(function (resolve, reject) {
 		try {
 			const req = magic.auth.loginWithMagicLink({
-				email
+				email,
+				redirectURI: window.location.origin
 			});
 			req
 				.on('email-sent', () => {
@@ -141,7 +142,7 @@ export const socialLogin = async (provider: any, loaderMessage: any) => {
 			);
 			const req = magic.oauth.loginWithPopup({
 				provider: provider,
-				redirectURI: 'http://localhost:19006/'
+				redirectURI: window.location.origin
 			});
 			req
 				.on('done', () => {

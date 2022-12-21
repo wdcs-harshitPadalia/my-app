@@ -31,14 +31,14 @@ export const nullSignature =
 	'0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
 
 //Test net RPC
-// export const RpcURL ='https://polygon-mumbai.infura.io/v3/525d9ffd0db943908b59d352df167126';
+export const RpcURL ='https://polygon-mumbai.infura.io/v3/525d9ffd0db943908b59d352df167126';
 //Dev RPC
 // export const RpcURL =
 // 	'https://polygon-mumbai.g.alchemy.com/v2/gdNaCO6rM5ROYvDEwzlwerVWVrLYG0bK';
 
 //Client RPC
-export const RpcURL =
-	'https://polygon-mumbai.g.alchemy.com/v2/oFp2aIln4SEGstoa-7hWn7njKdZioDlg';
+// export const RpcURL =
+// 	'https://polygon-mumbai.g.alchemy.com/v2/oFp2aIln4SEGstoa-7hWn7njKdZioDlg';
 // export const RpcURL = 'https://rpc-mumbai.maticvigil.com/';
 
 //Main net RPC

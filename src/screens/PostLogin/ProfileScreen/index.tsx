@@ -339,7 +339,7 @@ const ProfileScreen: React.FC<any> = props => {
 								</Text>
 							) : null}
 
-							<DropShadow
+							{/* <DropShadow
 								style={{
 									shadowColor: defaultTheme.secondaryBackGroundColor,
 									shadowOffset: {
@@ -365,7 +365,7 @@ const ProfileScreen: React.FC<any> = props => {
 									leftIconPath={icons.ic_contact_green}
 									textType={'none'}
 								/>
-							</DropShadow>
+							</DropShadow> */}
 							<DropShadow
 								style={{
 									shadowColor: defaultTheme.secondaryBackGroundColor,

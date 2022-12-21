@@ -10,7 +10,7 @@ import {useSelector} from 'react-redux';
 import {RootState} from '../../../redux/store';
 import {useBetCreateContract} from '../../../components/CustomHooks/SmartContract';
 import {Animated, TouchableOpacity, View} from 'react-native';
-import crypto from 'crypto';
+import * as Crypto from 'expo-crypto';
 
 import {widgetBaseUrl} from '../../../constants/api';
 import {horizontalScale, verticalScale} from '../../../theme';

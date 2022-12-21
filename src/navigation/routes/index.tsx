@@ -227,7 +227,6 @@ export const BottomTabs = () => (
         headerShown: false,
       }}
     />
-   
 
     {/* <Tab.Screen
       name={ScreenNames.WalletTabRoutes}
@@ -250,7 +249,7 @@ export const BottomTabs = () => (
       }}
     />
 
-<Tab.Screen
+    <Tab.Screen
       name={ScreenNames.DiscoverRouter}
       component={DiscoverRouter}
       options={{

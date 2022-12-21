@@ -9,7 +9,7 @@ import {createRoot}  from 'react-dom/client';
 
 // import {name as appName} from './app.json';
 import polyfill from '@amityco/react-native-formdata-polyfill';
-// window.navigator.userAgent = 'react-native';
+window.navigator.userAgent = 'react-native';
 
 // messaging().setBackgroundMessageHandler(async msg => {
 // 	console.log('onNotificationOpenedApp : ', msg);

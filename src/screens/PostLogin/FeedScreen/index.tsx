@@ -58,7 +58,6 @@ import Stories from "../../../components/StoryView/Stories";
 import ReportFeedView from "../../../components/Events/ReportFeedView";
 import NoDataComponent from "../../../components/NoDataComponent";
 import HomeTutorialList from "../../../components/HomeTutorialList";
-import FlingGestureComponent from "../../../components/FlingGestureComponent";
 import FriendFlatList from "../../../components/FriendFlatList";
 import { trackUserIdentification } from "../../../components/SmartLookSDKHelper";
 
@@ -543,10 +542,7 @@ const FeedScreen: React.FC<any> = (props) => {
             flex: 1,
           }}
         >
-          <FlingGestureComponent
-            onSwipeLeft={() => onSwipeChange(Directions.LEFT)}
-            onSwipeRight={() => onSwipeChange(Directions.RIGHT)}
-          >
+      
             <LiveStreamingFlatList
               data={feedInfo.matchList}
               shouldShowBottomButtons
@@ -768,7 +764,6 @@ const FeedScreen: React.FC<any> = (props) => {
                 }
               }}
             />
-          </FlingGestureComponent>
         </View>
       </>
 
@@ -811,15 +806,9 @@ const FeedScreen: React.FC<any> = (props) => {
       />
 
       {feedErrorInfo && feedInfo?.matchCount === 0 && !isShowTrendingUser ? (
-        <FlingGestureComponent
-          onSwipeLeft={() => onSwipeChange(Directions.LEFT)}
-          onSwipeRight={() => onSwipeChange(Directions.RIGHT)}
-          style={styles.container}
-        >
           <View style={styles.noDataContainer}>
             <NoDataComponent noData={noDataItemObj} isFromFeedScreen={true} />
           </View>
-        </FlingGestureComponent>
       ) : (
         <></>
       )}

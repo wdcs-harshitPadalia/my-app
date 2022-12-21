@@ -19,7 +19,7 @@ import {
 } from '../../constants/SmartContract';
 import {useDispatch, useSelector} from 'react-redux';
 import {updateApiLoader} from '../../redux/reducerSlices/preLogin';
-import {Alert, AppState} from 'react-native';
+import {Alert, AppState, Platform} from 'react-native';
 import Strings from '../../constants/strings';
 import {chainIdPolygonNetwork, decimalValue, RpcURL} from '../../constants/api';
 import analytics from '@react-native-firebase/analytics';
@@ -116,7 +116,7 @@ export const useBetCreateContract = () => {
 		if (connector.connected) {
 			web3 = await initWeb3();
 		} else {
-			web3 = await new Web3(magic.rpcProvider);
+			web3 = await new Web3(Platform.OS === "web" ? RpcURL : magic.rpcProvider);
 		}
 
 		//const balance = await getMetamaskBalance();
@@ -302,19 +302,26 @@ export const useBetCreateContract = () => {
 	};
 
 	const initWeb3 = async () => {
-		const provider = new WalletConnectProvider({
-			rpc: {
-				[chainIdPolygonNetwork]: RpcURL
-			},
-			chainId: chainIdPolygonNetwork,
-			connector: connector,
-			qrcode: false
-		});
-
-		await provider.enable();
-
-		const web3 = new Web3(provider);
-		return web3;
+		if(Platform.OS !== 'web') {
+			const provider = new WalletConnectProvider({
+				rpc: {
+					[chainIdPolygonNetwork]: RpcURL
+				},
+				chainId: chainIdPolygonNetwork,
+				connector: connector,
+				qrcode: false
+			});
+	
+			await provider.enable();
+	
+			const web3 = new Web3(provider);
+			return web3;
+		}
+		else {
+			const web3 = new Web3(Platform.OS === "web" ? RpcURL : magic.rpcProvider);
+			return web3;
+		}
+	
 	};
 
 	//Done

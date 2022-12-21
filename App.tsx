@@ -10,6 +10,8 @@ import {
   View,
   StyleSheet,
 } from "react-native";
+import 'react-native-gesture-handler';
+import polyfill from '@amityco/react-native-formdata-polyfill';
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
@@ -40,6 +42,9 @@ import CustomWalletBottomSheet from "./src/components/CustomWalletBottomSheet";
 import { AppSchema } from "./src/constants/api";
 import { initSmartLookSession } from "./src/components/SmartLookSDKHelper";
 import { useEffect } from "react";
+import './global';
+polyfill();
+
 // export default () => {
 //   	<Provider store={store}>
 //   <StatusBar
@@ -59,7 +64,7 @@ import { useEffect } from "react";
 // }
 let persistor = persistStore(store);
 
-export default () => (
+const App = () => (
   <View style={{ backgroundColor: "red", flex: 1 }}>
     <PersistGate loading={null} persistor={persistor}>
       <Provider store={store}>
@@ -68,6 +73,14 @@ export default () => (
     </PersistGate>
   </View>
 );
+
+export default withWalletConnect(App, {
+	redirectUrl: window.location.origin,
+	storageOptions: {
+		asyncStorage: AsyncStorage
+	}
+});
+
 
 const styles = StyleSheet.create({
   container: {

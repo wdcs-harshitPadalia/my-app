@@ -222,37 +222,56 @@ const SettingsScreen: React.FC<any> = () => {
   };
 
   const handleLogout = async () => {
-    clearTimeout(global.tutorialTimer);
-    dispatch(logout());
-    dispatch(resetProfileData({}));
-    // await magic.user.logout();
-    // connector?.killSession();
-	dispatch(updateDeviceToken({ deviceToken: "" }));
+    // clearTimeout(global.tutorialTimer);
+    // dispatch(logout());
+    // dispatch(resetProfileData({}));
+    // // await magic.user.logout();
+    // // connector?.killSession();
+    // dispatch(updateDeviceToken({ deviceToken: "" }));
 
-    // magic.user.isLoggedIn().then((value) => {	
+    // magic.user.isLoggedIn().then((value) => {
     //   console.log(value, "magic.user.isLoggedIn()");
     // });
-    Alert.alert("", Strings.are_you_sure_you_want_to_logout, [
-      {
-        text: Strings.yes,
-        onPress: async () => {
-          clearTimeout(global.tutorialTimer);
-          dispatch(logout());
-          dispatch(resetProfileData({}));
-          await magic.user.logout();
-          connector?.killSession();
-          magic.user.isLoggedIn().then((value) => {
-            console.log(value, "magic.user.isLoggedIn()");
-            dispatch(updateDeviceToken({ deviceToken: "" }));
-          });
-        },
-        style: "destructive",
-      },
-      {
-        text: Strings.no,
-        style: "cancel",
-      },
-    ]);
+    if (Platform.OS === "web") {
+      let retVal = confirm(Strings.are_you_sure_you_want_to_logout);
+      if (retVal == true) {
+        clearTimeout(global.tutorialTimer);
+        dispatch(logout());
+        dispatch(resetProfileData({}));
+        await magic.user.logout();
+        connector?.killSession();
+        magic.user.isLoggedIn().then((value) => {
+          console.log(value, "magic.user.isLoggedIn()");
+          dispatch(updateDeviceToken({ deviceToken: "" }));
+        });
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+		Alert.alert("", Strings.are_you_sure_you_want_to_logout, [
+			{
+			  text: Strings.yes,
+			  onPress: async () => {
+				clearTimeout(global.tutorialTimer);
+				dispatch(logout());
+				dispatch(resetProfileData({}));
+				await magic.user.logout();
+				connector?.killSession();
+				magic.user.isLoggedIn().then((value) => {
+				  console.log(value, "magic.user.isLoggedIn()");
+				  dispatch(updateDeviceToken({ deviceToken: "" }));
+				});
+			  },
+			  style: "destructive",
+			},
+			{
+			  text: Strings.no,
+			  style: "cancel",
+			},
+		  ]);
+	}
+
   };
 
   return (

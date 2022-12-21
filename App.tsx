@@ -41,7 +41,9 @@ import { defaultTheme } from "./src/theme/defaultTheme";
 import CustomWalletBottomSheet from "./src/components/CustomWalletBottomSheet";
 import { AppSchema } from "./src/constants/api";
 import { initSmartLookSession } from "./src/components/SmartLookSDKHelper";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
+import { useFonts } from 'expo-font';
+
 import './global';
 polyfill();
 
@@ -64,15 +66,33 @@ polyfill();
 // }
 let persistor = persistStore(store);
 
-const App = () => (
-  <View style={{ backgroundColor: "red", flex: 1 }}>
+const App = () => { 
+  const [fontsLoaded] = useFonts({
+    'Inter-Bold': require('./src/assets/fonts/Inter-Bold.ttf'),
+    'Inter-ExtraBold': require('./src/assets/fonts/Inter-ExtraBold.ttf'),
+    'Inter-Light': require('./src/assets/fonts/Inter-Light.ttf'),
+    'Inter-Medium': require('./src/assets/fonts/Inter-Medium.ttf'),
+    'Inter-Regular': require('./src/assets/fonts/Inter-Regular.ttf'),
+    'Inter-SemiBold': require('./src/assets/fonts/Inter-SemiBold.ttf'),
+    'KronaOne-Regular': require('./src/assets/fonts/KronaOne-Regular.ttf'),
+  });
+
+  const onLayoutRootView = useCallback(async () => {
+   
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
+  return(
+  <View style={{ backgroundColor: "red", flex: 1 }} onLayout={onLayoutRootView}>
     <PersistGate loading={null} persistor={persistor}>
       <Provider store={store}>
         <Routes />
       </Provider>
     </PersistGate>
   </View>
-);
+)};
 
 export default withWalletConnect(App, {
 	redirectUrl: window.location.origin,

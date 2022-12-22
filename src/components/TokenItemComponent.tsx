@@ -53,7 +53,7 @@ const TokenItemComponent: React.FC<TokenItemComponentPropsTypes> = props => {
 	}, [dbethBalance]);
 
 	const handleGetTokenWiseBalance = (item: any) => {
-		if (item.short_name.toLowerCase() === 'matic') {
+		if (item.short_name?.toLowerCase() === 'matic') {
 			getBalance(userInfo.user.walletAddress);
 		} else {
 			getBalanceAsync(item.contractAddress);

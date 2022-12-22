@@ -77,7 +77,6 @@ const SetDurationView: React.FC<Props> = (props) => {
       setEndSelectedDate(endDate);
     } else {
       setEndSelectedDate(null);
-
       alert(
         `Please select time less than ${moment(date).format(
           "DD MMMM YYYY hh:mm A"

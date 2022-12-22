@@ -9,7 +9,7 @@ import * as Yup from "yup";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { magic } from "../../navigation/routes";
-import { Alert, Linking } from "react-native";
+import { Alert, Linking, Platform } from "react-native";
 import icons from "../../assets/icon";
 import ScreenNames from "../../navigation/screenNames";
 import Strings from "../strings";
@@ -101,7 +101,7 @@ export const dateTimeLiveStreamingConvert = (timeStamp: number) => {
 export const getMetamaskBalance = async (address) => {
   console.log("temp0??>>>>>>", address);
 
-  const web3 = new Web3(magic.rpcProvider);
+  const web3 = new Web3(Platform.OS === "web" ? RpcURL : magic.rpcProvider);
   // console.log('temp0??>>>>>>', address);
 
   const balance = web3.utils.fromWei(await web3.eth.getBalance(address));

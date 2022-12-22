@@ -365,7 +365,7 @@ const ProfileScreen: React.FC<any> = props => {
 									leftIconPath={icons.ic_contact_green}
 									textType={'none'}
 								/>
-							</DropShadow> */}
+							</DropShadow>
 							<DropShadow
 								style={{
 									shadowColor: defaultTheme.secondaryBackGroundColor,
@@ -392,7 +392,7 @@ const ProfileScreen: React.FC<any> = props => {
 									leftIconPath={icons.share_green_gradient}
 									textType={'none'}
 								/>
-							</DropShadow>
+							</DropShadow> */}
 
 							<View style={styles.viewUserInfo}>
 								<UserInfoComponent

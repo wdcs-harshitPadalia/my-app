@@ -8,7 +8,7 @@ import {Fonts, moderateScale, verticalScale} from '../theme';
 import colors from '../theme/colors';
 import {defaultTheme} from '../theme/defaultTheme';
 import BetsProgress from './BetsProgress';
-// import CircularProgress from 'react-native-circular-progress-indicator';
+import CircularProgress from 'react-native-circular-progress-indicator';
 import Strings from '../constants/strings';
 
 interface Props extends TextInputProps {
@@ -55,7 +55,7 @@ const UserExperienceView: React.FC<Props> = props => {
 
 			<View style={styles.progressView}>
 				<View style={styles.circularView}>
-					{/* <CircularProgress
+					<CircularProgress
 						value={userProgress(
 							totalBetsCount,
 							userLevelMinBetValue,
@@ -68,7 +68,7 @@ const UserExperienceView: React.FC<Props> = props => {
 						inActiveStrokeColor={defaultTheme.backGroundColor}
 						activeStrokeColor={colors.darkRed}
 						activeStrokeSecondaryColor={colors.purple}
-					/> */}
+					/>
 				</View>
 			</View>
 

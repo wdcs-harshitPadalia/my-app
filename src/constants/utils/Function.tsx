@@ -428,3 +428,7 @@ export const getProfileShareUrl = (userName: string) => {
 };
 
 global.tutorialTimer = {};
+
+export const isValidDate = (date?: any) => {
+  return moment(date).toDate().toString() !== "Invalid Date";
+};

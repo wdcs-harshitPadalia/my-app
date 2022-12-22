@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   StyleSheet,
   TextInputProps,
@@ -9,13 +9,13 @@ import {
   TextInput,
   TextStyle,
   ViewStyle,
-} from 'react-native';
-import {Fonts, horizontalScale, moderateScale, verticalScale} from '../theme';
-import {LinearGradient} from 'expo-linear-gradient';
-import ExpoFastImage from 'expo-fast-image';
-import icons from '../assets/icon';
-import colors from '../theme/colors';
-import {gradientColorAngle} from '../theme/metrics';
+} from "react-native";
+import { Fonts, horizontalScale, moderateScale, verticalScale } from "../theme";
+import { LinearGradient } from "expo-linear-gradient";
+import ExpoFastImage from "expo-fast-image";
+import icons from "../assets/icon";
+import colors from "../theme/colors";
+import { gradientColorAngle } from "../theme/metrics";
 
 interface Props extends TextInputProps {
   leftIconPath?: ImageSourcePropType;
@@ -41,7 +41,7 @@ interface Props extends TextInputProps {
   short_nameTextStyle?: TextStyle;
 }
 
-const ButtonGradientWithRightIcon: React.FC<Props> = props => {
+const ButtonGradientWithRightIcon: React.FC<Props> = (props) => {
   const {
     leftIconPath,
     onPress,
@@ -66,55 +66,50 @@ const ButtonGradientWithRightIcon: React.FC<Props> = props => {
   } = props;
 
   return (
-    <View style={[{...props.style, flexDirection: 'column'}]}>
-      <TouchableOpacity
-        onPress={() => {
-          if (onPress) onPress();
-        }}
-        disabled={btnDisabled}
-        activeOpacity={0.8}
-        style={[styles.container]}>
+    <View style={[{ ...props.style, flexDirection: "column" }]}>
+      {btnDisabled ? (
         <LinearGradient
           style={styles.circleGradient}
           useAngle={true}
           angle={angle ? angle : gradientColorAngle}
-          colors={colorArray}>
+          colors={colorArray}
+        >
           {leftIconPath !== undefined ? (
             <ExpoFastImage
-              resizeMode={'contain'}
+              resizeMode={"contain"}
               source={leftIconPath}
               style={styles.leftImg}
             />
           ) : null}
 
           {/* <Text
-      style={[
-        styles.inputStyle,
-        {
-          color: buttonTextcolor,
-          textTransform: textType === undefined ? 'uppercase' : textType,
-          fontSize: textSize === undefined ? moderateScale(22) : textSize,
-        },
-      ]}>
-      {buttonText}
-    </Text> */}
+style={[
+ styles.inputStyle,
+ {
+   color: buttonTextcolor,
+   textTransform: textType === undefined ? 'uppercase' : textType,
+   fontSize: textSize === undefined ? moderateScale(22) : textSize,
+ },
+]}>
+{buttonText}
+</Text> */}
           <TextInput
             editable={editable}
-            style={[styles.inputStyle, {...props.textStyle}]}
-            placeholder={'0'}
+            style={[styles.inputStyle, { ...props.textStyle }]}
+            placeholder={"0"}
             placeholderTextColor={colors.placeholderColor}
             value={textValue}
             onChangeText={onChangeText}
             onSubmitEditing={onSubmitText}
             keyboardType={keyboardType}
-            returnKeyType={'done'}
+            returnKeyType={"done"}
             maxLength={maxLength}
             onEndEditing={onEndEditing}
           />
           <View style={styles.imageContainer}>
             <ExpoFastImage
-              resizeMode={'contain'}
-              source={{uri: rightIconPath}}
+              resizeMode={"contain"}
+              source={{ uri: rightIconPath }}
               style={styles.rightImg}
             />
             <Text style={[styles.currencyTextStyle, short_nameTextStyle]}>
@@ -125,9 +120,10 @@ const ButtonGradientWithRightIcon: React.FC<Props> = props => {
                 activeOpacity={0.8}
                 onPress={() => {
                   if (onPressInfoIcon) onPressInfoIcon();
-                }}>
+                }}
+              >
                 <ExpoFastImage
-                  resizeMode={'contain'}
+                  resizeMode={"contain"}
                   source={rightIcon ? rightIcon : icons.downGray}
                   style={
                     styleOfRightIcon ? styleOfRightIcon : styles.dropDownImage
@@ -137,7 +133,83 @@ const ButtonGradientWithRightIcon: React.FC<Props> = props => {
             ) : null}
           </View>
         </LinearGradient>
-      </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          onPress={() => {
+            if (onPress) onPress();
+          }}
+          disabled={btnDisabled}
+          activeOpacity={0.8}
+          style={[styles.container]}
+        >
+          <LinearGradient
+            style={styles.circleGradient}
+            useAngle={true}
+            angle={angle ? angle : gradientColorAngle}
+            colors={colorArray}
+          >
+            {leftIconPath !== undefined ? (
+              <ExpoFastImage
+                resizeMode={"contain"}
+                source={leftIconPath}
+                style={styles.leftImg}
+              />
+            ) : null}
+
+            {/* <Text
+      style={[
+        styles.inputStyle,
+        {
+          color: buttonTextcolor,
+          textTransform: textType === undefined ? 'uppercase' : textType,
+          fontSize: textSize === undefined ? moderateScale(22) : textSize,
+        },
+      ]}>
+      {buttonText}
+    </Text> */}
+            <TextInput
+              editable={editable}
+              style={[styles.inputStyle, { ...props.textStyle }]}
+              placeholder={"0"}
+              placeholderTextColor={colors.placeholderColor}
+              value={textValue}
+              onChangeText={onChangeText}
+              onSubmitEditing={onSubmitText}
+              keyboardType={keyboardType}
+              returnKeyType={"done"}
+              maxLength={maxLength}
+              onEndEditing={onEndEditing}
+            />
+            <View style={styles.imageContainer}>
+              <ExpoFastImage
+                resizeMode={"contain"}
+                source={{ uri: rightIconPath }}
+                style={styles.rightImg}
+              />
+              <Text style={[styles.currencyTextStyle, short_nameTextStyle]}>
+                {short_name}
+              </Text>
+              {!btnDisabled ? (
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => {
+                    if (onPressInfoIcon) onPressInfoIcon();
+                  }}
+                >
+                  <ExpoFastImage
+                    resizeMode={"contain"}
+                    source={rightIcon ? rightIcon : icons.downGray}
+                    style={
+                      styleOfRightIcon ? styleOfRightIcon : styles.dropDownImage
+                    }
+                  />
+                </TouchableOpacity>
+              ) : null}
+            </View>
+          </LinearGradient>
+        </TouchableOpacity>
+      )}
+
       {isShowError ? <Text style={styles.errStyle}>{errMessage}</Text> : null}
     </View>
   );
@@ -145,33 +217,33 @@ const ButtonGradientWithRightIcon: React.FC<Props> = props => {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   inputStyle: {
     fontSize: moderateScale(22),
     fontFamily: Fonts.type.Inter_Bold,
-    textTransform: 'uppercase',
+    textTransform: "uppercase",
     color: colors.white,
-    textAlign: 'left',
+    textAlign: "left",
     paddingHorizontal: horizontalScale(10),
     flex: 1,
     marginVertical: verticalScale(10),
-    height: '100%',
+    height: "100%",
     paddingVertical: 0,
   },
   circleGradient: {
-    height: '100%',
-    width: '100%',
+    height: "100%",
+    width: "100%",
     borderRadius: verticalScale(8),
-    alignItems: 'center',
-    flexDirection: 'row',
+    alignItems: "center",
+    flexDirection: "row",
   },
   currencyTextStyle: {
     fontSize: moderateScale(12),
     fontFamily: Fonts.type.Inter_Medium,
-    textTransform: 'uppercase',
-    textAlign: 'left',
+    textTransform: "uppercase",
+    textAlign: "left",
     color: colors.white,
   },
   leftImg: {
@@ -189,7 +261,11 @@ const styles = StyleSheet.create({
     width: 7.45,
     marginLeft: verticalScale(10),
   },
-  imageContainer: {marginRight: 20, flexDirection: 'row', alignItems: 'center'},
+  imageContainer: {
+    marginRight: 20,
+    flexDirection: "row",
+    alignItems: "center",
+  },
   errStyle: {
     color: colors.red,
     fontSize: moderateScale(12),

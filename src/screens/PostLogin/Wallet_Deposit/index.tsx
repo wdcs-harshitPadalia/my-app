@@ -10,6 +10,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 import * as Crypto from "expo-crypto";
+import * as WebBrowser from "expo-web-browser";
 
 import styles from "./style";
 import colors from "../../../theme/colors";
@@ -181,7 +182,8 @@ export default function WalletDepositScreen() {
                     // navigation.navigate(ScreenNames.TransakWebView, {
                     //   type: Strings.deposit,
                     // });
-                    Linking.openURL(getPaymentUrl());
+                    // Linking.openURL(getPaymentUrl());
+                    await WebBrowser.openBrowserAsync(getPaymentUrl());
                   }}
                   buttonTextcolor={colors.white}
                   buttonText={Strings.deposit}

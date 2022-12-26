@@ -5,6 +5,7 @@ import { useNavigation, useScrollToTop } from "@react-navigation/native";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 
 import * as Crypto from "expo-crypto";
+import * as WebBrowser from "expo-web-browser";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -364,7 +365,7 @@ const WalletScreen: React.FC<any> = () => {
               onWithdrawalButtonPressed={() => {
                 navigation.navigate(ScreenNames.WalletWithdrawalScreen);
               }}
-              balance={userInfo?.totalBalance}
+              balance={currentBalance}
               changeToken={() => {
                 setShowPopupType("0");
                 setShowTokenSelectionPopup(!showTokenSelectionPopup);
@@ -378,12 +379,13 @@ const WalletScreen: React.FC<any> = () => {
                 // navigation.navigate(ScreenNames.TransakWebView, {
                 //   type: Strings.buy_crypto,
                 // });
-                Linking.openURL(getPaymentUrl());
+                // Linking.openURL(getPaymentUrl());
+                await WebBrowser.openBrowserAsync(getPaymentUrl());
               }}
               isLoading={isLoading}
               displaySelectedTokenName={displaySelectedTokenName}
             />
-          </>
+          </> 
 
           <WalletStats
             onViewDetailsButtonClicked={() => {

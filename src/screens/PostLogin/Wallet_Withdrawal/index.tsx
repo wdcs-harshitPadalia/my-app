@@ -4,6 +4,7 @@ import { TouchableOpacity, View, Text, Linking } from "react-native";
 import Collapsible from "react-native-collapsible";
 import ExpoFastImage from "expo-fast-image";
 import * as Crypto from "expo-crypto";
+import * as WebBrowser from "expo-web-browser";
 
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { LinearGradient } from "expo-linear-gradient";
@@ -109,7 +110,8 @@ export default function WalletWithdrawalScreen() {
                     // navigation.navigate(ScreenNames.TransakWebView, {
                     // 	type: Strings.withdrawal
                     // });
-                    Linking.openURL(getPaymentUrl());
+                    // Linking.openURL(getPaymentUrl());
+                    await WebBrowser.openBrowserAsync(getPaymentUrl());
                   }}
                   buttonTextcolor={colors.white}
                   buttonText={Strings.withdrawal}

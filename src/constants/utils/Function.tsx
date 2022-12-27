@@ -101,7 +101,7 @@ export const dateTimeLiveStreamingConvert = (timeStamp: number) => {
 export const getMetamaskBalance = async (address) => {
   console.log("temp0??>>>>>>", address);
 
-  const web3 = new Web3(Platform.OS === "web" ? RpcURL : magic.rpcProvider);
+  const web3 = new Web3(magic.rpcProvider);
   // console.log('temp0??>>>>>>', address);
 
   const balance = web3.utils.fromWei(await web3.eth.getBalance(address));

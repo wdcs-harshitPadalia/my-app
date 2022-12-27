@@ -63,7 +63,7 @@ const QuestionComponent: React.FC<FaqData> = (props) => {
         <ScrollView
           style={{ marginBottom: 16, marginTop: 11, maxHeight: height * 0.3 }}
         >
-          <RenderHtml
+          {/* <RenderHtml
             contentWidth={width}
             source={{
               html: `
@@ -71,7 +71,7 @@ const QuestionComponent: React.FC<FaqData> = (props) => {
 	${answer}
   </body>`,
             }}
-          />
+          /> */}
         </ScrollView>
       </Collapsible>
     </>

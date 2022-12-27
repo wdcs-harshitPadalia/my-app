@@ -82,9 +82,9 @@ const Login: React.FC<any> = props => {
 	//   );
 	// }, []);
 
-	useEffect(() => {
-		console.log(connector?.chainId);
-	}, [connector]);
+	// useEffect(() => {
+	// 	console.log(connector?.chainId);
+	// }, [connector]);
 
 	const magicLogin = async (
 		email: String,

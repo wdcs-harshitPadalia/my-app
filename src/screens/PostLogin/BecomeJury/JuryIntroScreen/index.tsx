@@ -48,7 +48,7 @@ const JuryIntroScreen: React.FC<any> = () => {
 	const navigation = useNavigation();
 
 	const [currentPageNo, setCurrentPageNo] = useState(0);
-	const [scrollEnabled, setScrollEnabled] = useState(false);
+	const [scrollEnabled, setScrollEnabled] = useState(true);
 
 	const flatListRef = useRef(null);
 
@@ -114,9 +114,9 @@ const JuryIntroScreen: React.FC<any> = () => {
 	const handleButtonClick = () => {
 		const currentPage = currentPageNo + 1;
 
-		if (JuryIntroArrayData.length - 1 === currentPage) {
-			setScrollEnabled(!scrollEnabled);
-		}
+		// if (JuryIntroArrayData.length - 1 === currentPage) {
+		// 	setScrollEnabled(!scrollEnabled);
+		// }
 
 		if (JuryIntroArrayData.length !== currentPage) {
 			flatListRef.current.scrollToIndex({index: currentPage});

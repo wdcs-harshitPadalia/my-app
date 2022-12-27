@@ -1,38 +1,43 @@
-/* eslint-disable react-native/no-inline-styles */
 import React, { useEffect, useRef, useState } from "react";
+import { Linking, RefreshControl, View, ScrollView } from "react-native";
+
 import { useNavigation, useScrollToTop } from "@react-navigation/native";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 
-import { Linking, RefreshControl, View, ScrollView } from "react-native";
-
+import * as Crypto from "expo-crypto";
+import * as WebBrowser from "expo-web-browser";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
 
-import { useBetCreateContract } from "../../../components/CustomHooks/SmartContract";
-import useUpdateEffect from "../../../components/CustomHooks/useUpdateEffect";
-import TokenSelection from "../../../components/TokenSelection";
-import WalletAddressView from "../../../components/Wallet/WalletAddressView";
-import WalletBalance from "../../../components/Wallet/WalletBalance";
-import WalletStats from "../../../components/Wallet/WalletStats";
+import ScreenNames from "../../../navigation/screenNames";
+
+import styles from "./style";
+import icons from "../../../assets/icon";
+
 import Strings from "../../../constants/strings";
 import {
   getMetamaskBalance,
   getRoundDecimalValue,
 } from "../../../constants/utils/Function";
-import ScreenNames from "../../../navigation/screenNames";
+import { decimalValue, widgetBaseUrl } from "../../../constants/api";
+
 import {
   getTokenType,
   getWalletStatics,
 } from "../../../redux/apiHandler/apiActions";
 import { updateApiLoader } from "../../../redux/reducerSlices/preLogin";
 import { RootState } from "../../../redux/store";
-
-import styles from "./style";
-import HeaderComponent from "../../../components/HeaderComponent";
-import icons from "../../../assets/icon";
-import WalletQrCodeModalComponent from "../../../components/Wallet/WalletQrCodeModalComponent";
-import { decimalValue } from "../../../constants/api";
 import { updateTotalBalance } from "../../../redux/reducerSlices/userInfo";
+
+import useUpdateEffect from "../../../components/CustomHooks/useUpdateEffect";
+import TokenSelection from "../../../components/TokenSelection";
+import WalletAddressView from "../../../components/Wallet/WalletAddressView";
+import WalletBalance from "../../../components/Wallet/WalletBalance";
+import WalletStats from "../../../components/Wallet/WalletStats";
+import HeaderComponent from "../../../components/HeaderComponent";
+import WalletQrCodeModalComponent from "../../../components/Wallet/WalletQrCodeModalComponent";
+import { useBetCreateContract } from "../../../components/CustomHooks/SmartContract";
+import { async } from "q";
 
 let totalBalance = 0;
 let showTokenWiseBalance = false;
@@ -64,7 +69,7 @@ const WalletScreen: React.FC<any> = () => {
 
   const [modalVisible, setModalVisible] = useState(false);
 
-  const { getBalanceFromContract, tokenBalance, approveContract } = useBetCreateContract(false);
+  const { getBalanceFromContract, tokenBalance } = useBetCreateContract(false);
   const [tokenCount, setTokenCount] = useState(0);
 
   const userInfo = useSelector((state: RootState) => {
@@ -73,7 +78,6 @@ const WalletScreen: React.FC<any> = () => {
 
   useUpdateEffect(() => {
     callWalletStatsApi();
-    approveContract('0xa19E732541063C8954880ffc68F1fE54a0e749dE', 'sdds', true);
   }, [filterType]);
 
   const callWalletStatsApi = async () => {
@@ -268,6 +272,29 @@ const WalletScreen: React.FC<any> = () => {
     }
   }, [tokenCount]);
 
+  const getPaymentUrl = () => {
+    const walletAddress = userInfo?.user?.walletAddress;
+    const cryptoHash = Crypto.digestStringAsync(
+      Crypto.CryptoDigestAlgorithm.SHA512,
+      "0x8001c03501d88c3Fa61a62786c91f6bdf15CcA0e" +
+        "822c9e5f7149734f927c4b77cdc437cb"
+    );
+
+    let webUrl =
+      widgetBaseUrl +
+      "f49448ba-2a9b-438e-8bb6-fdbdb30f5818" +
+      "&type=" +
+      Strings.buy +
+      "&return_url=" +
+      Strings.defibetHouseUrl +
+      "&address=" +
+      walletAddress +
+      "&signature=" +
+      cryptoHash;
+
+    return webUrl;
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <HeaderComponent
@@ -338,7 +365,7 @@ const WalletScreen: React.FC<any> = () => {
               onWithdrawalButtonPressed={() => {
                 navigation.navigate(ScreenNames.WalletWithdrawalScreen);
               }}
-              balance={userInfo?.totalBalance}
+              balance={currentBalance}
               changeToken={() => {
                 setShowPopupType("0");
                 setShowTokenSelectionPopup(!showTokenSelectionPopup);
@@ -348,15 +375,17 @@ const WalletScreen: React.FC<any> = () => {
                 //   connector?.accounts[0] ?? userInfo.user.walletAddress,
                 // );
               }}
-              onBuyCryptoButtonPressed={() => {
-                navigation.navigate(ScreenNames.TransakWebView, {
-                  type: Strings.buy_crypto,
-                });
+              onBuyCryptoButtonPressed={async () => {
+                // navigation.navigate(ScreenNames.TransakWebView, {
+                //   type: Strings.buy_crypto,
+                // });
+                // Linking.openURL(getPaymentUrl());
+                await WebBrowser.openBrowserAsync(getPaymentUrl());
               }}
               isLoading={isLoading}
               displaySelectedTokenName={displaySelectedTokenName}
             />
-          </>
+          </> 
 
           <WalletStats
             onViewDetailsButtonClicked={() => {

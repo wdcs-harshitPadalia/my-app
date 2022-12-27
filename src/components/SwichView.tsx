@@ -4,9 +4,10 @@ import {
 	TextInputProps,
 	ImageSourcePropType,
 	Text,
-	View
+	View,
+	Switch
 } from 'react-native';
-import {Switch} from 'react-native-elements/dist/switch/switch';
+// import {Switch} from 'react-native-elements/dist/switch/switch';
 import Strings from '../constants/strings';
 import {Fonts, horizontalScale, moderateScale, verticalScale} from '../theme';
 import colors from '../theme/colors';
@@ -36,7 +37,7 @@ const SwichView: React.FC<Props> = props => {
 const styles = StyleSheet.create({
 	container: {
 		flexDirection: 'row',
-		marginHorizontal: verticalScale(16)
+		marginHorizontal: verticalScale(16),
 	},
 	nameStyle: {
 		color: colors.white,

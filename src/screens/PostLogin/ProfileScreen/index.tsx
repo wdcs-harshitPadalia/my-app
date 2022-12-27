@@ -519,7 +519,7 @@ const ProfileScreen: React.FC<any> = props => {
 								userLevel={userProfileInfo?.user?.level}
 								userLevelMaxBetValue={userProfileInfo?.user?.maximumLevelBets}
 								userLevelMinBetValue={userProfileInfo?.user?.minimumLevelBets}
-								totalBetsCount={userProfileInfo?.user?.totalBets}
+								totalBetsCount={userProfileInfo?.user?.levelWiseBets}
 								progressTitle={Strings.progress}
 								nextGoalTitle={Strings.nextGoal}
 								currentFeesTitle={Strings.currentFees}

@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Text,
   ImageSourcePropType,
+  Platform,
 } from "react-native";
 import { Badge } from "react-native-elements/dist/badge/Badge";
 import { Image } from "react-native-elements/dist/image/Image";
@@ -136,7 +137,14 @@ const BetsProgress: React.FC<Props> = (props) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    ...Platform.select({
+      ios: {
+        flex: 1,
+      },
+      android: {
+        flex: 1,
+      },
+    }),
     marginHorizontal: verticalScale(8),
   },
   viewColumnStyle: {

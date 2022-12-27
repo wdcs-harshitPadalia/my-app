@@ -359,7 +359,7 @@ const Login: React.FC<any> = props => {
 						initialValues={{
 							// email: '',
 							// phone: '',
-							email_or_phone: 'harshittest@yopmail.com'
+							email_or_phone: ''
 						}}
 						validationSchema={Validation.signIn}
 						onSubmit={values => {

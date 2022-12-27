@@ -35,8 +35,12 @@ import EventDetailsScreen from "../../screens/PostLogin/EventDetailsScreen";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import Loader from "../../components/Loader";
+import { Magic as MagicWeb } from "magic-sdk";
 import { Magic } from "@magic-sdk/react-native";
+
 import { OAuthExtension } from "@magic-ext/react-native-oauth";
+import { OAuthExtension as OAuthExtensionWeb } from "@magic-ext/oauth";
+
 import analytics from "@react-native-firebase/analytics";
 
 const customNodeOptions = {
@@ -44,11 +48,26 @@ const customNodeOptions = {
   chainId: chainIdPolygonNetwork, // Polygon chain id
 };
 
-export const magic = new Magic("pk_live_8EFB86C1F5685BE3", {
+export const magic  =
+  Platform.OS === "web"
+    ? new MagicWeb("pk_live_8EFB86C1F5685BE3", {
+        testMode: false,
+        extensions: [new OAuthExtensionWeb()],
+        network: customNodeOptions,
+      })
+    : new Magic("pk_live_8EFB86C1F5685BE3", {
+        testMode: false,
+        extensions: [new OAuthExtension()],
+        network: customNodeOptions,
+      });
+
+export const magicWeb = new MagicWeb("pk_live_8EFB86C1F5685BE3", {
   testMode: false,
-  extensions: [new OAuthExtension()],
+  extensions: [new OAuthExtensionWeb()],
   network: customNodeOptions,
 });
+
+
 import axios from "axios";
 import CMSScreen from "../../screens/Auth/CMS";
 import JoinBetCreateScreen from "../../screens/PostLogin/CreateBets/JoinBetCreateScreen";
@@ -96,6 +115,7 @@ import {
   showInviteUser,
   showSuggestedUser,
 } from "../../redux/reducerSlices/dashboard";
+import { Platform } from "react-native";
 
 //const Stack = createNativeStackNavigator();
 const options = {
@@ -898,12 +918,12 @@ const Routes = () => {
       }}
     >
       {/* Render the Magic iframe! */}
-      <magic.Relayer />
-      {/* <Loader
-				isVisible={apiState.apiLoader}
-				shouldShowText={apiState.showAlertWithText}
-				shouldShowRandomMessage={apiState.showRandomMessage}
-			/> */}
+      {/* <magic.Relayer /> */}
+      <Loader
+        isVisible={apiState.apiLoader}
+        shouldShowText={apiState.showAlertWithText}
+        shouldShowRandomMessage={apiState.showRandomMessage}
+      />
       <RootRouter />
       {isShowShare && (
         <InviteShareFriend

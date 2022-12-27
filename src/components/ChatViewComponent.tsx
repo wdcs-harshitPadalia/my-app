@@ -403,16 +403,15 @@ const ChatViewComponent: React.FC<Props> = props => {
 						name: response.fileName,
 						type: response.type,
 						uri:
-							Platform.OS === 'android'
-								? response.uri
-								: response.uri.replace('file://', ''),
+							Platform.OS === 'ios'
+							 ? response.uri.replace('file://', '')
+								: response.uri,
 						fileSize: response.fileSize,
 						height: response.height,
 						width: response.width
 					});
 
 					console.log('??????', formData.getParts('files'));
-
 					const query = createQuery(createImage, formData);
 
 					runQuery(query, result => {

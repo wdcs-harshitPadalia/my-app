@@ -2098,7 +2098,7 @@ const BetsCategoryScreen: React.FC<any> = () => {
                 userInfo?.user?.displayName || userInfo?.user?.userName
               )}
             </Text>
-            <LottieView
+            {/* <LottieView
               style={{
                 height: 300,
                 width: 300,
@@ -2108,7 +2108,7 @@ const BetsCategoryScreen: React.FC<any> = () => {
               source={require("../../../../assets/animations/confetti_day.json")}
               autoPlay
               loop={false}
-            />
+            /> */}
           </View>
         );
     }

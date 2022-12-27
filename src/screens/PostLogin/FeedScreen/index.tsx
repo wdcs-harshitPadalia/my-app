@@ -139,10 +139,10 @@ const FeedScreen: React.FC<any> = (props) => {
   useEffect(() => {
     trackUserIdentification(userInfo.user?.userName);
     getCategoryData();
-    // connectClient({
-    // 	userId: userInfo.user?._id,
-    // 	displayName: userInfo.user?.userName
-    // });
+    connectClient({
+    	userId: userInfo.user?._id,
+    	displayName: userInfo.user?.userName
+    });
     // getNotificationPermission();
   }, []);
 

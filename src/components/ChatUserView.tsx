@@ -105,7 +105,7 @@ const ChatUserView: React.FC<Props> = props => {
 				</Text>
 				{message?.data?.text && (
 					<Text style={styles.messageStyle} numberOfLines={1}>
-						{message?.type === 'image' ? '📷  Photo' : message.data?.text}
+						{message?.type == 'image' ? '📷  Photo' : message.data?.text}
 					</Text>
 				)}
 			</View>

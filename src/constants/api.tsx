@@ -15,12 +15,12 @@ export const serverKey =
 
 // // Development
 //export const ApiBaseUrl = `http://13.59.164.150:${ApiPort}/api/${ApiVersion}/`;
-export const ApiBaseUrl = `https://api.defibet.house/api/${ApiVersion}/`;
-export const ApiSecondaryBaseUrl = `https://api2.defibet.house/api/${ApiVersion}/`;
+// export const ApiBaseUrl = `https://api.defibet.house/api/${ApiVersion}/`;
+// export const ApiSecondaryBaseUrl = `https://api2.defibet.house/api/${ApiVersion}/`;
 
 //Development
-// export const ApiBaseUrl = `http://13.59.164.150:${ApiPort}/api/${ApiVersion}/`;
-// export const ApiSecondaryBaseUrl = `http://13.59.164.150:${SecondaryApiPort}/api/${ApiVersion}/`;
+export const ApiBaseUrl = `http://13.59.164.150:${ApiPort}/api/${ApiVersion}/`;
+export const ApiSecondaryBaseUrl = `http://13.59.164.150:${SecondaryApiPort}/api/${ApiVersion}/`;
 
 export const nullHash =
 	'0x0000000000000000000000000000000000000000000000000000000000000000';

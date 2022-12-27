@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
 		bottom: 10
 	},
 	flatListContent: {
-		height: 150, //CURRENT_ITEM_TRANSLATE_Y * 2 + ITEM_LENGTH,
+		//height: 150, //CURRENT_ITEM_TRANSLATE_Y * 2 + ITEM_LENGTH,
 		alignItems: 'center'
 		//marginBottom: CURRENT_ITEM_TRANSLATE_Y,
 	},

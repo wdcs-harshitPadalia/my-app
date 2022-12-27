@@ -590,7 +590,8 @@ const styles = StyleSheet.create({
 	bottomButtonStyle: {
 		position: 'absolute',
 		bottom: 10,
-		alignSelf: 'center'
+		alignSelf: 'center',
+		width: '100%'
 	},
 	bottomButtonGradientStyle: {
 		width: '100%',

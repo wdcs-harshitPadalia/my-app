@@ -15,9 +15,9 @@ const WalletStatsDetailsComponent: React.FC<WalletStatsProps> = (props) => {
   const WalletStatsWinLossComponent = (props: any) => {
     const { transactionType, usdAmount, tokenAmount } = props;
 
-    console.log("====================================");
-    console.log("itemData :: ", JSON.stringify(itemData));
-    console.log("====================================");
+    // console.log("====================================");
+    // console.log("itemData :: ", JSON.stringify(itemData));
+    // console.log("====================================");
 
     return (
       <View>

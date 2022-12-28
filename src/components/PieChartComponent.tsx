@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Text,
   ImageSourcePropType,
+  Platform,
 } from "react-native";
 import { Badge } from "react-native-elements/dist/badge/Badge";
 import { Image } from "react-native-elements/dist/image/Image";
@@ -83,15 +84,26 @@ const PieChartComponent: React.FC<Props> = (props) => {
     return betsStats.map((data, index) => {
       return (
         <View style={styles.viewCategory}>
-          <Text
-            style={[
-              styles.gradientText,
-              { color: defaultTheme.paiChartGradient[index][0] },
-            ]}
-          >
-            {"●"}
-          </Text>
-
+          {Platform.OS === "web" ? (
+            <Text
+              style={[
+                styles.gradientText,
+                { color: defaultTheme.paiChartGradient[index][0] },
+              ]}
+            >
+              {"●"}
+            </Text>
+          ) : (
+            <GradientText
+              colors={
+                defaultTheme.paiChartGradient[index] ??
+                defaultTheme.paiChartGradient[0]
+              }
+              style={styles.gradientText}
+            >
+              {"●"}
+            </GradientText>
+          )}
           <Text style={styles.categoryNameStyle}>{data?.name}</Text>
           <Text style={styles.countText}>{`${parseFloat(data?.count).toFixed(
             2

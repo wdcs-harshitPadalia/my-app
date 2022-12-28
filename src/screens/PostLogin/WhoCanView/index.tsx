@@ -12,18 +12,19 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 
 const WhoCanViewScreen: React.FC<any> = props => {
 	const navigation = useNavigation();
-	const {title, description, whoCanSeeGet, setWhoCanSee} = useRoute().params;
+	const {title, description, whoCanSeeGet, setWhoCanSee, arrOptions} =
+		useRoute().params;
 	const [isSelectedType, seIsSelectedType] = useState(setWhoCanSee);
 
 	const arrRadioData = [
 		{
-			name: 'Anyone'
+			name: Strings.anyone
 		},
 		{
-			name: 'Friends'
+			name: Strings.friends
 		},
 		{
-			name: 'Nobody'
+			name: Strings.nobody
 		}
 	];
 
@@ -32,10 +33,10 @@ const WhoCanViewScreen: React.FC<any> = props => {
 			title={item.name.toUpperCase()}
 			onPress={() => {
 				seIsSelectedType(item.name);
-				whoCanSeeGet(title, item.name);
+				whoCanSeeGet(title ? title : Strings.video_content, item.name);
 			}}
 			isSelected={
-				isSelectedType.toLowerCase() === item.name.toLowerCase() ? true : false
+				isSelectedType?.toLowerCase() === item.name?.toLowerCase() ? true : false
 			}
 		/>
 	);
@@ -46,15 +47,16 @@ const WhoCanViewScreen: React.FC<any> = props => {
 					navigation.goBack();
 				}}
 				onLeftIconPath={icons.back}
-				name={Strings.back}
+				name={Strings.privacy}
 			/>
 			<KeyboardAwareScrollView enableOnAndroid={false} bounces={false}>
-				<Text style={styles.titleStyle}>{title}</Text>
+				{title && <Text style={styles.titleStyle}>{title}</Text>}
+
 				<View style={styles.viewContain}>
 					<Text style={styles.subTitleStyle}>{description}</Text>
 					<FlatList
 						bounces={false}
-						data={arrRadioData}
+						data={arrOptions ? arrOptions : arrRadioData}
 						renderItem={renderRadioItem}
 					/>
 				</View>

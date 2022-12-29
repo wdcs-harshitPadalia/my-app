@@ -167,8 +167,8 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   circularView: {
-    height: Platform.OS !== "web" && 220,
-    transform: [{ rotate: Platform.OS !== "web" && "-90deg" }],
+    height: Platform.OS === "web" ? 0 : 220,
+    transform: [{ rotate: Platform.OS === "web" ? "0deg" : "-90deg" }],
   },
   viewBadgeStyle: {
     marginTop: verticalScale(Platform.OS === "web" ? -40 : -35),

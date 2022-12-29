@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 12,
     marginVertical: verticalScale(20),
-    marginHorizontal: horizontalScale(Platform.OS !== "web" && 20),
+    marginHorizontal: horizontalScale(Platform.OS === "web" ? 0 : 20),
     width: Platform.OS === "web" && Dimensions.get("screen").width * 0.88 - 32,
   },
   qrCodeAddressTextStyle: {

@@ -105,8 +105,8 @@ const styles = StyleSheet.create({
     fontSize: moderateScale(14),
     fontFamily: Fonts.type.Inter_ExtraBold,
     //paddingLeft: 10,
-    paddingTop: Platform.OS === "ios" ? 10 : 0,
-    paddingBottom: Platform.OS === "ios" ? 5 : -10,
+    paddingTop: Platform.OS === "ios" || Platform.OS === "web" ? 10 : 0,
+    paddingBottom: Platform.OS === "ios" || Platform.OS === "web" ? 5 : -10,
   },
   errStyle: {
     color: colors.red,

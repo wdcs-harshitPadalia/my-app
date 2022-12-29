@@ -1,5 +1,5 @@
 import React, {FC, useEffect, useRef, useState} from 'react';
-import {Dimensions, FlatList, StyleSheet, View} from 'react-native';
+import {Dimensions, FlatList, Platform, StyleSheet, View} from 'react-native';
 import {ImageIndicator} from '../constants/utils/Function';
 import colors from '../theme/colors';
 
@@ -101,7 +101,14 @@ const styles = StyleSheet.create({
 		bottom: 10
 	},
 	flatListContent: {
-		//height: 150, //CURRENT_ITEM_TRANSLATE_Y * 2 + ITEM_LENGTH,
+		...Platform.select({
+			ios: {
+				height: 150, //CURRENT_ITEM_TRANSLATE_Y * 2 + ITEM_LENGTH,
+			},
+			android: {
+				height: 150, //CURRENT_ITEM_TRANSLATE_Y * 2 + ITEM_LENGTH,
+			}
+		}),
 		alignItems: 'center'
 		//marginBottom: CURRENT_ITEM_TRANSLATE_Y,
 	},

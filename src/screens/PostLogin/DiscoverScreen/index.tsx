@@ -1100,9 +1100,23 @@ const DiscoverScreen: React.FC<any> = props => {
 									shouldShowMessageHistory={true}
 									backGroundColor={'black'}
 									style={{
-										paddingBottom: hasNotch
+										...Platform.select({
+											ios: {
+												paddingBottom: hasNotch
+											? verticalScale(200)
+											: verticalScale(250)
+											},
+											android: {
+												paddingBottom: hasNotch
+											? verticalScale(200)
+											: verticalScale(250)
+											},
+											web: {
+												paddingBottom: hasNotch
 											? verticalScale(200)
 											: verticalScale(180)
+											}
+										})
 									}}
 									channelId={'1'}
 									allowImageUpload={false}

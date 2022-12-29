@@ -91,11 +91,14 @@ const DateRangePickerModel: React.FC<Props> = props => {
 							},
 							android: {
 								flex: 1
+							},
+							web : {
+								flex : 1
 							}
 						})
 					}
 				}}>
-				<View style={{backgroundColor: 'white'}}>
+				<View>
 					<DateRangePicker
 						onSelectDateRange={range => {
 							setRange(range);

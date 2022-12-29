@@ -76,6 +76,9 @@ import {notifyOnNewMessageSend} from '../redux/reducerSlices/notification';
 
 import {LinkPreview} from '@flyerhq/react-native-link-preview';
 import HyperLink from 'react-native-hyperlink';
+import * as ImagePicker from 'expo-image-picker';
+import FullScreenImageComponent from './FullScreenImageComponent';
+import {date} from 'yup';
 
 const {v4: uuidv4} = require('uuid');
 interface Props extends TextInputProps {
@@ -119,6 +122,10 @@ const ChatViewComponent: React.FC<Props> = props => {
 	});
 
 	const [messages, setMessages] = useState<MessageType.Any[]>([]);
+
+	const [isShowImagePreview, setIsShowImagePreview] = useState<Boolean>(false);
+
+	const [imageURL, setImageURL] = useState('');
 
 	const [currentPage, setCurrentPage] = useState(0);
 
@@ -193,6 +200,10 @@ const ChatViewComponent: React.FC<Props> = props => {
 		// };
 	}, [channelId]);
 
+	useUpdateEffect(() => {
+		setIsShowImagePreview(true);
+	}, [imageURL]);
+
 	const onQueryMessages = useCallback(
 		({reset = false, page = {limit: 10}}) => {
 			//console.log('onQueryMessages??>>>>>>>>>', reset, page);
@@ -209,7 +220,8 @@ const ChatViewComponent: React.FC<Props> = props => {
 				if (data) {
 					const tempArray = [];
 					data.forEach(message => {
-						tempArray.push(message.metadata?.data);
+						!messages.includes(message) &&
+							tempArray.push(message.metadata?.data);
 					});
 					setMessages(prevPosts =>
 						reset ? tempArray.reverse() : [...prevPosts, ...tempArray.reverse()]
@@ -343,9 +355,18 @@ const ChatViewComponent: React.FC<Props> = props => {
 					action: MessageAction,
 					message: Amity.Snapshot<Amity.Message>
 				) => {
-					console.log('message OBserver Callds,ld,s>?:::::::');
+					console.log('message OBserver Callds,ld,s>?:::::::', messages.filter((item) => item.id === message.data?.metadata.data.id));
+					if(messages.filter((item) => item.id === message.data?.metadata.data.id)?.length > 0) {
+						return;
+					}
 					if (action === 'onCreate') {
-						console.log('message>?:::::::', JSON.stringify(message), action);
+						console.log(
+							'message>?:::::::',
+							messages,
+							action,
+							'filter',
+							message.data?.metadata.data!
+						);
 						//dispatch({notifyOnNewMessageSent(message.data)});
 						if (message.data?.type == 'image' && message.data?.editedAt) {
 							setMessages(prevMessages => [
@@ -356,7 +377,7 @@ const ChatViewComponent: React.FC<Props> = props => {
 							message.data?.type !== 'image' &&
 							message.data?.editedAt
 						) {
-							setMessages(prevMessages => [
+							setMessages(prevMessages =>  [
 								message.data?.metadata.data!,
 								...prevMessages
 							]);
@@ -365,14 +386,14 @@ const ChatViewComponent: React.FC<Props> = props => {
 					}
 				}
 			}),
-		[channelId]
+		[channelId, messages]
 	);
 
 	const addMessage = (message: MessageType.Any) => {
 		// setMessages([message, ...messages]);
 	};
 
-	const handleImageSelection = () => {
+	const handleImageSelection = async () => {
 		launchImageLibrary(
 			{
 				includeBase64: false,
@@ -381,6 +402,7 @@ const ChatViewComponent: React.FC<Props> = props => {
 				quality: 1
 			},
 			({assets}) => {
+				console.log('response???', assets);
 				const response = assets?.[0];
 
 				if (response) {
@@ -399,19 +421,9 @@ const ChatViewComponent: React.FC<Props> = props => {
 					//setMessages(imageMessage);
 					let formData = new FormData();
 					//data.append('files', `data:image/*;base64,${response.base64}`);
-					formData.append('files', {
-						name: response.fileName,
-						type: response.type,
-						uri:
-							Platform.OS === 'ios'
-							 ? response.uri.replace('file://', '')
-								: response.uri,
-						fileSize: response.fileSize,
-						height: response.height,
-						width: response.width
-					});
+					formData.append('files', response);
 
-					console.log('??????', formData.getParts('files'));
+					// console.log('??????', formData.getParts('files'));
 					const query = createQuery(createImage, formData);
 
 					runQuery(query, result => {
@@ -589,6 +601,49 @@ const ChatViewComponent: React.FC<Props> = props => {
 		return false;
 	};
 
+	const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+		if (!event.target.files) {
+			return;
+		}
+
+		const data = new FormData();
+		data.append('files', event.target.files[0]);
+		console.log('files : ', event.target.files[0]);
+		// const query = createQuery(createImage, data);
+		const query = createQuery(createImage, data);
+
+		runQuery(query, result => {
+			console.log('image Uploaded????', result);
+			setImageUploadStatus(result.loading);
+			if (result.data && result.data.length && !result.loading) {
+				//setImageUploadData(result.data);
+				const imageMessage: MessageType.Image = {
+					author: user,
+					createdAt: Date.now(),
+					id: uuidv4(),
+					//text: message.text,
+					type: 'image',
+					uri: result.data[0].fileUrl + '?size=large'
+				};
+				const query8 = createQuery(createMessage, {
+					channelId: channelId,
+					type: 'image', // image, file, video, audio
+					// @ts-ignore
+					fileId: result.data[0].fileId,
+					metadata: {
+						data: imageMessage
+					}
+				});
+
+				runQuery(query8, ({data: message, ...options}) =>
+					console.log('IMage uplod api called???', message, options)
+				);
+			}
+		});
+
+		// runQuery(query, (result) => console.log("===result=====", result));
+	};
+
 	return (
 		<View
 			style={[
@@ -599,6 +654,7 @@ const ChatViewComponent: React.FC<Props> = props => {
 				{...style}
 			]}>
 			{isTitleShown && <Text style={styles.chatTextStyle}>Chat</Text>}
+			{/* <input type="file" name="file" onChange={changeHandler} />; */}
 			{chatType === 'amity' && (
 				<Chat
 					enableAnimation
@@ -612,21 +668,42 @@ const ChatViewComponent: React.FC<Props> = props => {
 					// showTimeHeader={false}
 					//timeFormat="DD/MM/YYYY"
 					showUserAvatars
-					renderImageMessage={message => (
-						<View
-							style={{
-								backgroundColor: defaultTheme.backGroundColor,
-								padding: 4
-							}}>
-							<ImageIndicator
-								style={styles.imageStyle}
-								source={{uri: message.uri}}
-							/>
-							<Text style={styles.messageTimeStyle}>
-								{moment(message.createdAt).format('hh:mm A')}
-							</Text>
-						</View>
-					)}
+					renderImageMessage={message =>
+						Platform.OS === 'web' ? (
+							<TouchableOpacity
+								onPress={() =>
+									imageURL === message.uri
+										? setIsShowImagePreview(true)
+										: setImageURL(message.uri)
+								}
+								style={{
+									backgroundColor: defaultTheme.backGroundColor,
+									padding: 4
+								}}>
+								<ImageIndicator
+									style={styles.imageStyle}
+									source={{uri: message.uri}}
+								/>
+								<Text style={styles.messageTimeStyle}>
+									{moment(message.createdAt).format('hh:mm A')}
+								</Text>
+							</TouchableOpacity>
+						) : (
+							<View
+								style={{
+									backgroundColor: defaultTheme.backGroundColor,
+									padding: 4
+								}}>
+								<ImageIndicator
+									style={styles.imageStyle}
+									source={{uri: message.uri}}
+								/>
+								<Text style={styles.messageTimeStyle}>
+									{moment(message.createdAt).format('hh:mm A')}
+								</Text>
+							</View>
+						)
+					}
 					// emptyState={() => (
 					//   <View
 					//     style={{height: height, width: '100%'}}
@@ -659,20 +736,20 @@ const ChatViewComponent: React.FC<Props> = props => {
 							{userInfo?.user?._id &&
 								message.author.id !== userInfo?.user?._id &&
 								!friend_id && (
-								<Text
-									style={{
-										//marginTop: 2,
-										//marginBottom: -12,
-										marginLeft: 4,
-										fontSize: 12,
-										fontWeight: '500',
-										lineHeight: 24,
-										color: colors.white,
+									<Text
+										style={{
+											//marginTop: 2,
+											//marginBottom: -12,
+											marginLeft: 4,
+											fontSize: 12,
+											fontWeight: '500',
+											lineHeight: 24,
+											color: colors.white,
 											fontFamily: fonts.type.Inter_Regular
-									}}>
-									{'@' + message.author.firstName}
-								</Text>
-							)}
+										}}>
+										{'@' + message.author.firstName}
+									</Text>
+								)}
 							<LinearGradient
 								colors={
 									message.author.id === userInfo?.user?._id
@@ -758,7 +835,7 @@ const ChatViewComponent: React.FC<Props> = props => {
 							secondary: 'transparent'
 						}
 					}}
-					//onMessagePress={message => console.log(message)}
+					// onMessagePress={message => console.log(message)}
 					//onEndReached={handleLoadMore}
 					flatListProps={{
 						inverted: true,
@@ -868,7 +945,6 @@ const ChatViewComponent: React.FC<Props> = props => {
 					)}
 				</>
 			)}
-
 			<View>
 				<Modal visible={isEmojiModalVisible} transparent={true}>
 					<EmojiPicker
@@ -907,6 +983,13 @@ const ChatViewComponent: React.FC<Props> = props => {
 					/>
 				</Modal>
 			</View>
+			<FullScreenImageComponent
+				isVisible={isShowImagePreview}
+				url={imageURL}
+				onClose={() => {
+					setIsShowImagePreview(false);
+				}}
+			/>
 		</View>
 	);
 };

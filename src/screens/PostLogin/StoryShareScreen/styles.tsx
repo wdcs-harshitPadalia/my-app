@@ -17,10 +17,14 @@ export const styles = StyleSheet.create({
 		justifyContent: 'center'
 	},
 	bottomButtonContainer: {
-		flexDirection: 'row',
-		marginHorizontal: verticalScale(20),
+		width: '100%',
 		position: 'absolute',
 		bottom: verticalScale(16)
+	},
+	bottomButtonView: {
+		flex: 1,
+		flexDirection: 'row',
+		marginHorizontal: verticalScale(20)
 	},
 	cancleButton: {
 		flex: 1,

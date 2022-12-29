@@ -4,7 +4,8 @@ import {
 	TextInputProps,
 	TouchableOpacity,
 	Text,
-	View
+	View,
+	Platform
 } from 'react-native';
 import {Fonts, moderateScale, verticalScale} from '../theme';
 import ExpoFastImage from 'expo-fast-image';
@@ -334,7 +335,17 @@ const styles = StyleSheet.create({
 	},
 	leftButtonStyle: {
 		// height: verticalScale(30),
-		flex: 0.5
+		...Platform.select({
+			ios: {
+				flex: 0.5
+			},
+			android: {
+				flex: 0.5
+			},
+			web: {
+				flex: 1
+			}
+		})
 	},
 	rightButtonStyle: {
 		// height: verticalScale(30),

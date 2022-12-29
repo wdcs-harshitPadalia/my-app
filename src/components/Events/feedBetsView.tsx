@@ -1,4 +1,4 @@
-import {Alert, StyleSheet, Text, View} from 'react-native';
+import {Alert, Platform, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import moment from 'moment';
 import fonts from '../../theme/fonts';
@@ -590,7 +590,12 @@ const styles = StyleSheet.create({
 	bottomButtonStyle: {
 		position: 'absolute',
 		bottom: 10,
-		alignSelf: 'center'
+		alignSelf: 'center',
+		...Platform.select({
+			web: {
+				width: '100%'
+			}
+		})
 	},
 	bottomButtonGradientStyle: {
 		width: '100%',

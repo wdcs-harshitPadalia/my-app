@@ -893,3 +893,15 @@ export const getRecommendedBets = async (data: any) => {
 	});
 	return response;
 };
+
+export const getLiveStreamingData = async (data: any) => {
+	const response = await useAxios({
+		method: Api.POST,
+		url: ApiBaseUrl + ApiConstants.getLiveStreamingFeeds,
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		data: data
+	});
+	return response;
+};

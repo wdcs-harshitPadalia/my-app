@@ -759,9 +759,7 @@ const DiscoverScreen: React.FC<any> = props => {
 	const AfterSearchClickComponent = () => {
 		return (
 			<View style={styles.viewSubContain}>
-				<FlingGestureComponent
-					onSwipeLeft={() => onSwipeHandle(Directions.LEFT, true)}
-					onSwipeRight={() => onSwipeHandle(Directions.RIGHT, true)}>
+				
 					<>
 						{isSelectedIndex === 0 && (
 							<KeyboardAwareScrollView
@@ -1019,7 +1017,6 @@ const DiscoverScreen: React.FC<any> = props => {
 							</View>
 						)}
 					</>
-				</FlingGestureComponent>
 			</View>
 		);
 	};
@@ -1028,13 +1025,13 @@ const DiscoverScreen: React.FC<any> = props => {
 		<View style={styles.container}>
 			{!searchClicked && (
 				<>
-					<FlingGestureComponent
-						onSwipeLeft={() => onSwipeHandle(Directions.LEFT, true)}
-						onSwipeRight={() => onSwipeHandle(Directions.RIGHT, true)}>
+					
 						{beforeClickTopTabIndex === 0 ? (
-							<View style={{alignItems: 'center'}}>
+							<View style={{alignItems: 'center', flex:1}}>
 								<FlatList
 									data={discoverMatchData}
+									showsVerticalScrollIndicator = {false}
+									scrollsToTop = {true}
 									renderItem={renderForYouItem}
 									pagingEnabled
 									keyboardShouldPersistTaps={'handled'}
@@ -1103,9 +1100,23 @@ const DiscoverScreen: React.FC<any> = props => {
 									shouldShowMessageHistory={true}
 									backGroundColor={'black'}
 									style={{
-										paddingBottom: hasNotch
+										...Platform.select({
+											ios: {
+												paddingBottom: hasNotch
 											? verticalScale(200)
 											: verticalScale(250)
+											},
+											android: {
+												paddingBottom: hasNotch
+											? verticalScale(200)
+											: verticalScale(250)
+											},
+											web: {
+												paddingBottom: hasNotch
+											? verticalScale(200)
+											: verticalScale(180)
+											}
+										})
 									}}
 									channelId={'1'}
 									allowImageUpload={false}
@@ -1149,7 +1160,6 @@ const DiscoverScreen: React.FC<any> = props => {
 								/>
 							</TouchableOpacity>
 						</View>
-					</FlingGestureComponent>
 				</>
 			)}
 

@@ -111,6 +111,12 @@ const Strings = {
 	bet_invitation: 'betting invitations',
 	new_Followers: 'new followers',
 	interactions: 'Interactions',
+	messages: 'Messages',
+	events_bets_suggestions: 'events/bets suggestions',
+	your_friends_bets: 'your friends bets',
+	events_you_might_like: 'events you might like',
+	Other: 'Other',
+	People_you_may_know: 'People you may know',
 
 	//live streaming
 	STREAMING: 'STREAMING',
@@ -370,7 +376,7 @@ const Strings = {
 	url_desc: 'paste your link below:',
 	url: 'url',
 	add_more: 'Add More',
-	betting_on_this_event: ' betting on this event',
+	betting_on_this_event: 'betting on this event',
 	events: 'Events',
 	support: 'Support',
 	create_new_ticket: 'Create New Ticket',
@@ -676,6 +682,39 @@ const Strings = {
 	us_dollar: 'US$',
 	str_prefix_p2p_bets: 'P2P BETS',
 	str_see_all: 'See all',
-	swipe_up_for_more_bets:'Swipe up for more bets'
+	swipe_up_for_more_bets: 'Swipe up for more bets',
+	app_sharing_text:
+		'😱 %s is sharing defibet.house with you\n\nClick on the link to download the app and bet on any topic you can imagine 🤯 🚀 👇\n\n',
+	jury_banned:
+		"You have been banned as a Jury so you won't be able to perform any activity related to Jury.",
+	watching: 'watching',
+	//Notification Type
+	notification_types: {
+		match_trending: 'MATCH_TRENDING',
+		live_streaming_trending: 'LIVE_STREAMING_TRENDING',
+		bet_replicate_trending: 'BET_REPLICATED_TRENDING',
+		most_followers: 'MOST_FOLLOWERS',
+		trending_category: 'CATEGORY_TRENDING',
+		trending_sub_category: 'SUB_CATEGORY_TRENDING',
+		numerious_bets_created: 'NUMERIOUS_BETS_CREATED'
+	},
+	push_notification_types: {
+		event_Suggestion: 'EVENT_BET_SUGGESTION',
+		join_friend_bet: 'JOIN_FRIEND_BET',
+		user_suggestion: 'USER_SUGGESTION'
+	},
+	create_bet_and_win: 'CREATE BET & WIN',
+	see_user_profile: 'SEE USER PROFILE',
+	participate_and_win: 'PARTICIPATE & WIN ',
+	event_sharing_text:
+		"Find out about this event and bet on it before it's over! 🤑 😎  \n\n📅 ",
+	bet_sharing_text:
+		'%s has created this bet! 🤩 \nClick on this link to participate 💪 🤑 \n\n📅 ',
+	join_deadline: 'JOINING DEADLINE:',
+
+	//video
+	see_your_video_content: 'see your video content',
+	who_can_see_your_videos: 'Who can see your Videos?',
+	video_content: 'Video content'
 };
 export default Strings;

@@ -90,6 +90,7 @@ const StoryShareScreen = () => {
 					</View>
 
 					<View style={styles.bottomButtonContainer}>
+						<View style={styles.bottomButtonView}>
 						<ButtonGradient
 							style={styles.cancleButton}
 							buttonText={Strings.cancel}
@@ -108,6 +109,7 @@ const StoryShareScreen = () => {
 							angle={gradientColorAngle}
 							onPress={onPressHandleShareStory}
 						/>
+						</View>
 					</View>
 				</ImageBackground>
 			</View>

@@ -219,7 +219,7 @@ export const createBetDetailsPreviewShareUrl = (
     betCreationType;
 
   const shareUrlString =
-    ApiBaseUrl +
+    AppSchema +
     "bet/share/" +
     id +
     "?deeplinkurl=" +

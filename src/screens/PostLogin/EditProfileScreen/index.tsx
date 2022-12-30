@@ -286,7 +286,7 @@ const EditProfileScreen: React.FC<any> = props => {
 		formData.append('balanceVisible', whoCanSeeYourBalance.toLowerCase());
 		formData.append('betsVisible', whoCanSeeBets.toLowerCase());
 		formData.append('messagesVisible', sendDirectMessage.toLowerCase());
-		formData.append('videosVisible', whoCanSeeVideos.toLowerCase());
+		formData.append('videosVisible', whoCanSeeVideos?.toLowerCase());
 		if (isCategoryId) {
 			formData.append('category_id', isCategoryId);
 		}

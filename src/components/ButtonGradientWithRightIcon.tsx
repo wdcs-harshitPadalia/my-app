@@ -9,6 +9,7 @@ import {
   TextInput,
   TextStyle,
   ViewStyle,
+  Platform,
 } from "react-native";
 import { Fonts, horizontalScale, moderateScale, verticalScale } from "../theme";
 import { LinearGradient } from "expo-linear-gradient";
@@ -107,11 +108,13 @@ style={[
             onEndEditing={onEndEditing}
           />
           <View style={styles.imageContainer}>
+            {rightIconPath !== undefined ? (
             <ExpoFastImage
               resizeMode={"contain"}
               source={{ uri: rightIconPath }}
               style={styles.rightImg}
             />
+            ) : null}
             <Text style={[styles.currencyTextStyle, short_nameTextStyle]}>
               {short_name}
             </Text>
@@ -181,11 +184,13 @@ style={[
               onEndEditing={onEndEditing}
             />
             <View style={styles.imageContainer}>
+              {rightIconPath !== undefined ? (
               <ExpoFastImage
                 resizeMode={"contain"}
                 source={{ uri: rightIconPath }}
                 style={styles.rightImg}
               />
+            ) : null}
               <Text style={[styles.currencyTextStyle, short_nameTextStyle]}>
                 {short_name}
               </Text>
@@ -231,6 +236,11 @@ const styles = StyleSheet.create({
     marginVertical: verticalScale(10),
     height: "100%",
     paddingVertical: 0,
+    ...Platform.select({
+			web: {
+        width: '50%'
+			}
+		})
   },
   circleGradient: {
     height: "100%",
@@ -243,7 +253,7 @@ const styles = StyleSheet.create({
     fontSize: moderateScale(12),
     fontFamily: Fonts.type.Inter_Medium,
     textTransform: "uppercase",
-    textAlign: "left",
+    textAlign: 'right',
     color: colors.white,
   },
   leftImg: {

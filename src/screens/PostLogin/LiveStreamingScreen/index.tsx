@@ -221,9 +221,7 @@ const LiveStreamingScreen: React.FC<any> = props => {
 							style={{
 								flex: 1
 							}}>
-							<FlingGestureComponent
-								onSwipeLeft={() => onSwipeChange(Directions.LEFT)}
-								onSwipeRight={() => onSwipeChange(Directions.RIGHT)}>
+								
 								<LiveStreamingFlatList
 									data={feedInfo?.matchList}
 									onWatchButtonClicked={item => {
@@ -276,7 +274,6 @@ const LiveStreamingScreen: React.FC<any> = props => {
 									}}
 									isLoading={isLoading}
 								/>
-							</FlingGestureComponent>
 						</View>
 					)}
 

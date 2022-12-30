@@ -114,7 +114,8 @@ const styles = StyleSheet.create({
 		},
 		shadowOpacity: 0.6,
 		elevation: 3,
-		shadowRadius: 8
+		shadowRadius: 8,
+		borderRadius: 34,
 	},
 	circleGradient: {
 		width: 68,

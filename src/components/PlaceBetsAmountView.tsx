@@ -88,7 +88,8 @@ const PlaceBetsAmountView: React.FC<Props> = props => {
 				<TouchableOpacity
 					onPress={() => {
 						onPressNeedHelp && onPressNeedHelp('betInfo');
-					}}>
+					}}
+					hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
 					<ExpoFastImage
 						resizeMode={'contain'}
 						source={icons.about}
@@ -120,7 +121,8 @@ const PlaceBetsAmountView: React.FC<Props> = props => {
 				<TouchableOpacity
 					onPress={() => {
 						onPressNeedHelp && onPressNeedHelp('odds');
-					}}>
+					}}
+					hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
 					<ExpoFastImage
 						resizeMode={'contain'}
 						source={icons.about}

@@ -5,7 +5,8 @@ import {defaultTheme} from '../../../theme/defaultTheme';
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: defaultTheme.backGroundColor
+		backgroundColor: defaultTheme.backGroundColor,
+		paddingBottom: verticalScale(28)
 	},
 	marginInput: {
 		marginVertical: verticalScale(10),

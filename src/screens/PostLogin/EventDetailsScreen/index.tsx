@@ -40,6 +40,7 @@ export default function EventDetailsScreen() {
 	const [currentPage, setCurrentPage] = useState(0);
 	const [totalFollowUser, setTotalFollowUser] = useState(-1);
 	const [followUserData, setFollowUserData] = useState([]);
+	const [isFromBackButton, setIsFromBackButton] = useState(false);
 
 	// const MemorizedFeedBetsView = React.useMemo(
 	//   () => <FeedBetsView item={feedObject} />,
@@ -72,7 +73,7 @@ export default function EventDetailsScreen() {
 				dispatch(updateApiLoader({apiLoader: false}));
 				console.log(err);
 			});
-	}, [matchId]);
+	}, [matchId, isFromBackButton]);
 
 	const handleShareStory = (isShareFrom, tempFeedObject) => {
 		seIsMenuOpen(false);
@@ -151,6 +152,7 @@ export default function EventDetailsScreen() {
 			<View style={styles.container}>
 				<HeaderComponent
 					onLeftMenuPress={() => {
+						setIsFromBackButton(true);
 						navigation.goBack();
 					}}
 					name={Strings.event_details}

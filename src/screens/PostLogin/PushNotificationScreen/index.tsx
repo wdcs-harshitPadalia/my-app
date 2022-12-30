@@ -50,9 +50,47 @@ const PushNotificationScreen = () => {
 					keyValue: 'new_followers'
 				}
 			]
+		},
+		{
+			sectionTitle: Strings.messages,
+			data: [
+				{
+					title: Strings.directMessages,
+					toggleValue:
+						userProfileInfo?.user?.push_notifications?.direct_messages,
+					keyValue: 'direct_messages'
+				}
+			]
+		},
+		{
+			sectionTitle: Strings.events_bets_suggestions,
+			data: [
+				{
+					title: Strings.your_friends_bets,
+					toggleValue:
+						userProfileInfo?.user?.push_notifications?.your_friends_bet,
+					keyValue: 'your_friends_bet'
+				},
+				{
+					title: Strings.events_you_might_like,
+					toggleValue:
+						userProfileInfo?.user?.push_notifications?.events_you_like,
+					keyValue: 'events_you_like'
+				}
+			]
+		},
+		{
+			sectionTitle: Strings.Other,
+			data: [
+				{
+					title: Strings.People_you_may_know,
+					toggleValue:
+						userProfileInfo?.user?.push_notifications?.people_you_know,
+					keyValue: 'people_you_know'
+				}
+			]
 		}
 	];
-
 	const handleGoBack = () => {
 		if (keyCount !== 0) {
 			const responseData = {
@@ -75,7 +113,7 @@ const PushNotificationScreen = () => {
 	}, []);
 
 	return (
-		<SafeAreaView style={styles.container}>
+		<SafeAreaView style={styles.container} edges={['bottom', 'top']}>
 			<View style={styles.container}>
 				<HeaderComponent
 					onLeftMenuPress={() => {

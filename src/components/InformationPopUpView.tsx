@@ -45,7 +45,9 @@ const InformationPopUpView: React.FC<Props> = props => {
 							style={styles.helpImg}
 							tintColor={colors.placeholderColor}
 						/>
-						<TouchableOpacity onPress={onButtonPress}>
+						<TouchableOpacity
+							onPress={onButtonPress}
+							hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
 							<ExpoFastImage
 								resizeMode={'contain'}
 								source={icons.close}
@@ -79,7 +81,8 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		paddingBottom: verticalScale(16),
 		paddingHorizontal: verticalScale(16),
-		height: '40%'
+		height: '40%',
+		width: '100%'
 	},
 	titleStyle: {
 		color: colors.white,

@@ -26,7 +26,15 @@ export interface UserState {
 				bet_replicate: boolean;
 				bet_invitation: boolean;
 				new_followers: boolean;
+				direct_messages: boolean;
+				events_you_like: boolean;
+				people_you_know: boolean;
+				your_friends_bet: boolean;
 			};
+			videosVisible: string;
+			balanceVisible: string;
+			betsVisible: string;
+			messagesVisible: string;
 		};
 		token: string;
 		isNewUser: boolean;
@@ -62,9 +70,17 @@ const initialState: UserState = {
 				bet_join: false,
 				bet_replicate: false,
 				bet_invitation: false,
-				new_followers: false
+				new_followers: false,
+				direct_messages: false,
+				events_you_like: false,
+				people_you_know: false,
+				your_friends_bet: false
 			}
 		},
+		videosVisible: '',
+		balanceVisible: '',
+		betsVisible: '',
+		messagesVisible: '',
 		token: '',
 		isNewUser: false,
 		isAppLaunched: true,

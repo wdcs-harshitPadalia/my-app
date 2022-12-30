@@ -54,6 +54,7 @@ export default function CustomBetDetailsScreen() {
 	const [currentPage, setCurrentPage] = useState(0);
 	const [totalFollowUser, setTotalFollowUser] = useState(-1);
 	const [followUserData, setFollowUserData] = useState([]);
+	const [isFromBackButton, setIsFromBackButton] = useState(false);
 
 	const userInfo = useSelector((state: RootState) => {
 		return state.userInfo.data;
@@ -101,7 +102,7 @@ export default function CustomBetDetailsScreen() {
 		);
 		console.log('====================================');
 		getUserBetDetailsData();
-	}, [betId]);
+	}, [betId, isFromBackButton]);
 
 	const handleShareStory = () => {
 		setIsShowShareBottomSheet(false);
@@ -288,6 +289,7 @@ export default function CustomBetDetailsScreen() {
 			<View style={styles.container}>
 				<HeaderComponent
 					onLeftMenuPress={() => {
+						setIsFromBackButton(true);
 						navigation.goBack();
 					}}
 					name={Strings.bet_details}

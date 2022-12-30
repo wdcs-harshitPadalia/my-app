@@ -13,7 +13,7 @@ import icons from '../../../assets/icon';
 import InputComponent from '../../../components/InputComponent';
 import Strings from '../../../constants/strings';
 import styles from './style';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+// import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import {Fonts, horizontalScale, verticalScale} from '../../../theme';
 import HeaderComponent from '../../../components/HeaderComponent';
 import SwichView from '../../../components/SwichView';
@@ -41,6 +41,7 @@ import SelectAvatarComponent from '../../../components/SelectAvatarComponent';
 import {moderateFontScale} from '../../../theme/metrics';
 
 const EditProfileScreen: React.FC<any> = props => {
+	const myRef = React.useRef();
 	const navigation = useNavigation();
 	const dispatch = useDispatch();
 
@@ -96,6 +97,9 @@ const EditProfileScreen: React.FC<any> = props => {
 	const [showAvatarSelectSheet, setShowAvatarSelectSheet] = useState(false);
 	const [avatarDataArray, setAvatarDataArray] = useState([]);
 	const [isAvatarSelect, setIsAvatarSelect] = useState(false);
+	const [isBase64, setIsBase64] = useState(false);
+	const [profileImageBase64, setProfileImageBase64] = useState<String>('');
+
 	const [isNotificationEnabled, setIsNotificationEnabled] = useState(
 		userInfo?.user?.push_notifications?.pause_all_notifications
 	);
@@ -254,25 +258,32 @@ const EditProfileScreen: React.FC<any> = props => {
 				return;
 			}
 
-			const result = await ImagePicker.launchImageLibraryAsync();
+			if (Platform.OS === 'web') {
+				myRef.current.click(function () {
+					changeHandler();
+				});
+			} else {
+				const result = await ImagePicker.launchImageLibraryAsync();
 
-			// Explore the result
-			console.log(result);
-			setModalIsSuccess(false);
+				// Explore the result
+				console.log(result);
+				setModalIsSuccess(false);
 
-			if (!result.canceled) {
-				console.log('source', result.assets[0]);
-				setProfilePic(result.assets[0]);
-				setIsAvatarSelect(false);
+				if (!result.canceled) {
+					console.log('source', result.assets[0]);
+					setProfilePic(result.assets[0]);
+					setIsAvatarSelect(false);
+					setIsBase64(false);
+				}
 			}
 		}
 	};
 
-	const createFormData = photo => {
+	const createFormData = async photo => {
 		const formData = new FormData();
 		formData.append('displayName', displayName);
 		formData.append('biography', bioGraphy);
-		//
+
 		// formData.append('userName', userName);
 		// formData.append('website', webSite);
 		formData.append('visible', isProfileVisible);
@@ -298,19 +309,25 @@ const EditProfileScreen: React.FC<any> = props => {
 		}
 
 		formData.append('isAvatar', isAvatarSelect);
+		formData.append('isBase64', isBase64);
 
 		if (profilePic) {
 			if (isAvatarSelect) {
 				formData.append('picture', profilePic);
 			} else {
-				formData.append('picture', {
-					name: photo.fileName,
-					type: photo.type,
-					uri:
-						Platform.OS === 'android'
-							? photo.uri
-							: photo.uri.replace('file://', '')
-				});
+				formData.append(
+					'picture',
+					Platform.OS === 'web'
+						? photo
+						: {
+								name: photo.fileName,
+								type: photo.type,
+								uri:
+									Platform.OS === 'android'
+										? photo.uri
+										: photo.uri.replace('file://', '')
+						  }
+				);
 			}
 		}
 		const settingsKeys = {
@@ -356,14 +373,20 @@ const EditProfileScreen: React.FC<any> = props => {
 		return formData;
 	};
 
-	const handleUploadPhoto = () => {
+	const handleUploadPhoto = async () => {
 		dispatch(updateApiLoader({apiLoader: true}));
 
-		console.log('createFormData(profilePic) >>>> ', createFormData(profilePic));
-
+		// console.log(
+		//   "createFormData(profilePic) >>>> ",
+		//   "" + JSON.stringify(createFormData(profilePic))
+		// );
+		// return;
 		fetch(ApiBaseUrl + ApiConstants.EditProfile, {
 			method: Api.PUT,
-			body: createFormData(profilePic),
+			body:
+				Platform.OS === 'web'
+					? await createFormData(profilePic)
+					: createFormData(profilePic),
 			headers: {
 				Authorization: 'Bearer ' + userInfo.token
 			}
@@ -388,9 +411,37 @@ const EditProfileScreen: React.FC<any> = props => {
 			setShowAvatarSelectSheet(true);
 		}, 500);
 	};
+
 	const handleOnPressPushNotification = () => {
 		navigation.navigate(ScreenNames.PushNotificationScreen, {});
 	};
+
+	const changeHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
+		if (!event.target.files) {
+			return;
+		}
+
+		const filestr = event.target.files[0];
+		const imageStrUri = await fileToBase64(filestr);
+
+		// console.log("filestr ::", filestr);
+		// console.log("imageStrUri ::", imageStrUri);
+
+		setModalIsSuccess(false);
+
+		setProfilePic(filestr);
+		setProfileImageBase64(imageStrUri);
+		setIsBase64(true);
+		setIsAvatarSelect(false);
+	};
+
+	const fileToBase64 = async file =>
+		new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.readAsDataURL(file);
+			reader.onload = () => resolve(reader.result);
+			reader.onerror = e => reject(e);
+		});
 
 	return (
 		<SafeAreaView style={styles.container}>
@@ -425,7 +476,11 @@ const EditProfileScreen: React.FC<any> = props => {
 								resizeMode="cover"
 								source={
 									profilePic
-										? {uri: isAvatarSelect ? profilePic : profilePic.uri}
+										? {
+												uri: isAvatarSelect
+													? profilePic
+													: profilePic.uri ?? profileImageBase64
+										  }
 										: {uri: userInfo?.user?.picture}
 								}
 								style={styles.imgIconStyle}
@@ -437,6 +492,15 @@ const EditProfileScreen: React.FC<any> = props => {
 								}}
 							/>
 						</TouchableOpacity>
+						<View style={{opacity: 0}}>
+							<input
+								ref={myRef}
+								type="file"
+								name="file"
+								accept="image/png, image/jpeg"
+								onChange={changeHandler}
+							/>
+						</View>
 					</View>
 					<View style={styles.viewContain}>
 						<Text style={styles.subTitleStyle}>{Strings.editProfile}</Text>

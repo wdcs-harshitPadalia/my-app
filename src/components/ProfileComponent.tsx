@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.8,
     elevation: 3,
     shadowRadius: 10,
-	borderRadius: 55,
+    borderRadius: 55,
   },
 });
 

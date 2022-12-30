@@ -4,7 +4,8 @@ import {
 	StyleSheet,
 	TextInputProps,
 	Text,
-	TouchableOpacity
+	TouchableOpacity,
+	Platform
 } from 'react-native';
 import ExpoFastImage from 'expo-fast-image';
 import icons from '../assets/icon';
@@ -64,7 +65,14 @@ const BetsEndDetailsView: React.FC<Props> = props => {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1
+		...Platform.select({
+			ios: {
+			  flex: 1,
+			},
+			android: {
+			  flex: 1,
+			},
+		  }),
 	},
 	viewDetails: {
 		backgroundColor: defaultTheme.secondaryBackGroundColor,

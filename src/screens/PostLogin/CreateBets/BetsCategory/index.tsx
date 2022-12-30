@@ -1405,78 +1405,80 @@ const BetsCategoryScreen: React.FC<any> = () => {
 							</View>
 						) : null}
 
-						{isSubCategoryId !== '' && !isCustomCategory && (
-							<>
-								<InputComponent
-									placeholder={Strings.searchLeague.toUpperCase()}
-									onLeftIconPath={icons.search}
-									onChangeText={(text: string) => {
-										setSearchLeagueText(text);
-									}}
-									textValue={searchLeagueText}
-								/>
-								<LeagueView
-									onPress={() => {
-										setIsSelectedLeagueType(1);
-										seIsProgress('20%');
-										seIsTitle(Strings.time_to_create_your_market);
-										setIsSelectResults(0);
-										setStep(2);
-										setQuestion('');
-										setIsBackButtonDisable(true);
-										setIsSelectMainMarket(undefined);
-										setIsSelectSubMainMarket(undefined);
-									}}
-									leftIcon={icons.plusGradient}
-									title={Strings.createYour_Own.toUpperCase()}
-									isGradient={true}
-								/>
-								<FlatList
-									style={{
-										marginTop: 5,
-										marginBottom: 5
-										// flex: 1,
-									}}
-									data={leagueData}
-									//showsVerticalScrollIndicator={false}
-									renderItem={renderLeagueItem}
-									//bounces={false}
-									// onEndReachedThreshold={0.1}
-									// onEndReached={() => {
-									//   if (totalLeagues !== leagueData.length) {
-									//     pageLeague = pageLeague + 1;
-									//     getLeagueData();
-									//   }
-									// }}
-									onMomentumScrollEnd={e => {
-										console.log(
-											'onMomentumScrollEnd :: ',
-											e.nativeEvent.contentOffset.y
-										);
-										if (
-											totalLeagues !== leagueData.length &&
-											e.nativeEvent.contentOffset.y > 0
-										) {
-											pageLeague = pageLeague + 1;
-											getLeagueData();
+						{isSubCategoryId !== '' &&
+							isSubCategoryId !== undefined &&
+							!isCustomCategory && (
+								<>
+									<InputComponent
+										placeholder={Strings.searchLeague.toUpperCase()}
+										onLeftIconPath={icons.search}
+										onChangeText={(text: string) => {
+											setSearchLeagueText(text);
+										}}
+										textValue={searchLeagueText}
+									/>
+									<LeagueView
+										onPress={() => {
+											setIsSelectedLeagueType(1);
+											seIsProgress('20%');
+											seIsTitle(Strings.time_to_create_your_market);
+											setIsSelectResults(0);
+											setStep(2);
+											setQuestion('');
+											setIsBackButtonDisable(true);
+											setIsSelectMainMarket(undefined);
+											setIsSelectSubMainMarket(undefined);
+										}}
+										leftIcon={icons.plusGradient}
+										title={Strings.createYour_Own.toUpperCase()}
+										isGradient={true}
+									/>
+									<FlatList
+										style={{
+											marginTop: 5,
+											marginBottom: 5
+											// flex: 1,
+										}}
+										data={leagueData}
+										//showsVerticalScrollIndicator={false}
+										renderItem={renderLeagueItem}
+										//bounces={false}
+										// onEndReachedThreshold={0.1}
+										// onEndReached={() => {
+										//   if (totalLeagues !== leagueData.length) {
+										//     pageLeague = pageLeague + 1;
+										//     getLeagueData();
+										//   }
+										// }}
+										onMomentumScrollEnd={e => {
+											console.log(
+												'onMomentumScrollEnd :: ',
+												e.nativeEvent.contentOffset.y
+											);
+											if (
+												totalLeagues !== leagueData.length &&
+												e.nativeEvent.contentOffset.y > 0
+											) {
+												pageLeague = pageLeague + 1;
+												getLeagueData();
+											}
+										}}
+										indicatorStyle={'white'}
+										keyExtractor={(item, index) => item._id + index}
+										ListEmptyComponent={() =>
+											isNoLeagueData && (
+												<Text
+													style={[
+														styles.noDataStyle,
+														{marginTop: verticalScale(60)}
+													]}>
+													{Strings.no_Data_Found}
+												</Text>
+											)
 										}
-									}}
-									indicatorStyle={'white'}
-									keyExtractor={(item, index) => item._id + index}
-									ListEmptyComponent={() =>
-										isNoLeagueData && (
-											<Text
-												style={[
-													styles.noDataStyle,
-													{marginTop: verticalScale(60)}
-												]}>
-												{Strings.no_Data_Found}
-											</Text>
-										)
-									}
-								/>
-							</>
-						)}
+									/>
+								</>
+							)}
 					</>
 				);
 			case 2:
@@ -2452,6 +2454,10 @@ const BetsCategoryScreen: React.FC<any> = () => {
 					navigation.goBack();
 				}
 
+				if (params?.isfromTrendingNotification) {
+					navigation.goBack();
+				}
+
 				setSearchCategoryText('');
 				setSearchSubCategoryText('');
 				// setSearchLeagueText('');
@@ -2468,6 +2474,12 @@ const BetsCategoryScreen: React.FC<any> = () => {
 
 				break;
 			case 2:
+				if (
+					params?.isfromTrendingNotification &&
+					params?.matchData?.categories?.isCustom
+				) {
+					navigation.goBack();
+				}
 				if (params?.isLive) {
 					navigation.goBack();
 				} else if (isSelectedLeagueType === 2) {

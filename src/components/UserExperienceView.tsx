@@ -131,7 +131,7 @@ const UserExperienceView: React.FC<Props> = (props) => {
 
       <View style={styles.betView}>
         <BetsProgress
-          betsLost={userLevelMaxBetValue}
+          betsLost={userLevelMaxBetValue + 1}
           betsPending={currentFees}
           betsWon={totalBetsCount}
           progressTitle={progressTitle}

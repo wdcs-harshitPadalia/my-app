@@ -297,6 +297,7 @@ const EditProfileScreen: React.FC<any> = props => {
 		formData.append('balanceVisible', whoCanSeeYourBalance.toLowerCase());
 		formData.append('betsVisible', whoCanSeeBets.toLowerCase());
 		formData.append('messagesVisible', sendDirectMessage.toLowerCase());
+		formData.append('videosVisible', whoCanSeeVideos?.toLowerCase());
 		if (isCategoryId) {
 			formData.append('category_id', isCategoryId);
 		}
@@ -353,7 +354,22 @@ const EditProfileScreen: React.FC<any> = props => {
 			'push_notifications[new_followers]',
 			userInfo?.user?.push_notifications?.new_followers
 		);
-
+		formData.append(
+			'push_notifications[direct_messages]',
+			userInfo?.user?.push_notifications?.direct_messages
+		);
+		formData.append(
+			'push_notifications[events_you_like]',
+			userInfo?.user?.push_notifications?.events_you_like
+		);
+		formData.append(
+			'push_notifications[people_you_know]',
+			userInfo?.user?.push_notifications?.people_you_know
+		);
+		formData.append(
+			'push_notifications[your_friends_bet]',
+			userInfo?.user?.push_notifications?.your_friends_bet
+		);
 		return formData;
 	};
 

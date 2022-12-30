@@ -4,7 +4,8 @@ import {
 	StyleSheet,
 	TextInputProps,
 	Text,
-	TouchableOpacity
+	TouchableOpacity,
+	Platform
 } from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient';
 import Strings from '../constants/strings';
@@ -90,7 +91,18 @@ const styles = StyleSheet.create({
 	container: {
 		backgroundColor: defaultTheme.secondaryBackGroundColor,
 		borderRadius: verticalScale(10),
-		alignItems: 'center',
+		alignItems: 'stretch',
+		...Platform.select({
+			ios: {
+				alignItems: 'center',
+			},
+			android: {
+				alignItems: 'center',
+			},
+			web: {
+				alignItems: 'stretch',
+			},
+		  }),
 		justifyContent: 'center',
 		padding: horizontalScale(16)
 	},
@@ -99,7 +111,8 @@ const styles = StyleSheet.create({
 		fontSize: moderateScale(18),
 		fontFamily: Fonts.type.Krona_Regular,
 		textAlign: 'center',
-		paddingVertical: verticalScale(8)
+		paddingVertical: verticalScale(8),
+		flex:1
 	},
 
 	viewDetails: {

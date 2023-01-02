@@ -37,19 +37,35 @@ import {RootState} from '../../redux/store';
 import Loader from '../../components/Loader';
 import {Magic} from '@magic-sdk/react-native';
 import {OAuthExtension} from '@magic-ext/react-native-oauth';
-import analytics from '@react-native-firebase/analytics';
 import {MAGIC_API_KEY} from '@env';
+import {Magic as MagicWeb} from 'magic-sdk';
+import {OAuthExtension as OAuthExtensionWeb} from '@magic-ext/oauth';
+
 
 const customNodeOptions = {
 	rpcUrl: RpcURL, // Polygon RPC URL
 	chainId: chainIdPolygonNetwork // Polygon chain id
 };
 
-export const magic = new Magic(MAGIC_API_KEY, {
+export const magic =
+	Platform.OS === 'web'
+		? new MagicWeb('pk_live_8EFB86C1F5685BE3', {
+				testMode: false,
+				extensions: [new OAuthExtensionWeb()],
+				network: customNodeOptions
+		  })
+		: new Magic('pk_live_8EFB86C1F5685BE3', {
+				testMode: false,
+				extensions: [new OAuthExtension()],
+				network: customNodeOptions
+		  });
+
+export const magicWeb = new MagicWeb('pk_live_8EFB86C1F5685BE3', {
 	testMode: false,
-	extensions: [new OAuthExtension()],
+	extensions: [new OAuthExtensionWeb()],
 	network: customNodeOptions
 });
+
 import axios from 'axios';
 import CMSScreen from '../../screens/Auth/CMS';
 import JoinBetCreateScreen from '../../screens/PostLogin/CreateBets/JoinBetCreateScreen';
@@ -102,6 +118,7 @@ import {CameraPage} from '../../components/Camera/CameraPage';
 import {MediaPage} from '../../components/Camera/MediaPage';
 import VideoCreationScreen from '../../screens/PostLogin/VideoCreationScreen';
 import VideoContentScreen from '../../screens/VideoContentScreen';
+import { Platform } from 'react-native';
 
 //const Stack = createNativeStackNavigator();
 const options = {
@@ -114,7 +131,8 @@ const Tab = createBottomTabNavigator();
 export const BeforeLoginRoutesRoot = () => (
 	<Stack.Navigator
 		screenOptions={{
-			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+			cardStyle: {flex: 1, backgroundColor: 'red'}
 		}}
 		initialRouteName={ScreenNames.Login}>
 		<Stack.Screen
@@ -128,7 +146,8 @@ export const BeforeLoginRoutesRoot = () => (
 export const WalletTabRoutes = (_props: any) => (
 	<Stack.Navigator
 		screenOptions={{
-			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+			cardStyle: {flex: 1, backgroundColor: 'red'}
 		}}
 		initialRouteName={ScreenNames.WalletScreen}>
 		<Stack.Screen
@@ -175,7 +194,8 @@ export const WalletTabRoutes = (_props: any) => (
 export const LiveTabRoutes = (_props: any) => (
 	<Stack.Navigator
 		screenOptions={{
-			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+			cardStyle: {flex: 1, backgroundColor: 'red'}
 		}}
 		initialRouteName={ScreenNames.LiveStreamingScreen}>
 		<Stack.Screen
@@ -300,7 +320,8 @@ const FeedsRouter = () => (
 	<Stack.Navigator
 		screenOptions={{
 			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-			gestureResponseDistance: 100
+			gestureResponseDistance: 100,
+			cardStyle: {flex: 1, backgroundColor: 'red'}
 		}}>
 		<Stack.Screen
 			name={ScreenNames.FeedScreen}
@@ -513,7 +534,8 @@ const FeedsRouter = () => (
 const DiscoverRouter = () => (
 	<Stack.Navigator
 		screenOptions={{
-			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+			cardStyle: {flex: 1, backgroundColor: 'red'}
 		}}>
 		<Stack.Screen
 			name={ScreenNames.DiscoverScreen}
@@ -635,7 +657,8 @@ const DiscoverRouter = () => (
 const ProfileRouter = () => (
 	<Stack.Navigator
 		screenOptions={{
-			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+			cardStyle: {flex: 1, backgroundColor: 'red'}
 		}}
 		initialRouteName={ScreenNames.ProfileScreen}>
 		<Stack.Screen
@@ -838,7 +861,8 @@ const RootRouter = () => {
 		return (
 			<Stack.Navigator
 				screenOptions={{
-					cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+					cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+					cardStyle: {flex: 1, backgroundColor: 'red'}
 				}}>
 				{globalThis.firstTime && (
 					<Stack.Screen
@@ -866,7 +890,8 @@ const RootRouter = () => {
 		return (
 			<Stack.Navigator
 				screenOptions={{
-					cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+					cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+					cardStyle: {flex: 1, backgroundColor: 'red'}
 				}}>
 				{global.firstTime && (
 					<Stack.Screen
@@ -925,7 +950,7 @@ const Routes = () => {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		Splash.hide();
+		// Splash.hide();
 		// if (!globalThis.firstTime === false) {
 		//   globalThis.firstTime = true;
 		// }
@@ -938,19 +963,9 @@ const Routes = () => {
 			onReady={() => {
 				routeNameRef.current = navigationRef.current.getCurrentRoute().name;
 			}}
-			onStateChange={async () => {
-				const previousRouteName = routeNameRef.current;
-				const currentRouteName = navigationRef.current.getCurrentRoute().name;
-				if (previousRouteName !== currentRouteName) {
-					await analytics().logScreenView({
-						screen_name: currentRouteName,
-						screen_class: currentRouteName
-					});
-				}
-				routeNameRef.current = currentRouteName;
-			}}>
+			>
 			{/* Render the Magic iframe! */}
-			<magic.Relayer />
+			{/* <magic.Relayer /> */}
 			<Loader
 				isVisible={apiState.apiLoader}
 				shouldShowText={apiState.showAlertWithText}
@@ -980,7 +995,7 @@ const Routes = () => {
 					}}
 				/>
 			)}
-			<NotificationManager />
+			{/* <NotificationManager /> */}
 			<NotificationPopUp />
 		</NavigationContainer>
 	);

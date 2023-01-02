@@ -401,6 +401,9 @@ const ProfileScreen: React.FC<any> = props => {
 											isMyProfile: true
 										});
 									}}
+									onVideosBtnPress={() => {
+										navigation.navigate(ScreenNames.VideoContentScreen, {});
+									}}
 									onFollowersPress={() => {
 										navigation.navigate(ScreenNames.FollowingFollowersScreen, {
 											userId: userProfileInfo?.user?._id,
@@ -428,6 +431,10 @@ const ProfileScreen: React.FC<any> = props => {
 									createBtnText={Strings.my_bets.toUpperCase()}
 									walletBtnText={Strings.str_wallet.toUpperCase()}
 									walletBtnColorArray={defaultTheme.primaryGradientColor}
+									videosCount={userProfileInfo?.user?.videoCount}
+									isVideoViewVisible={
+										userProfileInfo?.user?.videoCount > 0 ? true : false
+									}
 									isSendMsgShow={true}
 								/>
 							</View>

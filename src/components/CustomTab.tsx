@@ -18,7 +18,7 @@ import fonts from '../theme/fonts';
 import ConformationPopupComponet from './ConformationPopupComponet';
 import ScreenNames from '../navigation/screenNames';
 import SelectImageComponet from './SelectImageComponet';
-import {openSettings, PERMISSIONS, request} from 'react-native-permissions';
+// import {openSettings, PERMISSIONS, req} from 'expo-permissions';
 import * as ImagePicker from 'react-native-image-picker';
 import {videoMaximumDuration} from '../constants/api';
 
@@ -108,76 +108,76 @@ export const CustomTabBar = ({state, descriptors, navigation}) => {
 					} else if (response.error) {
 						console.log('ImagePicker Error: ', response.error);
 					} else {
-						checkVideoValidation(response?.assets[0]);
+						//checkVideoValidation(response?.assets[0]);
 					}
 				}
 			);
 		}, 200);
 	};
 
-	const checkVideoValidation = async responseData => {
-		const {type, fileName, fileSize, duration, uri} = responseData;
+	// const checkVideoValidation = async responseData => {
+	// 	const {type, fileName, fileSize, duration, uri} = responseData;
 
-		if (type === 'video/mp4') {
-			if (parseInt(duration) > videoMaximumDuration) {
-				Alert.alert(Strings.upload_video_15s);
-			} else {
-				navigation.navigate(ScreenNames.MediaPage, {
-					path: uri,
-					type: type,
-					from: 'launchImageLibrary'
-				});
-			}
-		}
-	};
-	const checkCameraPermissions = async () => {
-		let reqPermission = await request(
-			Platform.OS === 'android'
-				? PERMISSIONS.ANDROID.CAMERA
-				: PERMISSIONS.IOS.CAMERA
-		);
-		if (reqPermission === 'granted') {
-			checkMicrophonePermissions();
-		} else {
-			Alert.alert('Alert', Strings.cameraAccess, [
-				{
-					text: 'Open Settings',
-					onPress: () => openSettings(),
-					style: 'destructive'
-				},
-				{
-					text: 'Cancel',
-					onPress: () => console.log('Cancel Pressed')
-				}
-			]);
-		}
-		console.log(reqPermission);
-	};
+	// 	if (type === 'video/mp4') {
+	// 		if (parseInt(duration) > videoMaximumDuration) {
+	// 			Alert.alert(Strings.upload_video_15s);
+	// 		} else {
+	// 			navigation.navigate(ScreenNames.MediaPage, {
+	// 				path: uri,
+	// 				type: type,
+	// 				from: 'launchImageLibrary'
+	// 			});
+	// 		}
+	// 	}
+	// };
+	// const checkCameraPermissions = async () => {
+	// 	let reqPermission = await request(
+	// 		Platform.OS === 'android'
+	// 			? PERMISSIONS.ANDROID.CAMERA
+	// 			: PERMISSIONS.IOS.CAMERA
+	// 	);
+	// 	if (reqPermission === 'granted') {
+	// 		checkMicrophonePermissions();
+	// 	} else {
+	// 		Alert.alert('Alert', Strings.cameraAccess, [
+	// 			{
+	// 				text: 'Open Settings',
+	// 				onPress: () => openSettings(),
+	// 				style: 'destructive'
+	// 			},
+	// 			{
+	// 				text: 'Cancel',
+	// 				onPress: () => console.log('Cancel Pressed')
+	// 			}
+	// 		]);
+	// 	}
+	// 	console.log(reqPermission);
+	// };
 
-	const checkMicrophonePermissions = async () => {
-		let reqPermission = await request(
-			Platform.OS === 'android'
-				? PERMISSIONS.ANDROID.RECORD_AUDIO
-				: PERMISSIONS.IOS.MICROPHONE
-		);
-		if (reqPermission === 'granted') {
-			setIsMediaTypeVisible(false);
-			navigation.navigate(ScreenNames.CameraPage);
-		} else {
-			Alert.alert('Alert', Strings.audioAccess, [
-				{
-					text: 'Open Settings',
-					onPress: () => openSettings(),
-					style: 'destructive'
-				},
-				{
-					text: 'Cancel',
-					onPress: () => console.log('Cancel Pressed')
-				}
-			]);
-		}
-		console.log('reqPermission', reqPermission);
-	};
+	// const checkMicrophonePermissions = async () => {
+	// 	let reqPermission = await request(
+	// 		Platform.OS === 'android'
+	// 			? PERMISSIONS.ANDROID.RECORD_AUDIO
+	// 			: PERMISSIONS.IOS.MICROPHONE
+	// 	);
+	// 	if (reqPermission === 'granted') {
+	// 		setIsMediaTypeVisible(false);
+	// 		navigation.navigate(ScreenNames.CameraPage);
+	// 	} else {
+	// 		Alert.alert('Alert', Strings.audioAccess, [
+	// 			{
+	// 				text: 'Open Settings',
+	// 				onPress: () => openSettings(),
+	// 				style: 'destructive'
+	// 			},
+	// 			{
+	// 				text: 'Cancel',
+	// 				onPress: () => console.log('Cancel Pressed')
+	// 			}
+	// 		]);
+	// 	}
+	// 	console.log('reqPermission', reqPermission);
+	// };
 
 	return (
 		<LinearGradient
@@ -366,7 +366,7 @@ export const CustomTabBar = ({state, descriptors, navigation}) => {
 				isVisible={isMediaTypeVisible}
 				setIsVisible={setIsMediaTypeVisible}
 				onPressGallery={pickVideoFromGallery}
-				onPressCamera={checkCameraPermissions}
+				onPressCamera={() => navigation.navigate(ScreenNames.CameraPage)}
 				isHideAvatar={true}
 			/>
 		</LinearGradient>

@@ -725,6 +725,12 @@ const Strings = {
 	video_creation: 'Video creation',
 	attach_video_to_bets: 'You can attach the video to one of your active bets',
 	no_active_bets: 'You don’t have any active bets',
+	video: 'Video',
+	are_you_sure_you_want_to_delete_this_video:
+		'Are you sure you want to delete this video?',
+	sure: "yes, i'm sure",
+	no_video_found: 'No video found yet',
+	no_video_title: 'Your videos will appear here',
 	well_done_video_has_been_created:
 		'Well done, %s! Your video has been created 🎉'
 };

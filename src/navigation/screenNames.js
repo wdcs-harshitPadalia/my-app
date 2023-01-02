@@ -66,6 +66,8 @@ const ScreenNames = {
 	PushNotificationScreen: 'PushNotificationScreen',
 	CameraPage: 'CameraPage',
 	MediaPage: 'MediaPage',
+	VideoCreationScreen: 'VideoCreationScreen',
+	VideoContentScreen: 'VideoContentScreen'
 };
 
 export default ScreenNames;

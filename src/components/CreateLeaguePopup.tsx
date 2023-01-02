@@ -15,6 +15,8 @@ import colors from '../theme/colors';
 import {defaultTheme} from '../theme/defaultTheme';
 import {gradientColorAngle} from '../theme/metrics';
 import ButtonGradient from './ButtonGradient';
+import ExpoFastImage from 'expo-fast-image';
+import icons from '../assets/icon';
 
 interface Props extends TextInputProps {
 	isVisible: boolean;
@@ -24,6 +26,7 @@ interface Props extends TextInputProps {
 	leftIconPath?: ImageSourcePropType;
 	onPressOk?: () => void;
 	onPressCancel?: () => void;
+	isInfoVisible?: boolean;
 }
 
 const CreateLeaguePopup: React.FC<Props> = props => {
@@ -34,7 +37,8 @@ const CreateLeaguePopup: React.FC<Props> = props => {
 		onPressCancel,
 		buttonCancelTitle,
 		isVisible,
-		leftIconPath
+		leftIconPath,
+		isInfoVisible
 	} = props;
 
 	return (
@@ -43,6 +47,9 @@ const CreateLeaguePopup: React.FC<Props> = props => {
 				<TouchableOpacity activeOpacity={1} onPress={onPressCancel}>
 					<View style={styles.centeredView}>
 						<View style={styles.viewDetails}>
+						{isInfoVisible && (
+								<ExpoFastImage style={styles.infoImg} source={icons.about} />
+							)}
 							<Text style={styles.titleStyle}>{popupTitle}</Text>
 							<View style={styles.viewBackButton}>
 								<ButtonGradient
@@ -55,7 +62,11 @@ const CreateLeaguePopup: React.FC<Props> = props => {
 								/>
 								<ButtonGradient
 									onPress={onPressOk}
-									colorArray={defaultTheme.primaryGradientColor}
+									colorArray={
+										isInfoVisible
+											? defaultTheme.secondaryGradientColor
+											: defaultTheme.primaryGradientColor
+									}
 									angle={gradientColorAngle}
 									buttonTextcolor={colors.white}
 									buttonText={buttonOkTitle}
@@ -115,7 +126,14 @@ const styles = StyleSheet.create({
 		marginLeft: verticalScale(16),
 		flex: 1
 	},
-	rightIconStyle: {height: 15, width: 15}
+	rightIconStyle: {height: 15, width: 15},
+	infoImg: {
+		height: verticalScale(34),
+		width: verticalScale(34),
+		opacity: 0.7,
+		alignSelf: 'center',
+		marginBottom: verticalScale(10)
+	}
 });
 
 export default CreateLeaguePopup;

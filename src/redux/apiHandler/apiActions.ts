@@ -134,7 +134,7 @@ export const getFeeds = createAsyncThunk(
 	async (data: any) => {
 		const response = await useAxios({
 			method: Api.POST,
-			url: (ApiSecondaryBaseUrl + ApiConstants.getAllMatch),
+			url: ApiSecondaryBaseUrl + ApiConstants.getAllMatch,
 			// headers: {
 			//   'Content-Type': 'application/json',
 			// },
@@ -182,7 +182,7 @@ export const getFilteredFeeds = createAsyncThunk(
 	async (data: any) => {
 		const response = await useAxios({
 			method: Api.POST,
-			url: (ApiSecondaryBaseUrl + ApiConstants.getFilteredFeeds),
+			url: ApiSecondaryBaseUrl + ApiConstants.getFilteredFeeds,
 			// headers: {
 			//   'Content-Type': 'application/json',
 			// },
@@ -271,12 +271,24 @@ export const getLiveStreamingFeeds = createAsyncThunk(
 	}
 );
 
+export const getLiveStreamingData = async (data: any) => {
+	const response = await useAxios({
+		method: Api.POST,
+		url: ApiBaseUrl + ApiConstants.getLiveStreamingFeeds,
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		data: data
+	});
+	return response;
+};
+
 export const getBetsPerFeed = createAsyncThunk(
 	ApiConstants.getBetsPerEvent,
 	async (data: any) => {
 		const response = await useAxios({
 			method: Api.POST,
-			url: (ApiSecondaryBaseUrl + ApiConstants.getBetsPerEvent),
+			url: ApiSecondaryBaseUrl + ApiConstants.getBetsPerEvent,
 			// headers: {
 			//   'Content-Type': 'application/json',
 			// },
@@ -889,19 +901,43 @@ export const getRecommendedBets = async (data: any) => {
 	const response = await useAxios({
 		method: Api.POST,
 		url: ApiBaseUrl + ApiConstants.getRecommendedBets,
-		data: data,
+		data: data
 	});
 	return response;
 };
 
-export const getLiveStreamingData = async (data: any) => {
+export const validateJury = async () => {
 	const response = await useAxios({
 		method: Api.POST,
-		url: ApiBaseUrl + ApiConstants.getLiveStreamingFeeds,
-		headers: {
-			'Content-Type': 'application/json'
-		},
+		url: ApiBaseUrl + ApiConstants.validateJury
+	});
+	return response;
+};
+
+export const getBetsForVideoUpload = async () => {
+	const response = await useAxios({
+		method: Api.GET,
+		url: ApiBaseUrl + ApiConstants.getBetsForVideoUpload
+	});
+	// console.log('RESPONSE::::', JSON.stringify(response));
+	return response;
+};
+
+export const deleteUserVideo = async (data: any) => {
+	const response = await useAxios({
+		method: Api.PUT,
+		url: ApiBaseUrl + ApiConstants.deleteVideo,
 		data: data
 	});
+	return response;
+};
+
+export const getUserVideoList = async (data: any) => {
+	const response = await useAxios({
+		method: Api.POST,
+		url: ApiBaseUrl + ApiConstants.getUserVideos,
+		data: data
+	});
+	// console.log('RESPONSE::::', JSON.stringify(response));
 	return response;
 };

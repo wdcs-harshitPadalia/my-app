@@ -31,7 +31,7 @@ import {FlatList} from 'react-native-gesture-handler';
 import {updateApiLoader} from '../../../redux/reducerSlices/preLogin';
 import {Api, ApiBaseUrl, ApiConstants} from '../../../constants/api';
 import NoDataComponent from '../../../components/NoDataComponent';
-import {Video, getRealPath} from 'react-native-compressor';
+// import {Video, getRealPath} from 'react-native-compressor';
 
 const VideoCreationScreen = () => {
 	const navigation = useNavigation();
@@ -100,48 +100,48 @@ const VideoCreationScreen = () => {
 
 	const uploadShortVideo = async () => {
 		dispatch(updateApiLoader({apiLoader: true}));
-		const videoCompress = await Video.compress(
-			path,
-			{
-				compressionMethod: 'auto'
-			},
-			progress => {
-				console.log('Compression Progress: ', progress);
-			}
-		);
+		// const videoCompress = await Video.compress(
+		// 	path,
+		// 	{
+		// 		compressionMethod: 'auto'
+		// 	},
+		// 	progress => {
+		// 		console.log('Compression Progress: ', progress);
+		// 	}
+		// );
 
-		const realPath = await getRealPath(videoCompress, 'video');
+		// const realPath = await videoCompress;
 
-		fetch(ApiBaseUrl + ApiConstants.uploadShortVideo, {
-			method: Api.POST,
-			body: createFormData(
-				Platform.OS === 'android' && from === 'launchImageLibrary'
-					? realPath
-					: videoCompress
-			),
-			headers: {
-				Authorization: 'Bearer ' + userInfo.token
-			}
-		})
-			.then(response => response.json())
-			.then(response => {
-				dispatch(updateApiLoader({apiLoader: false}));
-				console.log('upload succes', JSON.stringify(response));
-				if (response?.statusCode == 200) {
-					setVideoUploadUrl(response?.data);
-					seIsProgress('100%');
-					setStep(2);
-					setIsTitle('');
-					setIsShareScreen(true);
-				} else {
-					Alert.alert('', response?.message);
-				}
-			})
-			.catch(error => {
-				console.log('upload error', JSON.stringify(error));
-				dispatch(updateApiLoader({apiLoader: false}));
-				// navigation.goBack();
-			});
+		// fetch(ApiBaseUrl + ApiConstants.uploadShortVideo, {
+		// 	method: Api.POST,
+		// 	body: createFormData(
+		// 		Platform.OS === 'android' && from === 'launchImageLibrary'
+		// 			? realPath
+		// 			: videoCompress
+		// 	),
+		// 	headers: {
+		// 		Authorization: 'Bearer ' + userInfo.token
+		// 	}
+		// })
+		// 	.then(response => response.json())
+		// 	.then(response => {
+		// 		dispatch(updateApiLoader({apiLoader: false}));
+		// 		console.log('upload succes', JSON.stringify(response));
+		// 		if (response?.statusCode == 200) {
+		// 			setVideoUploadUrl(response?.data);
+		// 			seIsProgress('100%');
+		// 			setStep(2);
+		// 			setIsTitle('');
+		// 			setIsShareScreen(true);
+		// 		} else {
+		// 			Alert.alert('', response?.message);
+		// 		}
+		// 	})
+		// 	.catch(error => {
+		// 		console.log('upload error', JSON.stringify(error));
+		// 		dispatch(updateApiLoader({apiLoader: false}));
+		// 		// navigation.goBack();
+		// 	});
 	};
 
 	function handleBetViewSelection(id) {

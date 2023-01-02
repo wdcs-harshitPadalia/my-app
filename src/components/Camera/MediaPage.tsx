@@ -9,7 +9,8 @@ import {
 	NativeSyntheticEvent,
 	ImageLoadEventData
 } from 'react-native';
-import Video, {LoadError, OnLoadData} from 'react-native-video';
+// import Video, {LoadError, OnLoadData} from 'react-native-video';
+import {Video} from 'expo-av';
 import {useIsForeground} from '../CustomHooks/useIsForeground';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useIsFocused} from '@react-navigation/core';
@@ -24,6 +25,7 @@ import {
 	SAFE_AREA_PADDING
 } from '../../theme/metrics';
 import ScreenNames from '../../navigation/screenNames';
+// import { LoadError } from 'react-native-video';
 
 const isVideoOnLoadEvent = (
 	event: OnLoadData | NativeSyntheticEvent<ImageLoadEventData>

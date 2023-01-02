@@ -71,7 +71,7 @@ export default function SelecteableTag(props: TagViewProps) {
 							width: 10,
 							// marginLeft: verticalScale(8),
 							marginRight: verticalScale(4),
-							tintColor: colors.black
+							tintColor: colors.white
 						}}
 					/>
 				</TouchableOpacity>

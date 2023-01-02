@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 import {
 	Fonts,
 	horizontalScale,
@@ -19,7 +19,13 @@ const styles = StyleSheet.create({
 	},
 	viewSubContain: {
 		marginHorizontal: horizontalScale(16),
-		marginBottom: horizontalScale(60)
+		marginBottom: horizontalScale(60),
+		...Platform.select({
+			web: {
+				//height: '100%',
+				flex: 1
+			}
+		})
 	},
 	dateTitleContainer: {
 		alignItems: 'center',

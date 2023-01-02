@@ -38,7 +38,14 @@ const InputComponent = forwardRef<TextInput, Props>((props, ref) => {
   } = props;
 
   return (
-    <View>
+    <View
+			style={{
+				...Platform.select({
+					web: {
+						width: '100%'
+					}
+				})
+			}}>
       {title ? (
         <Text style={[styles.titleStyle, { ...props.textTitleStyle }]}>
           {title}

@@ -5,7 +5,8 @@ import {
 	TouchableOpacity,
 	ImageSourcePropType,
 	Text,
-	ViewStyle
+	ViewStyle,
+	Platform
 } from 'react-native';
 import {Fonts, moderateScale, verticalScale} from '../theme';
 import {LinearGradient} from 'expo-linear-gradient';
@@ -55,11 +56,21 @@ const ButtonTopIconGradient: React.FC<Props> = props => {
 					style={styles.topImg}
 				/>
 				{buttonTextGradientncolor ? (
-					<GradientText
-						colors={buttonTextGradientncolor}
-						style={styles.btnTextStyle}>
-						{buttonText}
-					</GradientText>
+					Platform.OS === 'web' ? (
+						<Text
+							style={[
+								styles.btnTextStyle,
+								{color: buttonTextGradientncolor[0]}
+							]}>
+							{buttonText}
+						</Text>
+					) : (
+						<GradientText
+							colors={buttonTextGradientncolor}
+							style={styles.btnTextStyle}>
+							{buttonText}
+						</GradientText>
+					)
 				) : (
 					<Text style={styles.btnTextStyle}>{buttonText}</Text>
 				)}

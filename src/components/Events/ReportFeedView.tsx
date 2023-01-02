@@ -7,7 +7,8 @@ import {
 	Text,
 	TouchableOpacity,
 	Dimensions,
-	FlatList
+	FlatList,
+	Platform
 } from 'react-native';
 
 //import icons from '../assets/icon';
@@ -74,11 +75,21 @@ const ReportFeedView: React.FC<Props> = props => {
 					setselectedTag(index);
 				}}>
 				{index === selectedTag ? (
-					<GradientText
-						colors={defaultTheme.primaryGradientColor}
-						style={[styles.itemTextStyle, {opacity: 1}]}>
-						{item}
-					</GradientText>
+					Platform.OS === 'web' ? (
+						<Text
+							style={[
+								styles.itemTextStyle,
+								{color: defaultTheme.primaryGradientColor[0], opacity: 1}
+							]}>
+							{item}
+						</Text>
+					) : (
+						<GradientText
+							colors={defaultTheme.primaryGradientColor}
+							style={[styles.itemTextStyle, {opacity: 1}]}>
+							{item}
+						</GradientText>
+					)
 				) : (
 					<Text style={styles.itemTextStyle}>{item}</Text>
 				)}

@@ -4,7 +4,8 @@ import {
 	StyleSheet,
 	TextInputProps,
 	Text,
-	TouchableOpacity
+	TouchableOpacity,
+	Platform
 } from 'react-native';
 import ExpoFastImage from 'expo-fast-image';
 import icons from '../assets/icon';
@@ -177,15 +178,29 @@ const BetsDetailsView: React.FC<Props> = props => {
 					<Text style={[styles.AmountStyle, {color: colors.placeholderColor}]}>
 						{Strings.you_will_win + ': '}
 					</Text>
-					<GradientText
-						colors={defaultTheme.textGradientColor}
-						style={styles.AmountStyle}>
-						{Strings.str_dollor +
-							getRoundDecimalValue(
-								betUsdAmount?.replace(',', '.') * betOdds -
-									betUsdAmount?.replace(',', '.')
-							)}
-					</GradientText>
+					{Platform.OS === 'web' ? (
+						<Text
+							style={[
+								styles.AmountStyle,
+								{color: defaultTheme.textGradientColor[1]}
+							]}>
+							{Strings.str_dollor +
+								getRoundDecimalValue(
+									betUsdAmount?.replace(',', '.') * betOdds -
+										betUsdAmount?.replace(',', '.')
+								)}
+						</Text>
+					) : (
+						<GradientText
+							colors={defaultTheme.textGradientColor}
+							style={styles.AmountStyle}>
+							{Strings.str_dollor +
+								getRoundDecimalValue(
+									betUsdAmount?.replace(',', '.') * betOdds -
+										betUsdAmount?.replace(',', '.')
+								)}
+						</GradientText>
+					)}
 				</View>
 
 				<Text style={styles.betsTypeStyle}>
@@ -279,15 +294,29 @@ const BetsDetailsView: React.FC<Props> = props => {
 					<Text style={[styles.AmountStyle, {color: colors.placeholderColor}]}>
 						{Strings.your_opponent_will_win + ': '}
 					</Text>
-					<GradientText
-						colors={defaultTheme.textGradientColor}
-						style={styles.AmountStyle}>
-						{Strings.str_dollor +
-							getRoundDecimalValue(
-								oppositeBetUsdAmount?.replace(',', '.') * oppositeBetOdds -
-									oppositeBetUsdAmount?.replace(',', '.')
-							)}
-					</GradientText>
+					{Platform.OS === 'web' ? (
+						<Text
+							style={[
+								styles.AmountStyle,
+								{color: defaultTheme.textGradientColor[1]}
+							]}>
+							{Strings.str_dollor +
+								getRoundDecimalValue(
+									oppositeBetUsdAmount?.replace(',', '.') * oppositeBetOdds -
+										oppositeBetUsdAmount?.replace(',', '.')
+								)}
+						</Text>
+					) : (
+						<GradientText
+							colors={defaultTheme.textGradientColor}
+							style={styles.AmountStyle}>
+							{Strings.str_dollor +
+								getRoundDecimalValue(
+									oppositeBetUsdAmount?.replace(',', '.') * oppositeBetOdds -
+										oppositeBetUsdAmount?.replace(',', '.')
+								)}
+						</GradientText>
+					)}
 				</View>
 			</View>
 		</View>

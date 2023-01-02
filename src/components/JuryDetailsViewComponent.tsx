@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, Platform} from 'react-native';
 import DropShadow from 'react-native-drop-shadow';
 import ExpoFastImage from 'expo-fast-image';
 import {LinearGradient} from 'expo-linear-gradient';
@@ -67,11 +67,21 @@ const JuryDetailsViewComponent = (props: Props) => {
 					<Text style={styles.juryDetailsChildLeftTextStyle}>
 						{Strings.strike_level}
 					</Text>
-					<GradientText
-						colors={defaultTheme.primaryGradientColor}
-						style={styles.strikeLevelValueText}>
-						{juryStrikeLevel}
-					</GradientText>
+					{Platform.OS === 'web' ? (
+						<Text
+							style={[
+								styles.strikeLevelValueText,
+								{color: defaultTheme.primaryGradientColor[0]}
+							]}>
+							{juryStrikeLevel}
+						</Text>
+					) : (
+						<GradientText
+							colors={defaultTheme.primaryGradientColor}
+							style={styles.strikeLevelValueText}>
+							{juryStrikeLevel}
+						</GradientText>
+					)}
 				</View>
 				<View style={styles.juryDetailsChildContainer}>
 					<Text style={styles.juryDetailsChildLeftTextStyle}>

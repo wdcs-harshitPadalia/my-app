@@ -23,6 +23,8 @@ interface Props extends TextInputProps {
   buttonOkTitle?: string;
   onPressOk?: () => void;
   onPressCancel?: () => void;
+  isShowSecondButton: boolean;
+	onPressSecondButton?: () => void;
 }
 
 const ConformationPopupComponet: React.FC<Props> = (props) => {
@@ -33,26 +35,27 @@ const ConformationPopupComponet: React.FC<Props> = (props) => {
     onPressCancel,
     isVisible,
     style,
+    isShowSecondButton,
+		onPressSecondButton
   } = props;
 
-  return (
-    <Modal animationType="fade" transparent={true} visible={isVisible}>
-      <View style={styles.bgView}>
-        <TouchableOpacity activeOpacity={1} onPress={onPressCancel}>
-          <View style={styles.centeredView}>
-            <View style={styles.viewDetails}>
-              <Text style={[styles.titleStyle, { ...style }]}>
-                {popupTitle}
-              </Text>
-              <ButtonGradient
-                onPress={onPressOk}
-                colorArray={defaultTheme.ternaryGradientColor}
-                angle={gradientColorAngle}
-                buttonTextcolor={colors.white}
-                buttonText={buttonOkTitle}
-                style={styles.loginButtonSocial}
-              />
-              {/* <ButtonGradient
+
+	return (
+		<Modal animationType="fade" transparent={true} visible={isVisible}>
+			<View style={styles.bgView}>
+				<TouchableOpacity activeOpacity={1} onPress={onPressCancel}>
+					<View style={styles.centeredView}>
+						<View style={styles.viewDetails}>
+							<Text style={[styles.titleStyle, {...style}]}>{popupTitle}</Text>
+							<ButtonGradient
+								onPress={onPressOk}
+								colorArray={defaultTheme.ternaryGradientColor}
+								angle={gradientColorAngle}
+								buttonTextcolor={colors.white}
+								buttonText={buttonOkTitle}
+								style={styles.loginButtonSocial}
+							/>
+							{/* <ButtonGradient
             onPress={() => {
               // handleSubmit();
             }}
@@ -62,14 +65,23 @@ const ConformationPopupComponet: React.FC<Props> = (props) => {
             buttonText={Strings.loginwithapple}
             style={styles.loginButtonSocial}
           /> */}
-            </View>
-          </View>
-        </TouchableOpacity>
-      </View>
-
-      {/* </TouchableOpacity> */}
-    </Modal>
-  );
+							{isShowSecondButton && (
+								<ButtonGradient
+									onPress={onPressSecondButton}
+									colorArray={defaultTheme.ternaryGradientColor}
+									angle={gradientColorAngle}
+									buttonTextcolor={colors.white}
+									buttonText={Strings.short_video}
+									style={styles.loginButtonSocial}
+								/>
+							)}
+						</View>
+					</View>
+				</TouchableOpacity>
+			</View>
+			{/* </TouchableOpacity> */}
+		</Modal>
+	);
 };
 
 const styles = StyleSheet.create({

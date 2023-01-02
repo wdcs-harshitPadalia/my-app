@@ -15,12 +15,12 @@ export const serverKey =
 
 // // Development
 //export const ApiBaseUrl = `http://13.59.164.150:${ApiPort}/api/${ApiVersion}/`;
-// export const ApiBaseUrl = `https://api.defibet.house/api/${ApiVersion}/`;
-// export const ApiSecondaryBaseUrl = `https://api2.defibet.house/api/${ApiVersion}/`;
+export const ApiBaseUrl = `https://api.defibet.house/api/${ApiVersion}/`;
+export const ApiSecondaryBaseUrl = `https://api2.defibet.house/api/${ApiVersion}/`;
 
 //Development
-export const ApiBaseUrl = `http://13.59.164.150:${ApiPort}/api/${ApiVersion}/`;
-export const ApiSecondaryBaseUrl = `http://13.59.164.150:${SecondaryApiPort}/api/${ApiVersion}/`;
+// export const ApiBaseUrl = `http://13.59.164.150:${ApiPort}/api/${ApiVersion}/`;
+// export const ApiSecondaryBaseUrl = `http://13.59.164.150:${SecondaryApiPort}/api/${ApiVersion}/`;
 
 export const nullHash =
 	'0x0000000000000000000000000000000000000000000000000000000000000000';
@@ -65,6 +65,10 @@ export const decimalValue = 4;
 
 export const widgetBaseUrl = 'https://exchange.mercuryo.io/?widget_id=';
 export const metamaskUniversalUrl = 'https://metamask.app.link/send/';
+
+export const videoMinimumDuration = 3;
+export const videoMaximumDuration = 15;
+
 
 export const Api = {
 	POST: 'POST',
@@ -149,7 +153,8 @@ export const ApiConstants = {
 	saveJuryVoteTemporarily: 'result/saveVoteTemporarily',
 	filterUserContacts: 'user/filterUserContacts',
 	getAllFaq: 'faq/getAllFAQ',
-	getRecommendedBets: 'discover/getRecommendedBets'
+	getRecommendedBets: 'discover/getRecommendedBets',
+	uploadShortVideo: 'video/uploadShortVideo',
 };
 
 export const BotomSharePopupData = [

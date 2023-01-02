@@ -1,26 +1,26 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
-	Alert,
 	Platform,
 	StyleSheet,
 	TouchableOpacity,
 	View
 } from 'react-native';
-import DropShadow from 'react-native-drop-shadow';
-import {Badge, Image, Text} from 'react-native-elements';
+import {Image, Text} from 'react-native-elements';
 import {LinearGradient} from 'expo-linear-gradient';
 import {useSelector} from 'react-redux';
 import DeviceInfo from 'react-native-device-info';
-import icons from '../assets/icon';
 import Strings from '../constants/strings';
 import {getLevelRank} from '../constants/utils/Function';
 import {RootState} from '../redux/store';
 import {horizontalScale, moderateScale, verticalScale} from '../theme';
 import colors from '../theme/colors';
 import fonts from '../theme/fonts';
-import {gradientColorAngle} from '../theme/metrics';
 import ConformationPopupComponet from './ConformationPopupComponet';
 import ScreenNames from '../navigation/screenNames';
+import SelectImageComponet from './SelectImageComponet';
+import {openSettings, PERMISSIONS, request} from 'react-native-permissions';
+import * as ImagePicker from 'react-native-image-picker';
+import {videoMaximumDuration} from '../constants/api';
 
 /*
 const customBadgeView = props => {
@@ -88,6 +88,96 @@ export const CustomTabBar = ({state, descriptors, navigation}) => {
 	let hasNotch = DeviceInfo.hasNotch();
 
 	const [modalVisible, setModalVisible] = useState(false);
+	const [isMediaTypeVisible, setIsMediaTypeVisible] = useState(false);
+
+	const pickVideoFromGallery = async () => {
+		setTimeout(() => {
+			ImagePicker.launchImageLibrary(
+				{
+					mediaType: 'video',
+					includeBase64: true,
+					maxHeight: 800,
+					maxWidth: 800,
+					videoQuality: 'medium'
+				},
+				async response => {
+					console.log({response});
+					setIsMediaTypeVisible(false);
+					if (response.didCancel) {
+						console.log(' Photo picker didCancel');
+					} else if (response.error) {
+						console.log('ImagePicker Error: ', response.error);
+					} else {
+						checkVideoValidation(response?.assets[0]);
+					}
+				}
+			);
+		}, 200);
+	};
+
+	const checkVideoValidation = async responseData => {
+		const {type, fileName, fileSize, duration, uri} = responseData;
+
+		if (type === 'video/mp4') {
+			if (parseInt(duration) > videoMaximumDuration) {
+				Alert.alert(Strings.upload_video_15s);
+			} else {
+				navigation.navigate(ScreenNames.MediaPage, {
+					path: uri,
+					type: type,
+					from: 'launchImageLibrary'
+				});
+			}
+		}
+	};
+	const checkCameraPermissions = async () => {
+		let reqPermission = await request(
+			Platform.OS === 'android'
+				? PERMISSIONS.ANDROID.CAMERA
+				: PERMISSIONS.IOS.CAMERA
+		);
+		if (reqPermission === 'granted') {
+			checkMicrophonePermissions();
+		} else {
+			Alert.alert('Alert', Strings.cameraAccess, [
+				{
+					text: 'Open Settings',
+					onPress: () => openSettings(),
+					style: 'destructive'
+				},
+				{
+					text: 'Cancel',
+					onPress: () => console.log('Cancel Pressed')
+				}
+			]);
+		}
+		console.log(reqPermission);
+	};
+
+	const checkMicrophonePermissions = async () => {
+		let reqPermission = await request(
+			Platform.OS === 'android'
+				? PERMISSIONS.ANDROID.RECORD_AUDIO
+				: PERMISSIONS.IOS.MICROPHONE
+		);
+		if (reqPermission === 'granted') {
+			setIsMediaTypeVisible(false);
+			navigation.navigate(ScreenNames.CameraPage);
+		} else {
+			Alert.alert('Alert', Strings.audioAccess, [
+				{
+					text: 'Open Settings',
+					onPress: () => openSettings(),
+					style: 'destructive'
+				},
+				{
+					text: 'Cancel',
+					onPress: () => console.log('Cancel Pressed')
+				}
+			]);
+		}
+		console.log('reqPermission', reqPermission);
+	};
 
 	return (
 		<LinearGradient
@@ -266,6 +356,18 @@ export const CustomTabBar = ({state, descriptors, navigation}) => {
 				onPressCancel={() => {
 					setModalVisible(!modalVisible);
 				}}
+				isShowSecondButton={true}
+				onPressSecondButton={() => {
+					setModalVisible(!modalVisible);
+					setIsMediaTypeVisible(true);
+				}}
+			/>
+			<SelectImageComponet
+				isVisible={isMediaTypeVisible}
+				setIsVisible={setIsMediaTypeVisible}
+				onPressGallery={pickVideoFromGallery}
+				onPressCamera={checkCameraPermissions}
+				isHideAvatar={true}
 			/>
 		</LinearGradient>
 	);

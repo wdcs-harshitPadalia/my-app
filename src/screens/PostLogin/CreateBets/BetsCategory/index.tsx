@@ -2172,6 +2172,7 @@ const BetsCategoryScreen: React.FC<any> = () => {
 					seIsProgress('40%');
 					seIsTitle(Strings.when_will_the_bet_end);
 					setCustomDate(undefined);
+					setPickEndTime(false);
 					setIsBackButtonDisable(true);
 					setStep(4);
 				} else if (isSelectedLeagueType === 2) {

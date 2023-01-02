@@ -1,5 +1,5 @@
 import moment from 'moment';
-import React, {createElement, useState} from 'react';
+import React, {createElement, useRef, useState} from 'react';
 import {
 	View,
 	StyleSheet,
@@ -41,49 +41,87 @@ const SetDurationView: React.FC<Props> = props => {
 		onPressNeedHelp
 	} = props;
 
+	const dateTimePickerRef = useRef();
+	const dateTimePickerEndRef = useRef();
+
 	const [date, setDate] = useState(
-		selectedDate ? moment(selectedDate).format('DD MMMM YYYY hh:mm') : ''
+		selectedDate
+			? moment(selectedDate).format('DD MMMM YYYY hh:mm')
+			: Strings.pick_end_date_time.toUpperCase()
 	);
 
 	const [endDate, setEndDate] = useState(
-		selectedDate ? moment(selectedEndDate).format('DD MMMM YYYY hh:mm') : ''
+		selectedDate
+			? moment(selectedEndDate).format('DD MMMM YYYY hh:mm')
+			: Strings.pick_participate_bet_end_date_time.toUpperCase()
 	);
 
-	useUpdateEffect(() => {
-		if (!isValidDate(date)) {
-			return;
-		}
-		if (new Date(date).getTime() > new Date(new Date().getTime() + 9 * 60000)) {
-			setSelectedDate(date);
-		} else {
-			setSelectedDate(null);
+	const [isSelected, setIsSelected] = useState(0);
 
-			alert(
-				`Please select time greater than ${moment(
-					new Date(new Date().getTime() + 9 * 60000)
-				).format('DD MMMM YYYY hh:mm A')}`
-			);
-		}
-	}, [date]);
+	// useUpdateEffect(() => {
+	// 	handleDateValidation(date);
+	// }, [date]);
 
-	useUpdateEffect(() => {
-		if (!isValidDate(endDate)) {
-			return;
-		}
-		if (
-			new Date(endDate).getTime() < new Date(date).getTime() &&
-			new Date(endDate).getTime() > new Date(new Date().getTime())
-		) {
-			setEndSelectedDate(endDate);
+	const handleDateValidation = selectedDate => {
+		if (isSelected === 0) {
+			if (!isValidDate(selectedDate)) {
+				return;
+			}
+			if (
+				new Date(selectedDate).getTime() >
+				new Date(new Date().getTime() + 9 * 60000)
+			) {
+				setDate(selectedDate);
+				setSelectedDate(selectedDate);
+			} else {
+				setSelectedDate(null);
+				setDate(Strings.pick_end_date_time.toUpperCase());
+				alert(
+					`Please select time greater than ${moment(
+						new Date(new Date().getTime() + 9 * 60000)
+					).format('DD MMMM YYYY hh:mm A')}`
+				);
+			}
 		} else {
-			setEndSelectedDate(null);
-			alert(
-				`Please select time less than ${moment(date).format(
-					'DD MMMM YYYY hh:mm A'
-				)}`
-			);
+			if (!isValidDate(selectedDate)) {
+				return;
+			}
+			if (
+				new Date(selectedDate).getTime() < new Date(date).getTime() &&
+				new Date(selectedDate).getTime() > new Date(new Date().getTime())
+			) {
+				setEndDate(selectedDate);
+				setEndSelectedDate(selectedDate);
+			} else {
+				setEndSelectedDate(null);
+				setEndDate(Strings.pick_participate_bet_end_date_time.toUpperCase());
+				alert(
+					`Please select time less than ${moment(selectedDate).format(
+						'DD MMMM YYYY hh:mm A'
+					)}`
+				);
+			}
 		}
-	}, [endDate]);
+	};
+
+	// useUpdateEffect(() => {
+	// 	if (!isValidDate(endDate)) {
+	// 		return;
+	// 	}
+	// 	if (
+	// 		new Date(endDate).getTime() < new Date(date).getTime() &&
+	// 		new Date(endDate).getTime() > new Date(new Date().getTime())
+	// 	) {
+	// 		setEndSelectedDate(endDate);
+	// 	} else {
+	// 		setEndSelectedDate(null);
+	// 		alert(
+	// 			`Please select time less than ${moment(date).format(
+	// 				'DD MMMM YYYY hh:mm A'
+	// 			)}`
+	// 		);
+	// 	}
+	// }, [endDate]);
 
 	//   const handleConfirm = (date) => {
 	//     setisVisible(false);
@@ -117,9 +155,7 @@ const SetDurationView: React.FC<Props> = props => {
 		<View style={styles.viewDetails}>
 			<View style={styles.infoView}>
 				<Text style={styles.titleStyle}>{Strings.set_the_duration}</Text>
-				<TouchableOpacity
-					onPress={onPressNeedHelp}
-					hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
+				<TouchableOpacity onPress={onPressNeedHelp}>
 					<ExpoFastImage
 						resizeMode={'contain'}
 						source={icons.about}
@@ -128,18 +164,46 @@ const SetDurationView: React.FC<Props> = props => {
 				</TouchableOpacity>
 			</View>
 
-			<View style={styles.viewInput}>
-				<Text style={styles.inputStyle}>
-					{Strings.pick_end_date_time.toUpperCase()}
-				</Text>
-				<DatePickerWeb
-					selected={moment(date).format('YYYY-MM-DD HH:mm')}
-					handleChange={val => {
-						setDate(val);
-						console.log('DatePickerWeb', val);
-					}}
-				/>
-			</View>
+			{/* <View style={styles.viewInput}>
+        <Text style={styles.inputStyle}>
+          {Strings.pick_end_date_time.toUpperCase()}
+        </Text>
+        <DatePickerWeb
+          selected={moment(date).format("YYYY-MM-DD HH:mm")}
+          handleChange={(val) => {
+            setDate(val);
+            console.log("DatePickerWeb", val);
+          }}
+        />
+      </View> */}
+
+			<TouchableOpacity
+				onPress={() => {
+					dateTimePickerRef.current.handlePickDateTime();
+					setIsSelected(0);
+				}}>
+				<View style={styles.viewInput}>
+					<ExpoFastImage
+						resizeMode={'contain'}
+						source={icons.calendar_today}
+						style={styles.leftImg}
+					/>
+					<Text style={styles.inputStyle}>{date}</Text>
+				</View>
+			</TouchableOpacity>
+			<DatePickerWeb
+				selected={
+					date === Strings.pick_end_date_time.toUpperCase()
+						? moment().add(10, 'minutes').format('YYYY-MM-DDTHH:mm').toString()
+						: date
+				}
+				handleChange={val => {
+					console.log('DatePickerWeb', val);
+					// setDate(val);
+					handleDateValidation(val);
+				}}
+				ref={dateTimePickerRef}
+			/>
 
 			<View style={styles.viewOption}>
 				<Switch
@@ -154,30 +218,36 @@ const SetDurationView: React.FC<Props> = props => {
 				</Text>
 			</View>
 			{isTimePick && (
-				<View
-					style={[
-						styles.viewInput,
-						{
-							opacity:
-								date === Strings.pick_end_date_time.toUpperCase() ? 0.5 : 1
-						}
-					]}>
-					<ExpoFastImage
-						//resizeMode={ExpoFastImage.resizeMode.contain}
-						source={icons.calendar_today}
-						style={styles.leftImg}
-					/>
-					<Text style={styles.inputStyle}>
-						{Strings.pick_participate_bet_end_date_time.toUpperCase()}
-					</Text>
-					<DatePickerWeb
+				<>
+					<TouchableOpacity
+						style={[
+							styles.viewInput,
+							{
+								opacity:
+									date === Strings.pick_end_date_time.toUpperCase() ? 0.5 : 1
+							}
+						]}
+						onPress={() => {
+							dateTimePickerRef.current.handlePickDateTime();
+							setIsSelected(1);
+						}}>
+						<ExpoFastImage
+							//resizeMode={ExpoFastImage.resizeMode.contain}
+							source={icons.calendar_today}
+							style={styles.leftImg}
+						/>
+						<Text style={styles.inputStyle}>{endDate}</Text>
+					</TouchableOpacity>
+					{/* <DatePickerWeb
 						selected={moment(endDate).format('YYYY-MM-DD HH:mm')}
+						maximumDate={date}
 						handleChange={val => {
 							setEndDate(val);
 							console.log('DatePickerWeb', val);
 						}}
-					/>
-				</View>
+						ref={dateTimePickerEndRef}
+					/> */}
+				</>
 			)}
 			{/* <DateTimePickerComponet
         onDateChanged={async value => {
@@ -262,22 +332,30 @@ const styles = StyleSheet.create({
 
 	viewInput: {
 		width: '100%',
-		marginVertical: verticalScale(16),
-		flexDirection: 'column'
+		marginTop: verticalScale(16),
+		flexDirection: 'row',
+		borderBottomColor: colors.gray,
+		borderBottomWidth: 1,
+		paddingBottom: verticalScale(Platform.OS === 'web' ? 8 : 0)
 	},
 	inputStyle: {
 		color: colors.white,
 		fontSize: moderateScale(12),
 		fontFamily: Fonts.type.Inter_ExtraBold,
-		marginBottom: verticalScale(8),
-		textAlign: 'left'
+		textAlign: 'left',
+		marginBottom: verticalScale(Platform.OS !== 'web' ? 8 : 0),
+		...Platform.select({
+			web: {
+				alignSelf: 'center'
+			}
+		})
 	},
 	leftImg: {
 		height: 17,
 		width: 17,
 		marginRight: verticalScale(8),
 		marginLeft: verticalScale(2),
-		tintColor: colors.black,
+		tintColor: colors.white,
 		top: Platform.OS === 'ios' ? -2 : 0
 	},
 	viewOption: {

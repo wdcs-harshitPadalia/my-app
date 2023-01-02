@@ -59,7 +59,8 @@ const VideoContentList: React.FC<ContentList> = props => {
 
 const styles = StyleSheet.create({
 	container: {
-		margin: verticalScale(10)
+		margin: verticalScale(10),
+		flex: 1
 	}
 });
 

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, TextInputProps, Text} from 'react-native';
+import {View, StyleSheet, TextInputProps, Text, Platform} from 'react-native';
 import icons from '../assets/icon';
 import Strings from '../constants/strings';
 
@@ -82,7 +82,7 @@ const ShareOptionView: React.FC<Props> = props => {
 				style={styles.loginButtonSocial}
 				leftIconPath={icons.ic_share_upload}
 			/>
-			{isShowAnimation && (
+			{isShowAnimation && Platform.OS !== "web" && (
 				<LottieView
 					style={{
 						height: 300,

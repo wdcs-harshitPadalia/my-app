@@ -35,6 +35,7 @@ export interface UserState {
 			balanceVisible: string;
 			betsVisible: string;
 			messagesVisible: string;
+			videoCount: number;
 		};
 		token: string;
 		isNewUser: boolean;
@@ -81,6 +82,7 @@ const initialState: UserState = {
 		balanceVisible: '',
 		betsVisible: '',
 		messagesVisible: '',
+		videoCount: 0,
 		token: '',
 		isNewUser: false,
 		isAppLaunched: true,
@@ -142,6 +144,11 @@ export const userInfoSlice = createSlice({
 		updateSyncContact: (state, action: PayloadAction<any>) => {
 			console.log('action.payload.updateSyncContact', action.payload);
 			state.data.isSyncContact = action.payload;
+		},
+		resetNotificationData: (state, action: PayloadAction<any>) => {
+			//console.log('state.data?>?', state.data);
+			state.notification = {};
+			// console.log('state.data?>?', state.data);
 		}
 	},
 
@@ -212,7 +219,8 @@ export const {
 	updateBiometric,
 	updateChatBadgeStatus,
 	updateSyncContact,
-	updateTotalBalance
+	updateTotalBalance,
+	resetNotificationData
 } = userInfoSlice.actions;
 
 export default userInfoSlice.reducer;

@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-lone-blocks */
 import React, {useEffect, useState} from 'react';
-import {Alert, BackHandler, View} from 'react-native';
+import {Alert, BackHandler, View, Platform} from 'react-native';
 import {Text} from 'react-native-elements';
 import icons from '../../../../assets/icon';
 import Strings from '../../../../constants/strings';
@@ -663,17 +663,20 @@ const JoinBetCreateScreen: React.FC<any> = () => {
 								userInfo.user.userName
 							)}
 						</Text>
-						<LottieView
-							style={{
-								height: 300,
-								width: 300,
-								alignSelf: 'center',
-								position: 'absolute'
-							}}
-							source={require('../../../../assets/animations/confetti_day.json')}
-							autoPlay
-							loop={false}
-						/>
+
+						{Platform.OS !== 'web' && (
+							<LottieView
+								style={{
+									height: 300,
+									width: 300,
+									alignSelf: 'center',
+									position: 'absolute'
+								}}
+								source={require('../../../../assets/animations/confetti_day.json')}
+								autoPlay
+								loop={false}
+							/>
+						)}
 					</View>
 				);
 		}

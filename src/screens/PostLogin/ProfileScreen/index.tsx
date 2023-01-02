@@ -5,10 +5,9 @@ import {
 } from '@react-navigation/native';
 import {useWalletConnect} from '@walletconnect/react-native-dapp';
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, Share, View} from 'react-native';
+import {Alert, ScrollView, Share, View} from 'react-native';
 import DropShadow from 'react-native-drop-shadow';
 import {Text} from 'react-native-elements';
-import {ScrollView} from 'react-native-gesture-handler';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
 import icons from '../../../assets/icon';
@@ -401,6 +400,9 @@ const ProfileScreen: React.FC<any> = props => {
 											isMyProfile: true
 										});
 									}}
+									onVideosBtnPress={() => {
+										navigation.navigate(ScreenNames.VideoContentScreen, {});
+									}}
 									onFollowersPress={() => {
 										navigation.navigate(ScreenNames.FollowingFollowersScreen, {
 											userId: userProfileInfo?.user?._id,
@@ -428,6 +430,10 @@ const ProfileScreen: React.FC<any> = props => {
 									createBtnText={Strings.my_bets.toUpperCase()}
 									walletBtnText={Strings.str_wallet.toUpperCase()}
 									walletBtnColorArray={defaultTheme.primaryGradientColor}
+									videosCount={userProfileInfo?.user?.videoCount}
+									isVideoViewVisible={
+										userProfileInfo?.user?.videoCount > 0 ? true : false
+									}
 									isSendMsgShow={true}
 								/>
 							</View>

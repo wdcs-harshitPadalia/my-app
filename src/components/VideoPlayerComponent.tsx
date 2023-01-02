@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, Platform} from 'react-native';
 import Modal from 'react-native-modal';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import { Video, AVPlaybackStatus } from 'expo-av';
+import {Video, AVPlaybackStatus} from 'expo-av';
 
 import {horizontalScale, verticalScale} from '../theme';
 
@@ -34,19 +34,36 @@ const VideoPlayerComponent: React.FC<Props> = props => {
           <Image style={styles.imgClose} source={icons.close} />
         </TouchableOpacity> */}
 
-				<Video
+				{/* <Video
 					source={{uri: url}}
-					controls={true}
-					paused={false}
-					fullscreen={Platform.OS === 'ios' ? true : false}
-					fullscreenOrientation={'landscape'}
-					resizeMode="contain"
+					// controls={true}
+					// paused={false}
+					// fullscreen={Platform.OS === 'ios' ? true : false}
+					// fullscreenOrientation={'landscape'}
+					//resizeMode=''
 					style={{
 						flex: 1
 					}}
-					onFullscreenPlayerWillDismiss={() => console.log('call')}
+					// onFullscreenPlayerWillDismiss={() => console.log('call')}
+					// poster={poster}
+					// posterResizeMode={'cover'}
+				/> */}
+				<Video
+					// ref={video}
+					style={{
+						flex: 1,
+						height: '100%',
+						width: '100%'
+					}}
+					shouldPlay
+					source={{
+						uri: url
+					}}
+					useNativeControls
+					resizeMode="cover"
+					isLooping
 					poster={poster}
-					posterResizeMode={'cover'}
+					// onPlaybackStatusUpdate={status => setStatus(() => status)}
 				/>
 			</SafeAreaView>
 		</Modal>

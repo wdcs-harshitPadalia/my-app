@@ -117,7 +117,7 @@ const icons = {
 	arrowForward: require('../icon/arrow_forward.png'),
 	medal: require('../icon/medal.png'),
 	lock: require('../icon/lock.png'),
-	star_congrates: require('../icon/star_congrates.png'),
+	star_congrats: require('../icon/star_congrats.png'),
 	ellipse: require('../icon/ellipse.png'),
 	whistle: require('../icon/whistle.png'),
 	hammer: require('../icon/hammer.png'),
@@ -162,6 +162,20 @@ const icons = {
 	ic_contact_green: require('../icon/search_person_green.png'),
 	ic_checkbox: require('../icon/checkbox_gradiant.png'),
 	ic_check_gradiant: require('../icon/gradiant_round_check.png'),
-	swipUp: require('../icon/swipUp.png')
+	emoji_amazing: require('../icon/emoji_amazing.png'),
+	emoji_surprised: require('../icon/emoji_surprised.png'),
+	emoji_wow: require('../icon/emoji_wow.png'),
+	emoji_hey: require('../icon/emoji_hey.png'),
+	emoji_omg: require('../icon/emoji_omg.png'),
+	emoji_rocket: require('../icon/emoji_rocket.png'),
+	emoji_blowout: require('../icon/emoji_blownout.png'),
+	swipUp: require('../icon/swipUp.png'),
+	flash_off: require('../icon/flash_off.png'),
+	flip_camera_android: require('../icon/flip_camera_android.png'),
+	night_mode: require('../icon/night_mode.png'),
+	camera_shutter: require('../icon/camera_shutter.png'),
+	flash_on: require('../icon/flash_on.png'),
+	camera_record: require('../icon/camera_record.png'),
+	delete_white: require('../icon/ic_delete.png')
 };
 export default icons;

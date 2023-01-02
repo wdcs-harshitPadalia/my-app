@@ -59,7 +59,9 @@ const colors = {
 	blackGray: '#262626',
 	redTag: '#EE0041',
 	progressStart: '#FF0000',
-	textPink: 'rgba(212, 0, 107,1)'
+	textPink: 'rgba(212, 0, 107,1)',
+	graytransparent: 'rgba(46, 49, 49, 0.4)',
+	blackTransparent05: 'rgba(0, 0, 0, 0.5)'
 };
 
 export default colors;

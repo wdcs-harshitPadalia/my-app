@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, Text, View, Platform} from 'react-native';
-import FastImage from 'react-native-fast-image';
+import ExpoFastImage from 'expo-fast-image';
 import {verticalScale} from '../theme';
 import colors from '../theme/colors';
 import {defaultTheme} from '../theme/defaultTheme';
@@ -37,7 +37,7 @@ const NotificationPopUpComponent: React.FC<NotificationProps> = props => {
 	} = props;
 	return (
 		<View style={styles.container}>
-			<FastImage style={styles.img} resizeMode="contain" source={imgPath} />
+			<ExpoFastImage style={styles.img} resizeMode="contain" source={imgPath} />
 			{isTitleGradient ? (
 				Platform.OS === 'web' ? (
 					<Text

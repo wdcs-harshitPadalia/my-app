@@ -5,7 +5,7 @@ import React, {
 	useRef,
 	useState
 } from 'react';
-import {View} from 'react-native';
+import {Alert, View} from 'react-native';
 import moment from 'moment';
 import colors from '../theme/colors';
 
@@ -63,7 +63,12 @@ const DatePickerWeb = forwardRef((props: DatePickerWebProps, ref) => {
 	// as the second argument
 	useImperativeHandle(ref, () => ({
 		handlePickDateTime() {
-			dateRef.current.showPicker();
+			const userAgentName = window.navigator.userAgent.toLowerCase();
+			if (userAgentName.includes('iphone')) {
+				dateRef.current.focus();
+			} else {
+				dateRef.current.showPicker();
+			}
 		}
 	}));
 
@@ -79,10 +84,10 @@ const DatePickerWeb = forwardRef((props: DatePickerWebProps, ref) => {
 				style={{flex: 1, backgroundColor: colors.black, opacity: 0}}
 				max={maximumDate && moment(maximumDate).format('YYYY-MM-DDTHH:mm')}
 				min={moment().add(10, 'minutes').format('YYYY-MM-DDTHH:mm').toString()}
-				defaultValue={moment()
-					.add(10, 'minutes')
-					.format('YYYY-MM-DDTHH:mm')
-					.toString()}
+				// defaultValue={moment()
+				// 	.add(10, 'minutes')
+				// 	.format('YYYY-MM-DDTHH:mm')
+				// 	.toString()}
 			/>
 		</View>
 	);

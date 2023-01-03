@@ -1,10 +1,5 @@
 import React, {useState} from 'react';
-import {
-	Platform,
-	StyleSheet,
-	TouchableOpacity,
-	View
-} from 'react-native';
+import {Platform, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Image, Text} from 'react-native-elements';
 import {LinearGradient} from 'expo-linear-gradient';
 import {useSelector} from 'react-redux';
@@ -87,32 +82,73 @@ export const CustomTabBar = ({state, descriptors, navigation}) => {
 
 	let hasNotch = DeviceInfo.hasNotch();
 
+	const myRef = React.useRef();
+
 	const [modalVisible, setModalVisible] = useState(false);
 	const [isMediaTypeVisible, setIsMediaTypeVisible] = useState(false);
 
 	const pickVideoFromGallery = async () => {
 		setTimeout(() => {
-			ImagePicker.launchImageLibrary(
-				{
-					mediaType: 'video',
-					includeBase64: true,
-					maxHeight: 800,
-					maxWidth: 800,
-					videoQuality: 'medium'
-				},
-				async response => {
-					console.log({response});
-					setIsMediaTypeVisible(false);
-					if (response.didCancel) {
-						console.log(' Photo picker didCancel');
-					} else if (response.error) {
-						console.log('ImagePicker Error: ', response.error);
-					} else {
-						//checkVideoValidation(response?.assets[0]);
+			if (Platform.OS === 'web') {
+				myRef.current.click(function () {
+					changeHandler();
+				});
+			} else {
+				ImagePicker.launchImageLibrary(
+					{
+						mediaType: 'video',
+						includeBase64: true,
+						maxHeight: 800,
+						maxWidth: 800,
+						videoQuality: 'medium'
+					},
+					async response => {
+						console.log({response});
+						setIsMediaTypeVisible(false);
+						if (response.didCancel) {
+							console.log(' Photo picker didCancel');
+						} else if (response.error) {
+							console.log('ImagePicker Error: ', response.error);
+						} else {
+							//checkVideoValidation(response?.assets[0]);
+						}
 					}
-				}
-			);
+				);
+			}
 		}, 200);
+	};
+
+	const changeHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
+		setIsMediaTypeVisible(false);
+
+		if (!event.target.files) {
+			return;
+		}
+		// sendImageMessage(event.target.files[0])
+		// let blobURL = URL.createObjectURL(
+		// 	event.target.files[0] ? URL.createObjectURL(event.target.files[0]) : 'default.mp4'
+		// );
+
+		// const videoMetaData = await getVideoDuration(event.target.files[0]);
+		// console.log(videoMetaData.src, 'dslklskdlk<>>');
+		// navigation.navigate(ScreenNames.MediaPage, {
+		// 	path: duration.src,
+		// 	type:  event.target.files[0].type,
+		// 	from: 'launchImageLibrary'
+		// });
+
+		if (event.target.files[0].type) {
+			navigation.navigate(ScreenNames.MediaPage, {
+				path: event.target.files[0],
+				type: event.target.files[0].type,
+				from: 'launchImageLibrary'
+			});
+			// navigation.navigate(ScreenNames.VideoCreationScreen, {
+			// 	path: event.target.files[0],
+			// 	type: event.target.files[0].type,
+			// 	from: 'launchImageLibrary'
+			// });
+		}
 	};
 
 	// const checkVideoValidation = async responseData => {
@@ -368,6 +404,15 @@ export const CustomTabBar = ({state, descriptors, navigation}) => {
 				onPressGallery={pickVideoFromGallery}
 				onPressCamera={() => navigation.navigate(ScreenNames.CameraPage)}
 				isHideAvatar={true}
+			/>
+			<input
+				ref={myRef}
+				id="input"
+				type="file"
+				name="file"
+				accept="video/*"
+				onChange={changeHandler}
+				style={{opacity: 0, height: 0, width: 0}}
 			/>
 		</LinearGradient>
 	);

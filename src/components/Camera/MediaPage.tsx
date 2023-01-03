@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {
 	StyleSheet,
 	View,
@@ -21,8 +21,11 @@ import {colors} from 'react-native-elements';
 import {defaultTheme} from '../../theme/defaultTheme';
 import {
 	gradientColorAngle,
+	height,
 	horizontalScale,
-	SAFE_AREA_PADDING
+	SAFE_AREA_PADDING,
+	screenHeight,
+	verticalScale
 } from '../../theme/metrics';
 import ScreenNames from '../../navigation/screenNames';
 // import { LoadError } from 'react-native-video';
@@ -35,6 +38,7 @@ type Props = NativeStackScreenProps<'MediaPage'>;
 export function MediaPage({navigation, route}: Props): React.ReactElement {
 	const {path, type, from} = route.params;
 	const [hasMediaLoaded, setHasMediaLoaded] = useState(false);
+	const [videoData, setVideoData] = useState({});
 	const isForeground = useIsForeground();
 	const isScreenFocused = useIsFocused();
 	let isVideoPaused = !isForeground || !isScreenFocused;
@@ -63,13 +67,12 @@ export function MediaPage({navigation, route}: Props): React.ReactElement {
 		console.log(`failed to load media: ${JSON.stringify(error)}`);
 	}, []);
 
-	const source = useMemo(
-		() => ({uri: Platform.OS === 'android' ? `${path}` : `file://${path}`}),
-		[path]
-	);
+	useEffect(() => {
+		callVideoMetaData();
+	}, [path]);
 
 	const screenStyle = useMemo(
-		() => ({opacity: hasMediaLoaded ? 1 : 0}),
+		() => ({opacity: hasMediaLoaded ? 0 : 0}),
 		[hasMediaLoaded]
 	);
 
@@ -77,35 +80,65 @@ export function MediaPage({navigation, route}: Props): React.ReactElement {
 		setIsVideoPlay(!isVideoPlay);
 	};
 
+	const callVideoMetaData = async () => {
+		const videoMetaData = await getVideoMetaData(event.target.files[0]);
+		setVideoData(videoMetaData);
+	};
+
+	const getVideoMetaData = () =>
+		new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.onload = () => {
+				const media = new Audio(reader.result);
+				media.onloadedmetadata = () => resolve(media);
+			};
+			reader.readAsDataURL(path);
+			reader.onerror = error => reject(error);
+		});
+
 	return (
-		<View style={[styles.container, screenStyle]}>
-			<TouchableOpacity
-				style={StyleSheet.absoluteFill}
-				onPress={onTap}
-				activeOpacity={1}>
-				<Video
-					source={source}
-					style={StyleSheet.absoluteFill}
-					paused={isVideoPlay}
-					resizeMode="cover"
-					posterResizeMode="cover"
-					allowsExternalPlayback={false}
-					automaticallyWaitsToMinimizeStalling={false}
-					disableFocus={true}
-					repeat={true}
-					useTextureView={false}
-					controls={false}
-					playWhenInactive={true}
-					ignoreSilentSwitch="ignore"
-					onReadyForDisplay={onMediaLoadEnd}
-					onLoad={onMediaLoad}
-					onError={onMediaLoadError}
-				/>
-			</TouchableOpacity>
-			<TouchableOpacity style={styles.closeButton} onPress={navigation.goBack}>
-				<Image source={icons.back} style={styles.closeIcon} />
-			</TouchableOpacity>
-			<ButtonGradient
+		<>
+			{videoData && (
+				<>
+					<video
+						autoPlay={true}
+						loop={true}
+						src={videoData.src}
+						width="100%"
+						style={{
+							backgroundColor: defaultTheme.backGroundColor,
+							paddingBottom: 70
+						}}
+						height={screenHeight}
+						controls></video>
+					<TouchableOpacity
+						style={styles.closeButton}
+						onPress={navigation.goBack}>
+						<Image source={icons.back} style={styles.closeIcon} />
+					</TouchableOpacity>
+					<ButtonGradient
+						style={styles.button}
+						buttonText={Strings.continue}
+						buttonTextcolor={colors.white}
+						colorArray={defaultTheme.secondaryGradientColor}
+						angle={gradientColorAngle}
+						onPress={() => {
+							if (videoData?.duration <= 3 || videoData?.duration > 15) {
+								alert(Strings.upload_video_15s)
+							} else {
+								setIsVideoPlay(true);
+								navigation.navigate(ScreenNames.VideoCreationScreen, {
+									path: path,
+									type: type,
+									from: from
+								});
+							}
+						}}
+					/>
+				</>
+			)}
+
+			{/* <ButtonGradient
 				style={styles.button}
 				buttonText={Strings.continue}
 				buttonTextcolor={colors.white}
@@ -128,8 +161,8 @@ export function MediaPage({navigation, route}: Props): React.ReactElement {
 						});
 					}
 				}}
-			/>
-		</View>
+			/> */}
+		</>
 	);
 }
 
@@ -138,14 +171,15 @@ const styles = StyleSheet.create({
 		flex: 1,
 		alignItems: 'center',
 		justifyContent: 'center',
-		backgroundColor: 'white'
+		backgroundColor: 'white',
+		width: '100%'
 	},
 	closeButton: {
 		position: 'absolute',
 		top: SAFE_AREA_PADDING.paddingTop,
 		left: SAFE_AREA_PADDING.paddingLeft,
-		width: 40,
-		height: 40
+		width: 50,
+		height: 50
 	},
 	saveButton: {
 		position: 'absolute',
@@ -172,6 +206,7 @@ const styles = StyleSheet.create({
 		borderRadius: 8,
 		justifyContent: 'center',
 		position: 'absolute',
-		bottom: SAFE_AREA_PADDING.paddingBottom
+		bottom: SAFE_AREA_PADDING.paddingBottom,
+		width: '90%'
 	}
 });

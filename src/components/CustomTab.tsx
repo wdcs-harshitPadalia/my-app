@@ -452,8 +452,21 @@ const styles = (
 			shadowOpacity: 0.8,
 			elevation: 3,
 			shadowRadius: 5,
-			height: 26.22,
-			width: 40
+			...Platform.select({
+				web: {
+					height: 32,
+					width: 32,
+					borderRadius: 16
+				},
+				ios: {
+					height: 26.22,
+					width: 40
+				},
+				android: {
+					height: 26.22,
+					width: 40
+				}
+			})
 		},
 		containerWithOutShadow: {
 			shadowColor: colors.black,

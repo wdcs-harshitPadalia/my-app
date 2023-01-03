@@ -4,7 +4,8 @@ import {
 	StyleSheet,
 	TextInputProps,
 	Text,
-	TouchableOpacity
+	TouchableOpacity,
+	Platform
 } from 'react-native';
 import ExpoFastImage from 'expo-fast-image';
 import icons from '../assets/icon';
@@ -107,12 +108,23 @@ const BetsResultView: React.FC<Props> = props => {
 							style={[styles.winAmountStyle, {color: colors.placeholderColor}]}>
 							{Strings.you_will_win + ': '}
 						</Text>
-						<GradientText
-							colors={defaultTheme.textGradientColor}
-							style={styles.winAmountStyle}>
-							{Strings.str_dollor +
-								getRoundDecimalValue(betUsdAmount * betOdds - betUsdAmount)}
-						</GradientText>
+						{Platform.OS === 'web' ? (
+							<Text
+								style={[
+									styles.winAmountStyle,
+									{color: defaultTheme.textGradientColor[1]}
+								]}>
+								{Strings.str_dollor +
+									getRoundDecimalValue(betUsdAmount * betOdds - betUsdAmount)}
+							</Text>
+						) : (
+							<GradientText
+								colors={defaultTheme.textGradientColor}
+								style={styles.winAmountStyle}>
+								{Strings.str_dollor +
+									getRoundDecimalValue(betUsdAmount * betOdds - betUsdAmount)}
+							</GradientText>
+						)}
 					</View>
 				)}
 			</View>
@@ -180,7 +192,14 @@ const BetsResultView: React.FC<Props> = props => {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1
+		...Platform.select({
+			ios: {
+				flex: 1
+			},
+			android: {
+				flex: 1
+			}
+		})
 	},
 	viewDetails: {
 		backgroundColor: defaultTheme.secondaryBackGroundColor,

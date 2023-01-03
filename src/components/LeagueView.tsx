@@ -4,7 +4,8 @@ import {
 	TextInputProps,
 	ImageSourcePropType,
 	Text,
-	TouchableOpacity
+	TouchableOpacity,
+	Platform
 } from 'react-native';
 import {Fonts, moderateScale, verticalScale} from '../theme';
 import ExpoFastImage from 'expo-fast-image';
@@ -36,11 +37,21 @@ const LeagueView: React.FC<Props> = props => {
 			) : null}
 
 			{isGradient ? (
-				<GradientText
-					colors={defaultTheme.primaryGradientColor}
-					style={styles.titleStyle}>
-					{title}
-				</GradientText>
+				Platform.OS === 'web' ? (
+					<Text
+						style={[
+							styles.titleStyle,
+							{color: defaultTheme.primaryGradientColor[0]}
+						]}>
+						{title}
+					</Text>
+				) : (
+					<GradientText
+						colors={defaultTheme.primaryGradientColor}
+						style={styles.titleStyle}>
+						{title}
+					</GradientText>
+				)
 			) : (
 				<Text style={leftIcon ? styles.titleStyle : styles.titleWithSpaceStyle}>
 					{title}

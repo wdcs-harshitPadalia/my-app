@@ -1,5 +1,5 @@
 import React, {useEffect, useRef} from 'react';
-import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, Image, TouchableOpacity, Platform} from 'react-native';
 import Strings from '../constants/strings';
 import {Fonts, horizontalScale, verticalScale} from '../theme';
 import colors from '../theme/colors';
@@ -38,11 +38,21 @@ const BottomComponent = ({onPressRecoverFunds}) => {
 						style={styles.optionTouchableContainer}
 						activeOpacity={0.6}
 						onPress={onPressRecoverFunds}>
-						<GradientText
-							colors={defaultTheme.primaryGradientColor}
-							style={styles.optionText}>
-							{Strings.resign_recover_fund}
-						</GradientText>
+						{Platform.OS === 'web' ? (
+							<Text
+								style={[
+									styles.optionText,
+									{color: defaultTheme.primaryGradientColor[0]}
+								]}>
+								{Strings.resign_recover_fund}
+							</Text>
+						) : (
+							<GradientText
+								colors={defaultTheme.primaryGradientColor}
+								style={styles.optionText}>
+								{Strings.resign_recover_fund}
+							</GradientText>
+						)}
 						<Image
 							source={icons.arrowForward}
 							style={{height: 18, width: 18}}

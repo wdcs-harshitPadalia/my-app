@@ -6,7 +6,8 @@ import {
 	Text,
 	View,
 	FlatList,
-	TouchableOpacity
+	TouchableOpacity,
+	Platform
 } from 'react-native';
 import {Fonts, horizontalScale, moderateScale, verticalScale} from '../theme';
 import colors from '../theme/colors';
@@ -100,7 +101,7 @@ const InviteFriendView: React.FC<Props> = props => {
 		</TouchableOpacity>
 	);
 	return (
-		<View style={{flex: 1}}>
+		<View style={{flex: 1, width:'100%'}}>
 			<View style={[styles.container, {...props.style}]}>
 				<Text style={styles.titleStyle}>{title}</Text>
 				<InputComponent
@@ -154,7 +155,12 @@ const styles = StyleSheet.create({
 		borderRadius: verticalScale(10),
 		backgroundColor: colors.black,
 		paddingBottom: verticalScale(8),
-		flex: 1
+		flex: 1,
+		...Platform.select({
+			web: {
+				width: '100%'
+			}
+		})
 	},
 	titleStyle: {
 		fontSize: moderateScale(18),
@@ -165,7 +171,14 @@ const styles = StyleSheet.create({
 	},
 	marginInput: {
 		marginVertical: verticalScale(16),
-		marginHorizontal: verticalScale(16)
+		...Platform.select({
+			ios: {
+				marginHorizontal: verticalScale(16)
+			},
+			android: {
+				marginHorizontal: verticalScale(16)
+			}
+		})
 	},
 	userView: {
 		marginVertical: verticalScale(8),

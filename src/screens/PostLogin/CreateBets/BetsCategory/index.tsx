@@ -8,6 +8,7 @@ import {
 	FlatList,
 	Keyboard,
 	Linking,
+	Platform,
 	Share,
 	TouchableOpacity,
 	View
@@ -316,6 +317,9 @@ const BetsCategoryScreen: React.FC<any> = () => {
 				return;
 			}
 			let betEndDate = Date.parse(moment.utc(customDate));
+			if (Platform.OS === 'web') {
+				betEndDate = Date.parse(customDate);
+			}
 			if (
 				userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask' &&
 				!connector.connected
@@ -406,6 +410,9 @@ const BetsCategoryScreen: React.FC<any> = () => {
 				return;
 			}
 			let betEndDate = Date.parse(moment.utc(customDate));
+			if (Platform.OS === 'web') {
+				betEndDate = Date.parse(customDate);
+			}
 			if (
 				userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask' &&
 				!connector.connected
@@ -895,6 +902,10 @@ const BetsCategoryScreen: React.FC<any> = () => {
 		} else if (isSelectedLeagueType === 1) {
 			let betEndDate = Date.parse(moment.utc(customDate));
 			let participationEndDate = Date.parse(moment.utc(betEndTime));
+			if (Platform.OS === 'web') {
+				betEndDate = Date.parse(customDate);
+				participationEndDate = Date.parse(betEndTime);
+			}
 
 			uploadData = {
 				custom_unique_id: uniqId,
@@ -2255,6 +2266,9 @@ const BetsCategoryScreen: React.FC<any> = () => {
 						return;
 					}
 					let betEndDate = Date.parse(moment.utc(customDate));
+					if (Platform.OS === 'web') {
+						betEndDate = Date.parse(customDate);
+					}
 					if (
 						userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask' &&
 						!connector.connected
@@ -2376,6 +2390,9 @@ const BetsCategoryScreen: React.FC<any> = () => {
 				}
 
 				let betEndDate = Date.parse(moment.utc(customDate));
+				if (Platform.OS === 'web') {
+					betEndDate = Date.parse(customDate);
+				}
 				if (
 					userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask' &&
 					!connector.connected

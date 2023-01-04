@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Platform} from 'react-native';
 import {verticalScale} from '../../../../theme';
 import colors from '../../../../theme/colors';
 import {defaultTheme} from '../../../../theme/defaultTheme';
@@ -27,7 +27,12 @@ const styles = StyleSheet.create({
 	},
 	continueFeedButton: {
 		position: 'absolute',
-		bottom: 10
+		bottom: 10,
+		...Platform.select({
+			web: {
+				width: '100%'
+			}
+		})
 	}
 });
 

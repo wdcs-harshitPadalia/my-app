@@ -113,7 +113,17 @@ const styles = StyleSheet.create({
 	viewDetails: {
 		backgroundColor: defaultTheme.secondaryBackGroundColor,
 		borderRadius: verticalScale(10),
-		alignItems: 'center',
+		...Platform.select({
+			web: {
+				alignItems: 'stretch'
+			},
+			ios: {
+				alignItems: 'center'
+			},
+			android: {
+				alignItems: 'center'
+			}
+		}),
 		justifyContent: 'center',
 		paddingVertical: verticalScale(16),
 		marginVertical: verticalScale(16)

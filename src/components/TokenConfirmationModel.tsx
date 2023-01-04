@@ -53,7 +53,12 @@ const TokenConfirmationModel: React.FC<Props> = props => {
 					</View>
 					<View
 						style={{
-							marginHorizontal: horizontalScale(8)
+							marginHorizontal: horizontalScale(8),
+							...Platform.select({
+								web: {
+									width: '90%'
+								}
+							})
 						}}>
 						<Text style={styles.modalDescTextStyle}>
 							{infoDescription.replace('%d', tokenPrice)}

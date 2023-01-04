@@ -64,7 +64,7 @@ const MoreAboutStrikePolicyScreen: React.FC = () => {
 						backgroundColor: defaultTheme.backGroundColor,
 						marginVertical: verticalScale(10)
 					}}>
-					<Image source={icons.ic_info} style={{height: 54, width: 54}} />
+					<Image source={icons.ic_info} style={{height: 54, width: 54, borderRadius: 27}} />
 				</View>
 
 				{/* <View

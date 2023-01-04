@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import {View, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, TouchableOpacity, StyleSheet, Platform} from 'react-native';
 import React from 'react';
 
 import {Text} from 'react-native-elements';
@@ -168,6 +168,11 @@ export const BetEventtInfoView = ({item, cellTapped}) => {
 const styles = StyleSheet.create({
 	container: {
 		// flex: 1,
+		...Platform.select({
+			web: {
+				width: '100%'
+			}
+		}),
 		borderRadius: moderateScale(15),
 		overflow: 'hidden',
 		marginBottom: verticalScale(8)

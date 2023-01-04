@@ -402,7 +402,11 @@ export const CustomTabBar = ({state, descriptors, navigation}) => {
 				isVisible={isMediaTypeVisible}
 				setIsVisible={setIsMediaTypeVisible}
 				onPressGallery={pickVideoFromGallery}
-				onPressCamera={() => navigation.navigate(ScreenNames.CameraPage)}
+				onPressCamera={() =>
+					Platform.OS === 'web'
+						? pickVideoFromGallery()
+						: navigation.navigate(ScreenNames.CameraPage)
+				}
 				isHideAvatar={true}
 			/>
 			<input

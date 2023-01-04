@@ -35,7 +35,7 @@ import {Video, getRealPath} from 'react-native-compressor';
 
 const VideoCreationScreen = () => {
 	const navigation = useNavigation();
-	const {path, type, from} = useRoute().params;
+	const {path, type, from, videoDuration} = useRoute().params;
 	const dispatch = useDispatch();
 
 	const userInfo = useSelector((state: RootState) => {
@@ -79,14 +79,16 @@ const VideoCreationScreen = () => {
 	const createFormData = (videoCompress: string) => {
 		const formData = new FormData();
 
-		let filename = videoCompress.replace(/^.*[\\\/]/, '');
 		if (betSelectedId) {
 			formData.append('bet_id', betSelectedId);
 		}
-		formData.append('duration', videoDuration);
 		if (Platform.OS === 'web') {
+			formData.append('duration', videoDuration);
 			formData.append('video', path);
 		} else {
+			let filename = videoCompress.replace(/^.*[\\\/]/, '');
+			formData.append('duration', videoDuration);
+
 			formData.append('video', {
 				name: filename,
 				type: `video/${filename.split('.')[1]}`,
@@ -118,7 +120,7 @@ const VideoCreationScreen = () => {
 				}
 			);
 
-			 realPath = await videoCompress;
+			realPath = await videoCompress;
 		}
 
 		fetch(ApiBaseUrl + ApiConstants.uploadShortVideo, {

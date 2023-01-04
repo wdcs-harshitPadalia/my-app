@@ -79,19 +79,12 @@ const VideoCreationScreen = () => {
 	const createFormData = (videoCompress: string) => {
 		const formData = new FormData();
 
-		let filename = videoCompress.replace(/^.*[\\\/]/, '');
+		//let filename = videoCompress.replace(/^.*[\\\/]/, '');
 		if (betSelectedId) {
 			formData.append('bet_id', betSelectedId);
 		}
 		formData.append('video', {
-			name: filename,
-			type: `video/${filename.split('.')[1]}`,
-			uri:
-				Platform.OS === 'android'
-					? Platform.OS === 'android' && from === 'launchImageLibrary'
-						? videoCompress
-						: videoCompress.replace('file://', 'file:///')
-					: videoCompress.replace('file://', '')
+			path
 		});
 
 		console.log('formData', JSON.stringify(formData));
@@ -112,36 +105,32 @@ const VideoCreationScreen = () => {
 
 		// const realPath = await videoCompress;
 
-		// fetch(ApiBaseUrl + ApiConstants.uploadShortVideo, {
-		// 	method: Api.POST,
-		// 	body: createFormData(
-		// 		Platform.OS === 'android' && from === 'launchImageLibrary'
-		// 			? realPath
-		// 			: videoCompress
-		// 	),
-		// 	headers: {
-		// 		Authorization: 'Bearer ' + userInfo.token
-		// 	}
-		// })
-		// 	.then(response => response.json())
-		// 	.then(response => {
-		// 		dispatch(updateApiLoader({apiLoader: false}));
-		// 		console.log('upload succes', JSON.stringify(response));
-		// 		if (response?.statusCode == 200) {
-		// 			setVideoUploadUrl(response?.data);
-		// 			seIsProgress('100%');
-		// 			setStep(2);
-		// 			setIsTitle('');
-		// 			setIsShareScreen(true);
-		// 		} else {
-		// 			Alert.alert('', response?.message);
-		// 		}
-		// 	})
-		// 	.catch(error => {
-		// 		console.log('upload error', JSON.stringify(error));
-		// 		dispatch(updateApiLoader({apiLoader: false}));
-		// 		// navigation.goBack();
-		// 	});
+		fetch(ApiBaseUrl + ApiConstants.uploadShortVideo, {
+			method: Api.POST,
+			body: createFormData(),
+			headers: {
+				Authorization: 'Bearer ' + userInfo.token
+			}
+		})
+			.then(response => response.json())
+			.then(response => {
+				dispatch(updateApiLoader({apiLoader: false}));
+				console.log('upload succes', JSON.stringify(response));
+				if (response?.statusCode == 200) {
+					setVideoUploadUrl(response?.data);
+					seIsProgress('100%');
+					setStep(2);
+					setIsTitle('');
+					setIsShareScreen(true);
+				} else {
+					Alert.alert('', response?.message);
+				}
+			})
+			.catch(error => {
+				console.log('upload error', JSON.stringify(error));
+				dispatch(updateApiLoader({apiLoader: false}));
+				// navigation.goBack();
+			});
 	};
 
 	function handleBetViewSelection(id) {

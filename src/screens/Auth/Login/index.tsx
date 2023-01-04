@@ -37,6 +37,8 @@ import {
 	showCreateHighlights,
 	showTutorial
 } from '../../../redux/reducerSlices/dashboard';
+import {magic} from '../../../navigation/routes';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login: React.FC<any> = props => {
 	const isNewUser = useSelector((state: RootState) => {
@@ -94,7 +96,13 @@ const Login: React.FC<any> = props => {
 		setWalletAddress('');
 		setIsViewclickable(false);
 		if (isSocial) {
+			await magic.oauth.loginWithRedirect({
+				provider: 'google',
+				redirectURI: `${window.location.origin}/callback`
+			});
+			return;
 			setIsViewclickable(true);
+			return;
 			socialLogin(provider, randomLoadingMessage)
 				.then(async data => {
 					// dispatch(

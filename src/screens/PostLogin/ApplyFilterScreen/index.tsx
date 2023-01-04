@@ -1,5 +1,5 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {FlatList, Platform, ScrollView, View} from 'react-native';
 import {Text} from 'react-native-elements';
 import ExpoFastImage from 'expo-fast-image';
@@ -25,6 +25,8 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
 import ScreenNames from '../../../navigation/screenNames';
 import LeftIconWithTextComponent from '../../../components/LeftIconWithTextComponent';
+import DatePickerWeb from '../../../components/DatePickerWeb';
+import { isValidDate } from '../../../constants/utils/Function'; 
 
 export default function ApplyFilterScreen() {
 	const params = useRoute().params;
@@ -56,6 +58,8 @@ export default function ApplyFilterScreen() {
 		// {title: Strings.pick_end_time, icon: icons.time},
 	];
 
+	const dateTimePickerRef = useRef();
+
 	useUpdateEffect(() => {
 		setDatePickerVisibility(false);
 	}, [date]);
@@ -77,6 +81,25 @@ export default function ApplyFilterScreen() {
 		);
 		setDate(moment(date).format('DD MMMM YYYY HH:mm'));
 		hideDatePicker();
+	};
+	const handleDateValidation = selectedDate => {
+		if (!isValidDate(selectedDate)) {
+			return;
+		}
+		if (
+			new Date(selectedDate).getTime() >
+			new Date(new Date().getTime() + 4 * 60000)
+		) {
+			setDate(moment(selectedDate).format('DD MMMM YYYY HH:mm'));
+		} else {
+			setDate('');
+			alert(
+				`Please select time greater than ${moment(
+					new Date(new Date().getTime() + 4 * 60000)
+				).format('DD MMMM YYYY hh:mm A')}`
+			);
+			setDate(Strings.pick_end_date_time);
+		}
 	};
 
 	const updateSearch = search => {
@@ -596,7 +619,11 @@ export default function ApplyFilterScreen() {
             )} */}
 
 						<Text style={styles.buttonTitleText}>{Strings.Duration}</Text>
-						<View style={[styles.tagViewContainer, {justifyContent: 'center'}]}>
+						<View
+							style={[
+								styles.tagViewContainer,
+								{justifyContent: 'center', flexDirection: 'column'}
+							]}>
 							{durationList && durationList.length > 0 && (
 								<>
 									<TagView
@@ -610,7 +637,7 @@ export default function ApplyFilterScreen() {
 										gradientColors={defaultTheme.ternaryGradientColor}
 										onPress={() => {
 											if (date === Strings.pick_end_date_time) {
-												showDatePicker();
+												dateTimePickerRef.current.handlePickDateTime();
 											} else {
 												setDate(Strings.pick_end_date_time);
 											}
@@ -649,7 +676,24 @@ export default function ApplyFilterScreen() {
 								</>
 							)}
 						</View>
-
+						{date && (
+							<DatePickerWeb
+							selected={
+								date === Strings.pick_end_date_time
+									? moment(new Date())
+											.add(4, 'minutes')
+											.format('YYYY-MM-DDTHH:mm')
+											.toString()
+									: date
+							}
+							handleChange={val => {
+								console.log('DatePickerWeb', val);
+								handleDateValidation(val);
+							}}
+							ref={dateTimePickerRef}
+							minimumDate={moment(new Date()).add(4, 'minutes').format('YYYY-MM-DDTHH:mm').toString()}
+						/>
+						)}
 						<TagView
 							isSelected={
 								filters.filter(item => item.title !== '')?.length > 0
@@ -678,7 +722,7 @@ export default function ApplyFilterScreen() {
 							}}
 						/>
 					</View>
-					<DateTimePickerModal
+					{/* <DateTimePickerModal
 						isVisible={isDatePickerVisible}
 						mode="datetime"
 						onConfirm={handleConfirm}
@@ -690,7 +734,7 @@ export default function ApplyFilterScreen() {
 						date={moment(new Date()).add(5, 'minute').toDate()}
 						//minuteInterval={15}
 						//disabledDays={{after: new Date()}}
-					/>
+					/> */}
 				</ScrollView>
 			</View>
 		</SafeAreaView>

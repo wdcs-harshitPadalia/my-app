@@ -5,6 +5,8 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {Video, AVPlaybackStatus} from 'expo-av';
 
 import {horizontalScale, verticalScale} from '../theme';
+import {screenHeight} from '../theme/metrics';
+import { defaultTheme } from '../theme/defaultTheme';
 
 interface Props {
 	isVisible?: boolean;
@@ -19,22 +21,22 @@ const VideoPlayerComponent: React.FC<Props> = props => {
 	return (
 		<Modal
 			backdropOpacity={0.9}
-			style={{marginHorizontal: 0}}
+			style={{marginHorizontal: 0, height: screenHeight, width: '100%'}}
 			isVisible={isVisible}
 			onSwipeComplete={({swipingDirection}) => {
 				onClose();
 				console.log('swipingDirection :: ', swipingDirection);
 			}}
 			swipeDirection={'down'}>
-			<SafeAreaView style={{flex: 1}}>
-				{/* <TouchableOpacity
+			{/* <SafeAreaView style={{flex: 1}}> */}
+			{/* <TouchableOpacity
           onPress={() => onClose()}
           hitSlop={styles.hitSlop}
           style={styles.closeContainer}>
           <Image style={styles.imgClose} source={icons.close} />
         </TouchableOpacity> */}
 
-				{/* <Video
+			{/* <Video
 					source={{uri: url}}
 					// controls={true}
 					// paused={false}
@@ -48,24 +50,18 @@ const VideoPlayerComponent: React.FC<Props> = props => {
 					// poster={poster}
 					// posterResizeMode={'cover'}
 				/> */}
-				<Video
-					// ref={video}
-					style={{
-						flex: 1,
-						height: '100%',
-						width: '100%'
-					}}
-					shouldPlay
-					source={{
-						uri: url
-					}}
-					useNativeControls
-					resizeMode="cover"
-					isLooping
-					poster={poster}
-					// onPlaybackStatusUpdate={status => setStatus(() => status)}
-				/>
-			</SafeAreaView>
+			<video
+				autoPlay={true}
+				loop={true}
+				src={url}
+				width="100%"
+				style={{
+					backgroundColor: defaultTheme.backGroundColor,
+					// paddingBottom: 70
+				}}
+				height={screenHeight}
+				controls></video>
+			{/* </SafeAreaView> */}
 		</Modal>
 	);
 };

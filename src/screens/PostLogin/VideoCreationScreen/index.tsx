@@ -231,12 +231,14 @@ const VideoCreationScreen = () => {
 										userInfo?.user?.displayName || userInfo?.user?.userName
 								  )}
 						</Text>
-						<LottieView
-							style={styles.lottieViewStyle}
-							source={require('../../../assets/animations/confetti_day.json')}
-							autoPlay
-							loop={false}
-						/>
+						{Platform.OS !== 'web' && (
+							<LottieView
+								style={styles.lottieViewStyle}
+								source={require('../../../assets/animations/confetti_day.json')}
+								autoPlay
+								loop={false}
+							/>
+						)}
 						<KeyboardAwareScrollView
 							bounces={false}
 							showsVerticalScrollIndicator={false}>

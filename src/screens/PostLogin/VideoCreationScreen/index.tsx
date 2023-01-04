@@ -31,7 +31,7 @@ import {FlatList} from 'react-native-gesture-handler';
 import {updateApiLoader} from '../../../redux/reducerSlices/preLogin';
 import {Api, ApiBaseUrl, ApiConstants} from '../../../constants/api';
 import NoDataComponent from '../../../components/NoDataComponent';
-// import {Video, getRealPath} from 'react-native-compressor';
+import {Video, getRealPath} from 'react-native-compressor';
 
 const VideoCreationScreen = () => {
 	const navigation = useNavigation();
@@ -79,13 +79,25 @@ const VideoCreationScreen = () => {
 	const createFormData = (videoCompress: string) => {
 		const formData = new FormData();
 
-		//let filename = videoCompress.replace(/^.*[\\\/]/, '');
+		let filename = videoCompress.replace(/^.*[\\\/]/, '');
 		if (betSelectedId) {
 			formData.append('bet_id', betSelectedId);
 		}
-		formData.append('video', {
-			path
-		});
+		formData.append('duration', videoDuration);
+		if (Platform.OS === 'web') {
+			formData.append('video', path);
+		} else {
+			formData.append('video', {
+				name: filename,
+				type: `video/${filename.split('.')[1]}`,
+				uri:
+					Platform.OS === 'android'
+						? Platform.OS === 'android' && from === 'launchImageLibrary'
+							? videoCompress
+							: videoCompress.replace('file://', 'file:///')
+						: videoCompress.replace('file://', '')
+			});
+		}
 
 		console.log('formData', JSON.stringify(formData));
 		return formData;
@@ -93,21 +105,32 @@ const VideoCreationScreen = () => {
 
 	const uploadShortVideo = async () => {
 		dispatch(updateApiLoader({apiLoader: true}));
-		// const videoCompress = await Video.compress(
-		// 	path,
-		// 	{
-		// 		compressionMethod: 'auto'
-		// 	},
-		// 	progress => {
-		// 		console.log('Compression Progress: ', progress);
-		// 	}
-		// );
+		let realPath;
+		let videoCompress;
+		if (Platform.OS !== 'web') {
+			videoCompress = await Video.compress(
+				path,
+				{
+					compressionMethod: 'auto'
+				},
+				progress => {
+					console.log('Compression Progress: ', progress);
+				}
+			);
 
-		// const realPath = await videoCompress;
+			 realPath = await videoCompress;
+		}
 
 		fetch(ApiBaseUrl + ApiConstants.uploadShortVideo, {
 			method: Api.POST,
-			body: createFormData(),
+			body:
+				Platform.OS === 'web'
+					? createFormData()
+					: createFormData(
+							Platform.OS === 'android' && from === 'launchImageLibrary'
+								? realPath
+								: videoCompress
+					  ),
 			headers: {
 				Authorization: 'Bearer ' + userInfo.token
 			}

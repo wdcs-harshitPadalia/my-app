@@ -124,13 +124,14 @@ export function MediaPage({navigation, route}: Props): React.ReactElement {
 						angle={gradientColorAngle}
 						onPress={() => {
 							if (videoData?.duration <= 3 || videoData?.duration > 15) {
-								alert(Strings.upload_video_15s)
+								alert(Strings.upload_video_15s);
 							} else {
 								setIsVideoPlay(true);
 								navigation.navigate(ScreenNames.VideoCreationScreen, {
 									path: path,
 									type: type,
-									from: from
+									from: from,
+									videoDuration: parseInt(videoData?.duration)
 								});
 							}
 						}}

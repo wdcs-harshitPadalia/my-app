@@ -104,6 +104,8 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 		[]
 	);
 
+	const myRef = React.useRef();
+
 	const [isShowVideoModal, setIsShowVideoModal] = useState<boolean>(false);
 
 	const [imageUrl, setImageUrl] = useState<string>('');
@@ -209,13 +211,27 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 
 	const showHideImageVideoView = () => {
 		if (evidenceItemsArray.length < 5) {
-			setShowImageSelectionView(!showImageSelectionView);
+			if (Platform.OS === 'web') {
+				myRef.current.click(function () {
+					changeHandler();
+				});
+			} else {
+				setShowImageSelectionView(!showImageSelectionView);
+			}
 			if (enterUrlView) {
 				setEnterUrlView(!enterUrlView);
 			}
 		} else {
 			Alert.alert(Strings.reach_max_limit);
 		}
+	};
+
+	const changeHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
+		if (!event.target.files) {
+			return;
+		}
+		//sendImageMessage(event.target.files[0])
+		checkValidationAndAddEvidence(event.target.files[0]);
 	};
 
 	const pickImage = async (from: String) => {
@@ -630,6 +646,14 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 				</View>
 			</View>
 
+			<input
+				ref={myRef}
+				type="file"
+				name="file"
+				accept="image/png, image/jpeg, video/*"
+				onChange={changeHandler}
+				style={{opacity: 0, height: 0, width: 0}}
+			/>
 			<TokenConfirmationModel
 				title={Strings.signature_Request}
 				infoDescription={Strings.signature_request_message}

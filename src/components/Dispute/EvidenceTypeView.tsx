@@ -230,8 +230,87 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 		if (!event.target.files) {
 			return;
 		}
-		//sendImageMessage(event.target.files[0])
-		checkValidationAndAddEvidence(event.target.files[0]);
+		checkValidationAndAddEvidenceFormWeb(event.target.files[0]);
+	};
+
+	const getVideoMetaData = async file =>
+		new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.onload = () => {
+				const media = new Audio(reader.result);
+				media.onloadedmetadata = () => resolve(media);
+			};
+			reader.readAsDataURL(file);
+			reader.onerror = error => reject(error);
+		});
+
+	const fileToBase64 = async file =>
+		new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.readAsDataURL(file);
+			reader.onload = () => resolve(reader.result);
+			reader.onerror = e => reject(e);
+		});
+
+	const checkValidationAndAddEvidenceFormWeb = async responseData => {
+		const {type, name, size, length, webkitRelativePath} = responseData;
+		//const imageStrUri = await fileToBase64(responseData);
+		let videoMetaData;
+
+		let imageThumbPath;
+		console.log(
+			'createThumbnailFromUrl :: imageThumbPath :: ',
+			videoMetaData?.duration,
+			type,
+			name,
+			size,
+			length,
+			webkitRelativePath
+		);
+
+		if (type.includes('video')) {
+			videoMetaData = await getVideoMetaData(responseData);
+			//imageThumbPath = await createThumbnailFromUrl(webkitRelativePath, name);
+			console.log(
+				'createThumbnailFromUrl :: imageThumbPath :: ', videoMetaData?.duration,
+				imageThumbPath
+			);
+		}
+
+		if (evidenceItemsArray.length < 5) {
+			var evidenceItemObj = {
+				id: Date.now(),
+				name: name,
+				type: type,
+				// uri:
+				//   Platform.OS === 'android'
+				//     ? type.includes('video')
+				//       ? uri + '.' + type.split('/')[1]
+				//       : uri
+				//     : uri.replace('file://', ''),
+				uri: responseData,
+				file: await fileToBase64(responseData),
+				image_thumb: type.includes('video') ? imageThumbPath : ''
+			};
+
+			console.log('====================================');
+			console.log('evidenceItemObj :: ', evidenceItemObj);
+			console.log('====================================');
+
+			if (type.includes('video')) {
+				if (parseInt(videoMetaData?.duration) > 30) {
+					alert(Strings.upload_video_30s);
+				} else if (size / 1024 ** 2 > 30) {
+					alert(Strings.upload_video_30mb);
+				} else {
+					setEvidenceItemsArray([...evidenceItemsArray, evidenceItemObj]);
+					handleSendButtonDisable(false);
+				}
+			} else {
+				setEvidenceItemsArray([...evidenceItemsArray, evidenceItemObj]);
+				handleSendButtonDisable(false);
+			}
+		}
 	};
 
 	const pickImage = async (from: String) => {
@@ -317,7 +396,7 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 
 		if (evidenceItemsArray.length < 5) {
 			var evidenceItemObj = {
-				id: evidenceItemsArray.length + 1,
+				id: Date.now(),
 				name: type.includes('video')
 					? Platform.OS === 'android'
 						? fileName + '.' + type.split('/')[1]
@@ -342,7 +421,7 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 			console.log('evidenceItemObj :: ', evidenceItemObj);
 			console.log('====================================');
 
-			if (type === 'video/mp4') {
+			if (type.includes('video')) {
 				if (parseInt(duration) > 30) {
 					Alert.alert(Strings.upload_video_30s);
 				} else if (fileSize / 1024 ** 2 > 30) {
@@ -382,10 +461,10 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 						style={styles.imageEvidenceBg}
 						onPress={() => {
 							setIsShowImageModal(true);
-							setImageUrl(item.uri);
+							setImageUrl(Platform.OS === 'web' ? item.file : item.uri);
 						}}>
 						<ImageBackground
-							source={{uri: item.uri}}
+							source={{uri: Platform.OS === 'web' ? item.file : item.uri}}
 							style={styles.imageEvidenceBg}
 							resizeMode={'contain'}>
 							<TouchableOpacity onPress={() => handleRemoveEvidence(item.id)}>
@@ -410,7 +489,7 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 								// } else {
 								//   setVideoUrl(item.uri);
 								// }
-								setVideoUrl(item.uri);
+								setVideoUrl(Platform.OS === 'web' ? item.file : item.uri);
 								setVideoThumb(item.image_thumb);
 							}}
 							activeOpacity={0.8}>
@@ -468,7 +547,7 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 		);
 		//formData.append('evidenceFile', evidenceItemsArray);
 		evidenceItemsArray.forEach(evidenceFile =>
-			formData.append('evidenceFile', evidenceFile)
+			formData.append('evidenceFile', Platform.OS === 'web' ? evidenceFile.uri : evidenceFile)
 		);
 		console.log('formData >> ', JSON.stringify(formData));
 
@@ -504,12 +583,12 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 		personalSign(bet_contract_address);
 	};
 
-	const handleUploadEvidence = () => {
+	const handleUploadEvidence = async() => {
 		dispatch(updateApiLoader({apiLoader: true}));
 
 		fetch(ApiBaseUrl + ApiConstants.addResultDispute, {
 			method: Api.POST,
-			body: createFormData(),
+			body: await createFormData(),
 			headers: {
 				Authorization: 'Bearer ' + userInfo.token
 			}
@@ -648,6 +727,7 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 
 			<input
 				ref={myRef}
+				id="input"
 				type="file"
 				name="file"
 				accept="image/png, image/jpeg, video/*"

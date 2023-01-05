@@ -136,6 +136,8 @@ const ChatViewComponent: React.FC<Props> = props => {
 	const flatListRef = useRef();
 
 	const dispatch = useDispatch();
+	const myRef = React.useRef();
+
 
 	const user = {
 		id: userInfo.user?._id,
@@ -355,8 +357,14 @@ const ChatViewComponent: React.FC<Props> = props => {
 					action: MessageAction,
 					message: Amity.Snapshot<Amity.Message>
 				) => {
-					console.log('message OBserver Callds,ld,s>?:::::::', messages.filter((item) => item.id === message.data?.metadata.data.id));
-					if(messages.filter((item) => item.id === message.data?.metadata.data.id)?.length > 0) {
+					console.log(
+						'message OBserver Callds,ld,s>?:::::::',
+						messages.filter(item => item.id === message.data?.metadata.data.id)
+					);
+					if (
+						messages.filter(item => item.id === message.data?.metadata.data.id)
+							?.length > 0
+					) {
 						return;
 					}
 					if (action === 'onCreate') {
@@ -377,7 +385,7 @@ const ChatViewComponent: React.FC<Props> = props => {
 							message.data?.type !== 'image' &&
 							message.data?.editedAt
 						) {
-							setMessages(prevMessages =>  [
+							setMessages(prevMessages => [
 								message.data?.metadata.data!,
 								...prevMessages
 							]);
@@ -393,72 +401,77 @@ const ChatViewComponent: React.FC<Props> = props => {
 		// setMessages([message, ...messages]);
 	};
 
-	const handleImageSelection = async () => {
-		launchImageLibrary(
-			{
-				includeBase64: false,
-				maxWidth: 1440,
-				mediaType: 'photo',
-				quality: 1
-			},
-			({assets}) => {
-				console.log('response???', assets);
-				const response = assets?.[0];
+	const sendImageMessage = (imageFile) => {
+		let formData = new FormData();
+		//data.append('files', `data:image/*;base64,${response.base64}`);
+		formData.append('files', imageFile);
 
-				if (response) {
-					// const imageMessage: MessageType.Image = {
-					//   author: user,
-					//   createdAt: Date.now(),
-					//   height: response.height,
-					//   id: uuidv4(),
-					//   name: response.fileName ?? response.uri?.split('/').pop() ?? '🖼',
-					//   size: response.fileSize ?? 0,
-					//   type: 'image',
-					//   uri: `data:image/*;base64,${response.base64}`,
-					//   width: response.width,
-					// };
-					//setMessages([imageMessage, ...messages]);
-					//setMessages(imageMessage);
-					let formData = new FormData();
-					//data.append('files', `data:image/*;base64,${response.base64}`);
-					formData.append('files', response);
+		// console.log('??????', formData.getParts('files'));
+		const query = createQuery(createImage, formData);
 
-					// console.log('??????', formData.getParts('files'));
-					const query = createQuery(createImage, formData);
+		runQuery(query, result => {
+			console.log('image Uploaded????', result);
+			setImageUploadStatus(result.loading);
+			if (result.data && result.data.length && !result.loading) {
+				//setImageUploadData(result.data);
+				const imageMessage: MessageType.Image = {
+					author: user,
+					createdAt: Date.now(),
+					id: uuidv4(),
+					//text: message.text,
+					type: 'image',
+					uri: result.data[0].fileUrl + '?size=large'
+				};
+				const query8 = createQuery(createMessage, {
+					channelId: channelId,
+					type: 'image', // image, file, video, audio
+					// @ts-ignore
+					fileId: result.data[0].fileId,
+					metadata: {
+						data: imageMessage
+					}
+				});
 
-					runQuery(query, result => {
-						console.log('image Uploaded????', result);
-						setImageUploadStatus(result.loading);
-						if (result.data && result.data.length && !result.loading) {
-							//setImageUploadData(result.data);
-							const imageMessage: MessageType.Image = {
-								author: user,
-								createdAt: Date.now(),
-								id: uuidv4(),
-								//text: message.text,
-								type: 'image',
-								uri: result.data[0].fileUrl + '?size=large'
-							};
-							const query8 = createQuery(createMessage, {
-								channelId: channelId,
-								type: 'image', // image, file, video, audio
-								// @ts-ignore
-								fileId: result.data[0].fileId,
-								metadata: {
-									data: imageMessage
-								}
-							});
-
-							runQuery(query8, ({data: message, ...options}) =>
-								console.log('IMage uplod api called???', message, options)
-							);
-						}
-					});
-
-					console.log('Hekleklejkkfjklfjfjkl ');
-				}
+				runQuery(query8, ({data: message, ...options}) =>
+					console.log('IMage uplod api called???', message, options)
+				);
 			}
-		);
+		});
+
+	}
+	const changeHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
+		if (!event.target.files) {
+			return;
+		}
+		sendImageMessage(event.target.files[0])
+
+	};
+
+
+	const handleImageSelection = async () => {
+		if (Platform.OS === 'web') {
+			myRef.current.click(function () {
+				changeHandler();
+			});
+		} else {
+			launchImageLibrary(
+				{
+					includeBase64: false,
+					maxWidth: 1440,
+					mediaType: 'photo',
+					quality: 1
+				},
+				({assets}) => {
+					console.log('response???', assets);
+					const response = assets?.[0];
+	
+					if (response) {
+						sendImageMessage(response)
+					}
+				}
+			);
+		}
+	
 	};
 	const handleSendPress = async (message: MessageType.PartialText) => {
 		if (chatType === 'api') {
@@ -601,48 +614,6 @@ const ChatViewComponent: React.FC<Props> = props => {
 		return false;
 	};
 
-	const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-		if (!event.target.files) {
-			return;
-		}
-
-		const data = new FormData();
-		data.append('files', event.target.files[0]);
-		console.log('files : ', event.target.files[0]);
-		// const query = createQuery(createImage, data);
-		const query = createQuery(createImage, data);
-
-		runQuery(query, result => {
-			console.log('image Uploaded????', result);
-			setImageUploadStatus(result.loading);
-			if (result.data && result.data.length && !result.loading) {
-				//setImageUploadData(result.data);
-				const imageMessage: MessageType.Image = {
-					author: user,
-					createdAt: Date.now(),
-					id: uuidv4(),
-					//text: message.text,
-					type: 'image',
-					uri: result.data[0].fileUrl + '?size=large'
-				};
-				const query8 = createQuery(createMessage, {
-					channelId: channelId,
-					type: 'image', // image, file, video, audio
-					// @ts-ignore
-					fileId: result.data[0].fileId,
-					metadata: {
-						data: imageMessage
-					}
-				});
-
-				runQuery(query8, ({data: message, ...options}) =>
-					console.log('IMage uplod api called???', message, options)
-				);
-			}
-		});
-
-		// runQuery(query, (result) => console.log("===result=====", result));
-	};
 
 	return (
 		<View
@@ -945,6 +916,14 @@ const ChatViewComponent: React.FC<Props> = props => {
 					)}
 				</>
 			)}
+			<input
+				ref={myRef}
+				type="file"
+				name="file"
+				accept="image/png, image/jpeg"
+				onChange={changeHandler}
+				style={{opacity: 0, height: 0, width: 0}}
+			/>
 			<View>
 				<Modal visible={isEmojiModalVisible} transparent={true}>
 					<EmojiPicker

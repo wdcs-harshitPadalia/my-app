@@ -310,6 +310,22 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 		return false;
 	};
 
+	const isUserVideosShow = () => {
+		if (userProfileInfo?.user?.visible === false) {
+			return false;
+		} else if (
+			userProfileInfo?.user?.videosVisible?.toLowerCase() === 'anyone'
+		) {
+			return true;
+		} else if (
+			userProfileInfo?.user?.videosVisible?.toLowerCase() === 'friends' &&
+			isFollowing === 2
+		) {
+			return true;
+		}
+		return false;
+	};
+
 	const postFollowUser = (follower_id: any) => {
 		let req;
 		if (isFollowing === 1) {
@@ -458,6 +474,17 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 									}
 									isSendMsgShow={isSendMsgShow()}
 									isShowPlusIcon={isFollowing === 2 ? false : true}
+									isVideoViewVisible={
+										isUserVideosShow() && userProfileInfo?.user?.videoCount > 0
+											? true
+											: false
+									}
+									videosCount={userProfileInfo?.user?.videoCount}
+									onVideosBtnPress={() => {
+										navigation.navigate(ScreenNames.VideoContentScreen, {
+											userId: userId
+										});
+									}}
 								/>
 							</View>
 

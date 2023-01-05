@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import Splash from 'react-native-splash-screen';
 
@@ -35,13 +35,12 @@ import EventDetailsScreen from '../../screens/PostLogin/EventDetailsScreen';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../redux/store';
 import Loader from '../../components/Loader';
-import {Magic as MagicWeb} from 'magic-sdk';
 import {Magic} from '@magic-sdk/react-native';
-
 import {OAuthExtension} from '@magic-ext/react-native-oauth';
+import {MAGIC_API_KEY} from '@env';
+import {Magic as MagicWeb} from 'magic-sdk';
 import {OAuthExtension as OAuthExtensionWeb} from '@magic-ext/oauth';
 
-import analytics from '@react-native-firebase/analytics';
 
 const customNodeOptions = {
 	rpcUrl: RpcURL, // Polygon RPC URL
@@ -114,7 +113,12 @@ import {
 	showInviteUser,
 	showSuggestedUser
 } from '../../redux/reducerSlices/dashboard';
-import {Platform} from 'react-native';
+import NotificationPopUp from '../../components/NotificationPopUp';
+import {CameraPage} from '../../components/Camera/CameraPage';
+import {MediaPage} from '../../components/Camera/MediaPage';
+import VideoCreationScreen from '../../screens/PostLogin/VideoCreationScreen';
+import VideoContentScreen from '../../screens/VideoContentScreen';
+import { Platform } from 'react-native';
 
 //const Stack = createNativeStackNavigator();
 const options = {
@@ -218,6 +222,21 @@ export const LiveTabRoutes = (_props: any) => (
 				headerShown: false
 			}}
 		/>
+		<Stack.Screen
+			name={ScreenNames.VideoCreationScreen}
+			component={VideoCreationScreen}
+			options={{headerShown: false, gestureEnabled: false}}
+		/>
+		<Stack.Screen
+			name={ScreenNames.CameraPage}
+			component={CameraPage}
+			options={{headerShown: false}}
+		/>
+		<Stack.Screen
+			name={ScreenNames.MediaPage}
+			component={MediaPage}
+			options={{headerShown: false}}
+		/>
 	</Stack.Navigator>
 );
 
@@ -243,7 +262,6 @@ export const BottomTabs = () => (
 				headerShown: false
 			}}
 		/>
-
 		{/* <Tab.Screen
       name={ScreenNames.WalletTabRoutes}
       component={WalletTabRoutes}
@@ -264,7 +282,6 @@ export const BottomTabs = () => (
 				headerShown: false
 			}}
 		/>
-
 		<Tab.Screen
 			name={ScreenNames.DiscoverRouter}
 			component={DiscoverRouter}
@@ -275,7 +292,6 @@ export const BottomTabs = () => (
 				headerShown: false
 			}}
 		/>
-
 		<Tab.Screen
 			name={ScreenNames.ProfileRouter}
 			component={ProfileRouter}
@@ -304,6 +320,7 @@ const FeedsRouter = () => (
 	<Stack.Navigator
 		screenOptions={{
 			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+			gestureResponseDistance: 100,
 			cardStyle: {flex: 1, backgroundColor: 'red'}
 		}}>
 		<Stack.Screen
@@ -496,6 +513,21 @@ const FeedsRouter = () => (
 			component={MyBetListScreen}
 			options={{headerShown: false}}
 		/>
+		<Stack.Screen
+			name={ScreenNames.CameraPage}
+			component={CameraPage}
+			options={{headerShown: false}}
+		/>
+		<Stack.Screen
+			name={ScreenNames.MediaPage}
+			component={MediaPage}
+			options={{headerShown: false}}
+		/>
+		<Stack.Screen
+			name={ScreenNames.VideoCreationScreen}
+			component={VideoCreationScreen}
+			options={{headerShown: false, gestureEnabled: false}}
+		/>
 	</Stack.Navigator>
 );
 
@@ -602,6 +634,21 @@ const DiscoverRouter = () => (
 		<Stack.Screen
 			name={ScreenNames.RecoverFundsScreen}
 			component={RecoverFundsScreen}
+			options={{headerShown: false}}
+		/>
+		<Stack.Screen
+			name={ScreenNames.VideoCreationScreen}
+			component={VideoCreationScreen}
+			options={{headerShown: false, gestureEnabled: false}}
+		/>
+		<Stack.Screen
+			name={ScreenNames.CameraPage}
+			component={CameraPage}
+			options={{headerShown: false}}
+		/>
+		<Stack.Screen
+			name={ScreenNames.MediaPage}
+			component={MediaPage}
 			options={{headerShown: false}}
 		/>
 	</Stack.Navigator>
@@ -740,6 +787,26 @@ const ProfileRouter = () => (
 			component={PushNotificationScreen}
 			options={{headerShown: false}}
 		/>
+		<Stack.Screen
+			name={ScreenNames.VideoCreationScreen}
+			component={VideoCreationScreen}
+			options={{headerShown: false, gestureEnabled: false}}
+		/>
+		<Stack.Screen
+			name={ScreenNames.CameraPage}
+			component={CameraPage}
+			options={{headerShown: false}}
+		/>
+		<Stack.Screen
+			name={ScreenNames.MediaPage}
+			component={MediaPage}
+			options={{headerShown: false}}
+		/>
+		<Stack.Screen
+			name={ScreenNames.VideoContentScreen}
+			component={VideoContentScreen}
+			options={{headerShown: false}}
+		/>
 	</Stack.Navigator>
 );
 
@@ -826,7 +893,7 @@ const RootRouter = () => {
 					cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
 					cardStyle: {flex: 1, backgroundColor: 'red'}
 				}}>
-				{/* {global.firstTime && (
+				{global.firstTime && (
 					<Stack.Screen
 						name={ScreenNames.SplashScreen}
 						component={SplashScreen}
@@ -835,7 +902,7 @@ const RootRouter = () => {
 							cardStyleInterpolator: CardStyleInterpolators.forNoAnimation
 						}}
 					/>
-				)} */}
+				)}
 				{LoginRouter()}
 			</Stack.Navigator>
 		);
@@ -896,17 +963,7 @@ const Routes = () => {
 			onReady={() => {
 				routeNameRef.current = navigationRef.current.getCurrentRoute().name;
 			}}
-			onStateChange={async () => {
-				const previousRouteName = routeNameRef.current;
-				const currentRouteName = navigationRef.current.getCurrentRoute().name;
-				// if (previousRouteName !== currentRouteName) {
-				// 	await analytics().logScreenView({
-				// 		screen_name: currentRouteName,
-				// 		screen_class: currentRouteName
-				// 	});
-				// }
-				routeNameRef.current = currentRouteName;
-			}}>
+			>
 			{/* Render the Magic iframe! */}
 			{/* <magic.Relayer /> */}
 			<Loader
@@ -939,6 +996,7 @@ const Routes = () => {
 				/>
 			)}
 			{/* <NotificationManager /> */}
+			<NotificationPopUp />
 		</NavigationContainer>
 	);
 };

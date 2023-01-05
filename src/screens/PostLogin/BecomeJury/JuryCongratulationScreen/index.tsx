@@ -24,7 +24,7 @@ const JuryCongratulationScreen: React.FC<any> = () => {
 	};
 
 	const item = {
-		image_url: icons.star_congrates,
+		image_url: icons.star_congrats,
 		title_text: Strings.congratulations,
 		description_text: Strings.you_become_judge_desc
 	};

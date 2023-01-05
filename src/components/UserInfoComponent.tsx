@@ -36,6 +36,9 @@ interface Props extends TextInputProps {
   isShowPlusIcon?: boolean;
   colorArray?: string[];
   walletBtnColorArray?: string[];
+  onVideosBtnPress?: () => void;
+	isVideoViewVisible?: boolean;
+	videosCount: number;
 }
 
 const UserInfoComponent: React.FC<Props> = (props) => {
@@ -54,6 +57,9 @@ const UserInfoComponent: React.FC<Props> = (props) => {
     isSendMsgShow,
     isShowPlusIcon,
     walletBtnColorArray,
+		onVideosBtnPress,
+		isVideoViewVisible,
+		videosCount
   } = props;
 
   return (
@@ -66,12 +72,30 @@ const UserInfoComponent: React.FC<Props> = (props) => {
           <Text style={styles.gradientText}>{activeBets}</Text>
           <Text style={styles.followingText}>{Strings.activeBets}</Text>
         </TouchableOpacity>
+        {isVideoViewVisible && (
+					<TouchableOpacity
+						onPress={onVideosBtnPress}
+						style={[
+							styles.viewContainStyle,
+							{
+								marginHorizontal: verticalScale(6)
+							}
+						]}>
+						<Text style={styles.followingCountText}>{videosCount}</Text>
+						<Text style={styles.followingText}>
+							{videosCount === 1 ? Strings.video : Strings.video + 's'}
+						</Text>
+					</TouchableOpacity>
+				)}
         <TouchableOpacity
           onPress={onFollowersPress}
           style={[
             styles.viewContainStyle,
             {
-              marginHorizontal: verticalScale(6),
+              marginRight: verticalScale(6),
+							marginHorizontal: isVideoViewVisible
+								? verticalScale(0)
+								: verticalScale(6)
             },
           ]}
         >

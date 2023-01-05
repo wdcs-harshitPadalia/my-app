@@ -1,4 +1,4 @@
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Image, Platform, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import HeaderComponent from '../../../components/HeaderComponent';
@@ -18,7 +18,9 @@ import {getCMS} from '../../../redux/apiHandler/apiActions';
 import {useDispatch} from 'react-redux';
 import {updateApiLoader} from '../../../redux/reducerSlices/preLogin';
 import {HeaderView} from '../../../components/HeaderView';
-import {width} from '../../../theme/metrics';
+import {moderateFontScale, width} from '../../../theme/metrics';
+import colors from '../../../theme/colors';
+import fonts from '../../../theme/fonts';
 
 const CMSScreen = () => {
 	const navigation = useNavigation();
@@ -74,12 +76,21 @@ const CMSScreen = () => {
 					title={
 						screenName === 'strike-policy'
 							? Strings.more_about_strike_policy
-								.replace('the strikes', 'strike')
-								.replace('.', '')
+									.replace('the strikes', 'strike')
+									.replace('.', '')
 							: data?.title
 					}
 				/>
-				<WebView
+				{Platform.OS === 'web' ? (
+					<div
+						style={webStyle.divStyle}
+						dangerouslySetInnerHTML={{
+							__html: data?.content ?? ''
+						}}
+					/>
+				) : (
+					<View style={{flex: 1}}>
+						{/* <WebView
 					style={{
 						backgroundColor: 'transparent',
 						width: width - 100,
@@ -89,7 +100,9 @@ const CMSScreen = () => {
 						html: data?.content ?? ''
 					}}
 					javaScriptEnabled
-				/>
+				/> */}
+					</View>
+				)}
 			</View>
 
 			{/* <KeyboardAwareScrollView style={styles.container} bounces={false}>
@@ -108,3 +121,14 @@ const styles = StyleSheet.create({
 		//backgroundColor: defaultTheme.backGroundColor,
 	}
 });
+
+const webStyle = StyleSheet.create({
+	divStyle: {
+	  color: colors.white,
+	  fontSize: moderateFontScale(14),
+	  backgroundColor: "transparent",
+	  fontFamily: fonts.type.Inter_Medium,
+	  //opacity: 0.5,
+	  flexWrap: "wrap",
+	},
+  });

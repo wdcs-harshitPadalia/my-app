@@ -309,7 +309,7 @@ const EditProfileScreen: React.FC<any> = props => {
 		}
 
 		formData.append('isAvatar', isAvatarSelect);
-		formData.append('isBase64', isBase64);
+		// formData.append('isBase64', isBase64);
 
 		if (profilePic) {
 			if (isAvatarSelect) {
@@ -383,10 +383,7 @@ const EditProfileScreen: React.FC<any> = props => {
 		// return;
 		fetch(ApiBaseUrl + ApiConstants.EditProfile, {
 			method: Api.PUT,
-			body:
-				Platform.OS === 'web'
-					? await createFormData(profilePic)
-					: createFormData(profilePic),
+			body: await createFormData(profilePic),
 			headers: {
 				Authorization: 'Bearer ' + userInfo.token
 			}

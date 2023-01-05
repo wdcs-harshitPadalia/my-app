@@ -63,7 +63,11 @@ const ScreenNames = {
 	BetRevealResultScreen: 'BetRevealResultScreen',
 	CustomBetDetailsScreen: 'CustomBetDetailsScreen',
 	PredictionMarketsDetailsScreen: 'PredictionMarketsDetailsScreen',
-	PushNotificationScreen: 'PushNotificationScreen'
+	PushNotificationScreen: 'PushNotificationScreen',
+	CameraPage: 'CameraPage',
+	MediaPage: 'MediaPage',
+	VideoCreationScreen: 'VideoCreationScreen',
+	VideoContentScreen: 'VideoContentScreen'
 };
 
 export default ScreenNames;

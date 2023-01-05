@@ -1,4 +1,6 @@
 import app from '../../app.json';
+import {videoMaximumDuration, videoMinimumDuration} from './api';
+
 const Strings = {
 	signuptostartbetting: 'Connect to start betting',
 	email: 'Email',
@@ -341,6 +343,8 @@ const Strings = {
 	set_date: 'Set Date',
 	cameraAccess:
 		'Camera access is restricted. In order to use Camera Service, please enable Camera permission in the Settigs app under Privacy.',
+	audioAccess:
+		'Audio access is restricted. In order to use Audio Service, please enable Audio permission in the Settigs app under Privacy.',
 	galleryAccess:
 		'Gallery access is restricted. In order to use Gallery Service, please enable Gallery permission in the Settigs app under Privacy.',
 	biometricAccess:
@@ -711,10 +715,23 @@ const Strings = {
 	bet_sharing_text:
 		'%s has created this bet! 🤩 \nClick on this link to participate 💪 🤑 \n\n📅 ',
 	join_deadline: 'JOINING DEADLINE:',
+	short_video: 'SHORT VIDEO',
+	upload_video_15s: `Please upload video between ${videoMinimumDuration}s to ${videoMaximumDuration}s`,
 
 	//video
 	see_your_video_content: 'see your video content',
 	who_can_see_your_videos: 'Who can see your Videos?',
-	video_content: 'Video content'
+	video_content: 'Video content',
+	video_creation: 'Video creation',
+	attach_video_to_bets: 'You can attach the video to one of your active bets',
+	no_active_bets: 'You don’t have any active bets',
+	video: 'Video',
+	are_you_sure_you_want_to_delete_this_video:
+		'Are you sure you want to delete this video?',
+	sure: "yes, i'm sure",
+	no_video_found: 'No video found yet',
+	no_video_title: 'Your videos will appear here',
+	well_done_video_has_been_created:
+		'Well done, %s! Your video has been created 🎉'
 };
 export default Strings;

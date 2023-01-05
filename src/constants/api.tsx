@@ -1,8 +1,8 @@
 // PRODUCTION
 //http://13.59.164.150:5090/api/v1/user/login
 const ApiVersion = 'v1';
-export const ApiPort = '5009'; // client build port - 5009, local build port - 5011
-export const SecondaryApiPort = '5008'; // client build port - 5008, local build port - 5012
+export const ApiPort = '5011'; // client build port - 5009, local build port - 5011
+export const SecondaryApiPort = '5012'; // client build port - 5008, local build port - 5012
 
 export const AppSchema = 'https://defibet.house/';
 
@@ -10,15 +10,11 @@ export const AppSchema = 'https://defibet.house/';
 export const FireBaseNotification = 'https://fcm.googleapis.com/fcm/send';
 export const serverKey =
 	'key=AAAAkKwuLSo:APA91bGSCoopkCOmjeWHD_XnNyj5MD5Fh3uKiTa5kWVZDuncwMOA0dBoK9sGCSdc_RU4gWsoXxRtUaKwj4NJAt80dDRw6Yf3_3gMylReaXVH6PfYpshzwIlFGSJa3B6kKxAp55ZrMepG';
-// // STAGING
-// export const ApiBaseUrl = "http://13.232.0.9:8080/Eshq/api/";
-
-// // Development
-//export const ApiBaseUrl = `http://13.59.164.150:${ApiPort}/api/${ApiVersion}/`;
+// STAGING - Client
 // export const ApiBaseUrl = `https://api.defibet.house/api/${ApiVersion}/`;
 // export const ApiSecondaryBaseUrl = `https://api2.defibet.house/api/${ApiVersion}/`;
 
-//Development
+// Development - Local
 export const ApiBaseUrl = `http://13.59.164.150:${ApiPort}/api/${ApiVersion}/`;
 export const ApiSecondaryBaseUrl = `http://13.59.164.150:${SecondaryApiPort}/api/${ApiVersion}/`;
 
@@ -31,14 +27,14 @@ export const nullSignature =
 	'0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
 
 //Test net RPC
-export const RpcURL ='https://polygon-mumbai.infura.io/v3/525d9ffd0db943908b59d352df167126';
+// export const RpcURL ='https://polygon-mumbai.infura.io/v3/525d9ffd0db943908b59d352df167126';
 //Dev RPC
 // export const RpcURL =
 // 	'https://polygon-mumbai.g.alchemy.com/v2/gdNaCO6rM5ROYvDEwzlwerVWVrLYG0bK';
 
 //Client RPC
-// export const RpcURL =
-// 	'https://polygon-mumbai.g.alchemy.com/v2/oFp2aIln4SEGstoa-7hWn7njKdZioDlg';
+export const RpcURL =
+	'https://polygon-mumbai.g.alchemy.com/v2/oFp2aIln4SEGstoa-7hWn7njKdZioDlg';
 // export const RpcURL = 'https://rpc-mumbai.maticvigil.com/';
 
 //Main net RPC
@@ -65,6 +61,9 @@ export const decimalValue = 4;
 
 export const widgetBaseUrl = 'https://exchange.mercuryo.io/?widget_id=';
 export const metamaskUniversalUrl = 'https://metamask.app.link/send/';
+
+export const videoMinimumDuration = 3;
+export const videoMaximumDuration = 15;
 
 export const Api = {
 	POST: 'POST',
@@ -149,7 +148,12 @@ export const ApiConstants = {
 	saveJuryVoteTemporarily: 'result/saveVoteTemporarily',
 	filterUserContacts: 'user/filterUserContacts',
 	getAllFaq: 'faq/getAllFAQ',
-	getRecommendedBets: 'discover/getRecommendedBets'
+	getRecommendedBets: 'discover/getRecommendedBets',
+	getBetsForVideoUpload: 'video/getBetsForVideoUpload',
+	validateJury: 'result/validateJury',
+	uploadShortVideo: 'video/uploadShortVideo',
+	getUserVideos: 'video/getUserVideos',
+	deleteVideo: 'video/deleteVideo'
 };
 
 export const BotomSharePopupData = [

@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet, TextInputProps, Text} from 'react-native';
+import {View, StyleSheet, TextInputProps, Text, Platform} from 'react-native';
 import DropShadow from 'react-native-drop-shadow';
 import ExpoFastImage from 'expo-fast-image';
 import {LinearGradient} from 'expo-linear-gradient';
@@ -48,8 +48,19 @@ const StoryProfileComponent: React.FC<Props> = props => {
 
 const styles = StyleSheet.create({
 	container: {
-		shadowRadius: 18,
-		alignItems: 'center'
+		alignItems: 'center',
+		...Platform.select({
+			ios: {
+				shadowRadius: 18
+			},
+			android: {
+				shadowRadius: 18
+			},
+			web: {
+				shadowRadius: 8,
+				borderRadius: 35
+			}
+		})
 	},
 	dropShadowContainer: {
 		// shadowColor: colors.greenLight,

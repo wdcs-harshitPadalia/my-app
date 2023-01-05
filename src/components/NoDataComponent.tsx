@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, Platform} from 'react-native';
 import ExpoFastImage from 'expo-fast-image';
 import {Fonts} from '../theme';
 import colors from '../theme/colors';
@@ -81,7 +81,12 @@ const styles = StyleSheet.create({
 		alignItems: 'center'
 	},
 	buttonInputStyle: {
-		marginVertical: verticalScale(20)
+		marginVertical: verticalScale(20),
+		...Platform.select({
+			web: {
+				width: '100%'
+			}
+		})
 	},
 	imageIcon: {
 		height: verticalScale(240),

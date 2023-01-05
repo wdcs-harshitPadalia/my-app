@@ -268,7 +268,12 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.8,
 		shadowRadius: 12,
 		alignItems: 'center',
-		justifyContent: 'center'
+		justifyContent: 'center',
+		...Platform.select({
+			web: {
+				borderRadius: 40
+			}
+		})
 	},
 	profileIcon: {
 		width: 80,

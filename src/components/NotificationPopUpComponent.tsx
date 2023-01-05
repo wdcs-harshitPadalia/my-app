@@ -1,6 +1,6 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import FastImage from 'react-native-fast-image';
+import {StyleSheet, Text, View, Platform} from 'react-native';
+import ExpoFastImage from 'expo-fast-image';
 import {verticalScale} from '../theme';
 import colors from '../theme/colors';
 import {defaultTheme} from '../theme/defaultTheme';
@@ -37,26 +37,44 @@ const NotificationPopUpComponent: React.FC<NotificationProps> = props => {
 	} = props;
 	return (
 		<View style={styles.container}>
-			<FastImage style={styles.img} resizeMode="contain" source={imgPath} />
+			<ExpoFastImage style={styles.img} resizeMode="contain" source={imgPath} />
 			{isTitleGradient ? (
-				<GradientText
-					colors={defaultTheme.primaryGradientColor}
-					style={styles.titleText}>
-					{title}
-				</GradientText>
+				Platform.OS === 'web' ? (
+					<Text
+						style={[
+							styles.titleText,
+							{color: defaultTheme.primaryGradientColor[0]}
+						]}>
+						{title}
+					</Text>
+				) : (
+					<GradientText
+						colors={defaultTheme.primaryGradientColor}
+						style={styles.titleText}>
+						{title}
+					</GradientText>
+				)
 			) : (
 				<Text style={styles.titleText}>{title}</Text>
 			)}
 
 			<View style={styles.descriptionView}>
-				{isDescriptionGradient && (
-					<GradientText
-						colors={defaultTheme.primaryGradientColor}
-						style={styles.gradientTextStyle}>
-						{highlightedDescription?.toUpperCase()}
-					</GradientText>
-				)}
-
+				{isDescriptionGradient &&
+					(Platform.OS === 'web' ? (
+						<Text
+							style={[
+								styles.gradientTextStyle,
+								{color: defaultTheme.primaryGradientColor[0]}
+							]}>
+							{highlightedDescription?.toUpperCase()}
+						</Text>
+					) : (
+						<GradientText
+							colors={defaultTheme.primaryGradientColor}
+							style={styles.gradientTextStyle}>
+							{highlightedDescription?.toUpperCase()}
+						</GradientText>
+					))}
 				<Text style={styles.descriptionText(colors?.white)}>
 					{!isDescriptionGradient && (
 						<Text style={styles.descriptionText(color)}>

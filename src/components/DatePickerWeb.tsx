@@ -14,18 +14,19 @@ interface DatePickerWebProps {
 	handleChange: () => void;
 	isPickOnlyDate?: boolean;
 	maximumDate?: string;
+	minimumDate?: string;
 }
 
 const DatePickerWeb = forwardRef((props: DatePickerWebProps, ref) => {
-	const {selected, handleChange, isPickOnlyDate, maximumDate} = props;
+	const {selected, handleChange, isPickOnlyDate, maximumDate, minimumDate} =
+		props;
 
 	const [date, setDate] = useState(selected);
 	const dateRef = useRef(null);
 
-	// useEffect(() => {
-	// 	console.log('selected date:', selected, date);
-	// 	if (!date || !time) return;
-	// }, [date, time]);
+	useEffect(() => {
+		setDate(selected);
+	}, [selected]);
 
 	const _handleChange = e => {
 		const value = e.target.value;
@@ -83,7 +84,7 @@ const DatePickerWeb = forwardRef((props: DatePickerWebProps, ref) => {
 				type={isPickOnlyDate ? 'date' : 'datetime-local'}
 				style={{flex: 1, backgroundColor: colors.black, opacity: 0}}
 				max={maximumDate && moment(maximumDate).format('YYYY-MM-DDTHH:mm')}
-				min={moment().add(10, 'minutes').format('YYYY-MM-DDTHH:mm').toString()}
+				min={minimumDate && moment(minimumDate).format('YYYY-MM-DDTHH:mm')}
 				// defaultValue={moment()
 				// 	.add(10, 'minutes')
 				// 	.format('YYYY-MM-DDTHH:mm')
@@ -93,4 +94,7 @@ const DatePickerWeb = forwardRef((props: DatePickerWebProps, ref) => {
 	);
 });
 
+DatePickerWeb.defaultProps = {
+	minimumDate: moment().add(10, 'minutes').format('YYYY-MM-DDTHH:mm').toString()
+};
 export default DatePickerWeb;

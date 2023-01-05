@@ -19,6 +19,7 @@ interface Props extends TextInputProps {
 	onPressAvatar?: () => void;
 	isVisible: boolean;
 	setIsVisible: boolean;
+	isHideAvatar: boolean;
 }
 
 const SelectImageComponet: React.FC<Props> = props => {
@@ -27,7 +28,8 @@ const SelectImageComponet: React.FC<Props> = props => {
 		onPressGallery,
 		onPressAvatar,
 		isVisible,
-		setIsVisible
+		setIsVisible,
+		isHideAvatar
 	} = props;
 
 	const cancelPopup = () => {
@@ -53,9 +55,11 @@ const SelectImageComponet: React.FC<Props> = props => {
 						<Image style={styles.imageStyle} source={icons.gallery} />
 					</TouchableOpacity>
 
-					<TouchableOpacity onPress={onPressAvatar}>
-						<Image style={styles.imageStyle} source={icons.profile} />
-					</TouchableOpacity>
+					{!isHideAvatar && (
+						<TouchableOpacity onPress={onPressAvatar}>
+							<Image style={styles.imageStyle} source={icons.profile} />
+						</TouchableOpacity>
+					)}
 				</View>
 			</TouchableOpacity>
 		</Modal>
@@ -78,7 +82,7 @@ const styles = StyleSheet.create({
 		padding: verticalScale(40),
 		alignItems: 'center',
 		flexDirection: 'row',
-		justifyContent: 'space-between',
+		justifyContent: 'space-evenly',
 		width: width
 	},
 	imageStyle: {width: verticalScale(50), height: verticalScale(50)},

@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Platform} from 'react-native';
 import ExpoFastImage from 'expo-fast-image';
 import {LinearGradient} from 'expo-linear-gradient';
 import {useSelector} from 'react-redux';
@@ -25,6 +25,9 @@ interface Props {
 	handleReplicateBet?: () => void;
 	isHideReplicateBet?: boolean;
 	isOnlyHideBetTitle?: boolean;
+	isFromVideoCreation?: boolean;
+	SelectedValue?: (value: string) => void;
+	betSelectedId?: string;
 }
 
 const OtherUserProfileReplicateBetComponent: React.FC<Props> = props => {
@@ -35,7 +38,10 @@ const OtherUserProfileReplicateBetComponent: React.FC<Props> = props => {
 		handleAlreadyBetTackerUserPicked,
 		handleReplicateBet,
 		isHideReplicateBet,
-		isOnlyHideBetTitle
+		isOnlyHideBetTitle,
+		isFromVideoCreation,
+		SelectedValue,
+		betSelectedId
 	} = props;
 
 	const userInfo = useSelector((state: RootState) => {
@@ -92,24 +98,51 @@ const OtherUserProfileReplicateBetComponent: React.FC<Props> = props => {
 					{' picked ' + itemData?.bet_creator_side_option}
 				</Text>
 
-				<GradientText
-					colors={defaultTheme.primaryGradientColor}
-					style={styles.txtBetMakerPickedStyle}>
-					{' ' +
-						Strings.str_dollor +
-						getRoundDecimalValue(itemData?.bet_amount_usd)}
-				</GradientText>
+				{Platform.OS === 'web' ? (
+					<Text
+						style={[
+							styles.txtBetMakerPickedStyle,
+							{color: defaultTheme.primaryGradientColor[0]}
+						]}>
+						{' ' +
+							Strings.str_dollor +
+							getRoundDecimalValue(itemData?.bet_amount_usd)}
+					</Text>
+				) : (
+					<GradientText
+						colors={defaultTheme.primaryGradientColor}
+						style={styles.txtBetMakerPickedStyle}>
+						{' ' +
+							Strings.str_dollor +
+							getRoundDecimalValue(itemData?.bet_amount_usd)}
+					</GradientText>
+				)}
 				<Text style={styles.txtBetMakerPickedStyle}>{' to win '}</Text>
-				<GradientText
-					colors={defaultTheme.primaryGradientColor}
-					style={styles.txtBetMakerPickedStyle}>
-					{Strings.str_dollor +
-						getRoundDecimalValue(
-							parseFloat(itemData?.bet_amount_usd) *
-								parseFloat(itemData?.odds) -
-								parseFloat(itemData?.bet_amount_usd)
-						)}
-				</GradientText>
+				{Platform.OS === 'web' ? (
+					<Text
+						style={[
+							styles.txtBetMakerPickedStyle,
+							{color: defaultTheme.primaryGradientColor[0]}
+						]}>
+						{Strings.str_dollor +
+							getRoundDecimalValue(
+								parseFloat(itemData?.bet_amount_usd) *
+									parseFloat(itemData?.odds) -
+									parseFloat(itemData?.bet_amount_usd)
+							)}
+					</Text>
+				) : (
+					<GradientText
+						colors={defaultTheme.primaryGradientColor}
+						style={styles.txtBetMakerPickedStyle}>
+						{Strings.str_dollor +
+							getRoundDecimalValue(
+								parseFloat(itemData?.bet_amount_usd) *
+									parseFloat(itemData?.odds) -
+									parseFloat(itemData?.bet_amount_usd)
+							)}
+					</GradientText>
+				)}
 			</View>
 		);
 	};
@@ -161,7 +194,10 @@ const OtherUserProfileReplicateBetComponent: React.FC<Props> = props => {
 	const BetTakerAlreadyPickedStringComponent = (props: any) => {
 		const {handleAlreadyBetTackerUserPicked} = props;
 		return (
-			<View style={styles.betTakerAlreadyPickedStringContainer}>
+			<View
+				style={styles.betTakerAlreadyPickedStringContainer(
+					isFromVideoCreation ? 0.5 : 1
+				)}>
 				<TouchableOpacity
 					activeOpacity={0.8}
 					onPress={() => {
@@ -175,11 +211,21 @@ const OtherUserProfileReplicateBetComponent: React.FC<Props> = props => {
 							: '@' + itemData?.betTaker?.takerDetails?.userName}
 					</Text>
 				</TouchableOpacity>
-				<GradientText
-					colors={defaultTheme.primaryGradientColor}
-					style={styles.txtBetMakerPickedStyle}>
-					{' joined '}
-				</GradientText>
+				{Platform.OS === 'web' ? (
+					<Text
+						style={[
+							styles.txtBetMakerPickedStyle,
+							{color: defaultTheme.primaryGradientColor[0]}
+						]}>
+						{' joined '}
+					</Text>
+				) : (
+					<GradientText
+						colors={defaultTheme.primaryGradientColor}
+						style={styles.txtBetMakerPickedStyle}>
+						{' joined '}
+					</GradientText>
+				)}
 				<Text style={styles.txtBetMakerPickedStyle}>{'this bet'}</Text>
 			</View>
 		);
@@ -202,69 +248,93 @@ const OtherUserProfileReplicateBetComponent: React.FC<Props> = props => {
 	};
 
 	return (
-		<View style={styles.container}>
-			{!isOnlyHideBetTitle && (
-				<View style={styles.betQuestionContainer}>
-					<Text style={styles.txtBetQuestionStyle} numberOfLines={2}>
-						{itemData?.betQuestion}
-					</Text>
-					{/* <TouchableOpacity
+		<TouchableOpacity
+			activeOpacity={1}
+			onPress={() => {
+				isFromVideoCreation && SelectedValue(itemData?._id);
+			}}>
+			<LinearGradient
+				useAngle={true}
+				angle={gradientColorAngle}
+				colors={defaultTheme.primaryGradientColor}
+				style={styles.bgGradient(betSelectedId === itemData?._id ? 4 : 0)}>
+				<View style={styles.container}>
+					{!isOnlyHideBetTitle && (
+						<View
+							style={styles.betQuestionContainer(
+								isFromVideoCreation ? verticalScale(12) : verticalScale(10)
+							)}>
+							<Text style={styles.txtBetQuestionStyle} numberOfLines={2}>
+								{itemData?.betQuestion}
+							</Text>
+							{/* <TouchableOpacity
 						hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
 						onPress={handleMenuPress}>
-						<ExpoFastImage style={{height: 16, width: 4}} source={icons.ic_menu} />
+						<FastImage style={{height: 16, width: 4}} source={icons.ic_menu} />
 					</TouchableOpacity> */}
-				</View>
-			)}
-			<View
-				style={[
-					styles.grayRootContainer,
-					{
-						marginHorizontal: horizontalScale(!isHideReplicateBet ? 12 : 0)
-					}
-				]}>
-				<View style={styles.profileRootContainer}>
-					<ProfileComponent
-						profilePath={itemData?.users?.picture}
-						profileLevelRank={itemData?.users?.level}
-						handleBetMakerUserPicked={handleBetMakerUserPicked}
-					/>
-					<View style={styles.betMakerPickedStringRootContainer}>
-						<BetMakerPickedStringComponent
-							handleBetMakerUserPicked={handleBetMakerUserPicked}
-						/>
+						</View>
+					)}
+					<View
+						style={[
+							styles.grayRootContainer,
+							{
+								marginHorizontal: horizontalScale(
+									!isHideReplicateBet
+										? 12
+										: isFromVideoCreation
+										? verticalScale(12)
+										: 0
+								)
+							}
+						]}>
+						<View style={styles.profileRootContainer}>
+							<ProfileComponent
+								profilePath={itemData?.users?.picture}
+								profileLevelRank={itemData?.users?.level}
+								handleBetMakerUserPicked={handleBetMakerUserPicked}
+							/>
+							<View style={styles.betMakerPickedStringRootContainer}>
+								<BetMakerPickedStringComponent
+									handleBetMakerUserPicked={handleBetMakerUserPicked}
+								/>
+							</View>
+						</View>
+
+						{itemData.betTaker && Object.keys(itemData.betTaker)?.length > 0 ? (
+							<BetTakerAlreadyPickedComponent
+								handleAlreadyBetTackerUserPicked={
+									handleAlreadyBetTackerUserPicked
+								}
+							/>
+						) : (
+							userInfo?.user?._id !== itemData?.users?._id && (
+								<BetTakerPickedComponent
+									handleBetTackerPicked={handleBetTackerPicked}
+								/>
+							)
+						)}
 					</View>
+
+					{!isHideReplicateBet &&
+					userInfo?.user?._id !== itemData?.users?._id ? (
+						<ReplicateBetComponent handleReplicateBet={handleReplicateBet} />
+					) : (
+						<></>
+					)}
 				</View>
-
-				{itemData.betTaker && Object.keys(itemData.betTaker)?.length > 0 ? (
-					<BetTakerAlreadyPickedComponent
-						handleAlreadyBetTackerUserPicked={handleAlreadyBetTackerUserPicked}
-					/>
-				) : (
-					userInfo?.user?._id !== itemData?.users?._id && (
-						<BetTakerPickedComponent
-							handleBetTackerPicked={handleBetTackerPicked}
-						/>
-					)
-				)}
-			</View>
-
-			{!isHideReplicateBet && userInfo?.user?._id !== itemData?.users?._id ? (
-				<ReplicateBetComponent handleReplicateBet={handleReplicateBet} />
-			) : (
-				<></>
-			)}
-		</View>
+			</LinearGradient>
+		</TouchableOpacity>
 	);
 };
 
 const styles = StyleSheet.create({
-	container: {borderRadius: 8, backgroundColor: colors.black},
-	betQuestionContainer: {
+	container: {borderRadius: verticalScale(8), backgroundColor: colors.black},
+	betQuestionContainer: (marginTop: string) => ({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		marginHorizontal: horizontalScale(12),
-		marginTop: verticalScale(10)
-	},
+		marginTop: marginTop
+	}),
 	txtBetQuestionStyle: {
 		color: colors.white,
 		fontFamily: Fonts.type.Krona_Regular,
@@ -273,7 +343,7 @@ const styles = StyleSheet.create({
 	grayRootContainer: {
 		marginHorizontal: horizontalScale(12),
 		marginVertical: verticalScale(10),
-		borderRadius: 8,
+		borderRadius: verticalScale(8),
 		padding: 10,
 		backgroundColor: defaultTheme.backGroundColor
 	},
@@ -317,7 +387,7 @@ const styles = StyleSheet.create({
 		borderTopWidth: 1
 	},
 	betTakerPickedContainer: {
-		borderRadius: 8,
+		borderRadius: verticalScale(8),
 		marginTop: verticalScale(10),
 		alignItems: 'center',
 		paddingVertical: verticalScale(11)
@@ -329,14 +399,15 @@ const styles = StyleSheet.create({
 		textAlign: 'center',
 		textTransform: 'uppercase'
 	},
-	betTakerAlreadyPickedStringContainer: {
+	betTakerAlreadyPickedStringContainer: (opacity: number) => ({
 		flexDirection: 'row',
 		flexWrap: 'wrap',
 		alignItems: 'center',
-		marginHorizontal: horizontalScale(8)
-	},
+		marginHorizontal: horizontalScale(8),
+		opacity: opacity
+	}),
 	betTakerAlreadyPickedContainer: {
-		borderRadius: 8,
+		borderRadius: verticalScale(8),
 		marginTop: verticalScale(10),
 		alignItems: 'center',
 		paddingVertical: verticalScale(11),
@@ -347,7 +418,12 @@ const styles = StyleSheet.create({
 		fontSize: moderateFontScale(12),
 		fontFamily: Fonts.type.Inter_Regular,
 		textAlign: 'center'
-	}
+	},
+	bgGradient: (padding: number) => ({
+		padding: verticalScale(padding),
+		borderRadius: verticalScale(10),
+		marginBottom: verticalScale(10)
+	})
 });
 
 export default OtherUserProfileReplicateBetComponent;

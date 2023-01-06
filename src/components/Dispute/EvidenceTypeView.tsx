@@ -25,7 +25,8 @@ import {Api, ApiBaseUrl, ApiConstants} from '../../constants/api';
 import Strings from '../../constants/strings';
 import {
 	createThumbnailFromUrl,
-	handleOpenUrlInBrowser
+	handleOpenUrlInBrowser,
+	isValidUrl
 } from '../../constants/utils/Function';
 import {validationRegex} from '../../constants/utils/Validation';
 import {magic} from '../../navigation/routes';
@@ -172,7 +173,7 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 	};
 
 	const checkValidationAndAddURL = () => {
-		if (validationRegex.url.test(urlText)) {
+		if (validationRegex.url.test(urlText) && isValidUrl(urlText)) {
 			var urlItemObj = {
 				id: urlItemsArray.length + 1,
 				url: urlText
@@ -185,7 +186,7 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 
 			handleSendButtonDisable(false);
 		} else {
-			Alert.alert('', Strings.please_enter_valid_url);
+			alert( Strings.please_enter_valid_url);
 		}
 	};
 

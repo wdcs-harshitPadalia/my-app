@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import {View, Text, FlatList, Alert} from 'react-native';
+import {View, Text, FlatList} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import ExpoFastImage from 'expo-fast-image';
 
@@ -20,6 +20,7 @@ import {RootState} from '../../../redux/store';
 import useUpdateEffect from '../../../components/CustomHooks/useUpdateEffect';
 import JuryDetailsViewComponent from '../../../components/JuryDetailsViewComponent';
 import {useBetCreateContract} from '../../../components/CustomHooks/SmartContract';
+import {showErrorAlert} from '../../../constants/utils/Function';
 
 const AfterJuryScreen: React.FC<any> = props => {
 	const dispatch = useDispatch();
@@ -147,7 +148,7 @@ const AfterJuryScreen: React.FC<any> = props => {
 			.catch(err => {
 				dispatch(updateApiLoader({apiLoader: false}));
 				console.log('getJuryCases Data Err : ', err);
-				Alert.alert('', Strings.somethingWentWrong);
+				showErrorAlert('', Strings.somethingWentWrong);
 			});
 	};
 

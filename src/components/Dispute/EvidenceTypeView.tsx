@@ -15,7 +15,6 @@ import {
 } from 'react-native';
 
 import {ScrollView} from 'react-native-gesture-handler';
-import * as ImagePicker from 'react-native-image-picker';
 // import {openSettings, PERMISSIONS, request} from 'react-native-permissions';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -26,6 +25,7 @@ import Strings from '../../constants/strings';
 import {
 	createThumbnailFromUrl,
 	handleOpenUrlInBrowser,
+	showErrorAlert,
 	isValidUrl
 } from '../../constants/utils/Function';
 import {validationRegex} from '../../constants/utils/Validation';
@@ -127,10 +127,7 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 
 	useUpdateEffect(() => {
 		if (hashObj?.error) {
-			Alert.alert(
-				'Error',
-				'Please check your internet connection and try again'
-			);
+			showErrorAlert(Strings.txt_error, Strings.txt_check_internet_connection);
 		} else {
 			if (isOpenDispute) {
 				createDisputeRoom(
@@ -186,7 +183,7 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 
 			handleSendButtonDisable(false);
 		} else {
-			alert( Strings.please_enter_valid_url);
+			showErrorAlert('', Strings.please_enter_valid_url);
 		}
 	};
 
@@ -223,7 +220,7 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 				setEnterUrlView(!enterUrlView);
 			}
 		} else {
-			Alert.alert(Strings.reach_max_limit);
+			showErrorAlert('', Strings.reach_max_limit);
 		}
 	};
 
@@ -322,7 +319,6 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 		// 			: PERMISSIONS.IOS.CAMERA
 		// 	);
 		// 	console.log('pickImage reqPermission :: ', reqPermission);
-
 		// 	if (reqPermission === 'granted') {
 		// 		setTimeout(() => {
 		// 			ImagePicker.launchCamera(
@@ -424,9 +420,9 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 
 			if (type.includes('video')) {
 				if (parseInt(duration) > 30) {
-					Alert.alert(Strings.upload_video_30s);
+					showErrorAlert('', Strings.upload_video_30s);
 				} else if (fileSize / 1024 ** 2 > 30) {
-					Alert.alert(Strings.upload_video_30mb);
+					showErrorAlert('', Strings.upload_video_30mb);
 				} else {
 					setEvidenceItemsArray([...evidenceItemsArray, evidenceItemObj]);
 					handleSendButtonDisable(false);
@@ -560,23 +556,35 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 			userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask' &&
 			!connector.connected
 		) {
-			Alert.alert(Strings.txt_session_expire_msg);
+			showErrorAlert('', Strings.txt_session_expire_msg);
 			return;
 		} else {
 			if (userInfo?.user?.socialLoginType?.toLowerCase() !== 'metamask') {
 				const loginStatus = await magic.user.isLoggedIn();
 				console.log('loginStatus', loginStatus);
 				if (!loginStatus) {
-					Alert.alert(Strings.txt_session_expire_msg, '', [
-						{
-							text: 'Ok',
-							onPress: () => {
-								dispatch(logout());
-								dispatch(updateDeviceToken({deviceToken: ''}));
-								dispatch(resetProfileData({}));
-							}
+					if (Platform.OS === 'web') {
+						let retVal = confirm(Strings.txt_session_expire_msg);
+						if (retVal == true) {
+							dispatch(logout());
+							dispatch(updateDeviceToken({deviceToken: ''}));
+							dispatch(resetProfileData({}));
+							return true;
+						} else {
+							return false;
 						}
-					]);
+					} else {
+						Alert.alert(Strings.txt_session_expire_msg, '', [
+							{
+								text: 'Ok',
+								onPress: () => {
+									dispatch(logout());
+									dispatch(updateDeviceToken({deviceToken: ''}));
+									dispatch(resetProfileData({}));
+								}
+							}
+						]);
+					}
 					return;
 				}
 			}
@@ -601,13 +609,13 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 				if (response?.statusCode.toString().includes('200')) {
 					navigateToThankYouScreen();
 				} else {
-					Alert.alert('', response?.message);
+					showErrorAlert('', response?.message);
 				}
 			})
 			.catch(error => {
 				console.log('handleUploadEvidence error', JSON.stringify(error));
 				dispatch(updateApiLoader({apiLoader: false}));
-				Alert.alert(
+				showErrorAlert(
 					'',
 					error.response?.data?.message ?? Strings.somethingWentWrong
 				);

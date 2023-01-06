@@ -82,7 +82,7 @@ export const CustomTabBar = ({state, descriptors, navigation}) => {
 
 	let hasNotch = DeviceInfo.hasNotch();
 
-	const myRef = React.useRef();
+	const pickVideoRef = React.useRef();
 
 	const [modalVisible, setModalVisible] = useState(false);
 	const [isMediaTypeVisible, setIsMediaTypeVisible] = useState(false);
@@ -90,7 +90,7 @@ export const CustomTabBar = ({state, descriptors, navigation}) => {
 	const pickVideoFromGallery = async () => {
 		setTimeout(() => {
 			if (Platform.OS === 'web') {
-				myRef.current.click(function () {
+				pickVideoRef.current.click(function () {
 					changeHandler();
 				});
 			} else {
@@ -409,15 +409,16 @@ export const CustomTabBar = ({state, descriptors, navigation}) => {
 				}
 				isHideAvatar={true}
 			/>
-			<input
-				ref={myRef}
-				id="input"
-				type="file"
-				name="file"
-				accept="video/*"
-				onChange={changeHandler}
-				style={{opacity: 0, height: 0, width: 0}}
-			/>
+			<View style={{opacity: 0}}>
+				<input
+					ref={pickVideoRef}
+					id="input"
+					type="file"
+					name="file"
+					accept="video/*"
+					onChange={changeHandler}
+				/>
+			</View>
 		</LinearGradient>
 	);
 };

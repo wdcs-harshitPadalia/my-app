@@ -2,7 +2,6 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import {StackActions, useNavigation, useRoute} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {
-	Alert,
 	Linking,
 	Platform,
 	Share,
@@ -31,7 +30,8 @@ import {FlatList} from 'react-native-gesture-handler';
 import {updateApiLoader} from '../../../redux/reducerSlices/preLogin';
 import {Api, ApiBaseUrl, ApiConstants} from '../../../constants/api';
 import NoDataComponent from '../../../components/NoDataComponent';
-import {Video, getRealPath} from 'react-native-compressor';
+import {Video} from 'react-native-compressor';
+import {showErrorAlert} from '../../../constants/utils/Function';
 
 const VideoCreationScreen = () => {
 	const navigation = useNavigation();
@@ -148,7 +148,7 @@ const VideoCreationScreen = () => {
 					setIsTitle('');
 					setIsShareScreen(true);
 				} else {
-					Alert.alert('', response?.message);
+					showErrorAlert('', response?.message);
 				}
 			})
 			.catch(error => {
@@ -183,7 +183,7 @@ const VideoCreationScreen = () => {
 				// dismissed
 			}
 		} catch (error) {
-			Alert.alert(error.message);
+			showErrorAlert('', error.message);
 		}
 	};
 
@@ -252,7 +252,7 @@ const VideoCreationScreen = () => {
 										Linking.openURL('twitter://post?message=' + '');
 									} else if (text === Strings.copy_link) {
 										Clipboard.setString('');
-										Alert.alert(Strings.copy_link_desc);
+										showErrorAlert('', Strings.copy_link_desc);
 									} else {
 										onShare('');
 									}

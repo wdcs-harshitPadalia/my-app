@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {
-	Alert,
 	FlatList,
 	Image,
 	Platform,
@@ -25,7 +24,10 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import SelectImageComponet from '../../../components/SelectImageComponet';
 
 import {useDispatch, useSelector} from 'react-redux';
-import {ImageIndicator} from '../../../constants/utils/Function';
+import {
+	ImageIndicator,
+	showErrorAlert
+} from '../../../constants/utils/Function';
 import colors from '../../../theme/colors';
 import {
 	getAvatarList,
@@ -179,7 +181,7 @@ const EditProfileScreen: React.FC<any> = props => {
 			})
 			.catch(err => {
 				console.log('getAvatarList Data Err : ', err);
-				Alert.alert('getAvatarList', Strings.somethingWentWrong);
+				showErrorAlert('', Strings.somethingWentWrong);
 			});
 	};
 
@@ -309,7 +311,7 @@ const EditProfileScreen: React.FC<any> = props => {
 		}
 
 		formData.append('isAvatar', isAvatarSelect);
-		formData.append('isBase64', isBase64);
+		// formData.append('isBase64', isBase64);
 
 		if (profilePic) {
 			if (isAvatarSelect) {
@@ -383,10 +385,7 @@ const EditProfileScreen: React.FC<any> = props => {
 		// return;
 		fetch(ApiBaseUrl + ApiConstants.EditProfile, {
 			method: Api.PUT,
-			body:
-				Platform.OS === 'web'
-					? await createFormData(profilePic)
-					: createFormData(profilePic),
+			body: await createFormData(profilePic),
 			headers: {
 				Authorization: 'Bearer ' + userInfo.token
 			}

@@ -1,12 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
-  Alert,
   Animated,
-  LayoutAnimation,
-  Platform,
   RefreshControl,
   SectionList,
-  UIManager,
   View,
 } from "react-native";
 import { Text } from "react-native-elements";
@@ -38,14 +34,10 @@ import useUpdateEffect from "../../../components/CustomHooks/useUpdateEffect";
 import { resetNotifications } from "../../../redux/reducerSlices/notification";
 import LoadMoreLoaderView from "../../../components/LoadMoreLoaderView";
 import NotificationBetResultView from "../../../components/NotificationBetResultView";
-import ButtonGradient from "../../../components/ButtonGradient";
-import colors from "../../../theme/colors";
-import { horizontalScale, verticalScale } from "../../../theme";
 import NotificationJuryView from "../../../components/NotificationJuryView";
 import NotificationBetDisputeResultView from "../../../components/NotificationBetDisputeResultView";
 import NoDataComponent from "../../../components/NoDataComponent";
 import NotificationRevealJuryResultView from "../../../components/NotificationRevealJuryResultView";
-import { gradientColorAngle } from "../../../theme/metrics";
 import FriendFlatList from "../../../components/FriendFlatList";
 
 const NotificationScreen: React.FC<any> = (props) => {
@@ -225,7 +217,6 @@ const NotificationScreen: React.FC<any> = (props) => {
     //LayoutAnimation.configureNext(layoutAnimConfig);
     //LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
     //setExpanded(!expanded);
-    //Alert.alert('dfjk494590');
     setData(DATA);
 
     //return unsubscribe

@@ -29,8 +29,8 @@ import {
 	saveJuryVoteTemp
 } from '../../../../redux/apiHandler/apiActions';
 import {
-	getTimeLeft,
-	handleOpenUrlInBrowser
+	handleOpenUrlInBrowser,
+	showErrorAlert
 } from '../../../../constants/utils/Function';
 import FullScreenImageComponent from '../../../../components/FullScreenImageComponent';
 import VideoPlayerComponent from '../../../../components/VideoPlayerComponent';
@@ -137,24 +137,31 @@ const ViewDisputeScreen: React.FC<any> = () => {
 		console.log('====================================');
 
 		if (isJuryVoted && !params?.isVoted) {
-			Alert.alert('', Strings.already_voted, [
-				{
-					text: 'Retry',
-					onPress: () => {
-						handleSendButtonClick();
-					},
-					style: 'default'
+			if (Platform.OS === 'web') {
+				let retVal = confirm(Strings.already_voted);
+				if (retVal == true) {
+					handleSendButtonClick();
+					return true;
+				} else {
+					return false;
 				}
-			]);
+			} else {
+				Alert.alert('', Strings.already_voted, [
+					{
+						text: 'Retry',
+						onPress: () => {
+							handleSendButtonClick();
+						},
+						style: 'default'
+					}
+				]);
+			}
 		}
 	}, [isJuryVoted]);
 
 	useUpdateEffect(() => {
 		if (hashObj?.error) {
-			Alert.alert(
-				'Error',
-				'Please check your internet connection and try again'
-			);
+			showErrorAlert(Strings.txt_error, Strings.txt_check_internet_connection);
 		} else {
 			let cash = 0;
 			if (selectedCase.key === 'A') {
@@ -213,7 +220,7 @@ const ViewDisputeScreen: React.FC<any> = () => {
 						cash
 					);
 				} else {
-					Alert.alert('', Strings.somethingWentWrong);
+					showErrorAlert('', Strings.somethingWentWrong);
 				}
 			})
 			.catch(err => {
@@ -221,7 +228,7 @@ const ViewDisputeScreen: React.FC<any> = () => {
 					'handleSaveJuryVoteTemp :: saveJuryVoteTemp ::  catch ::',
 					err
 				);
-				Alert.alert('', Strings.somethingWentWrong);
+				showErrorAlert('', Strings.somethingWentWrong);
 			});
 	};
 
@@ -244,7 +251,7 @@ const ViewDisputeScreen: React.FC<any> = () => {
 			.catch(error => {
 				dispatch(updateApiLoader({apiLoader: false}));
 				console.log('getUserBetResultData :: error :: ', JSON.stringify(error));
-				Alert.alert('', JSON.parse(error).message);
+				showErrorAlert('', JSON.parse(error).message);
 			});
 	};
 
@@ -390,7 +397,7 @@ const ViewDisputeScreen: React.FC<any> = () => {
 			.catch(error => {
 				dispatch(updateApiLoader({apiLoader: false}));
 				console.log('getUserBetResultData :: error :: ', JSON.stringify(error));
-				Alert.alert('', JSON.parse(error).message);
+				showErrorAlert('', JSON.parse(error).message);
 			});
 	};
 
@@ -399,23 +406,35 @@ const ViewDisputeScreen: React.FC<any> = () => {
 			userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask' &&
 			!connector.connected
 		) {
-			Alert.alert(Strings.txt_session_expire_msg);
+			showErrorAlert('', Strings.txt_session_expire_msg);
 			return;
 		} else {
 			if (userInfo?.user?.socialLoginType?.toLowerCase() !== 'metamask') {
 				const loginStatus = await magic.user.isLoggedIn();
 				console.log('loginStatus', loginStatus);
 				if (!loginStatus) {
-					Alert.alert(Strings.txt_session_expire_msg, '', [
-						{
-							text: 'Ok',
-							onPress: () => {
-								dispatch(logout());
-								dispatch(updateDeviceToken({deviceToken: ''}));
-								dispatch(resetProfileData({}));
-							}
+					if (Platform.OS === 'web') {
+						let retVal = confirm(Strings.txt_session_expire_msg);
+						if (retVal == true) {
+							dispatch(logout());
+							dispatch(updateDeviceToken({deviceToken: ''}));
+							dispatch(resetProfileData({}));
+							return true;
+						} else {
+							return false;
 						}
-					]);
+					} else {
+						Alert.alert(Strings.txt_session_expire_msg, '', [
+							{
+								text: 'Ok',
+								onPress: () => {
+									dispatch(logout());
+									dispatch(updateDeviceToken({deviceToken: ''}));
+									dispatch(resetProfileData({}));
+								}
+							}
+						]);
+					}
 					return;
 				}
 			}

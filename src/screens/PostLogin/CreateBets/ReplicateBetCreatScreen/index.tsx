@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-lone-blocks */
 import React, {useEffect, useState} from 'react';
-import {Alert, BackHandler, Linking, Share, View} from 'react-native';
+import {Alert, BackHandler, Linking, Platform, Share, View} from 'react-native';
 import {Text} from 'react-native-elements';
 import icons from '../../../../assets/icon';
 import Strings from '../../../../constants/strings';
@@ -31,6 +31,7 @@ import {
 	dateConvert,
 	getMetamaskBalance,
 	getRoundDecimalValue,
+	showErrorAlert,
 	timeConvert
 } from '../../../../constants/utils/Function';
 import {useWalletConnect} from '@walletconnect/react-native-dapp';
@@ -236,10 +237,9 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 
 			if (parseFloat(betAmount.replace(',', '.')) > parseFloat(dbethBalance)) {
 				setIsBackButtonDisable(false);
-
-				Alert.alert(
-					'Insufficient Balance'.toUpperCase(),
-					'Please add more funds.'
+				showErrorAlert(
+					Strings.txt_insufficient_balance,
+					Strings.txt_add_more_fund
 				);
 				return;
 			}
@@ -247,32 +247,56 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 				userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask' &&
 				!connector.connected
 			) {
-				Alert.alert(Strings.txt_session_expire_msg, '', [
-					{
-						text: 'Ok',
-						onPress: () => {
-							dispatch(logout());
-							dispatch(updateDeviceToken({deviceToken: ''}));
-							dispatch(resetProfileData({}));
-						}
+				if (Platform.OS === 'web') {
+					let retVal = confirm(Strings.txt_session_expire_msg);
+					if (retVal == true) {
+						dispatch(logout());
+						dispatch(updateDeviceToken({deviceToken: ''}));
+						dispatch(resetProfileData({}));
+						return true;
+					} else {
+						return false;
 					}
-				]);
+				} else {
+					Alert.alert(Strings.txt_session_expire_msg, '', [
+						{
+							text: 'Ok',
+							onPress: () => {
+								dispatch(logout());
+								dispatch(updateDeviceToken({deviceToken: ''}));
+								dispatch(resetProfileData({}));
+							}
+						}
+					]);
+				}
 				return;
 			} else {
 				if (userInfo?.user?.socialLoginType?.toLowerCase() !== 'metamask') {
 					const loginStatus = await magic.user.isLoggedIn();
 					console.log('loginStatus', loginStatus);
 					if (!loginStatus) {
-						Alert.alert(Strings.txt_session_expire_msg, '', [
-							{
-								text: 'Ok',
-								onPress: () => {
-									dispatch(logout());
-									dispatch(updateDeviceToken({deviceToken: ''}));
-									dispatch(resetProfileData({}));
-								}
+						if (Platform.OS === 'web') {
+							let retVal = confirm(Strings.txt_session_expire_msg);
+							if (retVal == true) {
+								dispatch(logout());
+								dispatch(updateDeviceToken({deviceToken: ''}));
+								dispatch(resetProfileData({}));
+								return true;
+							} else {
+								return false;
 							}
-						]);
+						} else {
+							Alert.alert(Strings.txt_session_expire_msg, '', [
+								{
+									text: 'Ok',
+									onPress: () => {
+										dispatch(logout());
+										dispatch(updateDeviceToken({deviceToken: ''}));
+										dispatch(resetProfileData({}));
+									}
+								}
+							]);
+						}
 						return;
 					}
 				}
@@ -327,10 +351,9 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 		} else {
 			if (parseFloat(betAmount.replace(',', '.')) > parseFloat(dbethBalance)) {
 				setIsBackButtonDisable(false);
-
-				Alert.alert(
-					'Insufficient Balance'.toUpperCase(),
-					'Please add more funds.'
+				showErrorAlert(
+					Strings.txt_insufficient_balance,
+					Strings.txt_add_more_fund
 				);
 				return;
 			}
@@ -338,32 +361,56 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 				userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask' &&
 				!connector.connected
 			) {
-				Alert.alert(Strings.txt_session_expire_msg, '', [
-					{
-						text: 'Ok',
-						onPress: () => {
-							dispatch(logout());
-							dispatch(updateDeviceToken({deviceToken: ''}));
-							dispatch(resetProfileData({}));
-						}
+				if (Platform.OS === 'web') {
+					let retVal = confirm(Strings.txt_session_expire_msg);
+					if (retVal == true) {
+						dispatch(logout());
+						dispatch(updateDeviceToken({deviceToken: ''}));
+						dispatch(resetProfileData({}));
+						return true;
+					} else {
+						return false;
 					}
-				]);
+				} else {
+					Alert.alert(Strings.txt_session_expire_msg, '', [
+						{
+							text: 'Ok',
+							onPress: () => {
+								dispatch(logout());
+								dispatch(updateDeviceToken({deviceToken: ''}));
+								dispatch(resetProfileData({}));
+							}
+						}
+					]);
+				}
 				return;
 			} else {
 				if (userInfo?.user?.socialLoginType?.toLowerCase() !== 'metamask') {
 					const loginStatus = await magic.user.isLoggedIn();
 					console.log('loginStatus', loginStatus);
 					if (!loginStatus) {
-						Alert.alert(Strings.txt_session_expire_msg, '', [
-							{
-								text: 'Ok',
-								onPress: () => {
-									dispatch(logout());
-									dispatch(updateDeviceToken({deviceToken: ''}));
-									dispatch(resetProfileData({}));
-								}
+						if (Platform.OS === 'web') {
+							let retVal = confirm(Strings.txt_session_expire_msg);
+							if (retVal == true) {
+								dispatch(logout());
+								dispatch(updateDeviceToken({deviceToken: ''}));
+								dispatch(resetProfileData({}));
+								return true;
+							} else {
+								return false;
 							}
-						]);
+						} else {
+							Alert.alert(Strings.txt_session_expire_msg, '', [
+								{
+									text: 'Ok',
+									onPress: () => {
+										dispatch(logout());
+										dispatch(updateDeviceToken({deviceToken: ''}));
+										dispatch(resetProfileData({}));
+									}
+								}
+							]);
+						}
 						return;
 					}
 				}
@@ -881,7 +928,7 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 				// dismissed
 			}
 		} catch (error) {
-			Alert.alert(error.message);
+			showErrorAlert('', error.message);
 		}
 	};
 
@@ -1252,7 +1299,7 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 									Linking.openURL('twitter://post?message=' + shareMessage);
 								} else if (text === Strings.copy_link) {
 									Clipboard.setString(shareUrl);
-									Alert.alert(Strings.copy_link_desc);
+									showErrorAlert('', Strings.copy_link_desc);
 								} else {
 									onShare(shareMessage);
 								}
@@ -1326,9 +1373,9 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 							parseFloat(betAmount.replace(',', '.')) > parseFloat(dbethBalance)
 						) {
 							setIsBackButtonDisable(false);
-							Alert.alert(
-								'Insufficient Balance'.toUpperCase(),
-								'Please add more funds.'
+							showErrorAlert(
+								Strings.txt_insufficient_balance,
+								Strings.txt_add_more_fund
 							);
 							return;
 						}
@@ -1338,10 +1385,9 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 
 					if (parseFloat(betAmount.replace(',', '.')) > parseFloat(myBalance)) {
 						setIsBackButtonDisable(false);
-
-						Alert.alert(
-							'Insufficient Balance'.toUpperCase(),
-							'Please add more funds.'
+						showErrorAlert(
+							Strings.txt_insufficient_balance,
+							Strings.txt_add_more_fund
 						);
 						return;
 					}
@@ -1349,32 +1395,56 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 						userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask' &&
 						!connector.connected
 					) {
-						Alert.alert(Strings.txt_session_expire_msg, '', [
-							{
-								text: 'Ok',
-								onPress: () => {
-									dispatch(logout());
-									dispatch(updateDeviceToken({deviceToken: ''}));
-									dispatch(resetProfileData({}));
-								}
+						if (Platform.OS === 'web') {
+							let retVal = confirm(Strings.txt_session_expire_msg);
+							if (retVal == true) {
+								dispatch(logout());
+								dispatch(updateDeviceToken({deviceToken: ''}));
+								dispatch(resetProfileData({}));
+								return true;
+							} else {
+								return false;
 							}
-						]);
+						} else {
+							Alert.alert(Strings.txt_session_expire_msg, '', [
+								{
+									text: 'Ok',
+									onPress: () => {
+										dispatch(logout());
+										dispatch(updateDeviceToken({deviceToken: ''}));
+										dispatch(resetProfileData({}));
+									}
+								}
+							]);
+						}
 						return;
 					} else {
 						if (userInfo?.user?.socialLoginType?.toLowerCase() !== 'metamask') {
 							const loginStatus = await magic.user.isLoggedIn();
 							console.log('loginStatus', loginStatus);
 							if (!loginStatus) {
-								Alert.alert(Strings.txt_session_expire_msg, '', [
-									{
-										text: 'Ok',
-										onPress: () => {
-											dispatch(logout());
-											dispatch(updateDeviceToken({deviceToken: ''}));
-											dispatch(resetProfileData({}));
-										}
+								if (Platform.OS === 'web') {
+									let retVal = confirm(Strings.txt_session_expire_msg);
+									if (retVal == true) {
+										dispatch(logout());
+										dispatch(updateDeviceToken({deviceToken: ''}));
+										dispatch(resetProfileData({}));
+										return true;
+									} else {
+										return false;
 									}
-								]);
+								} else {
+									Alert.alert(Strings.txt_session_expire_msg, '', [
+										{
+											text: 'Ok',
+											onPress: () => {
+												dispatch(logout());
+												dispatch(updateDeviceToken({deviceToken: ''}));
+												dispatch(resetProfileData({}));
+											}
+										}
+									]);
+								}
 								return;
 							}
 						}
@@ -1449,9 +1519,9 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 						parseFloat(betAmount.replace(',', '.')) > parseFloat(dbethBalance)
 					) {
 						setIsBackButtonDisable(false);
-						Alert.alert(
-							'Insufficient Balance'.toUpperCase(),
-							'Please add more funds.'
+						showErrorAlert(
+							Strings.txt_insufficient_balance,
+							Strings.txt_add_more_fund
 						);
 						return;
 					}
@@ -1460,10 +1530,9 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 				}
 				if (parseFloat(betAmount.replace(',', '.')) > parseFloat(myBalance)) {
 					setIsBackButtonDisable(false);
-
-					Alert.alert(
-						'Insufficient Balance'.toUpperCase(),
-						'Please add more funds.'
+					showErrorAlert(
+						Strings.txt_insufficient_balance,
+						Strings.txt_add_more_fund
 					);
 					return;
 				}
@@ -1471,32 +1540,56 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 					userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask' &&
 					!connector.connected
 				) {
-					Alert.alert(Strings.txt_session_expire_msg, '', [
-						{
-							text: 'Ok',
-							onPress: () => {
-								dispatch(logout());
-								dispatch(updateDeviceToken({deviceToken: ''}));
-								dispatch(resetProfileData({}));
-							}
+					if (Platform.OS === 'web') {
+						let retVal = confirm(Strings.txt_session_expire_msg);
+						if (retVal == true) {
+							dispatch(logout());
+							dispatch(updateDeviceToken({deviceToken: ''}));
+							dispatch(resetProfileData({}));
+							return true;
+						} else {
+							return false;
 						}
-					]);
+					} else {
+						Alert.alert(Strings.txt_session_expire_msg, '', [
+							{
+								text: 'Ok',
+								onPress: () => {
+									dispatch(logout());
+									dispatch(updateDeviceToken({deviceToken: ''}));
+									dispatch(resetProfileData({}));
+								}
+							}
+						]);
+					}
 					return;
 				} else {
 					if (userInfo?.user?.socialLoginType?.toLowerCase() !== 'metamask') {
 						const loginStatus = await magic.user.isLoggedIn();
 						console.log('loginStatus', loginStatus);
 						if (!loginStatus) {
-							Alert.alert(Strings.txt_session_expire_msg, '', [
-								{
-									text: 'Ok',
-									onPress: () => {
-										dispatch(logout());
-										dispatch(updateDeviceToken({deviceToken: ''}));
-										dispatch(resetProfileData({}));
-									}
+							if (Platform.OS === 'web') {
+								let retVal = confirm(Strings.txt_session_expire_msg);
+								if (retVal == true) {
+									dispatch(logout());
+									dispatch(updateDeviceToken({deviceToken: ''}));
+									dispatch(resetProfileData({}));
+									return true;
+								} else {
+									return false;
 								}
-							]);
+							} else {
+								Alert.alert(Strings.txt_session_expire_msg, '', [
+									{
+										text: 'Ok',
+										onPress: () => {
+											dispatch(logout());
+											dispatch(updateDeviceToken({deviceToken: ''}));
+											dispatch(resetProfileData({}));
+										}
+									}
+								]);
+							}
 							return;
 						}
 					}

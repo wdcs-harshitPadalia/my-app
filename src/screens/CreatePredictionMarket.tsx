@@ -2,7 +2,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-lone-blocks */
 import React, {useEffect, useMemo, useState} from 'react';
-import {Alert, BackHandler, FlatList, Keyboard, View} from 'react-native';
+import {
+	Alert,
+	BackHandler,
+	FlatList,
+	Keyboard,
+	Platform,
+	View
+} from 'react-native';
 import {Text} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -1174,16 +1181,29 @@ const CreatePredictionMarket: React.FC<any> = () => {
 								userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask' &&
 								!connector.connected
 							) {
-								Alert.alert(Strings.txt_session_expire_msg, '', [
-									{
-										text: 'Ok',
-										onPress: () => {
-											dispatch(logout());
-											dispatch(updateDeviceToken({deviceToken: ''}));
-											dispatch(resetProfileData({}));
-										}
+								if (Platform.OS === 'web') {
+									let retVal = confirm(Strings.txt_session_expire_msg);
+									if (retVal == true) {
+										dispatch(logout());
+										dispatch(updateDeviceToken({deviceToken: ''}));
+										dispatch(resetProfileData({}));
+										return true;
+									} else {
+										return false;
 									}
-								]);
+								} else {
+									Alert.alert(Strings.txt_session_expire_msg, '', [
+										{
+											text: 'Ok',
+											onPress: () => {
+												dispatch(logout());
+												dispatch(updateDeviceToken({deviceToken: ''}));
+												dispatch(resetProfileData({}));
+											}
+										}
+									]);
+								}
+
 								return;
 							} else {
 								if (
@@ -1192,16 +1212,28 @@ const CreatePredictionMarket: React.FC<any> = () => {
 									const loginStatus = await magic.user.isLoggedIn();
 									console.log('loginStatus', loginStatus);
 									if (!loginStatus) {
-										Alert.alert(Strings.txt_session_expire_msg, '', [
-											{
-												text: 'Ok',
-												onPress: () => {
-													dispatch(logout());
-													dispatch(updateDeviceToken({deviceToken: ''}));
-													dispatch(resetProfileData({}));
-												}
+										if (Platform.OS === 'web') {
+											let retVal = confirm(Strings.txt_session_expire_msg);
+											if (retVal == true) {
+												dispatch(logout());
+												dispatch(updateDeviceToken({deviceToken: ''}));
+												dispatch(resetProfileData({}));
+												return true;
+											} else {
+												return false;
 											}
-										]);
+										} else {
+											Alert.alert(Strings.txt_session_expire_msg, '', [
+												{
+													text: 'Ok',
+													onPress: () => {
+														dispatch(logout());
+														dispatch(updateDeviceToken({deviceToken: ''}));
+														dispatch(resetProfileData({}));
+													}
+												}
+											]);
+										}
 										return;
 									}
 								}

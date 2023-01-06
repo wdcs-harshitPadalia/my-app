@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, ImageBackground, Alert} from 'react-native';
+import {View, ImageBackground} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation, useRoute} from '@react-navigation/native';
 
@@ -14,6 +14,7 @@ import ScreenNames from '../../../navigation/screenNames';
 import {gradientColorAngle} from '../../../theme/metrics';
 import BetsBottomView from '../../../components/Events/BetsBottomView';
 import {EventInfoView} from '../../../components/EventInfoView';
+import {showErrorAlert} from '../../../constants/utils/Function';
 
 const StoryShareScreen = () => {
 	const navigation = useNavigation();
@@ -37,7 +38,7 @@ const StoryShareScreen = () => {
 					if (res?.statusCode.toString().startsWith('20')) {
 						navigation.navigate(ScreenNames.FeedScreen);
 					} else {
-						Alert.alert('Alert', Strings.somethingWentWrong);
+						showErrorAlert('', Strings.somethingWentWrong);
 					}
 				}, 300);
 			})
@@ -91,24 +92,24 @@ const StoryShareScreen = () => {
 
 					<View style={styles.bottomButtonContainer}>
 						<View style={styles.bottomButtonView}>
-						<ButtonGradient
-							style={styles.cancleButton}
-							buttonText={Strings.cancel}
-							buttonTextcolor={colors.white}
-							colorArray={defaultTheme.ternaryGradientColor}
-							angle={gradientColorAngle}
-							onPress={() => {
-								navigation.goBack();
-							}}
-						/>
-						<ButtonGradient
-							style={styles.shareButton}
-							buttonText={Strings.share}
-							buttonTextcolor={colors.white}
-							colorArray={defaultTheme.secondaryGradientColor}
-							angle={gradientColorAngle}
-							onPress={onPressHandleShareStory}
-						/>
+							<ButtonGradient
+								style={styles.cancleButton}
+								buttonText={Strings.cancel}
+								buttonTextcolor={colors.white}
+								colorArray={defaultTheme.ternaryGradientColor}
+								angle={gradientColorAngle}
+								onPress={() => {
+									navigation.goBack();
+								}}
+							/>
+							<ButtonGradient
+								style={styles.shareButton}
+								buttonText={Strings.share}
+								buttonTextcolor={colors.white}
+								colorArray={defaultTheme.secondaryGradientColor}
+								angle={gradientColorAngle}
+								onPress={onPressHandleShareStory}
+							/>
 						</View>
 					</View>
 				</ImageBackground>

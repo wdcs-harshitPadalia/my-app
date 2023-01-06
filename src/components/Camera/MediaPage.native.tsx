@@ -4,7 +4,6 @@ import {
 	View,
 	Image,
 	TouchableOpacity,
-	Alert,
 	Platform,
 	NativeSyntheticEvent,
 	ImageLoadEventData
@@ -24,7 +23,8 @@ import {
 	SAFE_AREA_PADDING
 } from '../../theme/metrics';
 import ScreenNames from '../../navigation/screenNames';
-import { videoMinimumDuration } from '../../constants/api';
+import {videoMinimumDuration} from '../../constants/api';
+import {showErrorAlert} from '../../constants/utils/Function';
 
 const isVideoOnLoadEvent = (
 	event: OnLoadData | NativeSyntheticEvent<ImageLoadEventData>
@@ -112,7 +112,7 @@ export function MediaPage({navigation, route}: Props): React.ReactElement {
 				angle={gradientColorAngle}
 				onPress={() => {
 					if (videoDuration <= videoMinimumDuration) {
-						Alert.alert('', Strings.upload_video_15s);
+						showErrorAlert('', Strings.txt_message_sent_success);
 					} else {
 						setIsVideoPlay(true);
 						navigation.navigate(ScreenNames.VideoCreationScreen, {

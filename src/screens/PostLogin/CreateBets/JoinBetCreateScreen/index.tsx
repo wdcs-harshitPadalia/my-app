@@ -30,6 +30,7 @@ import {
 	dateConvert,
 	getMetamaskBalance,
 	getRoundDecimalValue,
+	showErrorAlert,
 	timeConvert
 } from '../../../../constants/utils/Function';
 import {useWalletConnect} from '@walletconnect/react-native-dapp';
@@ -277,32 +278,56 @@ const JoinBetCreateScreen: React.FC<any> = () => {
 			userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask' &&
 			!connector.connected
 		) {
-			Alert.alert('Session expired please login again', '', [
-				{
-					text: 'Ok',
-					onPress: () => {
-						dispatch(logout());
-						dispatch(updateDeviceToken({deviceToken: ''}));
-						dispatch(resetProfileData({}));
-					}
+			if (Platform.OS === 'web') {
+				let retVal = confirm(Strings.txt_session_expire_login_again);
+				if (retVal == true) {
+					dispatch(logout());
+					dispatch(updateDeviceToken({deviceToken: ''}));
+					dispatch(resetProfileData({}));
+					return true;
+				} else {
+					return false;
 				}
-			]);
+			} else {
+				Alert.alert(Strings.txt_session_expire_login_again, '', [
+					{
+						text: 'Ok',
+						onPress: () => {
+							dispatch(logout());
+							dispatch(updateDeviceToken({deviceToken: ''}));
+							dispatch(resetProfileData({}));
+						}
+					}
+				]);
+			}
 			return;
 		} else {
 			if (userInfo?.user?.socialLoginType?.toLowerCase() !== 'metamask') {
 				const loginStatus = await magic.user.isLoggedIn();
 				console.log('loginStatus', loginStatus);
 				if (!loginStatus) {
-					Alert.alert('Session expired please login again', '', [
-						{
-							text: 'Ok',
-							onPress: () => {
-								dispatch(logout());
-								dispatch(updateDeviceToken({deviceToken: ''}));
-								dispatch(resetProfileData({}));
-							}
+					if (Platform.OS === 'web') {
+						let retVal = confirm(Strings.txt_session_expire_login_again);
+						if (retVal == true) {
+							dispatch(logout());
+							dispatch(updateDeviceToken({deviceToken: ''}));
+							dispatch(resetProfileData({}));
+							return true;
+						} else {
+							return false;
 						}
-					]);
+					} else {
+						Alert.alert(Strings.txt_session_expire_login_again, '', [
+							{
+								text: 'Ok',
+								onPress: () => {
+									dispatch(logout());
+									dispatch(updateDeviceToken({deviceToken: ''}));
+									dispatch(resetProfileData({}));
+								}
+							}
+						]);
+					}
 					return;
 				}
 			}
@@ -437,7 +462,6 @@ const JoinBetCreateScreen: React.FC<any> = () => {
 				setBetJoinMessage(res?.data?.message);
 				setTimeout(async () => {
 					if (res?.data?.isBet === true) {
-						//Alert.alert('dfshjk');
 						//TODO: call contract
 						// if (!connector.connected) {
 						//   setInfoPopUpType(2);
@@ -460,14 +484,14 @@ const JoinBetCreateScreen: React.FC<any> = () => {
 						) {
 							addBetData();
 						} else if (betTakerAddress.toLowerCase() !== nullAddress) {
-							Alert.alert('', Strings.this_bet_already_joined);
+							showErrorAlert('', Strings.this_bet_already_joined);
 						} else {
 							if (isSelectCurrency?.name !== 'MATIC') {
 								if (parseFloat(betAmount) > parseFloat(dbethBalance)) {
 									setIsBackButtonDisable(false);
-									Alert.alert(
-										'Insufficient Balance'.toUpperCase(),
-										'Please add more funds.'
+									showErrorAlert(
+										Strings.txt_insufficient_balance,
+										Strings.txt_add_more_fund
 									);
 									return;
 								}
@@ -477,9 +501,9 @@ const JoinBetCreateScreen: React.FC<any> = () => {
 
 							if (parseFloat(betAmount) > parseFloat(myBalance)) {
 								setIsBackButtonDisable(false);
-								Alert.alert(
-									'Insufficient Balance'.toUpperCase(),
-									'Please add more funds.'
+								showErrorAlert(
+									Strings.txt_insufficient_balance,
+									Strings.txt_add_more_fund
 								);
 								return;
 							}
@@ -487,16 +511,28 @@ const JoinBetCreateScreen: React.FC<any> = () => {
 								userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask' &&
 								!connector.connected
 							) {
-								Alert.alert('Session expired please login again', '', [
-									{
-										text: 'Ok',
-										onPress: () => {
-											dispatch(logout());
-											dispatch(updateDeviceToken({deviceToken: ''}));
-											dispatch(resetProfileData({}));
-										}
+								if (Platform.OS === 'web') {
+									let retVal = confirm(Strings.txt_session_expire_login_again);
+									if (retVal == true) {
+										dispatch(logout());
+										dispatch(updateDeviceToken({deviceToken: ''}));
+										dispatch(resetProfileData({}));
+										return true;
+									} else {
+										return false;
 									}
-								]);
+								} else {
+									Alert.alert(Strings.txt_session_expire_login_again, '', [
+										{
+											text: 'Ok',
+											onPress: () => {
+												dispatch(logout());
+												dispatch(updateDeviceToken({deviceToken: ''}));
+												dispatch(resetProfileData({}));
+											}
+										}
+									]);
+								}
 								return;
 							} else {
 								if (
@@ -505,16 +541,30 @@ const JoinBetCreateScreen: React.FC<any> = () => {
 									const loginStatus = await magic.user.isLoggedIn();
 									console.log('loginStatus', loginStatus);
 									if (!loginStatus) {
-										Alert.alert('Session expired please login again', '', [
-											{
-												text: 'Ok',
-												onPress: () => {
-													dispatch(logout());
-													dispatch(updateDeviceToken({deviceToken: ''}));
-													dispatch(resetProfileData({}));
-												}
+										if (Platform.OS === 'web') {
+											let retVal = confirm(
+												Strings.txt_session_expire_login_again
+											);
+											if (retVal == true) {
+												dispatch(logout());
+												dispatch(updateDeviceToken({deviceToken: ''}));
+												dispatch(resetProfileData({}));
+												return true;
+											} else {
+												return false;
 											}
-										]);
+										} else {
+											Alert.alert(Strings.txt_session_expire_login_again, '', [
+												{
+													text: 'Ok',
+													onPress: () => {
+														dispatch(logout());
+														dispatch(updateDeviceToken({deviceToken: ''}));
+														dispatch(resetProfileData({}));
+													}
+												}
+											]);
+										}
 										return;
 									}
 								}

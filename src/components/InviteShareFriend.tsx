@@ -4,22 +4,17 @@ import {
 	StyleSheet,
 	TextInputProps,
 	Text,
-	TouchableOpacity,
-	Share,
-	Alert
-} from 'react-native';
+	Share} from 'react-native';
 import ExpoFastImage from 'expo-fast-image';
-import {LinearGradient} from 'expo-linear-gradient';
 import {useSelector} from 'react-redux';
 import icons from '../assets/icon';
 import Strings from '../constants/strings';
-import {getProfileShareUrl} from '../constants/utils/Function';
-import {getCMS} from '../redux/apiHandler/apiActions';
+import {getProfileShareUrl, showErrorAlert} from '../constants/utils/Function';
 import {RootState} from '../redux/store';
 import {Fonts, moderateScale, verticalScale} from '../theme';
 import colors from '../theme/colors';
 import {defaultTheme} from '../theme/defaultTheme';
-import {gradientColorAngle, height} from '../theme/metrics';
+import {gradientColorAngle} from '../theme/metrics';
 import ButtonLeftIconGradient from './ButtonLeftIconGradient';
 interface Props extends TextInputProps {
 	onSharePress?: () => void;
@@ -49,7 +44,7 @@ const InviteShareFriend: React.FC<Props> = props => {
 				// dismissed
 			}
 		} catch (error) {
-			Alert.alert(error.message);
+			showErrorAlert('', error.message);
 		}
 	};
 	useEffect(() => {

@@ -732,6 +732,22 @@ const Strings = {
 	no_video_found: 'No video found yet',
 	no_video_title: 'Your videos will appear here',
 	well_done_video_has_been_created:
-		'Well done, %s! Your video has been created 🎉'
+		'Well done, %s! Your video has been created 🎉',
+	txt_session_expire_login_again: 'Session expired please login again',
+	txt_something_wrong_try_again: 'Something went wrong. Please try again later',
+	txt_insufficient_balance: 'Insufficient Balance'.toUpperCase(),
+	txt_add_more_fund: 'Please add more funds.',
+	txt_contract_approval_error: 'Contract approval error',
+	txt_message_sent_success: 'Message sent successfully.',
+	txt_check_internet_connection:
+		'Please check your internet connection and try again',
+	txt_bet_not_create: 'Bet not created',
+	txt_bet_not_join: 'Bet not joined',
+	txt_amount_not_stake: 'Amount not stake',
+	txt_error: 'Error',
+	txt_edit_email: 'Please edit your email address as per your request.',
+	txt_you_click_expire_link:
+		'You have clicked on expired verification link please try again.',
+	txt_invalid_url: 'Invalid Url.'
 };
 export default Strings;

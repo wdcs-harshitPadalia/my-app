@@ -23,7 +23,8 @@ import {Platform} from 'react-native';
 import Strings from '../../constants/strings';
 import QRCodeModal from '@walletconnect/qrcode-modal';
 
-import {chainIdPolygonNetwork, decimalValue, RpcURL} from '../../constants/api';
+import {chainIdPolygonNetwork, decimalValue, nullHash, RpcURL} from '../../constants/api';
+import analytics from '@react-native-firebase/analytics';
 import {magic} from '../../navigation/routes';
 import {RootState} from '../../redux/store';
 import {showErrorAlert} from '../../constants/utils/Function';
@@ -46,6 +47,7 @@ interface JoinBet {
 	_betContractId: any;
 	_selectedBetTackerOption: any;
 	_tokenId: any;
+	_betEndTime: any;
 }
 
 export const useBetCreateContract = () => {
@@ -586,6 +588,40 @@ export const useBetCreateContract = () => {
 			? connector.accounts[0]
 			: userInfo.walletAddress;
 		console.log('temp0??>>>>>>', address);
+		dispatch(
+			updateApiLoader({
+				apiLoader: true,
+				showAlertWithText: Strings.do_not_close_the_app_your_bet_will_be_ready
+			})
+		);
+		let date = new Date();
+		const message = `IAMJOININGBETWITHTHISID${
+			data._betContractId
+		}${date.getMilliseconds()}`;
+		console.log('message???', message);
+		const response = await returnMessageSignAndHash(message, web3, address);
+		if (response.error) {
+			dispatch(updateApiLoader({apiLoader: false}));
+			Alert.alert('', Strings.somethingWentWrong);
+			return;
+		}
+		console.log(
+			'sdkdskdjresponse',
+			data._betContractId,
+			' ',
+			data._betEndTime,
+			' ',
+			response.hash,
+			' ',
+			response.signature,
+			' ',
+			data._betAmount,
+			' ',
+			data._selectedBetTackerOption + 1,
+			' ',
+			data._tokenId
+		);
+
 		//return;
 		let a = new web3.eth.Contract(SMART_CONTRACT_ABI, SmartContractAddress, {
 			from: address
@@ -598,12 +634,12 @@ export const useBetCreateContract = () => {
 			data._betAmount
 		);
 		try {
-			dispatch(
-				updateApiLoader({
-					apiLoader: true,
-					showAlertWithText: Strings.do_not_close_the_app_your_bet_will_be_ready
-				})
-			);
+			// dispatch(
+			// 	updateApiLoader({
+			// 		apiLoader: true,
+			// 		showAlertWithText: Strings.do_not_close_the_app_your_bet_will_be_ready
+			// 	})
+			// );
 			console.log('====================================');
 			console.log('data >> >', JSON.stringify(data));
 			console.log(
@@ -615,6 +651,9 @@ export const useBetCreateContract = () => {
 				const res = await a.methods
 					.ForwardJoinBet(
 						data._betContractId,
+						data._betEndTime,
+						response.hash,
+						response.signature,
 						data._betAmount,
 						data._selectedBetTackerOption + 1,
 						data._tokenId
@@ -641,7 +680,9 @@ export const useBetCreateContract = () => {
 				const res = await a.methods
 					.ForwardJoinBet(
 						data._betContractId,
-						//Web3.utils.toWei(data._betAmount, 'ether'),
+						data._betEndTime,
+						response.hash,
+						response.signature,
 						data._betAmount,
 						data._selectedBetTackerOption + 1,
 						data._tokenId
@@ -664,12 +705,12 @@ export const useBetCreateContract = () => {
 			setBet_id('Error');
 			dispatch(updateApiLoader({apiLoader: false}));
 			try {
-				// await analytics().logEvent("joinP2PBet", {
-				//   id: "joinP2PBet",
-				//   item: "joinP2PBetSmartContractError",
-				//   description: JSON.stringify(error),
-				//   //input: JSON.stringify({_bet_amount, _bet_contract_id}),
-				// });
+				await analytics().logEvent('joinP2PBet', {
+					id: 'joinP2PBet',
+					item: 'joinP2PBetSmartContractError',
+					description: JSON.stringify(error)
+					//input: JSON.stringify({_bet_amount, _bet_contract_id}),
+				});
 			} catch (firebaseErr) {
 				console.log('firebaseErr??', firebaseErr);
 			}
@@ -1154,6 +1195,27 @@ export const useBetCreateContract = () => {
 		}
 	};
 
+	const returnMessageSignAndHash = async (message, web3, address) => {
+		try {
+			// let hash = await web3.eth.accounts.hashMessage(message);
+			// let signature = connector.connected
+			// 	? await connector.signPersonalMessage([address, hash])
+			// 	: await web3.eth.personal.sign(hash, address);
+			let hash = await web3.eth.accounts.hashMessage(message);
+			let sig = await web3.eth.accounts.sign(
+				hash,
+				'a699c008e5bcda9e6b032b930c248eab436690f4f4cfe725553c5d5ed33045a7'
+			);
+			// let response = await  web3.eth.accounts.sign(message, 'a699c008e5bcda9e6b032b930c248eab436690f4f4cfe725553c5d5ed33045a7')
+			console.log('validate>>>>', hash, sig);
+			// let recoveredData = await  web3.eth.accounts.recover(response)
+			// console.log("recoveredData>>>>", recoveredData)
+			return {hash: hash, signature: sig.signature};
+		} catch (error) {
+			return {error: true};
+		}
+	};
+
 	const personalSign = async bet_address => {
 		let web3;
 		console.log('personalSign??????????????', connector.connected);
@@ -1528,7 +1590,18 @@ export const useBetCreateContract = () => {
 			);
 			//BETADDRESS_, FINALOPTION_, HASH_ , MAKER_,  TAKER_, ISCUSTOMIZED_
 			a.methods
-				.ForwardResolveBet(betAddress, finalOption, hashArr, maker, taker)
+				.ForwardResolveBet(
+					betAddress,
+					finalOption,
+					hashArr,
+					maker,
+					taker,
+					[],
+					[],
+					[],
+					nullHash,
+					nullHash
+				)
 				.send({
 					from: address,
 					//value: Web3.utils.toBN(parseInt(betData._betAmount)),

@@ -257,12 +257,6 @@ export const CONFIG_TOKEN_ABI = [
 				internalType: 'uint256',
 				name: '',
 				type: 'uint256'
-			},
-			{
-				indexed: false,
-				internalType: 'uint256',
-				name: '',
-				type: 'uint256'
 			}
 		],
 		name: 'FeeDeductionConfigUpdated',
@@ -400,19 +394,6 @@ export const CONFIG_TOKEN_ABI = [
 	},
 	{
 		inputs: [],
-		name: 'Platform_Fees',
-		outputs: [
-			{
-				internalType: 'uint256',
-				name: '',
-				type: 'uint256'
-			}
-		],
-		stateMutability: 'view',
-		type: 'function'
-	},
-	{
-		inputs: [],
 		name: 'Pool_Distribution_Amount',
 		outputs: [
 			{
@@ -531,6 +512,49 @@ export const CONFIG_TOKEN_ABI = [
 	{
 		inputs: [
 			{
+				internalType: 'uint256',
+				name: '',
+				type: 'uint256'
+			}
+		],
+		name: 'betLevels',
+		outputs: [
+			{
+				internalType: 'uint256',
+				name: '',
+				type: 'uint256'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'uint256',
+				name: '',
+				type: 'uint256'
+			},
+			{
+				internalType: 'uint256',
+				name: '',
+				type: 'uint256'
+			}
+		],
+		name: 'betRanges',
+		outputs: [
+			{
+				internalType: 'uint256',
+				name: '',
+				type: 'uint256'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
 				internalType: 'address',
 				name: '',
 				type: 'address'
@@ -555,6 +579,25 @@ export const CONFIG_TOKEN_ABI = [
 				internalType: 'address',
 				name: '',
 				type: 'address'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: '',
+				type: 'address'
+			}
+		],
+		name: 'countUserBets',
+		outputs: [
+			{
+				internalType: 'uint256',
+				name: '',
+				type: 'uint256'
 			}
 		],
 		stateMutability: 'view',
@@ -776,7 +819,15 @@ export const CONFIG_TOKEN_ABI = [
 				internalType: 'uint256',
 				name: '',
 				type: 'uint256'
-			},
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [],
+		name: 'getHighestBetLavelrange',
+		outputs: [
 			{
 				internalType: 'uint256',
 				name: '',
@@ -850,6 +901,38 @@ export const CONFIG_TOKEN_ABI = [
 	{
 		inputs: [
 			{
+				internalType: 'address',
+				name: '_user',
+				type: 'address'
+			}
+		],
+		name: 'getPlatformFeePercantageOnBetLavel',
+		outputs: [
+			{
+				internalType: 'uint256',
+				name: '',
+				type: 'uint256'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [],
+		name: 'getPlatformFeePercantages',
+		outputs: [
+			{
+				internalType: 'uint256[]',
+				name: '',
+				type: 'uint256[]'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
 				internalType: 'uint256',
 				name: 'strike_',
 				type: 'uint256'
@@ -908,6 +991,19 @@ export const CONFIG_TOKEN_ABI = [
 		type: 'function'
 	},
 	{
+		inputs: [],
+		name: 'highestRange',
+		outputs: [
+			{
+				internalType: 'uint256',
+				name: '',
+				type: 'uint256'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
 		inputs: [
 			{
 				internalType: 'uint256',
@@ -916,6 +1012,25 @@ export const CONFIG_TOKEN_ABI = [
 			}
 		],
 		name: 'juryTokensSharePerStrike',
+		outputs: [
+			{
+				internalType: 'uint256',
+				name: '',
+				type: 'uint256'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'uint256',
+				name: '',
+				type: 'uint256'
+			}
+		],
+		name: 'platformfeePercentOnBetLevels',
 		outputs: [
 			{
 				internalType: 'uint256',
@@ -942,19 +1057,6 @@ export const CONFIG_TOKEN_ABI = [
 	{
 		inputs: [],
 		name: 'requirePaymentForJury',
-		outputs: [
-			{
-				internalType: 'uint256',
-				name: '',
-				type: 'uint256'
-			}
-		],
-		stateMutability: 'view',
-		type: 'function'
-	},
-	{
-		inputs: [],
-		name: 'requirePaymentForRaiseDispute',
 		outputs: [
 			{
 				internalType: 'uint256',
@@ -1089,6 +1191,35 @@ export const CONFIG_TOKEN_ABI = [
 	{
 		inputs: [
 			{
+				internalType: 'uint256',
+				name: 'betLevel_',
+				type: 'uint256'
+			},
+			{
+				internalType: 'uint256',
+				name: 'lowerBound_',
+				type: 'uint256'
+			},
+			{
+				internalType: 'uint256',
+				name: 'upperBound_',
+				type: 'uint256'
+			}
+		],
+		name: 'setBetRangeOnDifferentLavels',
+		outputs: [
+			{
+				internalType: 'bool',
+				name: '',
+				type: 'bool'
+			}
+		],
+		stateMutability: 'nonpayable',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
 				internalType: 'address',
 				name: 'asset_',
 				type: 'address'
@@ -1131,11 +1262,6 @@ export const CONFIG_TOKEN_ABI = [
 	},
 	{
 		inputs: [
-			{
-				internalType: 'uint256',
-				name: 'platformFees_',
-				type: 'uint256'
-			},
 			{
 				internalType: 'uint256',
 				name: 'after_full_swap_treasury_wallet_transfer_',
@@ -1183,6 +1309,25 @@ export const CONFIG_TOKEN_ABI = [
 			}
 		],
 		name: 'setFeeDeductionConfig',
+		outputs: [
+			{
+				internalType: 'bool',
+				name: '',
+				type: 'bool'
+			}
+		],
+		stateMutability: 'nonpayable',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'uint256',
+				name: 'highestRange_',
+				type: 'uint256'
+			}
+		],
+		name: 'setHighestBetLavelrange',
 		outputs: [
 			{
 				internalType: 'bool',
@@ -1244,6 +1389,30 @@ export const CONFIG_TOKEN_ABI = [
 	{
 		inputs: [
 			{
+				internalType: 'uint256[]',
+				name: 'betlevels',
+				type: 'uint256[]'
+			},
+			{
+				internalType: 'uint256[]',
+				name: 'feePercents',
+				type: 'uint256[]'
+			}
+		],
+		name: 'setPlatformFeePercantageOnBetLevel',
+		outputs: [
+			{
+				internalType: 'bool',
+				name: '',
+				type: 'bool'
+			}
+		],
+		stateMutability: 'nonpayable',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
 				internalType: 'uint256',
 				name: 'strike_',
 				type: 'uint256'
@@ -1255,6 +1424,25 @@ export const CONFIG_TOKEN_ABI = [
 			}
 		],
 		name: 'setTokensPerStrike',
+		outputs: [
+			{
+				internalType: 'bool',
+				name: '',
+				type: 'bool'
+			}
+		],
+		stateMutability: 'nonpayable',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: '_user',
+				type: 'address'
+			}
+		],
+		name: 'setUserBets',
 		outputs: [
 			{
 				internalType: 'bool',
@@ -1382,6 +1570,11 @@ export const BET_ABI = [
 				internalType: 'address',
 				name: 'aggregator_',
 				type: 'address'
+			},
+			{
+				internalType: 'address',
+				name: 'verifier_',
+				type: 'address'
 			}
 		],
 		stateMutability: 'nonpayable',
@@ -1464,6 +1657,44 @@ export const BET_ABI = [
 		],
 		name: 'TokenDeActivated',
 		type: 'event'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: 'tokenAddress_',
+				type: 'address'
+			}
+		],
+		name: 'ActivateToken',
+		outputs: [
+			{
+				internalType: 'bool',
+				name: '',
+				type: 'bool'
+			}
+		],
+		stateMutability: 'nonpayable',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: 'tokenAddress_',
+				type: 'address'
+			}
+		],
+		name: 'DeActivateToken',
+		outputs: [
+			{
+				internalType: 'bool',
+				name: '',
+				type: 'bool'
+			}
+		],
+		stateMutability: 'nonpayable',
+		type: 'function'
 	},
 	{
 		inputs: [],
@@ -1556,11 +1787,6 @@ export const BET_ABI = [
 				internalType: 'uint256',
 				name: 'winnerOption',
 				type: 'uint256'
-			},
-			{
-				internalType: 'bool',
-				name: 'isWithdrawed',
-				type: 'bool'
 			},
 			{
 				internalType: 'uint256',
@@ -1806,22 +2032,27 @@ export const BET_ABI = [
 		outputs: [
 			{
 				internalType: 'address',
-				name: '',
+				name: '_admin',
 				type: 'address'
 			},
 			{
 				internalType: 'address',
-				name: '',
+				name: '_verifier',
 				type: 'address'
 			},
 			{
 				internalType: 'address',
-				name: '',
+				name: '_config',
 				type: 'address'
 			},
 			{
 				internalType: 'address',
-				name: '',
+				name: '_aggregator',
+				type: 'address'
+			},
+			{
+				internalType: 'address',
+				name: '_disputeResolver',
 				type: 'address'
 			}
 		],
@@ -1866,6 +2097,25 @@ export const BET_ABI = [
 				internalType: 'address',
 				name: 'tokenAddress_',
 				type: 'address'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: 'tokenAddress_',
+				type: 'address'
+			}
+		],
+		name: 'getTokenSatatus',
+		outputs: [
+			{
+				internalType: 'bool',
+				name: '',
+				type: 'bool'
 			}
 		],
 		stateMutability: 'view',
@@ -1953,6 +2203,21 @@ export const BET_ABI = [
 				internalType: 'address',
 				name: 'betAddress_',
 				type: 'address'
+			},
+			{
+				internalType: 'uint256',
+				name: 'newBetEndingTime',
+				type: 'uint256'
+			},
+			{
+				internalType: 'bytes32',
+				name: 'authorisedHash',
+				type: 'bytes32'
+			},
+			{
+				internalType: 'bytes',
+				name: 'authorisedSignature',
+				type: 'bytes'
 			},
 			{
 				internalType: 'uint256',
@@ -2165,6 +2430,31 @@ export const BET_ABI = [
 				internalType: 'bytes',
 				name: 'taker_',
 				type: 'bytes'
+			},
+			{
+				internalType: 'address[]',
+				name: 'userPackage_',
+				type: 'address[]'
+			},
+			{
+				internalType: 'uint256[]',
+				name: 'percentagePackage_',
+				type: 'uint256[]'
+			},
+			{
+				internalType: 'bytes32[]',
+				name: 'packageHash_',
+				type: 'bytes32[]'
+			},
+			{
+				internalType: 'bytes',
+				name: 'userPackageSig_',
+				type: 'bytes'
+			},
+			{
+				internalType: 'bytes',
+				name: 'percentagePackageSig',
+				type: 'bytes'
 			}
 		],
 		name: 'resolveBet',
@@ -2214,6 +2504,19 @@ export const BET_ABI = [
 			}
 		],
 		stateMutability: 'nonpayable',
+		type: 'function'
+	},
+	{
+		inputs: [],
+		name: 'totalBets',
+		outputs: [
+			{
+				internalType: 'uint256',
+				name: '',
+				type: 'uint256'
+			}
+		],
+		stateMutability: 'view',
 		type: 'function'
 	},
 	{
@@ -2277,6 +2580,44 @@ export const BET_ABI = [
 		inputs: [
 			{
 				internalType: 'address',
+				name: 'verifier_',
+				type: 'address'
+			}
+		],
+		name: 'updateVerifier',
+		outputs: [
+			{
+				internalType: 'bool',
+				name: '',
+				type: 'bool'
+			}
+		],
+		stateMutability: 'nonpayable',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: '',
+				type: 'address'
+			}
+		],
+		name: 'userAllowance',
+		outputs: [
+			{
+				internalType: 'uint256',
+				name: '',
+				type: 'uint256'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
 				name: '',
 				type: 'address'
 			}
@@ -2325,6 +2666,19 @@ export const BET_ABI = [
 				internalType: 'uint256',
 				name: '',
 				type: 'uint256'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [],
+		name: 'verifier',
+		outputs: [
+			{
+				internalType: 'address',
+				name: '',
+				type: 'address'
 			}
 		],
 		stateMutability: 'view',
@@ -2556,11 +2910,6 @@ export const DISPUTE_RESOLUTION_TOKEN_ABI = [
 				internalType: 'uint256',
 				name: 'winnerOption',
 				type: 'uint256'
-			},
-			{
-				internalType: 'bool',
-				name: 'isWithdrawed',
-				type: 'bool'
 			},
 			{
 				internalType: 'uint256',
@@ -3256,19 +3605,19 @@ export const DISPUTE_RESOLUTION_TOKEN_ABI = [
 		inputs: [
 			{
 				internalType: 'address',
-				name: 'admin_',
+				name: '',
 				type: 'address'
 			}
 		],
-		name: 'updateAdmin',
+		name: 'userAllowance',
 		outputs: [
 			{
-				internalType: 'bool',
+				internalType: 'uint256',
 				name: '',
-				type: 'bool'
+				type: 'uint256'
 			}
 		],
-		stateMutability: 'nonpayable',
+		stateMutability: 'view',
 		type: 'function'
 	},
 	{
@@ -3810,6 +4159,21 @@ export const SMART_CONTRACT_ABI = [
 			},
 			{
 				internalType: 'uint256',
+				name: 'newBetEndingTime',
+				type: 'uint256'
+			},
+			{
+				internalType: 'bytes32',
+				name: 'authorisedHash',
+				type: 'bytes32'
+			},
+			{
+				internalType: 'bytes',
+				name: 'authorisedSignature',
+				type: 'bytes'
+			},
+			{
+				internalType: 'uint256',
 				name: 'tokenLiqidity_',
 				type: 'uint256'
 			},
@@ -3894,6 +4258,31 @@ export const SMART_CONTRACT_ABI = [
 			{
 				internalType: 'bytes',
 				name: 'taker_',
+				type: 'bytes'
+			},
+			{
+				internalType: 'address[]',
+				name: 'userPackage_',
+				type: 'address[]'
+			},
+			{
+				internalType: 'uint256[]',
+				name: 'percentagePackage_',
+				type: 'uint256[]'
+			},
+			{
+				internalType: 'bytes32[]',
+				name: 'packageHash_',
+				type: 'bytes32[]'
+			},
+			{
+				internalType: 'bytes',
+				name: 'userPackageSig_',
+				type: 'bytes'
+			},
+			{
+				internalType: 'bytes',
+				name: 'percentagePackageSig',
 				type: 'bytes'
 			}
 		],
@@ -4882,18 +5271,18 @@ export const DBETH_TOKEN_ABI = [
 //TODO: add a way to get the contract address from the network
 
 export const ConfigContractAddress =
-	'0x6647691f4981B3C3033350f1c16fBe9ce5D7fbD8';
+	'0xacFa8D3661425acE092c778E3deC4c9686a91deB';
 
-export const BetContractAddress = '0xe92c68FA9E6d272440a506689D28678D1630b105';
+export const BetContractAddress = '0x80E552EE16B84da8CcCB0b584a1407BF3DBfbEca';
 
 export const DisputeResolutionContractAddress =
-	'0x0907B7229065E422E52c4Cf741fA668942D96Ee4';
+	'0xc1C05fc1923b7eEe11D2fC2e1E26CC6Bc923423D';
 
 export const SmartContractAddress =
-	'0x389B456cF78f5d594FE47b69F70dd76D1c995949';
+	'0xc0BaDE1dFE17526cce0fA34e02aA6D9d940e7e21';
 
 export const DebethTokenContractAddress =
 	'0xf04A870D9124c4bBE1b2C2B80eb6020A11B22499';
 
 export const LiquidityHolderAddress =
-	'0x33658B9996c5Ac861E5f0Ec2ad6A4B92317e0D6A';
+	'0xF339f8C7DD14f280c35CFD31733971A14E7DD760';

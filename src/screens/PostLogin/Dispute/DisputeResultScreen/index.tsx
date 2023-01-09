@@ -1,7 +1,11 @@
 import {StackActions, useNavigation, useRoute} from '@react-navigation/native';
 import {useWalletConnect} from '@walletconnect/react-native-dapp';
 import React, {useEffect, useState} from 'react';
-import {Alert, ScrollView, TouchableOpacity, View} from 'react-native';
+import {
+	ScrollView,
+	TouchableOpacity,
+	View
+} from 'react-native';
 import {Text} from 'react-native-elements';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
@@ -19,7 +23,8 @@ import {decimalValue} from '../../../../constants/api';
 import Strings from '../../../../constants/strings';
 import {
 	getMetamaskBalance,
-	getRoundDecimalValue
+	getRoundDecimalValue,
+	showErrorAlert
 } from '../../../../constants/utils/Function';
 import ScreenNames from '../../../../navigation/screenNames';
 import {
@@ -266,7 +271,7 @@ const DisputeResultScreen: React.FC<any> = props => {
 					})
 					.catch(err => {
 						dispatch(updateApiLoader({apiLoader: false}));
-						Alert.alert('Claimamount api error', JSON.stringify(err));
+						showErrorAlert('Claimamount api error', JSON.stringify(err));
 						console.log('claimAmount Data Err : ', err);
 					});
 			}

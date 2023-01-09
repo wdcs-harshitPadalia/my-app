@@ -4,10 +4,7 @@ import {
 	Text,
 	View,
 	FlatList,
-	TouchableOpacity,
-	Share,
-	Alert
-} from 'react-native';
+	TouchableOpacity} from 'react-native';
 import {
 	Colors,
 	Fonts,
@@ -23,10 +20,9 @@ import ExpoFastImage from 'expo-fast-image';
 import icons from '../assets/icon';
 import {height} from '../theme/metrics';
 import {Modalize} from 'react-native-modalize';
-import {Portal} from '@gorhom/portal';
 import {useSelector} from 'react-redux';
 import {RootState} from '../redux/store';
-import {uniqueIdGenerateFrom2Ids} from '../constants/utils/Function';
+import {showErrorAlert, uniqueIdGenerateFrom2Ids} from '../constants/utils/Function';
 import {MessageType} from '@flyerhq/react-native-chat-ui';
 import {
 	createChannel,
@@ -34,9 +30,7 @@ import {
 	createQuery,
 	getChannel,
 	joinChannel,
-	runQuery,
-	updateChannel
-} from '@amityco/ts-sdk';
+	runQuery} from '@amityco/ts-sdk';
 // import {TouchableOpacity} from 'react-native-gesture-handler';
 const {v4: uuidv4} = require('uuid');
 
@@ -157,7 +151,7 @@ const ShareBottomSheet: React.FC<Props> = props => {
 					if (options?.error || options?.loading) {
 						return;
 					}
-					Alert.alert('', 'Message sent successfully.');
+					showErrorAlert('', Strings.txt_message_sent_success);
 				});
 				let query1 = createQuery(joinChannel, channelId);
 				runQuery(query1, result =>
@@ -208,8 +202,7 @@ const ShareBottomSheet: React.FC<Props> = props => {
 							if (options?.error || options?.loading) {
 								return;
 							}
-							Alert.alert('', 'Message sent successfully.');
-
+							showErrorAlert('', Strings.txt_message_sent_success);
 							//addMessage(message.metadata?.data);
 						});
 					}

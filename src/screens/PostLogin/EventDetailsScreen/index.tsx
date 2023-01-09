@@ -1,6 +1,6 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {Alert, Share, View} from 'react-native';
+import {Share, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch} from 'react-redux';
 // import {TouchableOpacity} from 'react-native-gesture-handler';
@@ -9,7 +9,10 @@ import FeedBetsView from '../../../components/Events/feedBetsView';
 import HeaderComponent from '../../../components/HeaderComponent';
 import ShareBottomSheet from '../../../components/ShareBottomSheet';
 import Strings from '../../../constants/strings';
-import {createBetDetailsPreviewShareUrl} from '../../../constants/utils/Function';
+import {
+	createBetDetailsPreviewShareUrl,
+	showErrorAlert
+} from '../../../constants/utils/Function';
 import ScreenNames from '../../../navigation/screenNames';
 import {
 	getFollowers,
@@ -144,7 +147,7 @@ export default function EventDetailsScreen() {
 				// dismissed
 			}
 		} catch (error) {
-			Alert.alert(error.message);
+			showErrorAlert('', error.message);
 		}
 	};
 	return (

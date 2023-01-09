@@ -64,6 +64,7 @@ import {
 	dateConvert,
 	getMetamaskBalance,
 	getRoundDecimalValue,
+	showErrorAlert,
 	timeConvert
 } from '../../../../constants/utils/Function';
 import {useWalletConnect} from '@walletconnect/react-native-dapp';
@@ -73,7 +74,6 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import {RootState} from '../../../../redux/store';
 import useDebounce from '../../../../components/CustomHooks/useDebounce';
 import useUpdateEffect from '../../../../components/CustomHooks/useUpdateEffect';
-import analytics from '@react-native-firebase/analytics';
 import {Fonts, moderateScale, verticalScale} from '../../../../theme';
 import {updateApiLoader} from '../../../../redux/reducerSlices/preLogin';
 import ConformationPopupComponet from '../../../../components/ConformationPopupComponet';
@@ -92,7 +92,6 @@ import PlaceBetsAmountView from '../../../../components/PlaceBetsAmountView';
 import SelectCryptoAmount from '../../../../components/SelectCryptoAmount';
 import EarningsProfitView from '../../../../components/EarningsProfitView';
 import {decimalValue} from '../../../../constants/api';
-import LottieView from 'lottie-react-native';
 
 let pageLeague = 0;
 let pageGame = 0;
@@ -310,9 +309,9 @@ const BetsCategoryScreen: React.FC<any> = () => {
 
 			if (parseFloat(betAmount.replace(',', '.')) > parseFloat(dbethBalance)) {
 				setIsBackButtonDisable(false);
-				Alert.alert(
-					'Insufficient Balance'.toUpperCase(),
-					'Please add more funds.'
+				showErrorAlert(
+					Strings.txt_insufficient_balance,
+					Strings.txt_add_more_fund
 				);
 				return;
 			}
@@ -324,32 +323,56 @@ const BetsCategoryScreen: React.FC<any> = () => {
 				userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask' &&
 				!connector.connected
 			) {
-				Alert.alert(Strings.txt_session_expire_msg, '', [
-					{
-						text: 'Ok',
-						onPress: () => {
-							dispatch(logout());
-							dispatch(updateDeviceToken({deviceToken: ''}));
-							dispatch(resetProfileData({}));
-						}
+				if (Platform.OS === 'web') {
+					let retVal = confirm(Strings.txt_session_expire_msg);
+					if (retVal == true) {
+						dispatch(logout());
+						dispatch(updateDeviceToken({deviceToken: ''}));
+						dispatch(resetProfileData({}));
+						return true;
+					} else {
+						return false;
 					}
-				]);
+				} else {
+					Alert.alert(Strings.txt_session_expire_msg, '', [
+						{
+							text: 'Ok',
+							onPress: () => {
+								dispatch(logout());
+								dispatch(updateDeviceToken({deviceToken: ''}));
+								dispatch(resetProfileData({}));
+							}
+						}
+					]);
+				}
 				return;
 			} else {
 				if (userInfo?.user?.socialLoginType?.toLowerCase() !== 'metamask') {
 					const loginStatus = await magic.user.isLoggedIn();
 					console.log('loginStatus ::', loginStatus);
 					if (!loginStatus) {
-						Alert.alert(Strings.txt_session_expire_msg, '', [
-							{
-								text: 'Ok',
-								onPress: () => {
-									dispatch(logout());
-									dispatch(updateDeviceToken({deviceToken: ''}));
-									dispatch(resetProfileData({}));
-								}
+						if (Platform.OS === 'web') {
+							let retVal = confirm(Strings.txt_session_expire_msg);
+							if (retVal == true) {
+								dispatch(logout());
+								dispatch(updateDeviceToken({deviceToken: ''}));
+								dispatch(resetProfileData({}));
+								return true;
+							} else {
+								return false;
 							}
-						]);
+						} else {
+							Alert.alert(Strings.txt_session_expire_msg, '', [
+								{
+									text: 'Ok',
+									onPress: () => {
+										dispatch(logout());
+										dispatch(updateDeviceToken({deviceToken: ''}));
+										dispatch(resetProfileData({}));
+									}
+								}
+							]);
+						}
 						return;
 					}
 				}
@@ -403,9 +426,9 @@ const BetsCategoryScreen: React.FC<any> = () => {
 
 			if (parseFloat(betAmount.replace(',', '.')) > parseFloat(dbethBalance)) {
 				setIsBackButtonDisable(false);
-				Alert.alert(
-					'Insufficient Balance'.toUpperCase(),
-					'Please add more funds.'
+				showErrorAlert(
+					Strings.txt_insufficient_balance,
+					Strings.txt_add_more_fund
 				);
 				return;
 			}
@@ -417,33 +440,56 @@ const BetsCategoryScreen: React.FC<any> = () => {
 				userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask' &&
 				!connector.connected
 			) {
-				// Alert.alert(Strings.txt_session_expire_msg);
-				Alert.alert(Strings.txt_session_expire_msg, '', [
-					{
-						text: 'Ok',
-						onPress: () => {
-							dispatch(logout());
-							dispatch(updateDeviceToken({deviceToken: ''}));
-							dispatch(resetProfileData({}));
-						}
+				if (Platform.OS === 'web') {
+					let retVal = confirm(Strings.txt_session_expire_msg);
+					if (retVal == true) {
+						dispatch(logout());
+						dispatch(updateDeviceToken({deviceToken: ''}));
+						dispatch(resetProfileData({}));
+						return true;
+					} else {
+						return false;
 					}
-				]);
+				} else {
+					Alert.alert(Strings.txt_session_expire_msg, '', [
+						{
+							text: 'Ok',
+							onPress: () => {
+								dispatch(logout());
+								dispatch(updateDeviceToken({deviceToken: ''}));
+								dispatch(resetProfileData({}));
+							}
+						}
+					]);
+				}
 				return;
 			} else {
 				if (userInfo?.user?.socialLoginType?.toLowerCase() !== 'metamask') {
 					const loginStatus = await magic.user.isLoggedIn();
 					console.log('loginStatus ::', loginStatus);
 					if (!loginStatus) {
-						Alert.alert(Strings.txt_session_expire_msg, '', [
-							{
-								text: 'Ok',
-								onPress: () => {
-									dispatch(logout());
-									dispatch(updateDeviceToken({deviceToken: ''}));
-									dispatch(resetProfileData({}));
-								}
+						if (Platform.OS === 'web') {
+							let retVal = confirm(Strings.txt_session_expire_msg);
+							if (retVal == true) {
+								dispatch(logout());
+								dispatch(updateDeviceToken({deviceToken: ''}));
+								dispatch(resetProfileData({}));
+								return true;
+							} else {
+								return false;
 							}
-						]);
+						} else {
+							Alert.alert(Strings.txt_session_expire_msg, '', [
+								{
+									text: 'Ok',
+									onPress: () => {
+										dispatch(logout());
+										dispatch(updateDeviceToken({deviceToken: ''}));
+										dispatch(resetProfileData({}));
+									}
+								}
+							]);
+						}
 						return;
 					}
 				}
@@ -1310,7 +1356,7 @@ const BetsCategoryScreen: React.FC<any> = () => {
 				// dismissed
 			}
 		} catch (error) {
-			Alert.alert(error.message);
+			showErrorAlert('', error.message);
 		}
 	};
 
@@ -2068,7 +2114,7 @@ const BetsCategoryScreen: React.FC<any> = () => {
 									Linking.openURL('twitter://post?message=' + shareMessage);
 								} else if (text === Strings.copy_link) {
 									Clipboard.setString(shareUrl);
-									Alert.alert(Strings.copy_link_desc);
+									showErrorAlert('', Strings.copy_link_desc);
 								} else {
 									onShare(shareMessage);
 								}
@@ -2246,9 +2292,9 @@ const BetsCategoryScreen: React.FC<any> = () => {
 							parseFloat(betAmount.replace(',', '.')) > parseFloat(dbethBalance)
 						) {
 							setIsBackButtonDisable(false);
-							Alert.alert(
-								'Insufficient Balance'.toUpperCase(),
-								'Please add more funds.'
+							showErrorAlert(
+								Strings.txt_insufficient_balance,
+								Strings.txt_add_more_fund
 							);
 							return;
 						}
@@ -2259,9 +2305,9 @@ const BetsCategoryScreen: React.FC<any> = () => {
 					//TODO: call contract
 					if (parseFloat(betAmount.replace(',', '.')) > parseFloat(myBalance)) {
 						setIsBackButtonDisable(false);
-						Alert.alert(
-							'Insufficient Balance'.toUpperCase(),
-							'Please add more funds.'
+						showErrorAlert(
+							Strings.txt_insufficient_balance,
+							Strings.txt_add_more_fund
 						);
 						return;
 					}
@@ -2273,32 +2319,56 @@ const BetsCategoryScreen: React.FC<any> = () => {
 						userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask' &&
 						!connector.connected
 					) {
-						Alert.alert(Strings.txt_session_expire_msg, '', [
-							{
-								text: 'Ok',
-								onPress: () => {
-									dispatch(logout());
-									dispatch(updateDeviceToken({deviceToken: ''}));
-									dispatch(resetProfileData({}));
-								}
+						if (Platform.OS === 'web') {
+							let retVal = confirm(Strings.txt_session_expire_msg);
+							if (retVal == true) {
+								dispatch(logout());
+								dispatch(updateDeviceToken({deviceToken: ''}));
+								dispatch(resetProfileData({}));
+								return true;
+							} else {
+								return false;
 							}
-						]);
+						} else {
+							Alert.alert(Strings.txt_session_expire_msg, '', [
+								{
+									text: 'Ok',
+									onPress: () => {
+										dispatch(logout());
+										dispatch(updateDeviceToken({deviceToken: ''}));
+										dispatch(resetProfileData({}));
+									}
+								}
+							]);
+						}
 						return;
 					} else {
 						if (userInfo?.user?.socialLoginType?.toLowerCase() !== 'metamask') {
 							const loginStatus = await magic.user.isLoggedIn();
 							console.log('loginStatus', loginStatus);
 							if (!loginStatus) {
-								Alert.alert(Strings.txt_session_expire_msg, '', [
-									{
-										text: 'Ok',
-										onPress: () => {
-											dispatch(logout());
-											dispatch(updateDeviceToken({deviceToken: ''}));
-											dispatch(resetProfileData({}));
-										}
+								if (Platform.OS === 'web') {
+									let retVal = confirm(Strings.txt_session_expire_msg);
+									if (retVal == true) {
+										dispatch(logout());
+										dispatch(updateDeviceToken({deviceToken: ''}));
+										dispatch(resetProfileData({}));
+										return true;
+									} else {
+										return false;
 									}
-								]);
+								} else {
+									Alert.alert(Strings.txt_session_expire_msg, '', [
+										{
+											text: 'Ok',
+											onPress: () => {
+												dispatch(logout());
+												dispatch(updateDeviceToken({deviceToken: ''}));
+												dispatch(resetProfileData({}));
+											}
+										}
+									]);
+								}
 								return;
 							}
 						}
@@ -2369,9 +2439,9 @@ const BetsCategoryScreen: React.FC<any> = () => {
 						parseFloat(betAmount.replace(',', '.')) > parseFloat(dbethBalance)
 					) {
 						setIsBackButtonDisable(false);
-						Alert.alert(
-							'Insufficient Balance'.toUpperCase(),
-							'Please add more funds.'
+						showErrorAlert(
+							Strings.txt_insufficient_balance,
+							Strings.txt_add_more_fund
 						);
 						return;
 					}
@@ -2382,9 +2452,9 @@ const BetsCategoryScreen: React.FC<any> = () => {
 				//TODO: call contract
 				if (parseFloat(betAmount.replace(',', '.')) > parseFloat(myBalance)) {
 					setIsBackButtonDisable(false);
-					Alert.alert(
-						'Insufficient Balance'.toUpperCase(),
-						'Please add more funds.'
+					showErrorAlert(
+						Strings.txt_insufficient_balance,
+						Strings.txt_add_more_fund
 					);
 					return;
 				}
@@ -2397,23 +2467,35 @@ const BetsCategoryScreen: React.FC<any> = () => {
 					userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask' &&
 					!connector.connected
 				) {
-					Alert.alert(Strings.txt_session_expire_msg);
+					showErrorAlert('', Strings.txt_session_expire_msg);
 					return;
 				} else {
 					if (userInfo?.user?.socialLoginType?.toLowerCase() !== 'metamask') {
 						const loginStatus = await magic.user.isLoggedIn();
 						console.log('loginStatus', loginStatus);
 						if (!loginStatus) {
-							Alert.alert(Strings.txt_session_expire_msg, '', [
-								{
-									text: 'Ok',
-									onPress: () => {
-										dispatch(logout());
-										dispatch(updateDeviceToken({deviceToken: ''}));
-										dispatch(resetProfileData({}));
-									}
+							if (Platform.OS === 'web') {
+								let retVal = confirm(Strings.txt_session_expire_msg);
+								if (retVal == true) {
+									dispatch(logout());
+									dispatch(updateDeviceToken({deviceToken: ''}));
+									dispatch(resetProfileData({}));
+									return true;
+								} else {
+									return false;
 								}
-							]);
+							} else {
+								Alert.alert(Strings.txt_session_expire_msg, '', [
+									{
+										text: 'Ok',
+										onPress: () => {
+											dispatch(logout());
+											dispatch(updateDeviceToken({deviceToken: ''}));
+											dispatch(resetProfileData({}));
+										}
+									}
+								]);
+							}
 							return;
 						}
 					}
@@ -2850,16 +2932,28 @@ const BetsCategoryScreen: React.FC<any> = () => {
 								userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask' &&
 								!connector.connected
 							) {
-								Alert.alert(Strings.txt_session_expire_msg, '', [
-									{
-										text: 'Ok',
-										onPress: () => {
-											dispatch(logout());
-											dispatch(updateDeviceToken({deviceToken: ''}));
-											dispatch(resetProfileData({}));
-										}
+								if (Platform.OS === 'web') {
+									let retVal = confirm(Strings.txt_session_expire_msg);
+									if (retVal == true) {
+										dispatch(logout());
+										dispatch(updateDeviceToken({deviceToken: ''}));
+										dispatch(resetProfileData({}));
+										return true;
+									} else {
+										return false;
 									}
-								]);
+								} else {
+									Alert.alert(Strings.txt_session_expire_msg, '', [
+										{
+											text: 'Ok',
+											onPress: () => {
+												dispatch(logout());
+												dispatch(updateDeviceToken({deviceToken: ''}));
+												dispatch(resetProfileData({}));
+											}
+										}
+									]);
+								}
 								return;
 							} else {
 								if (
@@ -2868,16 +2962,28 @@ const BetsCategoryScreen: React.FC<any> = () => {
 									const loginStatus = await magic.user.isLoggedIn();
 									console.log('loginStatus', loginStatus);
 									if (!loginStatus) {
-										Alert.alert(Strings.txt_session_expire_msg, '', [
-											{
-												text: 'Ok',
-												onPress: () => {
-													dispatch(logout());
-													dispatch(updateDeviceToken({deviceToken: ''}));
-													dispatch(resetProfileData({}));
-												}
+										if (Platform.OS === 'web') {
+											let retVal = confirm(Strings.txt_session_expire_msg);
+											if (retVal == true) {
+												dispatch(logout());
+												dispatch(updateDeviceToken({deviceToken: ''}));
+												dispatch(resetProfileData({}));
+												return true;
+											} else {
+												return false;
 											}
-										]);
+										} else {
+											Alert.alert(Strings.txt_session_expire_msg, '', [
+												{
+													text: 'Ok',
+													onPress: () => {
+														dispatch(logout());
+														dispatch(updateDeviceToken({deviceToken: ''}));
+														dispatch(resetProfileData({}));
+													}
+												}
+											]);
+										}
 										return;
 									}
 								}

@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-lone-blocks */
 import React, {useEffect, useState} from 'react';
-import {Alert, BackHandler, View} from 'react-native';
+import {Alert, BackHandler, Platform, View} from 'react-native';
 import {Text} from 'react-native-elements';
 import icons from '../../../../assets/icon';
 import Strings from '../../../../constants/strings';
@@ -44,7 +44,10 @@ import ButtonGradientWithRightIcon from '../../../../components/ButtonGradientWi
 import {verticalScale} from '../../../../theme';
 import {gradientColorAngle} from '../../../../theme/metrics';
 import {decimalValue} from '../../../../constants/api';
-import {getRoundDecimalValue} from '../../../../constants/utils/Function';
+import {
+	getRoundDecimalValue,
+	showErrorAlert
+} from '../../../../constants/utils/Function';
 
 const BetMakerResultScreen: React.FC<any> = () => {
 	const navigation = useNavigation();
@@ -381,7 +384,7 @@ const BetMakerResultScreen: React.FC<any> = () => {
 				})
 				.catch(err => {
 					dispatch(updateApiLoader({apiLoader: false}));
-					Alert.alert('Claimamount api error', JSON.stringify(err));
+					showErrorAlert('Claimamount api error', JSON.stringify(err));
 					console.log('claimAmount Data Err : ', err);
 				});
 		}
@@ -550,23 +553,35 @@ const BetMakerResultScreen: React.FC<any> = () => {
 			userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask' &&
 			!connector.connected
 		) {
-			Alert.alert(Strings.txt_session_expire_msg);
+			showErrorAlert('', Strings.txt_session_expire_msg);
 			return;
 		} else {
 			if (userInfo?.user?.socialLoginType?.toLowerCase() !== 'metamask') {
 				const loginStatus = await magic.user.isLoggedIn();
 				console.log('loginStatus', loginStatus);
 				if (!loginStatus) {
-					Alert.alert(Strings.txt_session_expire_msg, '', [
-						{
-							text: 'Ok',
-							onPress: () => {
-								dispatch(logout());
-								dispatch(updateDeviceToken({deviceToken: ''}));
-								dispatch(resetProfileData({}));
-							}
+					if (Platform.OS === 'web') {
+						let retVal = confirm(Strings.txt_session_expire_msg);
+						if (retVal == true) {
+							dispatch(logout());
+							dispatch(updateDeviceToken({deviceToken: ''}));
+							dispatch(resetProfileData({}));
+							return true;
+						} else {
+							return false;
 						}
-					]);
+					} else {
+						Alert.alert(Strings.txt_session_expire_msg, '', [
+							{
+								text: 'Ok',
+								onPress: () => {
+									dispatch(logout());
+									dispatch(updateDeviceToken({deviceToken: ''}));
+									dispatch(resetProfileData({}));
+								}
+							}
+						]);
+					}
 					return;
 				}
 			}
@@ -576,10 +591,7 @@ const BetMakerResultScreen: React.FC<any> = () => {
 
 	useUpdateEffect(() => {
 		if (hashObj?.error) {
-			Alert.alert(
-				'Error',
-				'Please check your internet connection and try again'
-			);
+			showErrorAlert(Strings.txt_error, Strings.txt_check_internet_connection);
 		} else {
 			if (step === 3) {
 				addCustomBetResultData('accepted');

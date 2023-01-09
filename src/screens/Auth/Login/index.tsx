@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, ImageBackground, Keyboard, View} from 'react-native';
+import {ImageBackground, Keyboard, View} from 'react-native';
 import {Text} from 'react-native-elements';
 import ExpoFastImage from 'expo-fast-image';
 import icons from '../../../assets/icon';
@@ -38,7 +38,7 @@ import {
 	showTutorial
 } from '../../../redux/reducerSlices/dashboard';
 import {magic} from '../../../navigation/routes';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {showErrorAlert} from '../../../constants/utils/Function';
 
 const Login: React.FC<any> = props => {
 	const isNewUser = useSelector((state: RootState) => {
@@ -150,9 +150,9 @@ const Login: React.FC<any> = props => {
 				.catch(error => {
 					setIsViewclickable(true);
 					console.log('JSON.parse(error).rawMessage???', error);
-					Alert.alert(
+					showErrorAlert(
 						'',
-						JSON.parse(error).rawMessage ?? 'Something went wrong'
+						JSON.parse(error).rawMessage ?? Strings.somethingWentWrong
 					);
 					dispatch(updateApiLoader({apiLoader: false}));
 				});
@@ -240,18 +240,13 @@ const Login: React.FC<any> = props => {
 						setIsViewclickable(true);
 						console.log('error...', error);
 						if (JSON.parse(error).code === -10005) {
-							Alert.alert(
-								'Please edit your email address as per your request.'
-							);
+							showErrorAlert('', Strings.txt_edit_email);
 						} else if (JSON.parse(error).code === -10001) {
-							Alert.alert(
-								'',
-								'You have clicked on expired verification link please try again.'
-							);
+							showErrorAlert('', Strings.txt_you_click_expire_link);
 						} else {
-							Alert.alert(
+							showErrorAlert(
 								'',
-								JSON.parse(error).rawMessage ?? 'Something went wrong'
+								JSON.parse(error).rawMessage ?? Strings.somethingWentWrong
 							);
 						}
 						dispatch(updateApiLoader({apiLoader: false}));
@@ -315,18 +310,13 @@ const Login: React.FC<any> = props => {
 						setIsViewclickable(true);
 						console.log('error...', error);
 						if (JSON.parse(error).code === -10005) {
-							Alert.alert(
-								'Please edit your email address as per your request.'
-							);
+							showErrorAlert('', Strings.txt_edit_email);
 						} else if (JSON.parse(error).code === -10001) {
-							Alert.alert(
-								'',
-								'You have clicked on expired verification link please try again.'
-							);
+							showErrorAlert('', Strings.txt_you_click_expire_link);
 						} else {
-							Alert.alert(
+							showErrorAlert(
 								'',
-								JSON.parse(error).rawMessage ?? 'Something went wrong'
+								JSON.parse(error).rawMessage ?? Strings.somethingWentWrong
 							);
 						}
 						dispatch(updateApiLoader({apiLoader: false}));
@@ -534,7 +524,7 @@ const Login: React.FC<any> = props => {
 							}
 							connector?.connect().then(async success => {
 								if (success.chainId !== chainIdPolygonNetwork) {
-									Alert.alert(
+									showErrorAlert(
 										'Defibet',
 										'Please change your network to Polygon Mainnet(' +
 											chainIdPolygonNetwork +

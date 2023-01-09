@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Store from '../store';
 import * as NavigationHelper from '../../navigation/navigationHelper';
-import {Alert} from 'react-native';
+import {Alert, Platform} from 'react-native';
 import app from '../../../app.json';
 import {login} from '.';
 import {updateApiLoader} from '../reducerSlices/preLogin';
@@ -11,6 +11,7 @@ import store from '../store';
 import {logout} from './apiActions';
 import {resetProfileData, updateDeviceToken} from '../reducerSlices/userInfo';
 import {magic} from '../../navigation/routes';
+import {showErrorAlert} from '../../constants/utils/Function';
 
 axios.defaults.timeout = 30000;
 
@@ -35,7 +36,7 @@ export const useAxios = async (axiosParams: any) => {
 						store.dispatch(updateDeviceToken({deviceToken: ''}));
 						store.dispatch(resetProfileData({}));
 					}
-					Alert.alert(
+					showErrorAlert(
 						'',
 						error.response?.data?.message ?? Strings.somethingWentWrong
 					);

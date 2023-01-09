@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, FlatList, View} from 'react-native';
+import {FlatList, View} from 'react-native';
 import {Text} from 'react-native-elements';
 import icons from '../../../assets/icon';
 import Strings from '../../../constants/strings';
@@ -18,6 +18,7 @@ import {updateApiLoader} from '../../../redux/reducerSlices/preLogin';
 import LoadMoreLoaderView from '../../../components/LoadMoreLoaderView';
 import CreateNewTickets from '../../../components/CreateNewTickets';
 import ScreenNames from '../../../navigation/screenNames';
+import {showErrorAlert} from '../../../constants/utils/Function';
 
 let page = 0;
 
@@ -91,13 +92,13 @@ const SupportTicketsList: React.FC<any> = props => {
 				page = 0;
 				getTicketsData();
 				if (res?.statusCode === 200) {
-					Alert.alert('Alert', Strings.ticket_created_successfully);
+					showErrorAlert('Alert', Strings.ticket_created_successfully);
 				}
 			})
 			.catch(err => {
 				dispatch(updateApiLoader({apiLoader: false}));
 				console.log('getUserBet Data Err : ', err);
-				Alert.alert('Alert', Strings.somethingWentWrong);
+				showErrorAlert('Alert', Strings.somethingWentWrong);
 			});
 	};
 

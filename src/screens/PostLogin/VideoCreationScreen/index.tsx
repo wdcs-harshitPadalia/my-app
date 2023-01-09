@@ -32,6 +32,7 @@ import {Api, ApiBaseUrl, ApiConstants} from '../../../constants/api';
 import NoDataComponent from '../../../components/NoDataComponent';
 import {Video} from 'react-native-compressor';
 import {showErrorAlert} from '../../../constants/utils/Function';
+import Lottie from 'lottie-react';
 
 const VideoCreationScreen = () => {
 	const navigation = useNavigation();
@@ -231,7 +232,13 @@ const VideoCreationScreen = () => {
 										userInfo?.user?.displayName || userInfo?.user?.userName
 								  )}
 						</Text>
-						{Platform.OS !== 'web' && (
+						{Platform.OS === 'web' ? (
+							<Lottie
+								style={styles.lottieViewStyle}
+								animationData={require('../../../assets/animations/confetti_day.json')}
+								loop={false}
+							/>
+						) : (
 							<LottieView
 								style={styles.lottieViewStyle}
 								source={require('../../../assets/animations/confetti_day.json')}

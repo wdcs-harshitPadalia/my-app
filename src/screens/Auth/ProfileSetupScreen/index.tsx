@@ -285,7 +285,9 @@ const ProfileSetupScreen: React.FC<any> = props => {
 													</Text>
 												</TouchableOpacity>
 											</View>
-                      <Text style={styles.errStyle}>{(touched.date && !values.date) ? errors.date : ''}</Text>
+											<Text style={styles.errStyle}>
+												{touched.date && !values.date ? errors.date : ''}
+											</Text>
 											<View
 												style={{
 													marginHorizontal: horizontalScale(16),

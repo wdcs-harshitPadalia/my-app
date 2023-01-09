@@ -25,7 +25,7 @@ const DatePickerWeb = forwardRef((props: DatePickerWebProps, ref) => {
 	const dateRef = useRef(null);
 
 	useEffect(() => {
-		setDate(selected)
+		setDate(selected);
 	}, [selected]);
 
 	const _handleChange = e => {
@@ -94,8 +94,7 @@ const DatePickerWeb = forwardRef((props: DatePickerWebProps, ref) => {
 	);
 });
 
-DatePickerWeb.defaultProps = {minimumDate :moment()
-	.add(10, 'minutes')
-	.format('YYYY-MM-DDTHH:mm')
-	.toString() }
+DatePickerWeb.defaultProps = {
+	minimumDate: moment().add(10, 'minutes').format('YYYY-MM-DDTHH:mm').toString()
+};
 export default DatePickerWeb;

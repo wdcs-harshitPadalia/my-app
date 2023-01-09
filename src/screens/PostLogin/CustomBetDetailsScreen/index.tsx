@@ -1,7 +1,6 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {
-	Alert,
 	FlatList,
 	ScrollView,
 	Share,
@@ -23,7 +22,8 @@ import {BotomSharePopupData} from '../../../constants/api';
 import Strings from '../../../constants/strings';
 import {
 	createBetDetailsPreviewShareUrl,
-	dateTimeConvert
+	dateTimeConvert,
+	showErrorAlert
 } from '../../../constants/utils/Function';
 import ScreenNames from '../../../navigation/screenNames';
 import {
@@ -165,7 +165,7 @@ export default function CustomBetDetailsScreen() {
 				// dismissed
 			}
 		} catch (error) {
-			Alert.alert(error?.message);
+			showErrorAlert('', error?.message);
 		}
 	};
 
@@ -377,7 +377,7 @@ export default function CustomBetDetailsScreen() {
 						console.log('data :: ', data);
 						console.log('====================================');
 						postReportMatch(data).then(res => {
-							Alert.alert('', res?.message ?? Strings.somethingWentWrong);
+							showErrorAlert('', res?.message ?? Strings.somethingWentWrong);
 						});
 					}}
 					isVisible={isReportPopupShown}

@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useRef, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {useWalletConnect} from '@walletconnect/react-native-dapp';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import Web3 from 'web3';
@@ -19,7 +19,7 @@ import {
 } from '../../constants/SmartContract';
 import {useDispatch, useSelector} from 'react-redux';
 import {updateApiLoader} from '../../redux/reducerSlices/preLogin';
-import {Alert, AppState, Platform} from 'react-native';
+import {Platform} from 'react-native';
 import Strings from '../../constants/strings';
 import QRCodeModal from '@walletconnect/qrcode-modal';
 
@@ -27,6 +27,7 @@ import {chainIdPolygonNetwork, decimalValue, nullHash, RpcURL} from '../../const
 import analytics from '@react-native-firebase/analytics';
 import {magic} from '../../navigation/routes';
 import {RootState} from '../../redux/store';
+import {showErrorAlert} from '../../constants/utils/Function';
 
 interface Props {
 	_opponentAmount: any;
@@ -239,23 +240,23 @@ export const useBetCreateContract = () => {
 					dispatch(updateApiLoader({apiLoader: false}));
 					setAllowanceAddress('Error');
 					if (error?.toString().includes('insufficient funds')) {
-						Alert.alert(
-							'Insufficient Balance'.toUpperCase(),
-							'Please add more funds.'
+						showErrorAlert(
+							Strings.txt_insufficient_balance,
+							Strings.txt_add_more_fund
 						);
 					} else {
-						Alert.alert(
-							'Contract approval error',
-							'Something went wrong. Please try again later'
+						showErrorAlert(
+							Strings.txt_contract_approval_error,
+							Strings.txt_something_wrong_try_again
 						);
 					}
 				});
 		} catch (error) {
 			dispatch(updateApiLoader({apiLoader: false}));
 			setAllowanceAddress('Error');
-			Alert.alert(
-				'Contract approval error',
-				'Something went wrong. Please try again later'
+			showErrorAlert(
+				Strings.txt_contract_approval_error,
+				Strings.txt_something_wrong_try_again
 			);
 			console.log(error);
 		}
@@ -533,14 +534,14 @@ export const useBetCreateContract = () => {
 			setBet_id('Error');
 			dispatch(updateApiLoader({apiLoader: false}));
 			if (error?.toString().includes('insufficient funds')) {
-				Alert.alert(
-					'Insufficient Balance'.toUpperCase(),
-					'Please add more funds.'
+				showErrorAlert(
+					Strings.txt_insufficient_balance,
+					Strings.txt_add_more_fund
 				);
 			} else {
-				Alert.alert(
-					'Bet not created',
-					'Something went wrong. Please try again later'
+				showErrorAlert(
+					Strings.txt_bet_not_create,
+					Strings.txt_something_wrong_try_again
 				);
 			}
 
@@ -722,14 +723,14 @@ export const useBetCreateContract = () => {
 				JSON.stringify(error)
 			);
 			if (error?.toString().includes('insufficient funds')) {
-				Alert.alert(
-					'Insufficient Balance'.toUpperCase(),
-					Strings.enough_balance
+				showErrorAlert(
+					Strings.txt_insufficient_balance,
+					Strings.txt_add_more_fund
 				);
 			} else {
-				Alert.alert(
-					'Bet not joined',
-					'Something went wrong. Please try again later'
+				showErrorAlert(
+					Strings.txt_bet_not_join,
+					Strings.txt_something_wrong_try_again
 				);
 			}
 		}
@@ -775,7 +776,7 @@ export const useBetCreateContract = () => {
 				JSON.stringify(error)
 			);
 
-			Alert.alert('', 'Something went wrong. Please try again later');
+			showErrorAlert('', Strings.txt_something_wrong_try_again);
 		}
 	};
 
@@ -880,14 +881,14 @@ export const useBetCreateContract = () => {
 					setAllowanceAddress('Error');
 
 					if (error?.toString().includes('insufficient funds')) {
-						Alert.alert(
-							'Insufficient Balance'.toUpperCase(),
-							'Please add more funds.'
+						showErrorAlert(
+							Strings.txt_insufficient_balance,
+							Strings.txt_add_more_fund
 						);
 					} else {
-						Alert.alert(
-							'Contract approval error',
-							'Something went wrong. Please try again later'
+						showErrorAlert(
+							Strings.txt_contract_approval_error,
+							Strings.txt_something_wrong_try_again
 						);
 					}
 					console.log(error);
@@ -896,9 +897,9 @@ export const useBetCreateContract = () => {
 			dispatch(updateApiLoader({apiLoader: false}));
 			setAllowanceAddress('Error');
 
-			Alert.alert(
-				'Contract approval error',
-				'Something went wrong. Please try again later'
+			showErrorAlert(
+				Strings.txt_contract_approval_error,
+				Strings.txt_something_wrong_try_again
 			);
 
 			console.log(error);
@@ -1172,14 +1173,14 @@ export const useBetCreateContract = () => {
 					setApproveTnsAddress('Error');
 
 					if (error?.toString().includes('insufficient funds')) {
-						Alert.alert(
-							'Insufficient Balance'.toUpperCase(),
-							'Please add more funds.'
+						showErrorAlert(
+							Strings.txt_insufficient_balance,
+							Strings.txt_add_more_fund
 						);
 					} else {
-						Alert.alert(
-							'Amount not stake',
-							'Something went wrong. Please try again later'
+						showErrorAlert(
+							Strings.txt_amount_not_stake,
+							Strings.txt_something_wrong_try_again
 						);
 					}
 				});
@@ -1187,9 +1188,9 @@ export const useBetCreateContract = () => {
 			console.log('error', error);
 			dispatch(updateApiLoader({apiLoader: false}));
 			setApproveTnsAddress('Error');
-			Alert.alert(
-				'Amount not stake',
-				'Something went wrong. Please try again later'
+			showErrorAlert(
+				Strings.txt_amount_not_stake,
+				Strings.txt_something_wrong_try_again
 			);
 		}
 	};
@@ -1272,7 +1273,7 @@ export const useBetCreateContract = () => {
 				JSON.stringify(error)
 			);
 
-			Alert.alert('', 'Something went wrong. Please try again later');
+			showErrorAlert('', Strings.txt_something_wrong_try_again);
 		}
 	};
 
@@ -1407,13 +1408,13 @@ export const useBetCreateContract = () => {
 					console.log('error', error);
 					setCancle_bet_id('Error');
 					dispatch(updateApiLoader({apiLoader: false}));
-					Alert.alert('', 'Something went wrong. Please try again later');
+					showErrorAlert('', Strings.txt_something_wrong_try_again);
 				});
 		} catch (error) {
 			console.log('error', error);
 			setCancle_bet_id('Error');
 			dispatch(updateApiLoader({apiLoader: false}));
-			Alert.alert('', 'Something went wrong. Please try again later');
+			showErrorAlert('', Strings.txt_something_wrong_try_again);
 		}
 	};
 
@@ -1480,13 +1481,13 @@ export const useBetCreateContract = () => {
 					console.log('error', error);
 					setVerdictAddress('Error');
 					dispatch(updateApiLoader({apiLoader: false}));
-					Alert.alert('', 'Something went wrong. Please try again later');
+					showErrorAlert('', Strings.txt_something_wrong_try_again);
 				});
 		} catch (error) {
 			console.log('error', error);
 			setVerdictAddress('Error');
 			dispatch(updateApiLoader({apiLoader: false}));
-			Alert.alert('', 'Something went wrong. Please try again later');
+			showErrorAlert('', Strings.txt_something_wrong_try_again);
 		}
 	};
 
@@ -1534,13 +1535,13 @@ export const useBetCreateContract = () => {
 					console.log('error', error);
 					setCancle_bet_id('Error');
 					dispatch(updateApiLoader({apiLoader: false}));
-					Alert.alert('', 'Something went wrong. Please try again later');
+					showErrorAlert('', Strings.txt_something_wrong_try_again);
 				});
 		} catch (error) {
 			console.log('error', error);
 			setCancle_bet_id('Error');
 			dispatch(updateApiLoader({apiLoader: false}));
-			Alert.alert('', 'Something went wrong. Please try again later');
+			showErrorAlert('', Strings.txt_something_wrong_try_again);
 		}
 	};
 
@@ -1616,13 +1617,13 @@ export const useBetCreateContract = () => {
 					console.log('error', error);
 					setResolveBetAddress('Error');
 					dispatch(updateApiLoader({apiLoader: false}));
-					Alert.alert('', 'Something went wrong. Please try again later');
+					showErrorAlert('', Strings.txt_something_wrong_try_again);
 				});
 		} catch (error) {
 			console.log('error', error);
 			setResolveBetAddress('Error');
 			dispatch(updateApiLoader({apiLoader: false}));
-			Alert.alert('', 'Something went wrong. Please try again later');
+			showErrorAlert('', Strings.txt_something_wrong_try_again);
 		}
 	};
 
@@ -1696,16 +1697,13 @@ export const useBetCreateContract = () => {
 									})
 									.catch(function (error) {
 										console.log('error', error);
-										Alert.alert(
-											'',
-											'Something went wrong. Please try again later'
-										);
+										showErrorAlert('', Strings.txt_something_wrong_try_again);
 										return 'error';
 									});
 							})
 							.catch(function (error) {
 								console.log('error', error);
-								Alert.alert('', 'Something went wrong. Please try again later');
+								showErrorAlert('', Strings.txt_something_wrong_try_again);
 								return 'error';
 							});
 					}
@@ -1848,13 +1846,13 @@ export const useBetCreateContract = () => {
 					console.log('error', error);
 					setResolveBetAddress('Error');
 					dispatch(updateApiLoader({apiLoader: false}));
-					Alert.alert('', 'Something went wrong. Please try again later');
+					showErrorAlert('', Strings.txt_something_wrong_try_again);
 				});
 		} catch (error) {
 			console.log('error', error);
 			setResolveBetAddress('Error');
 			dispatch(updateApiLoader({apiLoader: false}));
-			Alert.alert('', 'Something went wrong. Please try again later');
+			showErrorAlert('', Strings.txt_something_wrong_try_again);
 		}
 	};
 
@@ -1904,13 +1902,13 @@ export const useBetCreateContract = () => {
 					console.log('error', error);
 					setWithdrawAddress('Error');
 					dispatch(updateApiLoader({apiLoader: false}));
-					Alert.alert('', 'Something went wrong. Please try again later');
+					showErrorAlert('', Strings.txt_something_wrong_try_again);
 				});
 		} catch (error) {
 			console.log('error', error);
 			setWithdrawAddress('Error');
 			dispatch(updateApiLoader({apiLoader: false}));
-			Alert.alert('', 'Something went wrong. Please try again later');
+			showErrorAlert('', Strings.txt_something_wrong_try_again);
 		}
 	};
 
@@ -1977,13 +1975,13 @@ export const useBetCreateContract = () => {
 					console.log('error', error);
 					setDisputeAddress('Error');
 					dispatch(updateApiLoader({apiLoader: false}));
-					Alert.alert('', 'Something went wrong. Please try again later');
+					showErrorAlert('', Strings.txt_something_wrong_try_again);
 				});
 		} catch (error) {
 			console.log('error', error);
 			setDisputeAddress('Error');
 			dispatch(updateApiLoader({apiLoader: false}));
-			Alert.alert('', 'Something went wrong. Please try again later');
+			showErrorAlert('', Strings.txt_something_wrong_try_again);
 		}
 	};
 
@@ -2050,13 +2048,13 @@ export const useBetCreateContract = () => {
 					console.log('error', error);
 					setDisputeAddress('Error');
 					dispatch(updateApiLoader({apiLoader: false}));
-					Alert.alert('', 'Something went wrong. Please try again later');
+					showErrorAlert('', Strings.txt_something_wrong_try_again);
 				});
 		} catch (error) {
 			console.log('error', error);
 			setDisputeAddress('Error');
 			dispatch(updateApiLoader({apiLoader: false}));
-			Alert.alert('', 'Something went wrong. Please try again later');
+			showErrorAlert('', Strings.txt_something_wrong_try_again);
 		}
 	};
 
@@ -2159,7 +2157,7 @@ export const useBetCreateContract = () => {
 			})
 			.catch(function (error) {
 				console.log('error', error);
-				Alert.alert('', 'Something went wrong. Please try again later');
+				showErrorAlert('', Strings.txt_something_wrong_try_again);
 			});
 	};
 
@@ -2204,13 +2202,13 @@ export const useBetCreateContract = () => {
 					})
 					.catch(function (error) {
 						console.log('error', error);
-						Alert.alert('', 'Something went wrong. Please try again later');
+						showErrorAlert('', Strings.txt_something_wrong_try_again);
 						return 'error';
 					});
 			})
 			.catch(function (error) {
 				console.log('error', error);
-				Alert.alert('', 'Something went wrong. Please try again later');
+				showErrorAlert('', Strings.txt_something_wrong_try_again);
 				return 'error';
 			});
 	};

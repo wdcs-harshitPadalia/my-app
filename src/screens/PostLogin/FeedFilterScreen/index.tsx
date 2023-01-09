@@ -1,6 +1,6 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {Alert, Share, StyleSheet, Text, View} from 'react-native';
+import {Share, StyleSheet, View} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
@@ -14,7 +14,10 @@ import LiveStreamingFlatList from '../../../components/LiveStreamingFlatList';
 import NoDataComponent from '../../../components/NoDataComponent';
 import SelecteableTag from '../../../components/SelecteableTag';
 import Strings from '../../../constants/strings';
-import {createBetDetailsPreviewShareUrl} from '../../../constants/utils/Function';
+import {
+	createBetDetailsPreviewShareUrl,
+	showErrorAlert
+} from '../../../constants/utils/Function';
 import ScreenNames from '../../../navigation/screenNames';
 import {
 	getFilteredFeeds,
@@ -196,7 +199,7 @@ const FeedFilterScreen: React.FC<any> = props => {
 				// dismissed
 			}
 		} catch (error) {
-			Alert.alert(error.message);
+			showErrorAlert('', error.message);
 		}
 	};
 
@@ -424,7 +427,7 @@ const FeedFilterScreen: React.FC<any> = props => {
 						customTag: tag === 'Other' ? 1 : 0
 					};
 					postReportMatch(data).then(res => {
-						Alert.alert('', res?.message ?? Strings.somethingWentWrong);
+						showErrorAlert('', res?.message ?? Strings.somethingWentWrong);
 					});
 				}}
 				isVisible={isReportPopupShown}

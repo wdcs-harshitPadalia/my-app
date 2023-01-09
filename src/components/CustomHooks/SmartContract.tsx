@@ -28,6 +28,7 @@ import analytics from '@react-native-firebase/analytics';
 import {magic} from '../../navigation/routes';
 import {RootState} from '../../redux/store';
 import {showErrorAlert} from '../../constants/utils/Function';
+import toast from 'react-hot-toast';
 
 interface Props {
 	_opponentAmount: any;
@@ -176,6 +177,9 @@ export const useBetCreateContract = () => {
 		setAllowanceAddress('');
 
 		if (connector.connected) {
+			toast('Please open your connected wallet for approve transaction', {
+				duration:20000
+			});
 			web3 = await initWeb3();
 		} else {
 			web3 = await new Web3(magic.rpcProvider);
@@ -397,10 +401,11 @@ export const useBetCreateContract = () => {
 		// if (connector.connected) {
 		let web3;
 		if (connector.connected) {
-			alert('wallet connectedddd!');
+			toast('Please open your connected wallet for approve transaction', {
+				duration:20000
+			});
 			web3 = await initWeb3();
 		} else {
-			alert('wallet connectedddd12!');
 			web3 = await new Web3(magic.rpcProvider);
 		}
 
@@ -577,6 +582,9 @@ export const useBetCreateContract = () => {
 		// console.log('balance', balance);
 		let web3;
 		if (connector.connected) {
+			toast('Please open your connected wallet for approve transaction', {
+				duration:20000
+			});
 			web3 = await initWeb3();
 		} else {
 			web3 = new Web3(magic.rpcProvider);
@@ -602,7 +610,7 @@ export const useBetCreateContract = () => {
 		const response = await returnMessageSignAndHash(message, web3, address);
 		if (response.error) {
 			dispatch(updateApiLoader({apiLoader: false}));
-			Alert.alert('', Strings.somethingWentWrong);
+			showErrorAlert('', Strings.somethingWentWrong);
 			return;
 		}
 		console.log(
@@ -818,10 +826,11 @@ export const useBetCreateContract = () => {
 	const approveDbethTokenAllowance = async (amount: string) => {
 		let web3;
 		if (connector.connected) {
-			alert('sfjskfjkapproveDbethTokenAllowance');
+			toast('Please open your connected wallet for approve transaction', {
+				duration:20000
+			});
 			web3 = await initWeb3();
 		} else {
-			alert('no');
 
 			web3 = await new Web3(magic.rpcProvider);
 		}
@@ -1118,6 +1127,9 @@ export const useBetCreateContract = () => {
 		setApproveTnsAddress('');
 		let web3;
 		if (connector.connected) {
+			toast('Please open your connected wallet for approve transaction', {
+				duration:20000
+			});
 			web3 = await initWeb3();
 		} else {
 			web3 = await new Web3(magic.rpcProvider);
@@ -1369,6 +1381,9 @@ export const useBetCreateContract = () => {
 	const benBet = async (betAddress: string) => {
 		let web3;
 		if (connector.connected) {
+			toast('Please open your connected wallet for approve transaction', {
+				duration:20000
+			});
 			web3 = await initWeb3();
 		} else {
 			web3 = await new Web3(magic.rpcProvider);
@@ -1428,6 +1443,9 @@ export const useBetCreateContract = () => {
 		setVerdictAddress('');
 		let web3;
 		if (connector.connected) {
+			toast('Please open your connected wallet for approve transaction', {
+				duration:20000
+			});
 			web3 = await initWeb3();
 		} else {
 			web3 = await new Web3(magic.rpcProvider);
@@ -1495,6 +1513,9 @@ export const useBetCreateContract = () => {
 	const claimBetAmount = async (betAddress: string) => {
 		let web3;
 		if (connector.connected) {
+			toast('Please open your connected wallet for approve transaction', {
+				duration:20000
+			});
 			web3 = await initWeb3();
 		} else {
 			web3 = await new Web3(magic.rpcProvider);
@@ -1555,6 +1576,9 @@ export const useBetCreateContract = () => {
 	) => {
 		let web3;
 		if (connector.connected) {
+			toast('Please open your connected wallet for approve transaction', {
+				duration:20000
+			});
 			web3 = await initWeb3();
 		} else {
 			web3 = await new Web3(magic.rpcProvider);
@@ -1795,6 +1819,9 @@ export const useBetCreateContract = () => {
 	) => {
 		let web3;
 		if (connector.connected) {
+			toast('Please open your connected wallet for approve transaction', {
+				duration:20000
+			});
 			web3 = await initWeb3();
 		} else {
 			web3 = await new Web3(magic.rpcProvider);
@@ -1860,6 +1887,9 @@ export const useBetCreateContract = () => {
 	const claimJuryStackAmount = async () => {
 		let web3;
 		if (connector.connected) {
+			toast('Please open your connected wallet for approve transaction', {
+				duration:20000
+			});
 			web3 = await initWeb3();
 		} else {
 			web3 = await new Web3(magic.rpcProvider);
@@ -1922,6 +1952,9 @@ export const useBetCreateContract = () => {
 		setDisputeAddress('');
 		let web3;
 		if (connector.connected) {
+			toast('Please open your connected wallet for approve transaction', {
+				duration:20000
+			});
 			web3 = await initWeb3();
 		} else {
 			web3 = await new Web3(magic.rpcProvider);
@@ -1995,6 +2028,9 @@ export const useBetCreateContract = () => {
 		setDisputeAddress('');
 		let web3;
 		if (connector.connected) {
+			toast('Please open your connected wallet for approve transaction', {
+				duration:20000
+			});
 			web3 = await initWeb3();
 		} else {
 			web3 = await new Web3(magic.rpcProvider);

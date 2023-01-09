@@ -46,6 +46,7 @@ import {AppSchema} from './src/constants/api';
 import {initSmartLookSession} from './src/components/SmartLookSDKHelper';
 import {useCallback, useEffect} from 'react';
 import {useFonts} from 'expo-font';
+import { Toaster } from 'react-hot-toast';
 
 import './global';
 // export default () => {
@@ -101,6 +102,7 @@ const App = () => {
 		<View style={{backgroundColor: 'red', flex: 1}} onLayout={onLayoutRootView}>
 			<PersistGate loading={null} persistor={persistor}>
 				<Provider store={store}>
+					<Toaster />
 					<Routes />
 				</Provider>
 			</PersistGate>

@@ -81,6 +81,7 @@
     "querystring-es3": "^0.2.1",
     "react": "18.1.0",
     "react-dom": "18.1.0",
+    "react-hot-toast": "^2.4.0",
     "react-native": "0.70.5",
     "react-native-3dcube-navigation": "^1.0.5",
     "react-native-chart-kit": "^6.12.0",

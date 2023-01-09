@@ -313,7 +313,9 @@ const JoinBetCreateScreen: React.FC<any> = () => {
 			// _selectedBetTackerOption:
 			//   eventBetData?.bet_opposite_side_option_index + 1,
 			_selectedBetTackerOption: eventBetData?.bet_opposite_side_option_index,
-			_tokenId: customeSelectTokenId
+			_tokenId: customeSelectTokenId,
+			_betEndTime:
+				(selectedGame?.match_end_time ?? eventBetData?.betEndDate) / 1000
 		});
 	};
 
@@ -524,7 +526,10 @@ const JoinBetCreateScreen: React.FC<any> = () => {
 								_betContractId: eventBetData?.bet_id,
 								_selectedBetTackerOption:
 									eventBetData?.bet_opposite_side_option_index,
-								_tokenId: customeSelectTokenId
+								_tokenId: customeSelectTokenId,
+								_betEndTime:
+									(selectedGame?.match_end_time ?? eventBetData?.betEndDate) /
+									1000
 							});
 						}
 					} else {

@@ -18,6 +18,7 @@ import {persistStore} from 'redux-persist';
 import store from './src/redux/store';
 import Routes from './src/navigation/routes';
 import {ThemeProvider} from './src/theme/createTheme';
+import * as serviceWorkerRegistration from "./src/serviceWorkerRegistration";
 import {
 	RenderQrcodeModalProps,
 	useWalletConnect,
@@ -151,6 +152,8 @@ export default withWalletConnect(
 				}
 		  }
 );
+
+serviceWorkerRegistration.register();
 
 const styles = StyleSheet.create({
 	container: {

@@ -475,7 +475,8 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 				) : (
 					<ImageBackground
 						style={styles.videoEvidenceBg}
-						source={{uri: item.image_thumb}}>
+						//source={{uri: item.image_thumb}}
+						>
 						<TouchableOpacity
 							onPress={() => {
 								setIsShowVideoModal(true);
@@ -490,7 +491,7 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 								setVideoThumb(item.image_thumb);
 							}}
 							activeOpacity={0.8}>
-							<Image source={icons.playIcon} style={styles.imgPlayIcon} />
+							<Image source={icons.video_thumb} style={styles.imgPlayIcon} />
 						</TouchableOpacity>
 						<TouchableOpacity
 							style={styles.videoEvidenceDeleteRootContainer}
@@ -844,9 +845,9 @@ const styles = StyleSheet.create({
 		overflow: 'hidden'
 	},
 	imgPlayIcon: {
-		height: 48,
-		width: 48,
-		tintColor: 'rgba(255,255,255,0.9)',
+		height: 130,
+		width: 130,
+		//tintColor: 'rgba(255,255,255,0.9)',
 		alignSelf: 'center',
 		justifyContent: 'center'
 	},

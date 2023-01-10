@@ -99,7 +99,7 @@ const App = () => {
 
 	// }, []);
 	return (
-		<View style={{backgroundColor: 'red', flex: 1}} onLayout={onLayoutRootView}>
+		<View style={styles.container} onLayout={onLayoutRootView}>
 			<PersistGate loading={null} persistor={persistor}>
 				<Provider store={store}>
 					<Toaster />
@@ -159,9 +159,6 @@ serviceWorkerRegistration.register();
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
-		backgroundColor: '#fff',
-		alignItems: 'center',
-		justifyContent: 'center'
+		flex: 1
 	}
 });

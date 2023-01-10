@@ -118,7 +118,7 @@ import {CameraPage} from '../../components/Camera/CameraPage';
 import {MediaPage} from '../../components/Camera/MediaPage';
 import VideoCreationScreen from '../../screens/PostLogin/VideoCreationScreen';
 import VideoContentScreen from '../../screens/VideoContentScreen';
-import { Platform } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 //const Stack = createNativeStackNavigator();
 const options = {
@@ -132,7 +132,7 @@ export const BeforeLoginRoutesRoot = () => (
 	<Stack.Navigator
 		screenOptions={{
 			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-			cardStyle: {flex: 1, backgroundColor: 'red'}
+			cardStyle: styles.cardContainerStyle
 		}}
 		initialRouteName={ScreenNames.Login}>
 		<Stack.Screen
@@ -147,7 +147,7 @@ export const WalletTabRoutes = (_props: any) => (
 	<Stack.Navigator
 		screenOptions={{
 			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-			cardStyle: {flex: 1, backgroundColor: 'red'}
+			cardStyle: styles.cardContainerStyle
 		}}
 		initialRouteName={ScreenNames.WalletScreen}>
 		<Stack.Screen
@@ -195,7 +195,7 @@ export const LiveTabRoutes = (_props: any) => (
 	<Stack.Navigator
 		screenOptions={{
 			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-			cardStyle: {flex: 1, backgroundColor: 'red'}
+			cardStyle: styles.cardContainerStyle
 		}}
 		initialRouteName={ScreenNames.LiveStreamingScreen}>
 		<Stack.Screen
@@ -321,7 +321,7 @@ const FeedsRouter = () => (
 		screenOptions={{
 			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
 			gestureResponseDistance: 100,
-			cardStyle: {flex: 1, backgroundColor: 'red'}
+			cardStyle: styles.cardContainerStyle
 		}}>
 		<Stack.Screen
 			name={ScreenNames.FeedScreen}
@@ -535,7 +535,7 @@ const DiscoverRouter = () => (
 	<Stack.Navigator
 		screenOptions={{
 			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-			cardStyle: {flex: 1, backgroundColor: 'red'}
+			cardStyle: styles.cardContainerStyle
 		}}>
 		<Stack.Screen
 			name={ScreenNames.DiscoverScreen}
@@ -658,7 +658,7 @@ const ProfileRouter = () => (
 	<Stack.Navigator
 		screenOptions={{
 			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-			cardStyle: {flex: 1, backgroundColor: 'red'}
+			cardStyle: styles.cardContainerStyle
 		}}
 		initialRouteName={ScreenNames.ProfileScreen}>
 		<Stack.Screen
@@ -862,7 +862,7 @@ const RootRouter = () => {
 			<Stack.Navigator
 				screenOptions={{
 					cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-					cardStyle: {flex: 1, backgroundColor: 'red'}
+					cardStyle: styles.cardContainerStyle
 				}}>
 				{globalThis.firstTime && (
 					<Stack.Screen
@@ -891,7 +891,7 @@ const RootRouter = () => {
 			<Stack.Navigator
 				screenOptions={{
 					cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-					cardStyle: {flex: 1, backgroundColor: 'red'}
+					cardStyle: styles.cardContainerStyle
 				}}>
 				{global.firstTime && (
 					<Stack.Screen
@@ -1001,3 +1001,9 @@ const Routes = () => {
 	);
 };
 export default Routes;
+
+const styles = StyleSheet.create({
+	cardContainerStyle: {
+		flex: 1
+	}
+});

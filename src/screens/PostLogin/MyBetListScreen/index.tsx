@@ -295,9 +295,9 @@ const MyBetListScreen: React.FC<any> = props => {
 						contentContainerStyle={{paddingBottom: verticalScale(100)}}
 						showsVerticalScrollIndicator={false}
 						bounces={false}
-						onMomentumScrollEnd={() => {
+						onEndReached={() => {
 							console.log('myBetPage', myBetPage, totalPage);
-							if (myBetPage <= totalPage && totalPage !== 1 && isFocus) {
+							if (myBetPage <= totalPage && totalPage !== 1 && isFocus && !isLoading) {
 								setIsLoading(true);
 								myBetPage = myBetPage + 1;
 								getUserBetData();

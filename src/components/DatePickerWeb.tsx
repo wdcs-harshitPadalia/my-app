@@ -83,7 +83,7 @@ const DatePickerWeb = forwardRef((props: DatePickerWebProps, ref) => {
 				onChange={_handleChange}
 				type={isPickOnlyDate ? 'date' : 'datetime-local'}
 				style={{flex: 1, backgroundColor: colors.black, opacity: 0}}
-				max={maximumDate && moment(maximumDate).format('YYYY-MM-DDTHH:mm')}
+				max={maximumDate && moment(maximumDate).format('YYYY-MM-DD')}
 				min={minimumDate && moment(minimumDate).format('YYYY-MM-DDTHH:mm')}
 				// defaultValue={moment()
 				// 	.add(10, 'minutes')

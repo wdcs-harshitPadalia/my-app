@@ -50,6 +50,7 @@ import {decimalValue, nullAddress} from '../../../../constants/api';
 import {gradientColorAngle} from '../../../../theme/metrics';
 import LottieView from 'lottie-react-native';
 import {updateDiscoverRefreshOnFocus} from '../../../../redux/reducerSlices/dashboard';
+import Lottie from 'lottie-react';
 
 const JoinBetCreateScreen: React.FC<any> = () => {
 	const navigation = useNavigation();
@@ -719,7 +720,18 @@ const JoinBetCreateScreen: React.FC<any> = () => {
 							)}
 						</Text>
 
-						{Platform.OS !== 'web' && (
+						{Platform.OS === 'web' ? (
+							<Lottie
+								style={{
+									height: 300,
+									width: 300,
+									alignSelf: 'center',
+									position: 'absolute'
+								}}
+								animationData={require('../../../../assets/animations/confetti_day.json')}
+								loop={false}
+							/>
+						) : (
 							<LottieView
 								style={{
 									height: 300,

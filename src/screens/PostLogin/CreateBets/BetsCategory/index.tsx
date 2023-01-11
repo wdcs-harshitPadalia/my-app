@@ -92,6 +92,7 @@ import PlaceBetsAmountView from '../../../../components/PlaceBetsAmountView';
 import SelectCryptoAmount from '../../../../components/SelectCryptoAmount';
 import EarningsProfitView from '../../../../components/EarningsProfitView';
 import {decimalValue} from '../../../../constants/api';
+import Lottie from 'lottie-react';
 
 let pageLeague = 0;
 let pageGame = 0;
@@ -2145,17 +2146,30 @@ const BetsCategoryScreen: React.FC<any> = () => {
 								userInfo?.user?.displayName || userInfo?.user?.userName
 							)}
 						</Text>
-						{/* <LottieView
-              style={{
-                height: 300,
-                width: 300,
-                alignSelf: "center",
-                position: "absolute",
-              }}
-              source={require("../../../../assets/animations/confetti_day.json")}
-              autoPlay
-              loop={false}
-            /> */}
+						{Platform.OS === 'web' ? (
+							<Lottie
+								style={{
+									height: 300,
+									width: 300,
+									alignSelf: 'center',
+									position: 'absolute'
+								}}
+								animationData={require('../../../../assets/animations/confetti_day.json')}
+								loop={false}
+							/>
+						) : (
+							<LottieView
+								style={{
+									height: 300,
+									width: 300,
+									alignSelf: 'center',
+									position: 'absolute'
+								}}
+								source={require('../../../../assets/animations/confetti_day.json')}
+								autoPlay
+								loop={false}
+							/>
+						)}
 					</View>
 				);
 		}

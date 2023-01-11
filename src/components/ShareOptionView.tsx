@@ -9,6 +9,7 @@ import {defaultTheme} from '../theme/defaultTheme';
 import {gradientColorAngle} from '../theme/metrics';
 import ButtonGradient from './ButtonGradient';
 import LottieView from 'lottie-react-native';
+import Lottie from 'lottie-react';
 
 interface Props extends TextInputProps {
 	onPressShare: (type: string) => void;
@@ -82,19 +83,31 @@ const ShareOptionView: React.FC<Props> = props => {
 				style={styles.loginButtonSocial}
 				leftIconPath={icons.ic_share_upload}
 			/>
-			{isShowAnimation && Platform.OS !== "web" && (
-				<LottieView
-					style={{
-						height: 300,
-						width: 300,
-						alignSelf: 'center',
-						position: 'absolute'
-					}}
-					source={require('../assets/animations/confetti_day.json')}
-					autoPlay
-					loop={false}
-				/>
-			)}
+			{isShowAnimation &&
+				(Platform.OS === 'web' ? (
+					<Lottie
+						style={{
+							height: 300,
+							width: 300,
+							alignSelf: 'center',
+							position: 'absolute'
+						}}
+						animationData={require('../assets/animations/confetti_day.json')}
+						loop={false}
+					/>
+				) : (
+					<LottieView
+						style={{
+							height: 300,
+							width: 300,
+							alignSelf: 'center',
+							position: 'absolute'
+						}}
+						source={require('../assets/animations/confetti_day.json')}
+						autoPlay
+						loop={false}
+					/>
+				))}
 
 			{/* <TouchableOpacity
 				style={styles.nameViewStyle}

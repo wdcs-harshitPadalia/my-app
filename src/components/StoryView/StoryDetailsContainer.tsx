@@ -7,11 +7,12 @@ import {
 	View,
 	TouchableOpacity,
 	Image,
-	Text
+	Text,
+	Alert
 } from 'react-native';
 
 import Modal from 'react-native-modal';
-// import GestureRecognizer from 'rn-swipe-gestures';
+import GestureRecognizer from 'rn-swipe-gestures';
 import Story from './Story';
 import UserView from './UserView';
 import ProgressArray from './ProgressArray';
@@ -28,6 +29,7 @@ import Strings from '../../constants/strings';
 import {
 	createJoinBetShareUrl,
 	createMatchDetailsShareUrl,
+	getVideoShareUrl,
 	uniqueIdGenerateFrom2Ids
 } from '../../constants/utils/Function';
 import {MessageType} from '@flyerhq/react-native-chat-ui';
@@ -40,6 +42,7 @@ import {
 	runQuery
 } from '@amityco/ts-sdk';
 import {updateChannel} from '../../redux/apiHandler/apiActions';
+import {updateChannel as updateChannel1} from '../../redux/apiHandler/apiActions';
 const {v4: uuidv4} = require('uuid');
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -119,13 +122,18 @@ const StoryDetailsContainer: React.FC<Props> = (props: Props) => {
 
 	const onImageLoaded = () => {
 		console.log('onImageLoaded >>');
+		setDuration(
+			stories[currentIndex].duration ? stories[currentIndex].duration : 3
+		);
 		setLoaded(true);
 	};
 
 	const onVideoLoaded = length => {
-		console.log('onVideoLoaded >>');
+		console.log('length :: ', length);
+		console.log('onVideoLoaded >>', length.duration);
 		setLoaded(true);
 		setDuration(stories[currentIndex].duration);
+		// setDuration(length.duration);
 	};
 
 	const onPause = result => {
@@ -190,7 +198,11 @@ const StoryDetailsContainer: React.FC<Props> = (props: Props) => {
 
 	return (
 		<SafeAreaView style={styles.container}>
-			
+			<GestureRecognizer
+				onSwipeDown={onSwipeDown}
+				onSwipeUp={onSwipeUp}
+				config={config}
+				style={styles.container}>
 				<TouchableOpacity
 					activeOpacity={1}
 					delayLongPress={500}
@@ -209,6 +221,7 @@ const StoryDetailsContainer: React.FC<Props> = (props: Props) => {
 							userName={'@' + dataStories.userName}
 							storyClose={props.onClose}
 							friendLevel={dataStories.level}
+							next={nextStory}
 						/>
 
 						{/* {loading()} */}
@@ -271,7 +284,18 @@ const StoryDetailsContainer: React.FC<Props> = (props: Props) => {
 								placeholder="Type a message..."
 								rightIconClick={async text => {
 									console.log('rightIconClick >>', stories[currentIndex]);
-									return;
+									const data = {
+										senderId: userInfo?.user?._id,
+										receiverId: dataStories?._id,
+										channelId:
+											'amity_' +
+											uniqueIdGenerateFrom2Ids([
+												userInfo?.user?._id,
+												dataStories?._id
+											])
+									};
+									await updateChannel1(data);
+
 									const channelId =
 										'amity_' +
 										uniqueIdGenerateFrom2Ids([
@@ -279,6 +303,27 @@ const StoryDetailsContainer: React.FC<Props> = (props: Props) => {
 											dataStories?._id
 										]);
 									const query5 = createQuery(getChannel, channelId);
+									let shareURL = '';
+
+									if (story.type === 'video') {
+										shareURL =
+											getVideoShareUrl(
+												story?.shortVideos?._id ?? story?.betShortVideos?._id
+											) +
+											'\n' +
+											text;
+									} else {
+										shareURL =
+											(story?.bet && Object.keys(story.bet).length > 0
+												? createJoinBetShareUrl(story.bet?._id)
+												: createMatchDetailsShareUrl(
+														Strings.feed,
+														story?.match?._id,
+														1
+												  )) +
+											'\n' +
+											text;
+									}
 									runQuery(query5, result => {
 										//console.log('getChannelByID', result);
 										if (result.data) {
@@ -293,7 +338,7 @@ const StoryDetailsContainer: React.FC<Props> = (props: Props) => {
 												author: user,
 												createdAt: Date.now(),
 												id: uuidv4(),
-												text: text,
+												text: shareURL,
 												type: 'text'
 												//uri: 'https://cdn.pixabay.com/photo/2015/04/19/08/32/marguerite-729510_960_720.jpg',
 											};
@@ -301,16 +346,7 @@ const StoryDetailsContainer: React.FC<Props> = (props: Props) => {
 												channelId: channelId,
 												type: 'text',
 												data: {
-													text:
-														(story?.bet && Object.keys(story.bet).length > 0
-															? createJoinBetShareUrl(story.bet?._id)
-															: createMatchDetailsShareUrl(
-																Strings.feed,
-																story?.match?._id,
-																	1
-															  )) +
-														'\n' +
-														text
+													text: shareURL
 												},
 												metadata: {
 													data: textMessage
@@ -320,6 +356,10 @@ const StoryDetailsContainer: React.FC<Props> = (props: Props) => {
 											runQuery(query, ({data: textMessage, ...options}) => {
 												//console.log('sent????', textMessage, options);
 												//addMessage(message.metadata?.data);
+												if (options?.error || options?.loading) {
+													return;
+												}
+												Alert.alert('', 'Message sent successfully.');
 											});
 											let query1 = createQuery(joinChannel, channelId);
 											runQuery(query1, result =>
@@ -333,7 +373,7 @@ const StoryDetailsContainer: React.FC<Props> = (props: Props) => {
 												metadata: {
 													data: {
 														[userInfo?.user?._id]: userInfo.user,
-														[dataStories?._id]: dataStories
+														[dataStories?._id]: dataStories?._id
 													}
 												}
 											});
@@ -350,7 +390,7 @@ const StoryDetailsContainer: React.FC<Props> = (props: Props) => {
 														author: user,
 														createdAt: Date.now(),
 														id: uuidv4(),
-														text: text,
+														text: shareURL,
 														type: 'text'
 														//uri: 'https://cdn.pixabay.com/photo/2015/04/19/08/32/marguerite-729510_960_720.jpg',
 													};
@@ -358,16 +398,7 @@ const StoryDetailsContainer: React.FC<Props> = (props: Props) => {
 														channelId: channelId,
 														type: 'text',
 														data: {
-															text:
-																(story?.bet && Object.keys(story.bet).length > 0
-																	? createJoinBetShareUrl(story.bet?._id)
-																	: createMatchDetailsShareUrl(
-																		Strings.feed,
-																		story?.match?._id,
-																			1
-																	  )) +
-																'\n' +
-																text
+															text: shareURL
 														},
 														metadata: {
 															data: textMessage
@@ -376,18 +407,17 @@ const StoryDetailsContainer: React.FC<Props> = (props: Props) => {
 
 													runQuery(query, ({data: textMessage, ...options}) => {
 														//console.log('sent????', textMessage, options);
+														if (options?.error || options?.loading) {
+															return;
+														}
+														Alert.alert('', 'Message sent successfully.');
+
 														//addMessage(message.metadata?.data);
 													});
 												}
 											});
 										}
 									});
-									const data = {
-										senderId: userInfo?.user?._id,
-										receiverId: dataStories?._id,
-										channelId: channelId
-									};
-									await updateChannel(data);
 									console.log('rightIconClick');
 								}}
 								onLeftIconPress={() => {
@@ -401,6 +431,7 @@ const StoryDetailsContainer: React.FC<Props> = (props: Props) => {
 					{/* </View>
           </Modal> */}
 				</TouchableOpacity>
+			</GestureRecognizer>
 		</SafeAreaView>
 	);
 };

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
 	ImageBackground,
 	StyleSheet,
@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import {defaultTheme} from '../../theme/defaultTheme';
-import {LinearGradient} from 'expo-linear-gradient';
+import LinearGradient from 'react-native-linear-gradient';
 import {
 	Fonts,
 	horizontalScale,
@@ -16,15 +16,21 @@ import {
 	verticalScale
 } from '../../theme';
 import colors from '../../theme/colors';
-import {moderateFontScale} from '../../theme/metrics';
+import {
+	moderateFontScale,
+	screenHeight,
+	SCREEN_WIDTH
+} from '../../theme/metrics';
 import Strings from '../../constants/strings';
 import fonts from '../../theme/fonts';
 import ScreenNames from '../../navigation/screenNames';
 import {useNavigation} from '@react-navigation/native';
 import {EventInfoView} from '../EventInfoView';
-import OtherUserProfileReplicateBetComponent from '../OtherUserProfileReplicateBetComponent';
 import {dateTimeConvert} from '../../constants/utils/Function';
 import BetsBottomView from '../Events/BetsBottomView';
+import Video from 'react-native-fast-video';
+import OtherUserProfileReplicateBetComponent from '../OtherUserProfileReplicateBetComponent';
+import convertToProxyURL from 'react-native-video-cache';
 
 type Props = {
 	story: any;
@@ -33,222 +39,444 @@ type Props = {
 	userName: string;
 	storyClose: () => void;
 	friendLevel: number;
+	isNewStory: boolean;
+	onVideoLoaded?: (Object) => void;
+	pause: boolean;
+	isLoaded?: boolean;
+	next: () => void;
 };
+
+let isVideoLoaded = false;
+const bufferConfig = {
+	minBufferMs: 15000,
+	maxBufferMs: 50000,
+	bufferForPlaybackMs: 2500,
+	bufferForPlaybackAfterRebufferMs: 5000
+};
+
 const Story = (props: Props) => {
 	const {story, storyClose} = props;
+	const {type, shortVideos, betShortVideos} = story || {};
 
-	const [isShowAll, setIsShowAll] = useState(false);
+	const [heightScaled, setHeightScaled] = useState(screenHeight / 3);
 	const navigation = useNavigation();
+	const [loadedVideoData, setLoadedVideoData] = useState({});
+	// const [videoOrientation, setVideoOrientation] = useState('portrait');
 
 	return (
 		<View style={styles.container}>
-			<ImageBackground
-				// source={{
-				//   uri:
-				//     (story.match?.image ?? story?.bet?.custom_bet_image) +
-				//     '?' +
-				//     new Date().getMilliseconds(),
-				// }}
-				source={{
-					uri:
-						(story?.subcategories?.imageUrl ?? story?.categories?.imageUrl) +
-						'?' +
-						new Date().getMilliseconds()
-				}}
-				onLoadEnd={props.onImageLoaded}
-				style={styles.content}
-				resizeMode="cover"
-				// width={ScreenWidth}
-			>
-				<LinearGradient colors={['black', 'black']} style={styles.gradient} />
-				{story?.bet &&
-				Object.keys(story.bet).length > 0 &&
-				story?.sharedFrom !== 'Feed' ? (
-					<View style={styles.matchDetailRootContainer}>
-						<View style={styles.matchDetailInnerContainer}>
-							<View style={styles.betTitleContainer}>
-								<View style={styles.flexColumnContainer}>
-									<View style={styles.dateTimeView}>
-										{story?.match?.gmt_timestamp ? (
+			{type === 'image' ? (
+				<ImageBackground
+					// source={{
+					//   uri:
+					//     (story.match?.image ?? story?.bet?.custom_bet_image) +
+					//     '?' +
+					//     new Date().getMilliseconds(),
+					// }}
+					source={{
+						uri:
+							(story?.subcategories?.imageUrl ?? story?.categories?.imageUrl) +
+							'?' +
+							new Date().getMilliseconds()
+					}}
+					onLoadEnd={props.onImageLoaded}
+					style={styles.content}
+					resizeMode="cover"
+					// width={ScreenWidth}
+				>
+					<LinearGradient colors={['black', 'black']} style={styles.gradient} />
+					{story?.bet &&
+					Object.keys(story.bet).length > 0 &&
+					story?.sharedFrom !== 'Feed' ? (
+						<View style={styles.matchDetailRootContainer}>
+							<View style={styles.matchDetailInnerContainer}>
+								<View style={styles.betTitleContainer}>
+									<View style={styles.flexColumnContainer}>
+										<View style={styles.dateTimeView}>
+											{story?.match?.gmt_timestamp ? (
+												<Text style={styles.estimatedTimeText}>
+													{Strings.starts +
+														dateTimeConvert(
+															parseFloat(story?.match?.gmt_timestamp)
+														).toUpperCase()}
+												</Text>
+											) : null}
+
 											<Text style={styles.estimatedTimeText}>
-												{Strings.starts +
+												{Strings.ends +
 													dateTimeConvert(
-														parseFloat(story?.match?.gmt_timestamp)
+														parseFloat(
+															story?.match?.match_end_time
+																? story?.match?.match_end_time
+																: story?.bet?.betEndDate
+														)
 													).toUpperCase()}
 											</Text>
-										) : null}
-
-										<Text style={styles.estimatedTimeText}>
-											{Strings.ends +
-												dateTimeConvert(
-													parseFloat(
-														story?.match?.match_end_time
-															? story?.match?.match_end_time
-															: story?.bet?.betEndDate
-													)
-												).toUpperCase()}
-										</Text>
-									</View>
-									{story?.match?.localTeamName && (
-										<Text style={styles.betTitleText}>
-											{story?.match?.localTeamName} vs.{' '}
-											{story?.match?.visitorTeamName}
-										</Text>
-									)}
-									{story?.match?.matchName && (
-										<Text numberOfLines={1} style={styles.betTitleText}>
-											{story?.match?.matchName}
-										</Text>
-									)}
-									{story?.bet?.bet_type === 1 && (
-										<Text numberOfLines={1} style={styles.betTitleText}>
-											{story?.bet?.betQuestion}
-										</Text>
-									)}
-									{story?.match ? (
-										<Text numberOfLines={1} style={styles.betSubTitleText}>
-											{`${
-												story?.subcategories?.name ?? story?.categories?.name
-											} ${story?.match?.leagueName ? '-' : ''} ${
-												story?.match?.leagueName ?? ''
-											}`.toUpperCase()}
-										</Text>
-									) : (
-										<Text numberOfLines={1} style={styles.betSubTitleText}>
-											{`${
-												story?.subcategories?.name ??
-												story?.categories?.name ??
-												''
-											}`.toUpperCase()}
-										</Text>
-									)}
-									{/* <Text style={styles.betSubTitleText}>
+										</View>
+										{story?.match?.localTeamName && (
+											<Text style={styles.betTitleText}>
+												{story?.match?.localTeamName} vs.{' '}
+												{story?.match?.visitorTeamName}
+											</Text>
+										)}
+										{story?.match?.matchName && (
+											<Text numberOfLines={1} style={styles.betTitleText}>
+												{story?.match?.matchName}
+											</Text>
+										)}
+										{story?.bet?.bet_type === 1 && (
+											<Text numberOfLines={1} style={styles.betTitleText}>
+												{story?.bet?.betQuestion}
+											</Text>
+										)}
+										{story?.match ? (
+											<Text numberOfLines={1} style={styles.betSubTitleText}>
+												{`${
+													story?.subcategories?.name ?? story?.categories?.name
+												} ${story?.match?.leagueName ? '-' : ''} ${
+													story?.match?.leagueName ?? ''
+												}`.toUpperCase()}
+											</Text>
+										) : (
+											<Text numberOfLines={1} style={styles.betSubTitleText}>
+												{`${
+													story?.subcategories?.name ??
+													story?.categories?.name ??
+													''
+												}`.toUpperCase()}
+											</Text>
+										)}
+										{/* <Text style={styles.betSubTitleText}>
 										{story?.bet?.betQuestion ??
 											story?.bet?.mainmarkets?.market_name +
 												(story?.bet?.market_sub_name
 													? ' : ' + story?.bet?.market_sub_name
 													: '')}
 									</Text> */}
-								</View>
-								{/* {story?.bet?.user_id !== userInfo?.user?._id &&
-									story?.hasOwnProperty('beTtaker') === false && (
-										<TouchableOpacity
-											onPress={() => {
-												storyClose();
-												console.log('story??????', JSON.stringify(story));
-												navigation.navigate(
-													ScreenNames.ReplicateBetCreatScreen,
-													{
-														eventBetData: {
-															...story,
-															...story.bet,
-															...{
-																matches: story.match,
-																betQuestion: story.bet.betQuestion,
-																betOptionOne: story.bet.betOptionOne,
-																betOptionTwo: story.bet.betOptionTwo,
-																bet_type: story.bet.bet_type,
-																bet_opposite_side_option:
-																	story.bet.bet_opposite_side_option,
-																bettypes: story.match?.betType,
-																mainmarkets: story.bet?.mainmarkets,
-																market_id: story.bet?.market_id,
-																bet_id: story.bet?.bet_id,
-																market_sub_name: story.bet?.market_sub_name
+									</View>
+									{/* {story?.bet?.user_id !== userInfo?.user?._id &&
+										story?.hasOwnProperty('beTtaker') === false && (
+											<TouchableOpacity
+												onPress={() => {
+													storyClose();
+													console.log('story??????', JSON.stringify(story));
+													navigation.navigate(
+														ScreenNames.ReplicateBetCreatScreen,
+														{
+															eventBetData: {
+																...story,
+																...story.bet,
+																...{
+																	matches: story.match,
+																	betQuestion: story.bet.betQuestion,
+																	betOptionOne: story.bet.betOptionOne,
+																	betOptionTwo: story.bet.betOptionTwo,
+																	bet_type: story.bet.bet_type,
+																	bet_opposite_side_option:
+																		story.bet.bet_opposite_side_option,
+																	bettypes: story.match?.betType,
+																	mainmarkets: story.bet?.mainmarkets,
+																	market_id: story.bet?.market_id,
+																	bet_id: story.bet?.bet_id,
+																	market_sub_name: story.bet?.market_sub_name
+																}
 															}
+															// selectedBetType: feedInfo.betType,
 														}
-														// selectedBetType: feedInfo.betType,
+													);
+												}}>
+												<FastImage
+													source={icons.plusGradient}
+													style={styles.plusIcon}
+												/>
+											</TouchableOpacity>
+										)} */}
+								</View>
+
+								{/* <View style={styles.betUserContainer}>
+									<View style={{flexDirection: 'row', alignItems: 'center'}}>
+										<View>
+											<View>
+												<FastImage
+													source={{uri: friendProfile}}
+													style={styles.userProfile}
+												/>
+												<FastImage
+													source={getLevelRank(friendLevel)?.image}
+													style={styles.userProfileBadge}
+												/>
+											</View>
+										</View>
+										<Text style={styles.betUserText}>
+											{story?.bet?.user_id === userInfo?.user?._id
+												? 'You'
+												: userName}{' '}
+											picked{' '}
+											{story?.bet?.bet_creator_side_option ??
+												story?.bet?.local_team_name}{' '}
+											@odds {story?.bet?.odds}
+										</Text>
+									</View>
+									{story?.bet?.user_id !== userInfo?.user?._id &&
+										story?.hasOwnProperty('betTaker') === false && (
+											<DynamicButtonGradient
+												//gradientViewStyle={styles.gradientViewStyle}
+												onPress={() => {
+													storyClose();
+													//                   setQuestion(eventBetData?.betQuestion);
+													// setOptions1(eventBetData?.betOptionOne);
+													// setOptions2(eventBetData?.betOptionTwo);
+													console.log('story?.bet??>>>>>>', story);
+													navigation.navigate(ScreenNames.JoinBetCreateScreen, {
+														betId: story.bet?._id
+													});
+													// props.onTabChange(index);
+													// setSelectedItemIndex(index);
+												}}
+												colorArray={defaultTheme.primaryGradientColor}
+												angle={gradientColorAngle}
+												set2Text={true}
+												buttonTextcolor={colors.white}
+												style={{maxWidth: horizontalScale(130)}}
+												// buttonText2={'0.00004 Matic'}
+												// buttonText={'Pick No'}
+												// buttonText2={`${
+												//   (
+												//     parseFloat(story?.bet?.bet_amount) *
+												//       parseFloat(story?.bet?.odds) -
+												//     parseFloat(story?.bet?.bet_amount)
+												//   ).toFixed(decimalValue) + ''
+												// } ${story?.bet?.tokenType?.name}`}
+												buttonText2={`${
+													parseFloat(story?.bet?.bet_opposite_amount).toFixed(decimalValue) +
+													''
+												} ${story?.bet?.tokenType?.name}`}
+												buttonText={`pick ${
+													story?.bet?.bet_opposite_side_option ??
+													story?.bet?.opposite_team_name
+												}`.toUpperCase()}
+												textType="none"
+											/>
+										)}
+								</View> */}
+
+								{/* <OtherUserProfileReplicateBetComponent
+									itemData={{
+										...story,
+										...story?.bet,
+										...story?.bet?.childBets.unshift(story?.bet)
+									}}
+									isHideReplicateBet={false}
+									isOnlyHideBetTitle={story?.bet?.bet_type === 1}
+									handleMenuPress={() => {}}
+									handleBetMakerUserPicked={() => {
+										storyClose();
+										navigation.navigate(ScreenNames.OtherUserProfileScreen, {
+											userId: story?.bet?.user_id
+										});
+									}}
+									handleBetTackerPicked={() => {
+										storyClose();
+										navigation.navigate(ScreenNames.JoinBetCreateScreen, {
+											betId: story.bet?._id
+										});
+									}}
+									handleAlreadyBetTackerUserPicked={() => {
+										storyClose();
+										navigation.navigate(ScreenNames.OtherUserProfileScreen, {
+											userId: story?.betTaker?.takerDetails?._id
+										});
+									}}
+									handleReplicateBet={() => {
+										storyClose();
+										navigation.navigate(ScreenNames.ReplicateBetCreatScreen, {
+											eventBetData: {
+												...story,
+												...story.bet,
+												...{
+													matches: story.match,
+													betQuestion: story.bet.betQuestion,
+													betOptionOne: story.bet.betOptionOne,
+													betOptionTwo: story.bet.betOptionTwo,
+													bet_type: story.bet.bet_type,
+													bet_opposite_side_option:
+														story.bet.bet_opposite_side_option,
+													bettypes: story.match?.betType,
+													mainmarkets: story.bet?.mainmarkets,
+													market_id: story.bet?.market_id,
+													bet_id: story.bet?.bet_id,
+													market_sub_name: story.bet?.market_sub_name
+												}
+											}
+										});
+									}}
+								/> */}
+								<BetsBottomView
+									// addRecent={true}
+									betInfo={[
+										{bets: [story?.bet, ...story?.bet?.childBets].slice(0, 2)}
+									]}
+									selectedIndex={1}
+									storyClose={() => storyClose()}
+									onNextPageLoaded={() => {
+										// if (
+										// 	totalDiscoverSearchBets !== discoverSearchBetsData?.length
+										// ) {
+										// 	pageBets = pageBets + 1;
+										// 	getDiscoverBetsData();
+										// }
+									}}
+									isMenuHide={true}
+									style={{paddingBottom: 0}}
+								/>
+								{[story?.bet, ...story?.bet?.childBets].length > 2 && (
+									<TouchableOpacity
+										onPress={() => {
+											storyClose();
+											if (story?.match) {
+												navigation.navigate(ScreenNames.EventDetailsScreen, {
+													title: Strings.feed,
+													matchId: story?.match?._id
+												});
+											} else {
+												navigation.navigate(
+													ScreenNames.CustomBetDetailsScreen,
+													{
+														title: Strings.feed,
+														betId: story?.bet?.bet_id
 													}
 												);
-											}}>
-											<ExpoFastImage
-												source={icons.plusGradient}
-												style={styles.plusIcon}
-											/>
-										</TouchableOpacity>
-									)} */}
+											}
+										}}>
+										<Text style={styles.btnShowAllStyle}>
+											{Strings.str_show_all}
+										</Text>
+									</TouchableOpacity>
+								)}
 							</View>
-
-							{/* <View style={styles.betUserContainer}>
-								<View style={{flexDirection: 'row', alignItems: 'center'}}>
-									<View>
-										<View>
-											<ExpoFastImage
-												source={{uri: friendProfile}}
-												style={styles.userProfile}
-											/>
-											<ExpoFastImage
-												source={getLevelRank(friendLevel)?.image}
-												style={styles.userProfileBadge}
-											/>
-										</View>
-									</View>
-									<Text style={styles.betUserText}>
-										{story?.bet?.user_id === userInfo?.user?._id
-											? 'You'
-											: userName}{' '}
-										picked{' '}
-										{story?.bet?.bet_creator_side_option ??
-											story?.bet?.local_team_name}{' '}
-										@odds {story?.bet?.odds}
+						</View>
+					) : (
+						<TouchableOpacity
+							style={{marginHorizontal: horizontalScale(20)}}
+							activeOpacity={1}
+							onPress={() => {
+								//console.log('story', story);
+								storyClose();
+								navigation.navigate(ScreenNames.EventDetailsScreen, {
+									title: Strings.feed,
+									matchId: story?.match?._id,
+									feedObject: {
+										...story.match,
+										subcategories: story.subcategories
+									},
+									betCreationType: 1,
+									selectedBetType: story.match.betType
+								});
+							}}>
+							<EventInfoView
+								item={{
+									...(story.match ?? story.bet),
+									dataType: story?.bet?.bet_type === 1 ? 'customBet' : '',
+									subcategories: story.subcategories ?? story.categories
+								}}
+								props={{
+									hideBottomView: true,
+									moreMenuOptionHidden: true,
+									disable: true
+								}}
+								isScreenFocused={true}
+							/>
+							{/* <ImageBackground
+								source={{uri: story.match?.image}}
+								style={styles.matchDetailRootContainer}>
+								<LinearGradient
+									colors={['black', 'black']}
+									style={styles.gradient}
+								/>
+								<View style={styles.matchDetailInnerContainer}>
+									<Text style={styles.estimatedTimeText}>
+										{dateTimeConvert(
+											parseFloat(story.match?.gmt_timestamp)
+										).toUpperCase()}
 									</Text>
+	
+									<View style={{marginTop: verticalScale(8)}}>
+										<Text style={styles.titleText}>
+											{story.match?.localTeamName} vs.{' '}
+											{story.match?.visitorTeamName}
+										</Text>
+										<Text style={styles.subTitleText}>
+											{`${story.subcategories?.name} - ${story.match?.leagueName}`.toUpperCase()}
+										</Text>
+									</View>
+	
+									<View style={{flexDirection: 'row'}}>
+										{story?.match?.tags?.includes(Strings.HOT.toLowerCase()) && (
+											<TagView
+												viewStyle={{marginRight: horizontalScale(8)}}
+												backGroundColor={colors.purple}
+												text={Strings.HOT}
+											/>
+										)}
+										{story?.match?.tags?.includes(
+											Strings.FRIENDS.toLowerCase()
+										) && (
+											<TagView
+												viewStyle={{marginRight: horizontalScale(8)}}
+												fontColor={colors.black}
+												backGroundColor={colors.yellow}
+												text={Strings.FRIENDS}
+											/>
+										)}
+										{story?.match?.tags?.includes('last minute') && (
+											<TagView
+												backGroundColor={colors.redTag}
+												text={Strings.LAST_MINUTE}
+												withLeftDotView={false}
+												tagLeftImagePath={icons.timer}
+											/>
+										)}
+									</View>
 								</View>
-								{story?.bet?.user_id !== userInfo?.user?._id &&
-									story?.hasOwnProperty('betTaker') === false && (
-										<DynamicButtonGradient
-											//gradientViewStyle={styles.gradientViewStyle}
-											onPress={() => {
-												storyClose();
-												//                   setQuestion(eventBetData?.betQuestion);
-												// setOptions1(eventBetData?.betOptionOne);
-												// setOptions2(eventBetData?.betOptionTwo);
-												console.log('story?.bet??>>>>>>', story);
-												navigation.navigate(ScreenNames.JoinBetCreateScreen, {
-													betId: story.bet?._id
-												});
-												// props.onTabChange(index);
-												// setSelectedItemIndex(index);
-											}}
-											colorArray={defaultTheme.primaryGradientColor}
-											angle={gradientColorAngle}
-											set2Text={true}
-											buttonTextcolor={colors.white}
-											style={{maxWidth: horizontalScale(130)}}
-											// buttonText2={'0.00004 Matic'}
-											// buttonText={'Pick No'}
-											// buttonText2={`${
-											//   (
-											//     parseFloat(story?.bet?.bet_amount) *
-											//       parseFloat(story?.bet?.odds) -
-											//     parseFloat(story?.bet?.bet_amount)
-											//   ).toFixed(decimalValue) + ''
-											// } ${story?.bet?.tokenType?.name}`}
-											buttonText2={`${
-												parseFloat(story?.bet?.bet_opposite_amount).toFixed(decimalValue) +
-												''
-											} ${story?.bet?.tokenType?.name}`}
-											buttonText={`pick ${
-												story?.bet?.bet_opposite_side_option ??
-												story?.bet?.opposite_team_name
-											}`.toUpperCase()}
-											textType="none"
-										/>
-									)}
-							</View> */}
-
-							{/* <OtherUserProfileReplicateBetComponent
+							</ImageBackground> */}
+						</TouchableOpacity>
+					)}
+				</ImageBackground>
+			) : (
+				// <DiscoverVideoPlayer
+				// 	itemData={{
+				// 		...story,
+				// 		...shortVideos,
+				// 		...betShortVideos,
+				// 		users: story?.bet?.users
+				// 	}}
+				// 	visibleParentIndex={0}
+				// 	isFocus={true}
+				// 	parentIndex={0}
+				// 	onVideoLoaded={props.onVideoLoaded}
+				// 	pause={props.pause}
+				// 	isNewStory={props.isNewStory}
+				// 	isLoadVideoFromStory={true}
+				// />
+				<>
+					<View style={styles.overlay}>
+						{story?.bet && Object.keys(story?.bet).length !== 0 && (
+							<OtherUserProfileReplicateBetComponent
 								itemData={{
 									...story,
 									...story?.bet,
-									...story?.bet?.childBets.unshift(story?.bet)
+									betTaker: story?.betTaker,
+									users: story?.bet?.users
+									// ...story?.bet?.childBets.unshift(story?.bet)
 								}}
-								isHideReplicateBet={false}
-								isOnlyHideBetTitle={story?.bet?.bet_type === 1}
+								isHideReplicateBet={true}
+								isOnlyHideBetTitle={false}
+								isFromDiscoverVideo={true}
 								handleMenuPress={() => {}}
 								handleBetMakerUserPicked={() => {
 									storyClose();
 									navigation.navigate(ScreenNames.OtherUserProfileScreen, {
-										userId: story?.bet?.user_id
+										userId: story?.users?._id
 									});
 								}}
 								handleBetTackerPicked={() => {
@@ -286,135 +514,65 @@ const Story = (props: Props) => {
 										}
 									});
 								}}
-							/> */}
-							<BetsBottomView
-								// addRecent={true}
-								betInfo={[
-									{bets: [story?.bet, ...story?.bet?.childBets].slice(0, 2)}
-								]}
-								selectedIndex={1}
-								storyClose={() => storyClose()}
-								onNextPageLoaded={() => {
-									// if (
-									// 	totalDiscoverSearchBets !== discoverSearchBetsData?.length
-									// ) {
-									// 	pageBets = pageBets + 1;
-									// 	getDiscoverBetsData();
-									// }
-								}}
-								isMenuHide={true}
-								style={{paddingBottom: 0}}
 							/>
-							<TouchableOpacity
-								onPress={() => {
-									storyClose();
-									if (story?.match) {
-										navigation.navigate(ScreenNames.EventDetailsScreen, {
-											title: Strings.feed,
-											matchId: story?.match?._id
-										});
-									} else {
-										navigation.navigate(ScreenNames.CustomBetDetailsScreen, {
-											title: Strings.feed,
-											betId: story?.bet?.bet_id
-										});
-									}
-								}}>
-								<Text style={styles.btnShowAllStyle}>
-									{[story?.bet, ...story?.bet?.childBets].length > 2
-										? Strings.str_show_all
-										: ''}
-								</Text>
-							</TouchableOpacity>
-						</View>
+						)}
 					</View>
-				) : (
-					<TouchableOpacity
-						style={{marginHorizontal: horizontalScale(20)}}
-						activeOpacity={1}
-						onPress={() => {
-							//console.log('story', story);
-							storyClose();
-							navigation.navigate(ScreenNames.EventDetailsScreen, {
-								title: Strings.feed,
-								matchId: story?.match?._id,
-								feedObject: {
-									...story.match,
-									subcategories: story.subcategories
-								},
-								betCreationType: 1,
-								selectedBetType: story.match.betType
-							});
-						}}>
-						<EventInfoView
-							item={{
-								...(story.match ?? story.bet),
-								dataType: story?.bet?.bet_type === 1 ? 'customBet' : '',
-								subcategories: story.subcategories ?? story.categories
-							}}
-							props={{
-								hideBottomView: true,
-								moreMenuOptionHidden: true,
-								disable: true
-							}}
-							isScreenFocused={true}
-						/>
-						{/* <ImageBackground
-							source={{uri: story.match?.image}}
-							style={styles.matchDetailRootContainer}>
-							<LinearGradient
-								colors={['black', 'black']}
-								style={styles.gradient}
-							/>
-							<View style={styles.matchDetailInnerContainer}>
-								<Text style={styles.estimatedTimeText}>
-									{dateTimeConvert(
-										parseFloat(story.match?.gmt_timestamp)
-									).toUpperCase()}
-								</Text>
 
-								<View style={{marginTop: verticalScale(8)}}>
-									<Text style={styles.titleText}>
-										{story.match?.localTeamName} vs.{' '}
-										{story.match?.visitorTeamName}
-									</Text>
-									<Text style={styles.subTitleText}>
-										{`${story.subcategories?.name} - ${story.match?.leagueName}`.toUpperCase()}
-									</Text>
-								</View>
-
-								<View style={{flexDirection: 'row'}}>
-									{story?.match?.tags?.includes(Strings.HOT.toLowerCase()) && (
-										<TagView
-											viewStyle={{marginRight: horizontalScale(8)}}
-											backGroundColor={colors.purple}
-											text={Strings.HOT}
-										/>
-									)}
-									{story?.match?.tags?.includes(
-										Strings.FRIENDS.toLowerCase()
-									) && (
-										<TagView
-											viewStyle={{marginRight: horizontalScale(8)}}
-											fontColor={colors.black}
-											backGroundColor={colors.yellow}
-											text={Strings.FRIENDS}
-										/>
-									)}
-									{story?.match?.tags?.includes('last minute') && (
-										<TagView
-											backGroundColor={colors.redTag}
-											text={Strings.LAST_MINUTE}
-											withLeftDotView={false}
-											tagLeftImagePath={icons.timer}
-										/>
-									)}
-								</View>
-							</View>
-						</ImageBackground> */}
-					</TouchableOpacity>
-				)}
-			</ImageBackground>
+					<Video
+						style={[styles.contentVideo, {height: heightScaled}]}
+						source={{
+							uri: convertToProxyURL(
+								shortVideos?.video_url ?? betShortVideos?.video_url
+							)
+						}}
+						resizeMode={'stretch'}
+						paused={props.pause || props.isNewStory}
+						poster={
+							shortVideos?.video_thumbnail ?? betShortVideos?.video_thumbnail
+						}
+						posterResizeMode={'stretch'}
+						bufferConfig={bufferConfig}
+						hideShutterView={true}
+						onLoadStart={() => {
+							isVideoLoaded = false;
+							console.log('onLoadStart');
+						}}
+						onLoad={item => {
+							console.log('onLoad ::');
+							const {width, height, orientation} = item.naturalSize;
+							const heightScaled = height * (SCREEN_WIDTH / width);
+							// let isPortrait = height > width;
+							// setIsPotrait(isPortrait);
+							setHeightScaled(heightScaled);
+							setLoadedVideoData(item); // props.onVideoLoaded(item);
+							// setVideoOrientation(orientation);
+						}}
+						onProgress={progress => {
+							// console.log('onProgress ::', progress);
+							if (isVideoLoaded) {
+								return;
+							} else {
+								const currentTime = progress.currentTime.toFixed(7);
+								if (parseInt(currentTime) > 0) {
+									isVideoLoaded = true;
+									props.onVideoLoaded(loadedVideoData);
+								}
+							}
+						}}
+						onError={(event: any) => {
+							console.log('Video Error ::', event);
+							props.next();
+						}}
+						onEnd={() => {
+							console.log('onEnd ::');
+							isVideoLoaded = false;
+						}}
+						playInBackground={false}
+						playWhenInactive={false}
+						muted={false}
+					/>
+				</>
+			)}
 		</View>
 	);
 };
@@ -436,8 +594,13 @@ const styles = StyleSheet.create({
 		height: '100%',
 		justifyContent: 'center'
 	},
+	contentVideo: {
+		width: SCREEN_WIDTH + 20,
+		backgroundColor: colors.black,
+		height: screenHeight / 3
+	},
 	matchDetailRootContainer: {
-		backgroundColor: '#000',
+		backgroundColor: colors.black,
 		marginHorizontal: horizontalScale(20),
 		borderRadius: moderateScale(15),
 		overflow: 'hidden'
@@ -539,6 +702,13 @@ const styles = StyleSheet.create({
 		fontSize: 10,
 		marginLeft: horizontalScale(12),
 		marginVertical: verticalScale(4)
+	},
+	overlay: {
+		position: 'absolute',
+		bottom: verticalScale(100),
+		left: horizontalScale(8),
+		right: horizontalScale(8),
+		zIndex: 1000
 	}
 });
 

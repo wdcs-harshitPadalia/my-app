@@ -176,6 +176,7 @@ const icons = {
 	camera_shutter: require('../icon/camera_shutter.png'),
 	flash_on: require('../icon/flash_on.png'),
 	camera_record: require('../icon/camera_record.png'),
-	delete_white: require('../icon/ic_delete.png')
+	delete_white: require('../icon/ic_delete.png'),
+	video_thumb: require('../icon/video_thumb.png')
 };
 export default icons;

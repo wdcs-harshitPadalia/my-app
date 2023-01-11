@@ -18,6 +18,7 @@ import {persistStore} from 'redux-persist';
 import store from './src/redux/store';
 import Routes from './src/navigation/routes';
 import {ThemeProvider} from './src/theme/createTheme';
+import * as serviceWorkerRegistration from "./src/serviceWorkerRegistration";
 import {
 	RenderQrcodeModalProps,
 	useWalletConnect,
@@ -45,6 +46,7 @@ import {AppSchema} from './src/constants/api';
 import {initSmartLookSession} from './src/components/SmartLookSDKHelper';
 import {useCallback, useEffect} from 'react';
 import {useFonts} from 'expo-font';
+import { Toaster } from 'react-hot-toast';
 
 import './global';
 // export default () => {
@@ -97,9 +99,10 @@ const App = () => {
 
 	// }, []);
 	return (
-		<View style={{backgroundColor: 'red', flex: 1}} onLayout={onLayoutRootView}>
+		<View style={styles.container} onLayout={onLayoutRootView}>
 			<PersistGate loading={null} persistor={persistor}>
 				<Provider store={store}>
+					<Toaster />
 					<Routes />
 				</Provider>
 			</PersistGate>
@@ -152,11 +155,10 @@ export default withWalletConnect(
 		  }
 );
 
+serviceWorkerRegistration.register();
+
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
-		backgroundColor: '#fff',
-		alignItems: 'center',
-		justifyContent: 'center'
+		flex: 1
 	}
 });

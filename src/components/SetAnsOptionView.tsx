@@ -94,7 +94,6 @@ const styles = StyleSheet.create({
 
   marginInput: {
     marginBottom: verticalScale(20),
-    width: width * 0.7,
   },
 });
 

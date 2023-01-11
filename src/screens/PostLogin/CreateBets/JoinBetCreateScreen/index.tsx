@@ -50,6 +50,7 @@ import {decimalValue, nullAddress} from '../../../../constants/api';
 import {gradientColorAngle} from '../../../../theme/metrics';
 import LottieView from 'lottie-react-native';
 import {updateDiscoverRefreshOnFocus} from '../../../../redux/reducerSlices/dashboard';
+import Lottie from 'lottie-react';
 
 const JoinBetCreateScreen: React.FC<any> = () => {
 	const navigation = useNavigation();
@@ -338,7 +339,9 @@ const JoinBetCreateScreen: React.FC<any> = () => {
 			// _selectedBetTackerOption:
 			//   eventBetData?.bet_opposite_side_option_index + 1,
 			_selectedBetTackerOption: eventBetData?.bet_opposite_side_option_index,
-			_tokenId: customeSelectTokenId
+			_tokenId: customeSelectTokenId,
+			_betEndTime:
+				(selectedGame?.match_end_time ?? eventBetData?.betEndDate) / 1000
 		});
 	};
 
@@ -574,7 +577,10 @@ const JoinBetCreateScreen: React.FC<any> = () => {
 								_betContractId: eventBetData?.bet_id,
 								_selectedBetTackerOption:
 									eventBetData?.bet_opposite_side_option_index,
-								_tokenId: customeSelectTokenId
+								_tokenId: customeSelectTokenId,
+								_betEndTime:
+									(selectedGame?.match_end_time ?? eventBetData?.betEndDate) /
+									1000
 							});
 						}
 					} else {
@@ -714,7 +720,18 @@ const JoinBetCreateScreen: React.FC<any> = () => {
 							)}
 						</Text>
 
-						{Platform.OS !== 'web' && (
+						{Platform.OS === 'web' ? (
+							<Lottie
+								style={{
+									height: 300,
+									width: 300,
+									alignSelf: 'center',
+									position: 'absolute'
+								}}
+								animationData={require('../../../../assets/animations/confetti_day.json')}
+								loop={false}
+							/>
+						) : (
 							<LottieView
 								style={{
 									height: 300,

@@ -62,6 +62,7 @@ import BetsOptionWithAmountView from '../../../../components/BetsOptionWithAmoun
 import {decimalValue} from '../../../../constants/api';
 import LottieView from 'lottie-react-native';
 import {updateDiscoverRefreshOnFocus} from '../../../../redux/reducerSlices/dashboard';
+import Lottie from 'lottie-react';
 
 const ReplicateBetCreatScreen: React.FC<any> = () => {
 	const navigation = useNavigation();
@@ -1329,17 +1330,30 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 								userInfo?.user?.displayName || userInfo?.user?.userName
 							)}
 						</Text>
-						<LottieView
-							style={{
-								height: 300,
-								width: 300,
-								alignSelf: 'center',
-								position: 'absolute'
-							}}
-							source={require('../../../../assets/animations/confetti_day.json')}
-							autoPlay
-							loop={false}
-						/>
+						{Platform.OS === 'web' ? (
+							<Lottie
+								style={{
+									height: 300,
+									width: 300,
+									alignSelf: 'center',
+									position: 'absolute'
+								}}
+								animationData={require('../../../../assets/animations/confetti_day.json')}
+								loop={false}
+							/>
+						) : (
+							<LottieView
+								style={{
+									height: 300,
+									width: 300,
+									alignSelf: 'center',
+									position: 'absolute'
+								}}
+								source={require('../../../../assets/animations/confetti_day.json')}
+								autoPlay
+								loop={false}
+							/>
+						)}
 					</View>
 				);
 		}

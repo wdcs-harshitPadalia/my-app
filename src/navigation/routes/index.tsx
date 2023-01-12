@@ -127,11 +127,12 @@ const options = {
 };
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
+const cardStyleType = Platform.OS === 'web' ? CardStyleInterpolators.forNoAnimation : CardStyleInterpolators.forHorizontalIOS
 
 export const BeforeLoginRoutesRoot = () => (
 	<Stack.Navigator
 		screenOptions={{
-			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+			cardStyleInterpolator: cardStyleType,
 			cardStyle: styles.cardContainerStyle
 		}}
 		initialRouteName={ScreenNames.Login}>
@@ -146,7 +147,7 @@ export const BeforeLoginRoutesRoot = () => (
 export const WalletTabRoutes = (_props: any) => (
 	<Stack.Navigator
 		screenOptions={{
-			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+			cardStyleInterpolator: cardStyleType,
 			cardStyle: styles.cardContainerStyle
 		}}
 		initialRouteName={ScreenNames.WalletScreen}>
@@ -194,7 +195,7 @@ export const WalletTabRoutes = (_props: any) => (
 export const LiveTabRoutes = (_props: any) => (
 	<Stack.Navigator
 		screenOptions={{
-			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+			cardStyleInterpolator: cardStyleType,
 			cardStyle: styles.cardContainerStyle
 		}}
 		initialRouteName={ScreenNames.LiveStreamingScreen}>
@@ -319,7 +320,7 @@ export const BottomTabs = () => (
 const FeedsRouter = () => (
 	<Stack.Navigator
 		screenOptions={{
-			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+			cardStyleInterpolator: cardStyleType,
 			gestureResponseDistance: 100,
 			cardStyle: styles.cardContainerStyle
 		}}>
@@ -534,7 +535,7 @@ const FeedsRouter = () => (
 const DiscoverRouter = () => (
 	<Stack.Navigator
 		screenOptions={{
-			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+			cardStyleInterpolator: cardStyleType,
 			cardStyle: styles.cardContainerStyle
 		}}>
 		<Stack.Screen
@@ -657,7 +658,7 @@ const DiscoverRouter = () => (
 const ProfileRouter = () => (
 	<Stack.Navigator
 		screenOptions={{
-			cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+			cardStyleInterpolator: cardStyleType,
 			cardStyle: styles.cardContainerStyle
 		}}
 		initialRouteName={ScreenNames.ProfileScreen}>
@@ -861,7 +862,7 @@ const RootRouter = () => {
 		return (
 			<Stack.Navigator
 				screenOptions={{
-					cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+					cardStyleInterpolator: cardStyleType,
 					cardStyle: styles.cardContainerStyle
 				}}>
 				{globalThis.firstTime && (
@@ -890,7 +891,7 @@ const RootRouter = () => {
 		return (
 			<Stack.Navigator
 				screenOptions={{
-					cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+					cardStyleInterpolator: cardStyleType,
 					cardStyle: styles.cardContainerStyle
 				}}>
 				{global.firstTime && (

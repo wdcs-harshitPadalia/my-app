@@ -143,6 +143,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   input: {
+    outlineStyle: 'none',
     fontSize: moderateScale(12),
     flex: 1,
     marginHorizontal: horizontalScale(8),

@@ -185,6 +185,7 @@ const styles = StyleSheet.create({
 		// backgroundColor: 'red',
 	},
 	inputStyle: {
+		outlineStyle: 'none',
 		// flex: 1,
 		width: '100%',
 		color: colors.white,

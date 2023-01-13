@@ -6,7 +6,8 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@amityco/react-native-formdata-polyfill": "^1.1.5",
@@ -73,7 +74,7 @@
     "moment": "^2.29.1",
     "node-libs-browser": "^2.2.1",
     "npm": "^8.12.1",
-    "patch-package": "^6.4.7",
+    "patch-package": "^6.5.1",
     "path-browserify": "^0.0.0",
     "postinstall-postinstall": "^2.1.0",
     "process": "^0.11.10",

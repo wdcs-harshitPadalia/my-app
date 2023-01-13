@@ -1,0 +1,19 @@
+diff --git a/node_modules/react-native-3dcube-navigation/index.js b/node_modules/react-native-3dcube-navigation/index.js
+index 716d941..4173340 100755
+--- a/node_modules/react-native-3dcube-navigation/index.js
++++ b/node_modules/react-native-3dcube-navigation/index.js
+@@ -1,7 +1,12 @@
+ import CubeNavigationHorizontal from './src/Horizontal.js'
+ import CubeNavigationVertical from './src/Vertical.js'
+ 
+-module.exports = {
++// module.exports = {
++// 	CubeNavigationHorizontal,
++// 	CubeNavigationVertical
++// }
++
++export {
+ 	CubeNavigationHorizontal,
+ 	CubeNavigationVertical
+ }
+\ No newline at end of file

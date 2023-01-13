@@ -79,6 +79,7 @@ import HyperLink from 'react-native-hyperlink';
 import * as ImagePicker from 'expo-image-picker';
 import FullScreenImageComponent from './FullScreenImageComponent';
 import {date} from 'yup';
+import ScreenNames from '../navigation/screenNames';
 
 const {v4: uuidv4} = require('uuid');
 interface Props extends TextInputProps {
@@ -137,7 +138,6 @@ const ChatViewComponent: React.FC<Props> = props => {
 
 	const dispatch = useDispatch();
 	const myRef = React.useRef();
-
 
 	const user = {
 		id: userInfo.user?._id,
@@ -401,7 +401,7 @@ const ChatViewComponent: React.FC<Props> = props => {
 		// setMessages([message, ...messages]);
 	};
 
-	const sendImageMessage = (imageFile) => {
+	const sendImageMessage = imageFile => {
 		let formData = new FormData();
 		//data.append('files', `data:image/*;base64,${response.base64}`);
 		formData.append('files', imageFile);
@@ -437,16 +437,13 @@ const ChatViewComponent: React.FC<Props> = props => {
 				);
 			}
 		});
-
-	}
+	};
 	const changeHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (!event.target.files) {
 			return;
 		}
-		sendImageMessage(event.target.files[0])
-
+		sendImageMessage(event.target.files[0]);
 	};
-
 
 	const handleImageSelection = async () => {
 		if (Platform.OS === 'web') {
@@ -464,14 +461,13 @@ const ChatViewComponent: React.FC<Props> = props => {
 				({assets}) => {
 					console.log('response???', assets);
 					const response = assets?.[0];
-	
+
 					if (response) {
-						sendImageMessage(response)
+						sendImageMessage(response);
 					}
 				}
 			);
 		}
-	
 	};
 	const handleSendPress = async (message: MessageType.PartialText) => {
 		if (chatType === 'api') {
@@ -614,7 +610,6 @@ const ChatViewComponent: React.FC<Props> = props => {
 		return false;
 	};
 
-
 	return (
 		<View
 			style={[
@@ -703,47 +698,77 @@ const ChatViewComponent: React.FC<Props> = props => {
 						</View>
 					)}
 					renderTextMessage={message => (
-						<View style={{padding: 4}}>
-							{userInfo?.user?._id &&
-								message.author.id !== userInfo?.user?._id &&
-								!friend_id && (
-									<Text
+						<>
+							{message?.isVideoType ? (
+								<TouchableOpacity
+									onPress={() => {
+										console.log('MESSAGE::::', message);
+										navigation.navigate(ScreenNames.BottomTabScreen, {
+											screen: ScreenNames.DiscoverRouter,
+											params: {
+												screen: ScreenNames.DiscoverScreen,
+												params: {
+													video_id: message?.video_id
+												}
+											}
+										});
+									}}>
+									<View style={styles.videoContainer}>
+										<ImageIndicator
+											style={styles.imageStyle}
+											source={{uri: message.video_thumbnail}}>
+											<ExpoFastImage
+												source={icons.playIcon}
+												style={styles.playImageStyle}
+											/>
+										</ImageIndicator>
+										<Text style={styles.messageTimeStyle}>
+											{moment(message.createdAt).format('hh:mm A')}
+										</Text>
+									</View>
+								</TouchableOpacity>
+							) : (
+								<View style={{padding: 4}}>
+									{userInfo?.user?._id &&
+										message.author.id !== userInfo?.user?._id &&
+										!friend_id && (
+											<Text
+												style={{
+													//marginTop: 2,
+													//marginBottom: -12,
+													marginLeft: 4,
+													fontSize: 12,
+													fontWeight: '500',
+													lineHeight: 24,
+													color: colors.white,
+													fontFamily: fonts.type.Inter_Regular
+												}}>
+												{'@' + message.author.firstName}
+											</Text>
+										)}
+									<LinearGradient
+										colors={
+											message.author.id === userInfo?.user?._id
+												? defaultTheme.primaryGradientColor
+												: defaultTheme.ternaryGradientColor
+										}
+										useAngle={true}
 										style={{
-											//marginTop: 2,
-											//marginBottom: -12,
-											marginLeft: 4,
-											fontSize: 12,
-											fontWeight: '500',
-											lineHeight: 24,
-											color: colors.white,
+											paddingHorizontal: 16,
+											paddingVertical: 12,
+											borderRadius: 8,
 											fontFamily: fonts.type.Inter_Regular
-										}}>
-										{'@' + message.author.firstName}
-									</Text>
-								)}
-							<LinearGradient
-								colors={
-									message.author.id === userInfo?.user?._id
-										? defaultTheme.primaryGradientColor
-										: defaultTheme.ternaryGradientColor
-								}
-								useAngle={true}
-								style={{
-									paddingHorizontal: 16,
-									paddingVertical: 12,
-									borderRadius: 8,
-									fontFamily: fonts.type.Inter_Regular
-								}}
-								angle={gradientColorAngle}>
-								{/* {console.log(
+										}}
+										angle={gradientColorAngle}>
+										{/* {console.log(
                   "???message.text.split(' ')?.some(str => isValidUrl(str))",
                   message.text,
                   message.text.split(' ')?.some(str => isValidUrl(str)),
                 )} */}
-								{/* {message.text.split(' ')?.some(str => isValidUrl(str)) ? (
+										{/* {message.text.split(' ')?.some(str => isValidUrl(str)) ? (
                   <LinkPreview text={message.text} />
                 ) : ( */}
-								{/* <Text
+										{/* <Text
                   style={{
                     fontSize: 14,
                     fontWeight: '500',
@@ -753,25 +778,25 @@ const ChatViewComponent: React.FC<Props> = props => {
                   }}>
                   {message.text}
                 </Text> */}
-								<HyperLink
-									linkStyle={{
-										color: '#fff',
-										fontSize: 14,
-										fontFamily: fonts.type.Inter_Bold
-									}}
-									linkDefault={true}>
-									<Text
-										style={{
-											fontSize: 14,
-											color: '#fff',
-											fontFamily: fonts.type.Inter_Medium
-										}}>
-										{message.text}
-									</Text>
-								</HyperLink>
-								{/* )} */}
+										<HyperLink
+											linkStyle={{
+												color: '#fff',
+												fontSize: 14,
+												fontFamily: fonts.type.Inter_Bold
+											}}
+											linkDefault={true}>
+											<Text
+												style={{
+													fontSize: 14,
+													color: '#fff',
+													fontFamily: fonts.type.Inter_Medium
+												}}>
+												{message.text}
+											</Text>
+										</HyperLink>
+										{/* )} */}
 
-								{/* <Text
+										{/* <Text
                   style={{
                     fontSize: 14,
                     fontWeight: '500',
@@ -781,11 +806,13 @@ const ChatViewComponent: React.FC<Props> = props => {
                   }}>
                   {message.text}
                 </Text> */}
-							</LinearGradient>
-							<Text style={styles.messageTimeStyle}>
-								{moment(message.createdAt).format('hh:mm A')}
-							</Text>
-						</View>
+									</LinearGradient>
+									<Text style={styles.messageTimeStyle}>
+										{moment(message.createdAt).format('hh:mm A')}
+									</Text>
+								</View>
+							)}
+						</>
 					)}
 					textInputProps={{
 						placeholder: 'Type a message...',

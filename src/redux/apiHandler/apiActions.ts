@@ -897,10 +897,10 @@ export const getAllFaqQuestion = async (data: any) => {
 	});
 	return response;
 };
-export const getRecommendedBets = async (data: any) => {
+export const getExploreData = async (data: any) => {
 	const response = await useAxios({
 		method: Api.POST,
-		url: ApiBaseUrl + ApiConstants.getRecommendedBets,
+		url: ApiBaseUrl + ApiConstants.getExploreData,
 		data: data
 	});
 	return response;
@@ -936,6 +936,25 @@ export const getUserVideoList = async (data: any) => {
 	const response = await useAxios({
 		method: Api.POST,
 		url: ApiBaseUrl + ApiConstants.getUserVideos,
+		data: data
+	});
+	// console.log('RESPONSE::::', JSON.stringify(response));
+	return response;
+};
+
+export const markSeen = async (data: any) => {
+	const response = await useAxios({
+		method: Api.POST,
+		url: ApiBaseUrl + ApiConstants.markSeen,
+		data: data
+	});
+	return response;
+};
+
+export const getUserMessageList = async (data: any) => {
+	const response = await useAxios({
+		method: Api.POST,
+		url: ApiBaseUrl + ApiConstants.messageUser,
 		data: data
 	});
 	// console.log('RESPONSE::::', JSON.stringify(response));

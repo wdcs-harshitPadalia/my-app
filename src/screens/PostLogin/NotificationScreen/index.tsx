@@ -406,7 +406,7 @@ const NotificationScreen: React.FC<any> = (props) => {
               item.type === Strings.push_notification_types.event_Suggestion
             ) {
               if (item?.bettakerlists?.length > 0) {
-                if (item?.bet?.match_id !== "") {
+                if (item?.bet?.bet_type !== 1) {
                   navigation.navigate(ScreenNames.EventDetailsScreen, {
                     title: Strings.feed,
                     betCreationType: 1,

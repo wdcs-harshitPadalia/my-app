@@ -4,9 +4,12 @@ import ExpoFastImage from 'expo-fast-image';
 import {createImageProgress} from 'react-native-image-progress';
 import Web3 from 'web3';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {createThumbnail} from 'react-native-create-thumbnail';
 import * as Yup from 'yup';
 
+import {MAGIC_API_KEY} from '@env';
 import {createAsyncThunk} from '@reduxjs/toolkit';
+const appShareBaseLink = 'https://defibet.house/';
 
 import {magic} from '../../navigation/routes';
 import {Alert, Linking, Platform} from 'react-native';
@@ -14,6 +17,17 @@ import icons from '../../assets/icon';
 import ScreenNames from '../../navigation/screenNames';
 import Strings from '../strings';
 
+// import RNFetchBlob from 'rn-fetch-blob';
+import {getBundleId} from 'react-native-device-info';
+import {saveToCameraRoll} from '@react-native-community/cameraroll';
+
+const appSharePostFixURL = 'share/?shareapp=true&deeplinktype=share';
+const eventSharePostFixUrl =
+	'/?title=%title&matchId=%matchId&betCreationType=%betCreationType&id=%id&deeplinktype=match';
+const betSharePostFixURL =
+	'/?title=%title&betId=%betId&betCreationType=%betCreationType&id=%id&deeplinktype=bet';
+const joinSharePostFixUrl = '/?betId=%betId&id=%id&deeplinktype=bet';
+const videoSharePostFixUrl = '/?video_id=%id&deeplinktype=video';
 export const getInitialDate = () => {
 	const date1 = new Date();
 	const subtractYears = 18;
@@ -177,7 +191,9 @@ export const createJoinBetShareMessage = (userName, betQuestion, betId) => {
 
 export const createJoinBetShareUrl = betId => {
 	const shareUrlString =
-		AppSchema + ScreenNames.JoinBetCreateScreen + '?betId=' + betId;
+		appShareBaseLink +
+		ScreenNames.JoinBetCreateScreen +
+		joinSharePostFixUrl.replace('%betId', betId).replace('%id', betId);
 	return shareUrlString;
 };
 
@@ -219,7 +235,7 @@ export const createBetDetailsPreviewShareUrl = (
 		betCreationType;
 
 	const shareUrlString =
-		AppSchema +
+		ApiBaseUrl +
 		'bet/share/' +
 		id +
 		'?deeplinkurl=' +
@@ -417,26 +433,138 @@ export const getRoundDecimalValue = (value?: any) => {
 	return Math.round((tempValue + Number.EPSILON) * 10000) / 10000;
 };
 
-export const getProfileShareUrl = (userName: string) => {
-	const appLink = 'https://defibet.house/';
-	const currentTime = new Date();
-
-	return (
-		ApiBaseUrl +
-		`bet/share/nobet?deeplinkurl=${appLink}&username=${userName}&shareapp=true&time=${currentTime.getTime()}`
-	);
-};
-
-global.tutorialTimer = {};
-
-export const isValidDate = (date?: any) => {
-	return moment(date).toDate().toString() !== 'Invalid Date';
-};
-
 export const showErrorAlert = (errTitle = '', errMessage) => {
 	if (Platform.OS === 'web') {
 		alert(errTitle + '\n' + errMessage);
 	} else {
 		Alert.alert(errTitle, errMessage);
 	}
+}
+
+export const isValidDate = (date?: any) => {
+	return moment(date).toDate().toString() !== 'Invalid Date';
+}
+
+export const getProfileShareUrl = (userName: string) => {
+	return (
+		Strings.app_sharing_text.replace('%s', userName) +
+		appShareBaseLink +
+		appSharePostFixURL
+	);
 };
+
+export const getEventShareUrl = (
+	matchId,
+	matchEndTime,
+	title,
+	betCreationType
+) => {
+	return (
+		Strings.event_sharing_text +
+		Strings.ends +
+		' ' +
+		matchEndTime +
+		'\n\n' +
+		appShareBaseLink +
+		ScreenNames.EventDetailsScreen +
+		eventSharePostFixUrl
+			.replace('%title', title)
+			.replace('%matchId', matchId)
+			.replace('%betCreationType', betCreationType)
+			.replace('%id', matchId)
+	);
+};
+
+export const getBetShareUrl = (
+	userName,
+	betEndTime,
+	betId,
+	id,
+	title,
+	betCreationType
+) => {
+	return (
+		Strings.bet_sharing_text.replace('%s', userName) +
+		Strings.join_deadline +
+		' ' +
+		betEndTime +
+		'\n\n' +
+		appShareBaseLink +
+		ScreenNames.CustomBetDetailsScreen +
+		betSharePostFixURL
+			.replace('%title', title)
+			.replace('%betId', betId)
+			.replace('%betCreationType', betCreationType)
+			.replace('%id', id)
+	);
+};
+
+export const downloadVideo = (fileUrl: string) => {
+	// const {config} = RNFetchBlob;
+	// const {
+	// 	dirs: {DownloadDir, DocumentDir}
+	// } = RNFetchBlob.fs;
+	// const directoryPath = Platform.select({
+	// 	ios: DocumentDir,
+	// 	android: DownloadDir
+	// });
+
+	// const filePath =
+	// 	`${directoryPath}/${getBundleId()}/${'Video_' + new Date().getTime()}` +
+	// 	'.mp4';
+
+	// const fileExt = '.mp4';
+	// const configOptions = Platform.select({
+	// 	ios: {
+	// 		fileCache: true,
+	// 		path: filePath,
+	// 		appendExt: fileExt,
+	// 		notification: true
+	// 	},
+	// 	android: {
+	// 		fileCache: true,
+	// 		appendExt: fileExt,
+	// 		addAndroidDownloads: {
+	// 			title: 'Defibet',
+	// 			path: filePath,
+	// 			description: Strings.downloading_video,
+	// 			notification: true,
+	// 			useDownloadManager: true
+	// 		},
+	// 		mediaScannable: true
+	// 	}
+	//});
+	// config(configOptions)
+	// 	.fetch('GET', fileUrl)
+	// 	.progress((received, total) => {
+	// 		console.log('Progress : ', received / total);
+	// 	})
+	// 	.then(async res => {
+	// 		// Alert after successful downloading
+	// 		Alert.alert('', Strings.downloaded_video);
+
+	// 		saveToCameraRoll(filePath, 'video');
+	// 	})
+	// 	.catch(err => {
+	// 		Alert.alert('', Strings.downloading_video_error);
+	// 		console.log('Download Err :  -> ', err);
+	// 	});
+};
+
+export const getVideoShareUrl = id => {
+	return (
+		appShareBaseLink +
+		ScreenNames.DiscoverScreen +
+		videoSharePostFixUrl.replace('%id', id)
+	);
+};
+
+export const getVideoShareMessage = (userName, id) => {
+	return (
+		Strings.video_sharing_text.replace('%s', userName) +
+		'\n\n' +
+		getVideoShareUrl(id)
+	);
+};
+
+global.tutorialTimer = {};

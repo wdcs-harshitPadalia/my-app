@@ -61,7 +61,8 @@ const colors = {
 	progressStart: '#FF0000',
 	textPink: 'rgba(212, 0, 107,1)',
 	graytransparent: 'rgba(46, 49, 49, 0.4)',
-	blackTransparent05: 'rgba(0, 0, 0, 0.5)'
+	blackTransparent05: 'rgba(0, 0, 0, 0.5)',
+	darkGray1: '#353535'
 };
 
 export default colors;

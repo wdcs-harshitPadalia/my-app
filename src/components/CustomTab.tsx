@@ -353,7 +353,7 @@ export const CustomTabBar = ({state, descriptors, navigation}) => {
 										position: 'absolute',
 										top: 0,
 										right: 0,
-										opacity: isShowTutorial && isFocused ? 1 : 0.05
+										opacity: isShowTutorial && !isFocused ? 0.05 : 1
 									}}>
 									<CustomeBadge label={label} isFocused={isFocused} />
 								</View>

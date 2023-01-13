@@ -237,6 +237,11 @@ export const LiveTabRoutes = (_props: any) => (
 			component={MediaPage}
 			options={{headerShown: false}}
 		/>
+		<Stack.Screen
+			name={ScreenNames.VideoContentScreen}
+			component={VideoContentScreen}
+			options={{headerShown: false}}
+		/>
 	</Stack.Navigator>
 );
 
@@ -528,6 +533,11 @@ const FeedsRouter = () => (
 			component={VideoCreationScreen}
 			options={{headerShown: false, gestureEnabled: false}}
 		/>
+		<Stack.Screen
+			name={ScreenNames.VideoContentScreen}
+			component={VideoContentScreen}
+			options={{headerShown: false}}
+		/>
 	</Stack.Navigator>
 );
 
@@ -649,6 +659,21 @@ const DiscoverRouter = () => (
 		<Stack.Screen
 			name={ScreenNames.MediaPage}
 			component={MediaPage}
+			options={{headerShown: false}}
+		/>
+		<Stack.Screen
+			name={ScreenNames.ChatListScreen}
+			component={ChatListScreen}
+			options={{headerShown: false}}
+		/>
+		<Stack.Screen
+			name={ScreenNames.ChatDetailsScreen}
+			component={ChatDetailsScreen}
+			options={{headerShown: false}}
+		/>
+		<Stack.Screen
+			name={ScreenNames.VideoContentScreen}
+			component={VideoContentScreen}
 			options={{headerShown: false}}
 		/>
 	</Stack.Navigator>

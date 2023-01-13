@@ -5,13 +5,16 @@ import {
 	TextInputProps,
 	Modal,
 	Image,
-	TouchableOpacity
+	TouchableOpacity,
+	ActivityIndicator,
+	Text
 } from 'react-native';
 import icons from '../assets/icon';
+import Strings from '../constants/strings';
 import {Fonts, moderateScale, verticalScale} from '../theme';
 import colors from '../theme/colors';
 import {defaultTheme} from '../theme/defaultTheme';
-import {width} from '../theme/metrics';
+import {screenHeight, width} from '../theme/metrics';
 
 interface Props extends TextInputProps {
 	onPressCamera?: () => void;
@@ -20,6 +23,7 @@ interface Props extends TextInputProps {
 	isVisible: boolean;
 	setIsVisible: boolean;
 	isHideAvatar: boolean;
+	isShowLoader: boolean;
 }
 
 const SelectImageComponet: React.FC<Props> = props => {
@@ -29,11 +33,14 @@ const SelectImageComponet: React.FC<Props> = props => {
 		onPressAvatar,
 		isVisible,
 		setIsVisible,
-		isHideAvatar
+		isHideAvatar,
+		isShowLoader
 	} = props;
 
 	const cancelPopup = () => {
-		setIsVisible(false);
+		if (!isShowLoader) {
+			setIsVisible(false);
+		}
 	};
 	return (
 		<Modal
@@ -44,6 +51,7 @@ const SelectImageComponet: React.FC<Props> = props => {
 			onTouchCancel={() => cancelPopup()}
 			onRequestClose={() => cancelPopup()}>
 			<TouchableOpacity
+				activeOpacity={1}
 				style={styles.centeredView}
 				onPressOut={() => cancelPopup()}>
 				<View style={styles.modalView}>
@@ -54,7 +62,6 @@ const SelectImageComponet: React.FC<Props> = props => {
 					<TouchableOpacity onPress={onPressGallery}>
 						<Image style={styles.imageStyle} source={icons.gallery} />
 					</TouchableOpacity>
-
 					{!isHideAvatar && (
 						<TouchableOpacity onPress={onPressAvatar}>
 							<Image style={styles.imageStyle} source={icons.profile} />
@@ -62,6 +69,12 @@ const SelectImageComponet: React.FC<Props> = props => {
 					)}
 				</View>
 			</TouchableOpacity>
+			{isShowLoader && (
+				<View style={styles.activityIndicator}>
+					<ActivityIndicator animating size="large" color={colors.gray} />
+					<Text style={styles.textStyle}>{Strings.video_processing}</Text>
+				</View>
+			)}
 		</Modal>
 	);
 };
@@ -73,7 +86,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		flexDirection: 'column',
 		// marginTop: verticalScale(20),
-		backgroundColor: colors.backgroundTrns
+		backgroundColor: colors.blackTransparent05
 	},
 	modalView: {
 		borderTopLeftRadius: verticalScale(20),
@@ -86,11 +99,16 @@ const styles = StyleSheet.create({
 		width: width
 	},
 	imageStyle: {width: verticalScale(50), height: verticalScale(50)},
-	desStyle: {
-		color: colors.grayText,
-		fontSize: moderateScale(14),
-		marginLeft: verticalScale(10),
-		fontFamily: Fonts.type.Inter_Regular,
+	activityIndicator: {
+		position: 'absolute',
+		alignSelf: 'center',
+		justifyContent: 'center',
+		height: '100%'
+	},
+	textStyle: {
+		fontFamily: Fonts.type.Inter_Bold,
+		margin: verticalScale(8),
+		color: colors.white,
 		textAlign: 'center'
 	}
 });

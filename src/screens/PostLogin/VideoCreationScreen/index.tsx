@@ -31,7 +31,11 @@ import {updateApiLoader} from '../../../redux/reducerSlices/preLogin';
 import {Api, ApiBaseUrl, ApiConstants} from '../../../constants/api';
 import NoDataComponent from '../../../components/NoDataComponent';
 import {Video} from 'react-native-compressor';
-import {showErrorAlert} from '../../../constants/utils/Function';
+import {
+	getVideoShareMessage,
+	getVideoShareUrl,
+	showErrorAlert
+} from '../../../constants/utils/Function';
 import Lottie from 'lottie-react';
 
 const VideoCreationScreen = () => {
@@ -53,6 +57,8 @@ const VideoCreationScreen = () => {
 	const [activeBetsData, setActiveBetsData] = useState([]);
 	const [betSelectedId, setBetSelectedId] = useState('');
 	const [videoUploadUrl, setVideoUploadUrl] = useState();
+	const [shareUrl, setShareUrl] = useState('');
+	const [shareMessage, setShareMessage] = useState('');
 
 	const noDataItem = {
 		image_url: icons.star_congrats,
@@ -148,6 +154,13 @@ const VideoCreationScreen = () => {
 					setStep(2);
 					setIsTitle('');
 					setIsShareScreen(true);
+					setShareUrl(getVideoShareUrl(response?.data?._id));
+					setShareMessage(
+						getVideoShareMessage(
+							userInfo?.user?.displayName || userInfo?.user.userName,
+							response?.data?._id
+						)
+					);
 				} else {
 					showErrorAlert('', response?.message);
 				}
@@ -246,26 +259,28 @@ const VideoCreationScreen = () => {
 								loop={false}
 							/>
 						)}
-						<KeyboardAwareScrollView
-							bounces={false}
-							showsVerticalScrollIndicator={false}>
-							<ShareOptionView
-								onPressShare={text => {
-									if (text === Strings.share_on_whatsapp) {
-										Linking.openURL('whatsapp://send?text=' + '');
-									} else if (text === Strings.share_on_telegram) {
-										Linking.openURL('tg://msg?text=' + '');
-									} else if (text === Strings.share_on_twitter) {
-										Linking.openURL('twitter://post?message=' + '');
-									} else if (text === Strings.copy_link) {
-										Clipboard.setString('');
-										showErrorAlert('', Strings.copy_link_desc);
-									} else {
-										onShare('');
-									}
-								}}
-							/>
-						</KeyboardAwareScrollView>
+						{userInfo?.user?.videosVisible === 'anyone' && (
+							<KeyboardAwareScrollView
+								bounces={false}
+								showsVerticalScrollIndicator={false}>
+								<ShareOptionView
+									onPressShare={text => {
+										if (text === Strings.share_on_whatsapp) {
+											Linking.openURL('whatsapp://send?text=' + '');
+										} else if (text === Strings.share_on_telegram) {
+											Linking.openURL('tg://msg?text=' + '');
+										} else if (text === Strings.share_on_twitter) {
+											Linking.openURL('twitter://post?message=' + '');
+										} else if (text === Strings.copy_link) {
+											Clipboard.setString('');
+											showErrorAlert('', Strings.copy_link_desc);
+										} else {
+											onShare('');
+										}
+									}}
+								/>
+							</KeyboardAwareScrollView>
+						)}
 					</View>
 				);
 		}

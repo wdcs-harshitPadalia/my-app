@@ -145,27 +145,43 @@ export default function CustomBetDetailsScreen() {
 	}, [currentPage]);
 
 	const handleShareBetDetailsUrl = async () => {
-		try {
-			const result = await Share.share({
-				message: createBetDetailsPreviewShareUrl(
-					Strings.str_bet_details,
-					id,
-					betId,
-					betCreationType,
-					true
-				)
-			});
-			if (result.action === Share.sharedAction) {
-				if (result.activityType) {
-					// shared with activity type of result.activityType
-				} else {
-					// shared
-				}
-			} else if (result.action === Share.dismissedAction) {
-				// dismissed
+		if (Platform.OS === 'web') {
+			try {
+				await navigator.share({
+					url: createBetDetailsPreviewShareUrl(
+						Strings.str_bet_details,
+						id,
+						betId,
+						betCreationType,
+						true
+					)
+				});
+			} catch (error) {
+				showErrorAlert('', error?.message);
 			}
-		} catch (error) {
-			showErrorAlert('', error?.message);
+		} else {
+			try {
+				const result = await Share.share({
+					message: createBetDetailsPreviewShareUrl(
+						Strings.str_bet_details,
+						id,
+						betId,
+						betCreationType,
+						true
+					)
+				});
+				if (result.action === Share.sharedAction) {
+					if (result.activityType) {
+						// shared with activity type of result.activityType
+					} else {
+						// shared
+					}
+				} else if (result.action === Share.dismissedAction) {
+					// dismissed
+				}
+			} catch (error) {
+				showErrorAlert('', error?.message);
+			}
 		}
 	};
 

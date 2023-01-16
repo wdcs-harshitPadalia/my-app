@@ -1,6 +1,6 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {Share, StyleSheet, View} from 'react-native';
+import {Platform, Share, StyleSheet, View} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
@@ -179,27 +179,43 @@ const FeedFilterScreen: React.FC<any> = props => {
 	}, [currentPage]);
 
 	const handleShare = async matchId => {
-		try {
-			const result = await Share.share({
-				message: createBetDetailsPreviewShareUrl(
-					Strings.feed,
-					matchId,
-					matchId,
-					1,
-					false
-				)
-			});
-			if (result.action === Share.sharedAction) {
-				if (result.activityType) {
-					// shared with activity type of result.activityType
-				} else {
-					// shared
-				}
-			} else if (result.action === Share.dismissedAction) {
-				// dismissed
+		if (Platform.OS === 'web') {
+			try {
+				await navigator.share({
+					url: createBetDetailsPreviewShareUrl(
+						Strings.feed,
+						matchId,
+						matchId,
+						1,
+						false
+					)
+				});
+			} catch (error) {
+				showErrorAlert('', error.message);
 			}
-		} catch (error) {
-			showErrorAlert('', error.message);
+		} else {
+			try {
+				const result = await Share.share({
+					message: createBetDetailsPreviewShareUrl(
+						Strings.feed,
+						matchId,
+						matchId,
+						1,
+						false
+					)
+				});
+				if (result.action === Share.sharedAction) {
+					if (result.activityType) {
+						// shared with activity type of result.activityType
+					} else {
+						// shared
+					}
+				} else if (result.action === Share.dismissedAction) {
+					// dismissed
+				}
+			} catch (error) {
+				showErrorAlert('', error.message);
+			}
 		}
 	};
 

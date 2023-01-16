@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import {Fonts, moderateScale, verticalScale} from '../theme';
 import {LinearGradient} from 'expo-linear-gradient';
-import FastImage, {ImageStyle} from 'react-native-fast-image';
+// import FastImage, {ImageStyle} from 'react-native-fast-image';
 import {gradientColorAngle} from '../theme/metrics';
 import ExpoFastImage from 'expo-fast-image';
 

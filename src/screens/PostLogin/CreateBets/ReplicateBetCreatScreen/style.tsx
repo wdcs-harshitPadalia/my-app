@@ -111,6 +111,13 @@ const styles = StyleSheet.create({
 		fontSize: moderateScale(12),
 		color: colors.placeholderColor,
 		fontFamily: Fonts.type.Inter_Bold
+	},
+	noteStyle: {
+		fontSize: moderateScale(16),
+		color: colors.placeholderColor,
+		fontFamily: Fonts.type.Inter_SemiBold,
+		marginHorizontal: horizontalScale(16),
+		marginTop: horizontalScale(8)
 	}
 });
 export default styles;

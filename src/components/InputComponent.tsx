@@ -18,7 +18,7 @@ interface Props extends TextInputProps {
   isShowError?: boolean;
   errMessage?: string;
   title?: string;
-  onLeftIconPath?: ImageSourcePropType;
+  onLeftIconPath?: any;
   textValue?: string;
   isUserName?: boolean;
   returnType?: string;

@@ -1,10 +1,12 @@
 import React, {memo, useEffect, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {Platform, StyleSheet, Text, View} from 'react-native';
 import colors from '../theme/colors';
 import {Fonts, horizontalScale, moderateScale} from '../theme';
 import {videoMaximumDuration} from '../constants/api';
 import useUpdateEffect from './CustomHooks/useUpdateEffect';
-import {SAFE_AREA_PADDING} from '../theme/metrics';
+import {Metrics, verticalScale} from '../theme/metrics';
+import DeviceInfo from 'react-native-device-info';
+
 let interval;
 const VideoTimer = ({isRecording, onStartStopRecoding}: any) => {
 	const [currentTime, setCurrentTime] = useState(videoMaximumDuration);
@@ -46,7 +48,14 @@ const styles = StyleSheet.create({
 	container: {
 		justifyContent: 'center',
 		position: 'absolute',
-		top: SAFE_AREA_PADDING.paddingTop,
+		top:
+			Platform.OS === 'android'
+				? Metrics.hasNotch
+					? verticalScale(50)
+					: verticalScale(40)
+				: DeviceInfo.hasNotch()
+				? verticalScale(50)
+				: verticalScale(40),
 		alignSelf: 'center',
 		flexDirection: 'row',
 		alignItems: 'center'

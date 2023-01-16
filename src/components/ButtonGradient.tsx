@@ -12,7 +12,7 @@ import ExpoFastImage from 'expo-fast-image';
 
 import {Fonts, moderateScale, verticalScale} from '../theme';
 import {LinearGradient} from 'expo-linear-gradient';
-import FastImage, {ImageStyle} from 'react-native-fast-image';
+// import FastImage, {ImageStyle} from 'react-native-fast-image';
 import {gradientColorAngle} from '../theme/metrics';
 import fonts from '../theme/fonts';
 
@@ -34,6 +34,7 @@ interface Props extends TextInputProps {
 	rightIconStyle?: ImageStyle;
 	activeOpacity?: number;
 	fontFamily?: any;
+	flex?: number;
 }
 
 const ButtonGradient: React.FC<Props> = props => {
@@ -55,6 +56,7 @@ const ButtonGradient: React.FC<Props> = props => {
 		activeOpacity,
 		children,
 		fontFamily,
+		flex = 1
 	} = props;
 
 	return (
@@ -86,7 +88,7 @@ const ButtonGradient: React.FC<Props> = props => {
 
 				<Text
 					style={[
-						styles.inputStyle,
+						styles.inputStyle(flex),
 						{
 							color: buttonTextcolor,
 							textTransform: textType === undefined ? 'uppercase' : textType,
@@ -97,7 +99,7 @@ const ButtonGradient: React.FC<Props> = props => {
 							paddingVertical: paddingVertical
 								? verticalScale(paddingVertical)
 								: verticalScale(16),
-								fontFamily: fontFamily ? fontFamily : fonts.type.Inter_ExtraBold
+							fontFamily: fontFamily ? fontFamily : fonts.type.Inter_ExtraBold
 						}
 					]}
 					numberOfLines={numberOfLines ?? 0}>
@@ -123,22 +125,23 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center'
 	},
-	inputStyle: {
+	inputStyle: (flex: number) => ({
 		fontSize: moderateScale(12),
 		fontFamily: Fonts.type.Inter_ExtraBold,
 		textTransform: 'uppercase',
-		flex: 1,
+		flex: flex,
 		textAlignVertical: 'center',
 		textAlign: 'center',
 		paddingVertical: verticalScale(16),
 		marginHorizontal: 8
-	},
+	}),
 	circleGradient: {
 		height: '100%',
 		width: '100%',
 		borderRadius: verticalScale(8),
 		alignItems: 'center',
-		flexDirection: 'row'
+		flexDirection: 'row',
+		justifyContent: 'center'
 	},
 	leftImg: {
 		height: 25,

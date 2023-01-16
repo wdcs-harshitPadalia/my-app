@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-lone-blocks */
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {
 	Alert,
 	BackHandler,
@@ -101,6 +101,7 @@ const BetsCategoryScreen: React.FC<any> = () => {
 	useKeepAwake();
 	const navigation = useNavigation();
 	const dispatch = useDispatch();
+	const flatListRef = useRef();
 	const {params} = useRoute(); // betCreationType New Bet = 0 , Events bet = 1
 
 	const userProfileInfo = useSelector((state: RootState) => {
@@ -300,6 +301,16 @@ const BetsCategoryScreen: React.FC<any> = () => {
 			handleCustomeTokenContract();
 		}
 	}, [allowanceAddress]);
+
+	useEffect(() => {
+		subCategoryData.forEach((item, index) => {
+			if (item?._id === isSubCategoryId) {
+				setTimeout(() => {
+					flatListRef.current?.scrollToIndex({index: index});
+				}, 1000);
+			}
+		});
+	}, [subCategoryData]);
 
 	const handleCustomeTokenContract = async () => {
 		if (isPrivacy === 0) {
@@ -564,8 +575,38 @@ const BetsCategoryScreen: React.FC<any> = () => {
 			}
 
 			if (params?.isLive) {
+				seIsProgress('40%');
+				seIsTitle(Strings.select_a_market);
+				setIsBackButtonDisable(true);
+				getMainMarketData();
 				setIsSelectedLeagueType(selectedGame?.gmt_timestamp ? 2 : 1);
 				setStep(2);
+			} else if (params?.isfromTrendingNotification) {
+				if (params?.matchData?.categories?.isCustom === true) {
+					if (params?.matchData?.categories?.subCategoryCount >= 0) {
+						seIsProgress('20%');
+						seIsTitle(Strings.time_to_create_your_market);
+						setIsBackButtonDisable(true);
+						setStep(2);
+						setIsSelectedLeagueType(1);
+						getCategoryData();
+					}
+				} else {
+					seIsProgress('10%');
+					seIsTitle(Strings.whatAreYouBettingOn);
+					setIsBackButtonDisable(true);
+					setStep(1);
+					getCategoryData();
+					setIsCustomCategory(params?.matchData?.categories?.isCustom);
+					params?.matchData?.issubcategories &&
+						getSubCategoryData(params?.matchData?.categories?._id);
+
+					getLeagueData(
+						params?.matchData?.subcategories?._id,
+						'',
+						params?.matchData?.categories?._id
+					);
+				}
 			} else {
 				setIsSelectedLeagueType(0);
 				setStep(4);
@@ -673,7 +714,7 @@ const BetsCategoryScreen: React.FC<any> = () => {
 			});
 	};
 
-	const getLeagueData = (id?: any, searchText?: any) => {
+	const getLeagueData = (id?: any, searchText?: any, catagoryId?: any) => {
 		Keyboard.dismiss();
 		if (pageLeague === 0) {
 			dispatch(updateApiLoader({apiLoader: true}));
@@ -681,7 +722,7 @@ const BetsCategoryScreen: React.FC<any> = () => {
 		const uploadData = {
 			skip: pageLeague,
 			limit: '10',
-			category_id: isCategoryId,
+			category_id: catagoryId ?? catagoryId ?? isCategoryId,
 			sub_category_id: id ?? isSubCategoryId,
 			search: searchText ?? searchLeagueText
 		};
@@ -1450,6 +1491,7 @@ const BetsCategoryScreen: React.FC<any> = () => {
 								/>
 								<FlatList
 									horizontal
+									ref={flatListRef}
 									data={subCategoryArray}
 									showsHorizontalScrollIndicator={false}
 									renderItem={renderSubCategoryItem}

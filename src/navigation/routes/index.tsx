@@ -40,7 +40,7 @@ import {OAuthExtension} from '@magic-ext/react-native-oauth';
 import {MAGIC_API_KEY} from '@env';
 import {Magic as MagicWeb} from 'magic-sdk';
 import {OAuthExtension as OAuthExtensionWeb} from '@magic-ext/oauth';
-
+import ReferralProgramScreen from '../../screens/PostLogin/ReferralProgramScreen';
 
 const customNodeOptions = {
 	rpcUrl: RpcURL, // Polygon RPC URL
@@ -831,6 +831,11 @@ const ProfileRouter = () => (
 		<Stack.Screen
 			name={ScreenNames.VideoContentScreen}
 			component={VideoContentScreen}
+			options={{headerShown: false}}
+		/>
+		<Stack.Screen
+			name={ScreenNames.ReferralProgramScreen}
+			component={ReferralProgramScreen}
 			options={{headerShown: false}}
 		/>
 	</Stack.Navigator>

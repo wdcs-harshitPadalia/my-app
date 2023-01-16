@@ -643,6 +643,7 @@ const DiscoverVideoPlayer = React.forwardRef((props, parentRef) => {
 						onPress={() => {
 							getAllUserList();
 						}}
+						hitSlop={{top: 15, bottom: 15, left: 15, right: 15}}
 						style={styles.shareView}>
 						<LinearGradient
 							useAngle={true}

@@ -57,6 +57,7 @@ const ProfileSetupScreen: React.FC<any> = props => {
 	const [isSubmitted, setisSubmitted] = useState<boolean>(false);
 	const dispatch = useDispatch();
 	const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+	const [referralCode, setReferralCode] = useState('');
 
 	const fa_ref = useRef();
 	const userInfo = useSelector((state: RootState) => {
@@ -167,7 +168,8 @@ const ProfileSetupScreen: React.FC<any> = props => {
 											userName: values.userName,
 											country: values.country,
 											birthDate: moment(date).format('DD-MM-YYYY').toString(),
-											walletAddress: params?.address ?? undefined
+											walletAddress: params?.address ?? undefined,
+											friendsAffiliateCode: referralCode
 											//deviceToken: userInfo.fcmToken ?? token
 										};
 									} else {
@@ -176,7 +178,8 @@ const ProfileSetupScreen: React.FC<any> = props => {
 											userName: values.userName,
 											country: values.country,
 											birthDate: moment(date).format('DD-MM-YYYY').toString(),
-											walletAddress: params?.address ?? undefined
+											walletAddress: params?.address ?? undefined,
+											friendsAffiliateCode: referralCode
 											//deviceToken: userInfo.fcmToken ?? token
 										};
 									}
@@ -190,7 +193,8 @@ const ProfileSetupScreen: React.FC<any> = props => {
 											userName: values.userName,
 											country: values.country,
 											birthDate: moment(date).format('DD-MM-YYYY').toString(),
-											walletAddress: params?.address ?? undefined
+											walletAddress: params?.address ?? undefined,
+											friendsAffiliateCode: referralCode
 											//deviceToken: userInfo.fcmToken ?? ''
 										};
 									} else {
@@ -199,7 +203,8 @@ const ProfileSetupScreen: React.FC<any> = props => {
 											userName: values.userName,
 											country: values.country,
 											birthDate: moment(date).format('DD-MM-YYYY').toString(),
-											walletAddress: params?.address ?? undefined
+											walletAddress: params?.address ?? undefined,
+											friendsAffiliateCode: referralCode
 											//deviceToken: userInfo.fcmToken ?? token
 										};
 									}
@@ -268,7 +273,16 @@ const ProfileSetupScreen: React.FC<any> = props => {
 										returnKeyType={'done'}
 										errMessage={errors.country}
 									/>
-
+									<InputComponent
+										style={styles.marginInput}
+										isSecureText={false}
+										title={Strings.referral_code}
+										onChangeText={(text: string) => {
+											setReferralCode(text);
+										}}
+										placeholder={Strings.referral_code.toUpperCase()}
+										returnKeyType={'done'}
+									/>
 									{Platform.OS === 'web' ? (
 										<View>
 											<Text style={styles.dOBTitleStyle}>

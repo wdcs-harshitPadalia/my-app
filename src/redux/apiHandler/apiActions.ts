@@ -960,3 +960,11 @@ export const getUserMessageList = async (data: any) => {
 	// console.log('RESPONSE::::', JSON.stringify(response));
 	return response;
 };
+
+export const getUserAncestor = async () => {
+	const response = await useAxios({
+		method: Api.GET,
+		url: ApiBaseUrl + ApiConstants.getUserAncestor
+	});
+	return response;
+};

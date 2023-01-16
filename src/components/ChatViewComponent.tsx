@@ -349,32 +349,16 @@ const ChatViewComponent: React.FC<Props> = props => {
 	//     }),
 	//   [channelId],
 	// );
-
-	useEffect(
-		() =>
-			observeMessages(channelId, {
+	const ChannelItem = useCallback(
+		channelID => {
+			observeMessages(channelID, {
 				onEvent: (
 					action: MessageAction,
 					message: Amity.Snapshot<Amity.Message>
 				) => {
-					console.log(
-						'message OBserver Callds,ld,s>?:::::::',
-						messages.filter(item => item.id === message.data?.metadata.data.id)
-					);
-					if (
-						messages.filter(item => item.id === message.data?.metadata.data.id)
-							?.length > 0
-					) {
-						return;
-					}
+					console.log('message OBserver Callds,ld,s>?:::::::');
 					if (action === 'onCreate') {
-						console.log(
-							'message>?:::::::',
-							messages,
-							action,
-							'filter',
-							message.data?.metadata.data!
-						);
+						console.log('message>?:::::::', JSON.stringify(message), action);
 						//dispatch({notifyOnNewMessageSent(message.data)});
 						if (message.data?.type == 'image' && message.data?.editedAt) {
 							setMessages(prevMessages => [
@@ -393,9 +377,15 @@ const ChatViewComponent: React.FC<Props> = props => {
 						dispatch(notifyOnNewMessageSend(message));
 					}
 				}
-			}),
-		[channelId, messages]
+			});
+		},
+		[channelId]
 	);
+
+	useEffect(() => {
+		// console.log('channelId?:::::::', channelId);
+		ChannelItem(channelId);
+	}, [channelId]);
 
 	const addMessage = (message: MessageType.Any) => {
 		// setMessages([message, ...messages]);

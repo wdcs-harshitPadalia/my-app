@@ -60,12 +60,13 @@ const Story = forwardRef((props: Props, parentRef) => {
 	// with whatever you return from the callback passed
 	// as the second argument
 	useImperativeHandle(parentRef, () => ({
-		handlePause
-	}));
-
-	useImperativeHandle(parentRef, () => ({
+		handlePause,
 		handlePlay
 	}));
+
+	// useImperativeHandle(parentRef, () => ({
+	// 	handlePlay
+	// }));
 
 	const handlePause = () => {
 		console.log('handlePause');
@@ -524,6 +525,7 @@ const Story = forwardRef((props: Props, parentRef) => {
 							// 	shortVideos?.video_thumbnail ?? betShortVideos?.video_thumbnail
 							// }
 							playing={isPlaying}
+							// playing={!props.pause || props.isNewStory}
 							onStart={() => {
 								console.log('onStart ::');
 								isVideoLoaded = false;
@@ -551,6 +553,7 @@ const Story = forwardRef((props: Props, parentRef) => {
 								console.log('onError :: error ::', error);
 								props.next();
 							}}
+							playsinline
 							// onPause={handlePause}
 							// onPlay={handlePlay}
 						/>
@@ -583,7 +586,8 @@ const styles = StyleSheet.create({
 		flex: 1,
 		width: '100%',
 		backgroundColor: colors.black,
-		height: '100%'
+		height: '100%',
+		resizeMode: 'contain'
 	},
 	matchDetailRootContainer: {
 		backgroundColor: colors.black,

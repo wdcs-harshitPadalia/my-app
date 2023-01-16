@@ -28,6 +28,9 @@ import {
 import {updateApiLoader} from '../../../redux/reducerSlices/preLogin';
 import {RootState} from '../../../redux/store';
 import {updateTotalBalance} from '../../../redux/reducerSlices/userInfo';
+import ReferralRewardsView from '../../../components/ReferralRewardsView';
+import InformationPopUpView from '../../../components/InformationPopUpView';
+import {defaultTheme} from '../../../theme/defaultTheme';
 
 import useUpdateEffect from '../../../components/CustomHooks/useUpdateEffect';
 import TokenSelection from '../../../components/TokenSelection';
@@ -69,8 +72,20 @@ const WalletScreen: React.FC<any> = () => {
 
 	const [modalVisible, setModalVisible] = useState(false);
 
-	const {getBalanceFromContract, tokenBalance} = useBetCreateContract(false);
+	const [totalRewardWon, setTotalRewardWon] = useState(0);
+
+	const {
+		getBalanceFromContract,
+		tokenBalance,
+		claimRewardAmount,
+		withdrawAddress,
+		getClaimRewardAllowance,
+		claimRewardAllowance
+	} = useBetCreateContract(false);
+
 	const [tokenCount, setTokenCount] = useState(0);
+	const [modalNeedHelpVisible, setModalNeedHelpVisible] = useState(false);
+	const [needHelpType, setNeedHelpType] = useState(0); // 0 for rewards and 1 for referral
 
 	const userInfo = useSelector((state: RootState) => {
 		return state.userInfo.data;
@@ -79,6 +94,22 @@ const WalletScreen: React.FC<any> = () => {
 	useUpdateEffect(() => {
 		callWalletStatsApi();
 	}, [filterType]);
+
+	useUpdateEffect(() => {
+		if (
+			withdrawAddress &&
+			withdrawAddress !== 'Error' &&
+			withdrawAddress !== ''
+		) {
+			getClaimRewardAllowance();
+		}
+	}, [withdrawAddress]);
+
+	useUpdateEffect(() => {
+		setTotalRewardWon(
+			walletStatics?.affiliateUserReward - claimRewardAllowance
+		);
+	}, [claimRewardAllowance]);
 
 	const callWalletStatsApi = async () => {
 		let uploadData = {};
@@ -112,6 +143,7 @@ const WalletScreen: React.FC<any> = () => {
 			setIsApiSelectCurrency(currencyData[0]);
 		}
 		setWalletStatics(response?.data);
+		getClaimRewardAllowance();
 	};
 
 	// useEffect(() => {
@@ -390,6 +422,38 @@ const WalletScreen: React.FC<any> = () => {
 						/>
 					</>
 
+					<ReferralRewardsView
+						style={{borderRadius: 8}}
+						totalMoney={totalRewardWon}
+						tokenType="DBETH"
+						onPressNeedHelp={() => {
+							setNeedHelpType(0);
+							setModalNeedHelpVisible(true);
+						}}
+						onPressClaim={() => {
+							claimRewardAmount();
+						}}
+						claimAmount={claimRewardAllowance}
+					/>
+					<ReferralRewardsView
+						isShowReferral={true}
+						style={{borderRadius: 8}}
+						totalMoney={
+							walletStatics?.referralAffiliateData?.referralRewardPoints
+						}
+						affiliateCode={userInfo?.user?.affiliateCode}
+						onPressNeedHelp={() => {
+							setNeedHelpType(1);
+							setModalNeedHelpVisible(true);
+						}}
+						userAffiliationCount={
+							walletStatics?.referralAffiliateData?.userAffiliationCount
+						}
+						tokenType={
+							walletStatics?.referralAffiliateData?.tokenType?.short_name
+						}
+					/>
+
 					<WalletStats
 						onViewDetailsButtonClicked={() => {
 							navigation.navigate(ScreenNames.WalletStatsScreen, {
@@ -478,6 +542,25 @@ const WalletScreen: React.FC<any> = () => {
 					}}
 				/>
 			</View>
+
+			<InformationPopUpView
+				popupTitle={
+					needHelpType === 0
+						? walletStatics?.aboutRewards?.title
+						: walletStatics?.referralInfo?.title
+				}
+				buttonTitle={Strings.got_it}
+				description={
+					needHelpType === 0
+						? walletStatics?.aboutRewards?.content
+						: walletStatics?.referralInfo?.content
+				}
+				onButtonPress={() => {
+					setModalNeedHelpVisible(!modalNeedHelpVisible);
+				}}
+				isVisible={modalNeedHelpVisible}
+				colorArray={defaultTheme.ternaryGradientColor}
+			/>
 		</SafeAreaView>
 	);
 };

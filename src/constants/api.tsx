@@ -156,7 +156,8 @@ export const ApiConstants = {
 	deleteVideo: 'video/deleteVideo',
 	getExploreData: 'video/getExploreData',
 	messageUser: 'video/messageUser',
-	markSeen: 'video/markSeen'
+	markSeen: 'video/markSeen',
+	getUserAncestor: 'result/getUserAncestor'
 };
 
 export const BotomSharePopupData = [

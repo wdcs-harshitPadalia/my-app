@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {forwardRef, useImperativeHandle, useState} from 'react';
 import {
 	ImageBackground,
 	StyleSheet,
@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import {defaultTheme} from '../../theme/defaultTheme';
-import LinearGradient from 'react-native-linear-gradient';
+import {LinearGradient} from 'expo-linear-gradient';
 import {
 	Fonts,
 	horizontalScale,
@@ -28,9 +28,9 @@ import {useNavigation} from '@react-navigation/native';
 import {EventInfoView} from '../EventInfoView';
 import {dateTimeConvert} from '../../constants/utils/Function';
 import BetsBottomView from '../Events/BetsBottomView';
-import Video from 'react-native-fast-video';
 import OtherUserProfileReplicateBetComponent from '../OtherUserProfileReplicateBetComponent';
-import convertToProxyURL from 'react-native-video-cache';
+// import convertToProxyURL from 'react-native-video-cache';
+import ReactPlayer from 'react-player';
 
 type Props = {
 	story: any;
@@ -47,21 +47,35 @@ type Props = {
 };
 
 let isVideoLoaded = false;
-const bufferConfig = {
-	minBufferMs: 15000,
-	maxBufferMs: 50000,
-	bufferForPlaybackMs: 2500,
-	bufferForPlaybackAfterRebufferMs: 5000
-};
 
-const Story = (props: Props) => {
+const Story = forwardRef((props: Props, parentRef) => {
 	const {story, storyClose} = props;
 	const {type, shortVideos, betShortVideos} = story || {};
 
-	const [heightScaled, setHeightScaled] = useState(screenHeight / 3);
 	const navigation = useNavigation();
-	const [loadedVideoData, setLoadedVideoData] = useState({});
-	// const [videoOrientation, setVideoOrientation] = useState('portrait');
+
+	const [isPlaying, setIsPlaying] = useState(true);
+
+	// The component instance will be extended
+	// with whatever you return from the callback passed
+	// as the second argument
+	useImperativeHandle(parentRef, () => ({
+		handlePause
+	}));
+
+	useImperativeHandle(parentRef, () => ({
+		handlePlay
+	}));
+
+	const handlePause = () => {
+		console.log('handlePause');
+		setIsPlaying(false);
+	};
+
+	const handlePlay = () => {
+		console.log('handlePlay');
+		setIsPlaying(true);
+	};
 
 	return (
 		<View style={styles.container}>
@@ -443,21 +457,6 @@ const Story = (props: Props) => {
 					)}
 				</ImageBackground>
 			) : (
-				// <DiscoverVideoPlayer
-				// 	itemData={{
-				// 		...story,
-				// 		...shortVideos,
-				// 		...betShortVideos,
-				// 		users: story?.bet?.users
-				// 	}}
-				// 	visibleParentIndex={0}
-				// 	isFocus={true}
-				// 	parentIndex={0}
-				// 	onVideoLoaded={props.onVideoLoaded}
-				// 	pause={props.pause}
-				// 	isNewStory={props.isNewStory}
-				// 	isLoadVideoFromStory={true}
-				// />
 				<>
 					<View style={styles.overlay}>
 						{story?.bet && Object.keys(story?.bet).length !== 0 && (
@@ -517,65 +516,50 @@ const Story = (props: Props) => {
 							/>
 						)}
 					</View>
-
-					<Video
-						style={[styles.contentVideo, {height: heightScaled}]}
-						source={{
-							uri: convertToProxyURL(
-								shortVideos?.video_url ?? betShortVideos?.video_url
-							)
-						}}
-						resizeMode={'stretch'}
-						paused={props.pause || props.isNewStory}
-						poster={
-							shortVideos?.video_thumbnail ?? betShortVideos?.video_thumbnail
-						}
-						posterResizeMode={'stretch'}
-						bufferConfig={bufferConfig}
-						hideShutterView={true}
-						onLoadStart={() => {
-							isVideoLoaded = false;
-							console.log('onLoadStart');
-						}}
-						onLoad={item => {
-							console.log('onLoad ::');
-							const {width, height, orientation} = item.naturalSize;
-							const heightScaled = height * (SCREEN_WIDTH / width);
-							// let isPortrait = height > width;
-							// setIsPotrait(isPortrait);
-							setHeightScaled(heightScaled);
-							setLoadedVideoData(item); // props.onVideoLoaded(item);
-							// setVideoOrientation(orientation);
-						}}
-						onProgress={progress => {
-							// console.log('onProgress ::', progress);
-							if (isVideoLoaded) {
-								return;
-							} else {
-								const currentTime = progress.currentTime.toFixed(7);
-								if (parseInt(currentTime) > 0) {
+					{!props.isNewStory && (
+						<ReactPlayer
+							url={shortVideos?.video_url ?? betShortVideos?.video_url}
+							style={styles.contentVideo}
+							// light={
+							// 	shortVideos?.video_thumbnail ?? betShortVideos?.video_thumbnail
+							// }
+							playing={isPlaying}
+							onStart={() => {
+								console.log('onStart ::');
+								isVideoLoaded = false;
+							}}
+							onDuration={duration => {
+								console.log('onDuration ::');
+								isVideoLoaded = false;
+							}}
+							onProgress={state => {
+								// console.log('onProgress ::', state);
+								if (!isVideoLoaded && !props.isNewStory) {
+									props.onVideoLoaded(state);
 									isVideoLoaded = true;
-									props.onVideoLoaded(loadedVideoData);
 								}
-							}
-						}}
-						onError={(event: any) => {
-							console.log('Video Error ::', event);
-							props.next();
-						}}
-						onEnd={() => {
-							console.log('onEnd ::');
-							isVideoLoaded = false;
-						}}
-						playInBackground={false}
-						playWhenInactive={false}
-						muted={false}
-					/>
+								const played = parseInt(state.played);
+								if (played === 1) {
+									isVideoLoaded = false;
+								}
+							}}
+							onEnded={() => {
+								console.log('onEnded ::');
+								isVideoLoaded = false;
+							}}
+							onError={(error, data) => {
+								console.log('onError :: error ::', error);
+								props.next();
+							}}
+							// onPause={handlePause}
+							// onPlay={handlePlay}
+						/>
+					)}
 				</>
 			)}
 		</View>
 	);
-};
+});
 
 Story.propTypes = {
 	story: PropTypes.oneOfType([PropTypes.object, PropTypes.string])
@@ -585,6 +569,7 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		width: '100%',
+		height: '100%',
 		backgroundColor: defaultTheme.backGroundColor,
 		justifyContent: 'center',
 		alignItems: 'center'
@@ -595,9 +580,10 @@ const styles = StyleSheet.create({
 		justifyContent: 'center'
 	},
 	contentVideo: {
-		width: SCREEN_WIDTH + 20,
+		flex: 1,
+		width: '100%',
 		backgroundColor: colors.black,
-		height: screenHeight / 3
+		height: '100%'
 	},
 	matchDetailRootContainer: {
 		backgroundColor: colors.black,

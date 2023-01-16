@@ -2,6 +2,7 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {
 	FlatList,
+	Platform,
 	ScrollView,
 	Share,
 	Text,

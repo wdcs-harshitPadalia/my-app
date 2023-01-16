@@ -26,6 +26,7 @@ interface Props {
 	isHideReplicateBet?: boolean;
 	isOnlyHideBetTitle?: boolean;
 	isFromVideoCreation?: boolean;
+	isFromDiscoverVideo?: boolean;
 	SelectedValue?: (value: string) => void;
 	betSelectedId?: string;
 }
@@ -41,7 +42,8 @@ const OtherUserProfileReplicateBetComponent: React.FC<Props> = props => {
 		isOnlyHideBetTitle,
 		isFromVideoCreation,
 		SelectedValue,
-		betSelectedId
+		betSelectedId,
+		isFromDiscoverVideo
 	} = props;
 
 	const userInfo = useSelector((state: RootState) => {
@@ -256,22 +258,48 @@ const OtherUserProfileReplicateBetComponent: React.FC<Props> = props => {
 			<LinearGradient
 				useAngle={true}
 				angle={gradientColorAngle}
-				colors={defaultTheme.primaryGradientColor}
-				style={styles.bgGradient(betSelectedId === itemData?._id ? 4 : 0)}>
-				<View style={styles.container}>
+				colors={
+					betSelectedId === itemData?._id && isFromVideoCreation
+						? defaultTheme.primaryGradientColor
+						: [colors.transparent, colors.transparent]
+				}
+				style={styles.bgGradient}>
+				<View
+					style={[
+						styles.container,
+						{
+							backgroundColor: isFromDiscoverVideo
+								? colors.blackTransparent05
+								: colors.black
+						}
+					]}>
 					{!isOnlyHideBetTitle && (
-						<View
-							style={styles.betQuestionContainer(
-								isFromVideoCreation ? verticalScale(12) : verticalScale(10)
-							)}>
-							<Text style={styles.txtBetQuestionStyle} numberOfLines={2}>
-								{itemData?.betQuestion}
-							</Text>
-							{/* <TouchableOpacity
-						hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
-						onPress={handleMenuPress}>
-						<FastImage style={{height: 16, width: 4}} source={icons.ic_menu} />
-					</TouchableOpacity> */}
+						<View style={styles.betQuestionContainer}>
+							<View style={{flex: 1}}>
+								<Text style={styles.txtBetQuestionStyle} numberOfLines={2}>
+									{itemData?.betQuestion}
+								</Text>
+							</View>
+							<View>
+								{userInfo?.user?._id !== itemData?.users?._id &&
+									isFromDiscoverVideo && (
+										<LinearGradient
+											style={styles.replicateIconContainer}
+											useAngle={true}
+											angle={gradientColorAngle}
+											colors={defaultTheme.ternaryGradientColor}>
+											<TouchableOpacity
+												hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
+												onPress={handleReplicateBet}>
+												<ExpoFastImage
+													resizeMode="contain"
+													style={styles.replicateIcon}
+													source={icons.ic_replicate_btn}
+												/>
+											</TouchableOpacity>
+										</LinearGradient>
+									)}
+							</View>
 						</View>
 					)}
 					<View
@@ -280,8 +308,8 @@ const OtherUserProfileReplicateBetComponent: React.FC<Props> = props => {
 							{
 								marginHorizontal: horizontalScale(
 									!isHideReplicateBet
-										? 12
-										: isFromVideoCreation
+										? verticalScale(12)
+										: isFromVideoCreation || isFromDiscoverVideo
 										? verticalScale(12)
 										: 0
 								)
@@ -300,7 +328,8 @@ const OtherUserProfileReplicateBetComponent: React.FC<Props> = props => {
 							</View>
 						</View>
 
-						{itemData.betTaker && Object.keys(itemData.betTaker)?.length > 0 ? (
+						{itemData?.betTaker &&
+						Object.keys(itemData?.betTaker)?.length > 0 ? (
 							<BetTakerAlreadyPickedComponent
 								handleAlreadyBetTackerUserPicked={
 									handleAlreadyBetTackerUserPicked
@@ -328,13 +357,14 @@ const OtherUserProfileReplicateBetComponent: React.FC<Props> = props => {
 };
 
 const styles = StyleSheet.create({
-	container: {borderRadius: verticalScale(8), backgroundColor: colors.black},
-	betQuestionContainer: (marginTop: string) => ({
+	container: {borderRadius: verticalScale(8)},
+	betQuestionContainer: {
+		flex: 1,
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		marginHorizontal: horizontalScale(12),
-		marginTop: marginTop
-	}),
+		marginTop: verticalScale(10)
+	},
 	txtBetQuestionStyle: {
 		color: colors.white,
 		fontFamily: Fonts.type.Krona_Regular,
@@ -386,6 +416,19 @@ const styles = StyleSheet.create({
 		borderColor: colors.placeholderColor,
 		borderTopWidth: 1
 	},
+	replicateIconContainer: {
+		height: 48,
+		width: 48,
+		justifyContent: 'center',
+		alignItems: 'center',
+		borderRadius: verticalScale(8)
+		// paddingVertical: verticalScale(10),
+		// paddingHorizontal: horizontalScale(10)
+	},
+	replicateIcon: {
+		height: 24,
+		width: 24
+	},
 	betTakerPickedContainer: {
 		borderRadius: verticalScale(8),
 		marginTop: verticalScale(10),
@@ -419,11 +462,11 @@ const styles = StyleSheet.create({
 		fontFamily: Fonts.type.Inter_Regular,
 		textAlign: 'center'
 	},
-	bgGradient: (padding: number) => ({
-		padding: verticalScale(padding),
+	bgGradient: {
+		padding: verticalScale(4),
 		borderRadius: verticalScale(10),
 		marginBottom: verticalScale(10)
-	})
+	}
 });
 
 export default OtherUserProfileReplicateBetComponent;

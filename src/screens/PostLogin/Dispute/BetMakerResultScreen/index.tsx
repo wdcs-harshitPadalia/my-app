@@ -17,6 +17,7 @@ import InformationPopUpView from '../../../../components/InformationPopUpView';
 import {
 	addCustomBetResult,
 	claimAmount,
+	getUserAncestor,
 	getUserBetResult,
 	logout
 } from '../../../../redux/apiHandler/apiActions';
@@ -127,7 +128,8 @@ const BetMakerResultScreen: React.FC<any> = () => {
 		getTokensPerStrike,
 		getPassiveIncome,
 		passiveIncomeAmount,
-		liquidity
+		liquidity,
+		claimUserData
 	} = useBetCreateContract(false);
 
 	const {hashObj, personalSign} = useBetCreateContract(false);
@@ -353,7 +355,8 @@ const BetMakerResultScreen: React.FC<any> = () => {
 					maker_winning_amount_usd:
 						parseFloat(betMakerWinningAmount) * parseFloat(convertCurrency),
 					match_cancelled: redirectType === 'MATCH_CANCELLED',
-					passive_income: passiveIncome * (passiveIncomeAmount / 100)
+					passive_income: passiveIncome * (passiveIncomeAmount / 100),
+					referral: claimUserData
 				};
 			} else {
 				const winningAmount =
@@ -366,7 +369,8 @@ const BetMakerResultScreen: React.FC<any> = () => {
 					bet_winning_amount_usd: (
 						winningAmount * parseFloat(convertCurrency)
 					).toFixed(decimalValue),
-					passive_income: passiveIncome * (passiveIncomeAmount / 100)
+					passive_income: passiveIncome * (passiveIncomeAmount / 100),
+					referral: claimUserData
 				};
 			}
 
@@ -389,6 +393,20 @@ const BetMakerResultScreen: React.FC<any> = () => {
 				});
 		}
 	}, [betLiquidyAmount]);
+
+	const getUserAncestorData = () => {
+		dispatch(updateApiLoader({apiLoader: true}));
+		getUserAncestor()
+			.then(res => {
+				console.log('getUserAncestorData Response >>> ', JSON.stringify(res));
+				dispatch(updateApiLoader({apiLoader: false}));
+				handleClaimWinningAmount(res?.data);
+			})
+			.catch(err => {
+				console.log('getTokenTypeData Data Err >>> ', JSON.stringify(err));
+				dispatch(updateApiLoader({apiLoader: false}));
+			});
+	};
 
 	useUpdateEffect(() => {
 		console.log('eventBetData???????', JSON.stringify(eventBetData));
@@ -990,7 +1008,7 @@ const BetMakerResultScreen: React.FC<any> = () => {
 		}
 	};
 	//if bet type 0 then pass hash array null, ISCUSTOMIZED_ = false and maker taker signature as null
-	const handleClaimWinningAmount = () => {
+	const handleClaimWinningAmount = (userData: any) => {
 		let bet_type = betObj?.bet_type;
 		let result =
 			eventBetData?.resultData?.isWinner === 'win'
@@ -1006,7 +1024,9 @@ const BetMakerResultScreen: React.FC<any> = () => {
 				result,
 				['0x0000000000000000000000000000000000000000000000000000000000000000'],
 				'0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
-				'0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+				'0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+				userData?.users,
+				userData?.rewardPercentage
 			);
 		} else {
 			resolveBetResult(
@@ -1014,7 +1034,9 @@ const BetMakerResultScreen: React.FC<any> = () => {
 				result,
 				apiHashObj?.hash,
 				apiHashObj?.makerSignature,
-				apiHashObj?.takerSignature
+				apiHashObj?.takerSignature,
+				userData?.users,
+				userData?.rewardPercentage
 			);
 		}
 
@@ -1077,7 +1099,7 @@ const BetMakerResultScreen: React.FC<any> = () => {
 							if (step === 1) {
 								setIsViewNextBackBtn(false);
 								if (eventBetData?.resultData?.isWinner === 'win') {
-									handleClaimWinningAmount();
+									getUserAncestorData();
 								} else if (eventBetData?.resultData?.isWinner === 'loss') {
 									// navigateReset('FeedsRouter');
 									navigation.dispatch(StackActions.popToTop());
@@ -1085,7 +1107,7 @@ const BetMakerResultScreen: React.FC<any> = () => {
 									eventBetData?.resultData?.isWinner === 'draw' ||
 									eventBetData?.resultData?.isWinner === 'Void'
 								) {
-									handleClaimWinningAmount();
+									getUserAncestorData();
 								}
 							} else if (step === 3) {
 								if (redirectType === 'DISPUTE_EVIDENCE') {

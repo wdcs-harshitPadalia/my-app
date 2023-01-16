@@ -301,7 +301,8 @@ const NotificationScreen: React.FC<any> = (props) => {
       item.type === Strings.notification_types.numerious_bets_created ||
       item.type === Strings.push_notification_types.join_friend_bet ||
       item.type === Strings.push_notification_types.event_Suggestion ||
-      item.type === Strings.push_notification_types.user_suggestion
+      item.type === Strings.push_notification_types.user_suggestion ||
+			item.type === 'CLAIM_AFFILIATE_REWARD'
     ) {
       return (
         <NotificationPromotionView
@@ -406,7 +407,7 @@ const NotificationScreen: React.FC<any> = (props) => {
               item.type === Strings.push_notification_types.event_Suggestion
             ) {
               if (item?.bettakerlists?.length > 0) {
-                if (item?.bet?.match_id !== "") {
+                if (item?.bet?.bet_type !== 1) {
                   navigation.navigate(ScreenNames.EventDetailsScreen, {
                     title: Strings.feed,
                     betCreationType: 1,
@@ -426,6 +427,12 @@ const NotificationScreen: React.FC<any> = (props) => {
                 });
               }
             }
+
+            if (item.type === 'CLAIM_AFFILIATE_REWARD') {
+							navigation.navigate(ScreenNames.WalletScreen, {
+								userId: item?.followID
+							});
+						}
           }}
           colorArray={
             item?.notificationStatus === "UNREAD"

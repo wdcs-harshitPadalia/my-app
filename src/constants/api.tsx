@@ -153,7 +153,11 @@ export const ApiConstants = {
 	validateJury: 'result/validateJury',
 	uploadShortVideo: 'video/uploadShortVideo',
 	getUserVideos: 'video/getUserVideos',
-	deleteVideo: 'video/deleteVideo'
+	deleteVideo: 'video/deleteVideo',
+	getExploreData: 'video/getExploreData',
+	messageUser: 'video/messageUser',
+	markSeen: 'video/markSeen',
+	getUserAncestor: 'result/getUserAncestor'
 };
 
 export const BotomSharePopupData = [

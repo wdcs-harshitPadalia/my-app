@@ -1,6 +1,5 @@
 import app from '../../app.json';
 import {videoMaximumDuration, videoMinimumDuration} from './api';
-
 const Strings = {
 	signuptostartbetting: 'Connect to start betting',
 	email: 'Email',
@@ -342,15 +341,15 @@ const Strings = {
 
 	set_date: 'Set Date',
 	cameraAccess:
-		'Camera access is restricted. In order to use Camera Service, please enable Camera permission in the Settigs app under Privacy.',
+		'Camera access is restricted. In order to use Camera Service, please enable Camera permission in the setting app under Privacy.',
 	audioAccess:
-		'Audio access is restricted. In order to use Audio Service, please enable Audio permission in the Settigs app under Privacy.',
+		'Audio access is restricted. In order to use Audio Service, please enable Audio permission in the setting app under Privacy.',
 	galleryAccess:
-		'Gallery access is restricted. In order to use Gallery Service, please enable Gallery permission in the Settigs app under Privacy.',
+		'Storage access is restricted. In order to upload video, please enable File and Storage permission in the setting app under Privacy.',
 	biometricAccess:
-		'Biometric access is restricted. In order to use Biometric Service, please enable Biometric permission in the Settigs app under Privacy.',
+		'Biometric access is restricted. In order to use Biometric Service, please enable Biometric permission in the setting app under Privacy.',
 	contactAccess:
-		'Contacts access is restricted. In order to use Contact Service, please enable Contacts permission in the Settigs app under Privacy.',
+		'Contacts access is restricted. In order to use Contact Service, please enable Contacts permission in the setting app under Privacy.',
 	visited_your_profile: ' visited your profile.',
 	my_bets: 'My Bets',
 	view_all: 'View All',
@@ -643,7 +642,7 @@ const Strings = {
 	your_opponent_is_betting: 'your opponent is betting:',
 	your_opponent_will_win: 'Your opponent will win',
 	//Prediction Market
-	str_for_you: 'For you',
+	str_for_you: 'Explore',
 	str_live_chat: 'Live chat',
 	str_active_bets_count: '%d Active bets',
 	str_follow_user_account: '%username',
@@ -716,7 +715,7 @@ const Strings = {
 		'%s has created this bet! 🤩 \nClick on this link to participate 💪 🤑 \n\n📅 ',
 	join_deadline: 'JOINING DEADLINE:',
 	short_video: 'SHORT VIDEO',
-	upload_video_15s: `Please upload video between ${videoMinimumDuration}s to ${videoMaximumDuration}s`,
+	upload_video_15s: `Please upload a video that is between ${videoMinimumDuration} to ${videoMaximumDuration} seconds in length.`,
 
 	//video
 	see_your_video_content: 'see your video content',
@@ -748,6 +747,33 @@ const Strings = {
 	txt_edit_email: 'Please edit your email address as per your request.',
 	txt_you_click_expire_link:
 		'You have clicked on expired verification link please try again.',
-	txt_invalid_url: 'Invalid Url.'
+	txt_invalid_url: 'Invalid Url.',
+	share_via_dm: 'Share via DM',
+	download_video: 'Download video',
+	downloaded_video: 'Great! Video has been saved successfully to your gallery.',
+	downloading_video: 'Your video is being downloading',
+	enough_gas_fee: `This bet may not be placed as it appears that you don't have enough Matic to cover the gas costs necessary to complete this transaction.`,
+	enough_balance:
+		'You don´t have enough balance to Bet. Please add more funds to your wallet or deposit via credit card.',
+	referral_program: 'Referral program',
+	referral_des:
+		'This is your referral code! Copy and share it with your network and start earning from the bets they make',
+	your_referral_code: 'Your referral code',
+	enter: 'enter',
+	enter_a_friends_code: 'Enter a friends code',
+	referral_buddy: 'YOUR REFERRAL BUDDY IS ',
+	your_rewards: 'Your rewards',
+	your_total_money_won: 'total REWARDS won:',
+	total_money_won: 'Total fees earned:',
+	claim_pending_rewards: 'CLAIM PENDING REWARDS',
+	upload_video: `Please wait while we're uploading your video`,
+	video_processing: `Please wait while we're processing your video`,
+	referral_code: 'Referral code',
+	downloading_video_error: 'Something went wrong while downloading',
+	error_Message: 'There was an error.',
+	try_again: 'Try it again.',
+	video_sharing_text:
+		'%s has created this video! 📹  \n\nClick on this link, watch it and find out if there is a bet attached 👀 🤔',
+	no_pending_claim: 'NO PENDING REWARDS TO CLAIM'
 };
 export default Strings;

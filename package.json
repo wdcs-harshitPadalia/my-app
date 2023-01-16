@@ -6,7 +6,8 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@amityco/react-native-formdata-polyfill": "^1.1.5",
@@ -37,6 +38,7 @@
     "@react-navigation/native-stack": "^6.5.0",
     "@react-navigation/stack": "^6.1.1",
     "@reduxjs/toolkit": "^1.7.2",
+    "@svanboxel/visibility-sensor-react-native": "^1.0.2",
     "@tradle/react-native-http": "^2.0.1",
     "@unimodules/core": "~7.2.0",
     "@walletconnect/react-native-dapp": "^1.8.0",
@@ -73,7 +75,7 @@
     "moment": "^2.29.1",
     "node-libs-browser": "^2.2.1",
     "npm": "^8.12.1",
-    "patch-package": "^6.4.7",
+    "patch-package": "^6.5.1",
     "path-browserify": "^0.0.0",
     "postinstall-postinstall": "^2.1.0",
     "process": "^0.11.10",
@@ -138,6 +140,7 @@
     "react-native-video": "^5.2.1",
     "react-native-web": "~0.18.7",
     "react-native-webview": "11.23.1",
+    "react-player": "^2.11.0",
     "react-redux": "^7.2.6",
     "react-twitch-embed": "^3.0.1",
     "readable-stream": "^1.0.33",

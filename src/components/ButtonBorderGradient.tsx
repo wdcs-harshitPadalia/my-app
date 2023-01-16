@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import {Fonts, moderateScale, verticalScale} from '../theme';
 import {LinearGradient} from 'expo-linear-gradient';
-import {ImageStyle} from 'react-native-fast-image';
+// import {ImageStyle} from 'react-native-fast-image';
 import {gradientColorAngle} from '../theme/metrics';
 
 interface Props extends TextInputProps {

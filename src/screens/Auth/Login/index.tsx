@@ -424,7 +424,7 @@ const Login: React.FC<any> = props => {
 							</View>
 						)}
 					</Formik>
-					<Text style={styles.orConnectWithStyle}>{Strings.orconnectwith}</Text>
+					{/* <Text style={styles.orConnectWithStyle}>{Strings.orconnectwith}</Text> */}
 
 					{/* <PhoneInput
             ref={phoneInput}
@@ -450,7 +450,7 @@ const Login: React.FC<any> = props => {
               setShowMessage(true);
               setValid(checkValid ? checkValid : false); */}
 
-					<ButtonGradient
+					{/* <ButtonGradient
 						onPress={() => {
 							// handleSubmit();
 							//navigation.replace(ScreenNames.ProfileSetupScreen);
@@ -478,7 +478,7 @@ const Login: React.FC<any> = props => {
 						style={styles.loginButtonSocial}
 						leftIconPath={icons.apple}
 						rightIconPath={icons.apple}
-					/>
+					/> */}
 					{/* <WalletConnectProvider
             redirectUrl={'defiBet://'}
             storageOptions={{
@@ -488,7 +488,7 @@ const Login: React.FC<any> = props => {
               <WalletConnectExperience />
             </View>
           </WalletConnectProvider> */}
-					<ButtonGradient
+					{/* <ButtonGradient
 						onPress={() => {
 							// handleSubmit();
 							magicLogin('', true, SocialProvider.Facebook);
@@ -501,7 +501,7 @@ const Login: React.FC<any> = props => {
 						style={styles.loginButtonSocial}
 						leftIconPath={icons.facebook}
 						rightIconPath={icons.facebook}
-					/>
+					/> */}
 					<Text style={styles.orConnectWithStyle}>{Strings.orconnectwith}</Text>
 					<ButtonGradient
 						onPress={async () => {

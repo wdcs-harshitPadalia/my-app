@@ -302,6 +302,22 @@ const SettingsScreen: React.FC<any> = () => {
 							</View>
 						)}
 
+						<View style={styles.viewReferralContain}>
+							<DropDownGradientView
+								onPress={() => {
+									navigation.navigate(ScreenNames.ReferralProgramScreen);
+								}}
+								colorArray={[
+									defaultTheme.secondaryBackGroundColor,
+									defaultTheme.secondaryBackGroundColor
+								]}
+								angle={gradientColorAngle}
+								buttonTextcolor={colors.white}
+								buttonText={Strings.referral_program}
+								style={styles.loginButtonSocial}
+								rightIconPath={icons.leftGray}
+							/>
+						</View>
 						<View style={styles.viewContain}>
 							<Text style={styles.subTitleStyle}>{Strings.support}</Text>
 							<DropDownGradientView
@@ -406,7 +422,7 @@ const SettingsScreen: React.FC<any> = () => {
 											flexDirection: 'row',
 											justifyContent: 'space-between',
 											alignItems: 'center',
-											marginHorizontal: horizontalScale(12),
+											marginHorizontal: horizontalScale(16),
 											marginTop: verticalScale(12)
 										}}
 										activeOpacity={0.6}

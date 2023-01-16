@@ -4985,6 +4985,508 @@ export const BET_CLAIM_EVENT = [
 	}
 ];
 
+export const LIQUIDITY_EVENT = [
+	{
+		anonymous: false,
+		inputs: [
+			{
+				indexed: false,
+				internalType: 'uint256',
+				name: 'amount_',
+				type: 'uint256'
+			}
+		],
+		name: 'LiquidityWithdrawal',
+		type: 'event'
+	},
+	{
+		anonymous: false,
+		inputs: [
+			{
+				indexed: true,
+				internalType: 'address',
+				name: 'betId_',
+				type: 'address'
+			},
+			{
+				indexed: false,
+				internalType: 'address',
+				name: 'betMaker_',
+				type: 'address'
+			},
+			{
+				indexed: false,
+				internalType: 'address',
+				name: 'betTaker_',
+				type: 'address'
+			},
+			{
+				indexed: false,
+				internalType: 'address',
+				name: 'admin_',
+				type: 'address'
+			},
+			{
+				indexed: false,
+				internalType: 'uint256',
+				name: 'betMakerAmount_',
+				type: 'uint256'
+			},
+			{
+				indexed: false,
+				internalType: 'uint256',
+				name: 'betTakerAmount_',
+				type: 'uint256'
+			},
+			{
+				indexed: false,
+				internalType: 'uint256',
+				name: 'adminAmount_',
+				type: 'uint256'
+			}
+		],
+		name: 'PostDrawDistribution',
+		type: 'event'
+	},
+	{
+		anonymous: false,
+		inputs: [
+			{
+				indexed: true,
+				internalType: 'address',
+				name: 'betId_',
+				type: 'address'
+			},
+			{
+				indexed: false,
+				internalType: 'address',
+				name: 'winner_',
+				type: 'address'
+			},
+			{
+				indexed: false,
+				internalType: 'address',
+				name: 'looser_',
+				type: 'address'
+			},
+			{
+				indexed: false,
+				internalType: 'uint256',
+				name: 'winnerAmount_',
+				type: 'uint256'
+			},
+			{
+				indexed: false,
+				internalType: 'uint256',
+				name: 'looserAmount_',
+				type: 'uint256'
+			}
+		],
+		name: 'PostUserLiquidity',
+		type: 'event'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: 'betWinnerAddress_',
+				type: 'address'
+			},
+			{
+				internalType: 'address',
+				name: 'betLosserAddress_',
+				type: 'address'
+			},
+			{
+				internalType: 'address',
+				name: 'registry_',
+				type: 'address'
+			},
+			{
+				internalType: 'address',
+				name: 'agreegatorAddress_',
+				type: 'address'
+			},
+			{
+				internalType: 'address[]',
+				name: 'userPackage_',
+				type: 'address[]'
+			},
+			{
+				internalType: 'uint256[]',
+				name: 'percentagePackage_',
+				type: 'uint256[]'
+			}
+		],
+		name: 'claimReward',
+		outputs: [
+			{
+				internalType: 'bool',
+				name: '',
+				type: 'bool'
+			}
+		],
+		stateMutability: 'payable',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: 'registry_',
+				type: 'address'
+			}
+		],
+		name: 'collectDeveloperFee',
+		outputs: [
+			{
+				internalType: 'bool',
+				name: '',
+				type: 'bool'
+			}
+		],
+		stateMutability: 'payable',
+		type: 'function'
+	},
+	{
+		inputs: [],
+		name: 'forwarderFlag',
+		outputs: [
+			{
+				internalType: 'bool',
+				name: '',
+				type: 'bool'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: 'registry_',
+				type: 'address'
+			},
+			{
+				internalType: 'address',
+				name: 'agreegatorAddress_',
+				type: 'address'
+			},
+			{
+				internalType: 'address[]',
+				name: 'userPackage_',
+				type: 'address[]'
+			},
+			{
+				internalType: 'uint256[]',
+				name: 'percentagePackage_',
+				type: 'uint256[]'
+			}
+		],
+		name: 'getDistribution',
+		outputs: [
+			{
+				internalType: 'uint256[]',
+				name: '',
+				type: 'uint256[]'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [],
+		name: 'instanceDeployer',
+		outputs: [
+			{
+				internalType: 'address',
+				name: '',
+				type: 'address'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: 'winner_',
+				type: 'address'
+			},
+			{
+				internalType: 'address',
+				name: 'looser_',
+				type: 'address'
+			},
+			{
+				internalType: 'address',
+				name: 'treasury_',
+				type: 'address'
+			},
+			{
+				internalType: 'uint256',
+				name: 'winnerAmount_',
+				type: 'uint256'
+			},
+			{
+				internalType: 'uint256',
+				name: 'looserAmount_',
+				type: 'uint256'
+			},
+			{
+				internalType: 'uint256',
+				name: 'treasuryValue_',
+				type: 'uint256'
+			}
+		],
+		name: 'payReward',
+		outputs: [
+			{
+				internalType: 'bool',
+				name: '',
+				type: 'bool'
+			}
+		],
+		stateMutability: 'payable',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: 'betWinnerAddress_',
+				type: 'address'
+			},
+			{
+				internalType: 'address',
+				name: 'betLooserAddress_',
+				type: 'address'
+			},
+			{
+				internalType: 'address',
+				name: 'treasury_',
+				type: 'address'
+			},
+			{
+				internalType: 'address',
+				name: 'agreegatorAddress_',
+				type: 'address'
+			},
+			{
+				internalType: 'address',
+				name: 'registry_',
+				type: 'address'
+			}
+		],
+		name: 'processAaveDistribution',
+		outputs: [
+			{
+				internalType: 'bool',
+				name: '',
+				type: 'bool'
+			}
+		],
+		stateMutability: 'payable',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: 'registry_',
+				type: 'address'
+			}
+		],
+		name: 'processAaveDistributionForDraw',
+		outputs: [
+			{
+				internalType: 'bool',
+				name: '',
+				type: 'bool'
+			}
+		],
+		stateMutability: 'payable',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: 'registry_',
+				type: 'address'
+			}
+		],
+		name: 'processAaveRecovery',
+		outputs: [
+			{
+				internalType: 'bool',
+				name: '',
+				type: 'bool'
+			}
+		],
+		stateMutability: 'payable',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: 'registry_',
+				type: 'address'
+			}
+		],
+		name: 'processBan',
+		outputs: [
+			{
+				internalType: 'bool',
+				name: '',
+				type: 'bool'
+			}
+		],
+		stateMutability: 'payable',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: 'registry_',
+				type: 'address'
+			}
+		],
+		name: 'processDrawMatch',
+		outputs: [
+			{
+				internalType: 'bool',
+				name: '',
+				type: 'bool'
+			}
+		],
+		stateMutability: 'payable',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: 'registry_',
+				type: 'address'
+			}
+		],
+		name: 'processUSDTSwap',
+		outputs: [
+			{
+				internalType: 'bool',
+				name: '',
+				type: 'bool'
+			}
+		],
+		stateMutability: 'payable',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'uint256',
+				name: 'tokenLiquidity_',
+				type: 'uint256'
+			},
+			{
+				internalType: 'address',
+				name: 'tokenAddress_',
+				type: 'address'
+			},
+			{
+				internalType: 'address',
+				name: 'betCreator_',
+				type: 'address'
+			},
+			{
+				internalType: 'address',
+				name: 'betTrendSetter_',
+				type: 'address'
+			}
+		],
+		name: 'receiveLiquidityCreator',
+		outputs: [],
+		stateMutability: 'nonpayable',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'uint256',
+				name: 'tokenLiquidity_',
+				type: 'uint256'
+			},
+			{
+				internalType: 'address',
+				name: 'betTaker_',
+				type: 'address'
+			},
+			{
+				internalType: 'address',
+				name: 'registry_',
+				type: 'address'
+			},
+			{
+				internalType: 'bool',
+				name: 'forwarderFlag_',
+				type: 'bool'
+			}
+		],
+		name: 'receiveLiquidityTaker',
+		outputs: [],
+		stateMutability: 'nonpayable',
+		type: 'function'
+	},
+	{
+		inputs: [],
+		name: 'receivedYeild',
+		outputs: [
+			{
+				internalType: 'uint256',
+				name: '',
+				type: 'uint256'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [],
+		name: 'totalAvailableLiquidity',
+		outputs: [
+			{
+				internalType: 'uint256',
+				name: '',
+				type: 'uint256'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: 'user_',
+				type: 'address'
+			}
+		],
+		name: 'withdrawLiquidity',
+		outputs: [],
+		stateMutability: 'payable',
+		type: 'function'
+	},
+	{
+		stateMutability: 'payable',
+		type: 'receive'
+	}
+];
+
 export const DBETH_TOKEN_ABI = [
 	{
 		inputs: [
@@ -5268,6 +5770,551 @@ export const DBETH_TOKEN_ABI = [
 		type: 'function'
 	}
 ];
+
+export const REWARD_DISTRIBUTION_ABI = [
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: 'admin_',
+				type: 'address'
+			},
+			{
+				internalType: 'address',
+				name: 'tokenAddress_',
+				type: 'address'
+			}
+		],
+		stateMutability: 'nonpayable',
+		type: 'constructor'
+	},
+	{
+		inputs: [],
+		name: 'admin',
+		outputs: [
+			{
+				internalType: 'address',
+				name: '',
+				type: 'address'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address[]',
+				name: 'user_',
+				type: 'address[]'
+			},
+			{
+				internalType: 'uint256[]',
+				name: 'amount_',
+				type: 'uint256[]'
+			}
+		],
+		name: 'approveReward',
+		outputs: [
+			{
+				internalType: 'bool',
+				name: '',
+				type: 'bool'
+			}
+		],
+		stateMutability: 'nonpayable',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: '',
+				type: 'address'
+			}
+		],
+		name: 'betDetails',
+		outputs: [
+			{
+				internalType: 'address',
+				name: 'parentBet',
+				type: 'address'
+			},
+			{
+				internalType: 'address',
+				name: 'betInitiator',
+				type: 'address'
+			},
+			{
+				internalType: 'address',
+				name: 'betTaker',
+				type: 'address'
+			},
+			{
+				internalType: 'bool',
+				name: 'isCustomised',
+				type: 'bool'
+			},
+			{
+				internalType: 'address',
+				name: 'winner',
+				type: 'address'
+			},
+			{
+				internalType: 'uint256',
+				name: 'betTakerRequiredLiquidity',
+				type: 'uint256'
+			},
+			{
+				internalType: 'uint256',
+				name: 'betStartingTime',
+				type: 'uint256'
+			},
+			{
+				internalType: 'uint256',
+				name: 'betEndingTime',
+				type: 'uint256'
+			},
+			{
+				internalType: 'uint256',
+				name: 'tokenId',
+				type: 'uint256'
+			},
+			{
+				internalType: 'uint256',
+				name: 'winnerOption',
+				type: 'uint256'
+			},
+			{
+				internalType: 'uint256',
+				name: 'totalBetOptions',
+				type: 'uint256'
+			},
+			{
+				internalType: 'bool',
+				name: 'isDisputed',
+				type: 'bool'
+			},
+			{
+				internalType: 'bool',
+				name: 'isDrawed',
+				type: 'bool'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: '',
+				type: 'address'
+			}
+		],
+		name: 'betStatus',
+		outputs: [
+			{
+				internalType: 'bool',
+				name: '',
+				type: 'bool'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'uint256',
+				name: '',
+				type: 'uint256'
+			}
+		],
+		name: 'bets',
+		outputs: [
+			{
+				internalType: 'address',
+				name: '',
+				type: 'address'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [],
+		name: 'claimReward',
+		outputs: [
+			{
+				internalType: 'bool',
+				name: '',
+				type: 'bool'
+			}
+		],
+		stateMutability: 'nonpayable',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: '',
+				type: 'address'
+			}
+		],
+		name: 'disputeRooms',
+		outputs: [
+			{
+				internalType: 'address',
+				name: 'betCreator',
+				type: 'address'
+			},
+			{
+				internalType: 'address',
+				name: 'betTaker',
+				type: 'address'
+			},
+			{
+				internalType: 'uint256',
+				name: 'totalOptions',
+				type: 'uint256'
+			},
+			{
+				internalType: 'uint256',
+				name: 'finalOption',
+				type: 'uint256'
+			},
+			{
+				internalType: 'uint256',
+				name: 'userStakeAmount',
+				type: 'uint256'
+			},
+			{
+				internalType: 'bool',
+				name: 'isResolvedByAdmin',
+				type: 'bool'
+			},
+			{
+				internalType: 'uint256',
+				name: 'disputeCreatedAt',
+				type: 'uint256'
+			},
+			{
+				internalType: 'bool',
+				name: 'isResolved',
+				type: 'bool'
+			},
+			{
+				internalType: 'uint256',
+				name: 'jurySize',
+				type: 'uint256'
+			},
+			{
+				internalType: 'uint256',
+				name: 'disputedOption',
+				type: 'uint256'
+			},
+			{
+				internalType: 'bool',
+				name: 'isCustomized',
+				type: 'bool'
+			},
+			{
+				internalType: 'address',
+				name: 'disputeCreator',
+				type: 'address'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: '',
+				type: 'address'
+			}
+		],
+		name: 'isActiveStaker',
+		outputs: [
+			{
+				internalType: 'bool',
+				name: '',
+				type: 'bool'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: '',
+				type: 'address'
+			}
+		],
+		name: 'isAdminWithdrawed',
+		outputs: [
+			{
+				internalType: 'bool',
+				name: '',
+				type: 'bool'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'bytes',
+				name: '',
+				type: 'bytes'
+			}
+		],
+		name: 'isSignatureUsed',
+		outputs: [
+			{
+				internalType: 'bool',
+				name: '',
+				type: 'bool'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: '',
+				type: 'address'
+			}
+		],
+		name: 'isTokenValid',
+		outputs: [
+			{
+				internalType: 'bool',
+				name: '',
+				type: 'bool'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: '',
+				type: 'address'
+			}
+		],
+		name: 'juryStrike',
+		outputs: [
+			{
+				internalType: 'uint256',
+				name: '',
+				type: 'uint256'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: '',
+				type: 'address'
+			}
+		],
+		name: 'juryVersion',
+		outputs: [
+			{
+				internalType: 'uint256',
+				name: '',
+				type: 'uint256'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: '',
+				type: 'address'
+			}
+		],
+		name: 'lastWithdrawal',
+		outputs: [
+			{
+				internalType: 'uint256',
+				name: '',
+				type: 'uint256'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'uint256',
+				name: 'amount_',
+				type: 'uint256'
+			}
+		],
+		name: 'refilTokens',
+		outputs: [
+			{
+				internalType: 'bool',
+				name: '',
+				type: 'bool'
+			}
+		],
+		stateMutability: 'nonpayable',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: '',
+				type: 'address'
+			}
+		],
+		name: 'replicatedBets',
+		outputs: [
+			{
+				internalType: 'address',
+				name: 'betTrendSetter',
+				type: 'address'
+			},
+			{
+				internalType: 'uint256',
+				name: 'underlyingBetCounter',
+				type: 'uint256'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [],
+		name: 'tokenAddress',
+		outputs: [
+			{
+				internalType: 'address',
+				name: '',
+				type: 'address'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: 'admin_',
+				type: 'address'
+			}
+		],
+		name: 'updateAdmin',
+		outputs: [
+			{
+				internalType: 'bool',
+				name: '',
+				type: 'bool'
+			}
+		],
+		stateMutability: 'nonpayable',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: '',
+				type: 'address'
+			}
+		],
+		name: 'userAllowance',
+		outputs: [
+			{
+				internalType: 'uint256',
+				name: '',
+				type: 'uint256'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: '',
+				type: 'address'
+			}
+		],
+		name: 'userInitialStake',
+		outputs: [
+			{
+				internalType: 'uint256',
+				name: '',
+				type: 'uint256'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: '',
+				type: 'address'
+			}
+		],
+		name: 'userStrikes',
+		outputs: [
+			{
+				internalType: 'uint256',
+				name: '',
+				type: 'uint256'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: '',
+				type: 'address'
+			}
+		],
+		name: 'usersStake',
+		outputs: [
+			{
+				internalType: 'uint256',
+				name: '',
+				type: 'uint256'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	}
+];
+
 //TODO: add a way to get the contract address from the network
 
 export const ConfigContractAddress =
@@ -5286,3 +6333,6 @@ export const DebethTokenContractAddress =
 
 export const LiquidityHolderAddress =
 	'0xF339f8C7DD14f280c35CFD31733971A14E7DD760';
+
+export const RewardDistributionAddress =
+	'0xF49E70BbD85f3e7C6F204D12f1501A54b9c7467e';

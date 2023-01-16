@@ -83,5 +83,13 @@ const styles = StyleSheet.create({
     marginVertical: verticalScale(12),
     marginHorizontal: horizontalScale(Platform.OS === "web" ? 0 : 18),
   },
+  viewReferralContain: {
+		paddingVertical: verticalScale(8),
+		marginVertical: verticalScale(10),
+		marginHorizontal: horizontalScale(16),
+		flexDirection: 'column',
+		backgroundColor: defaultTheme.secondaryBackGroundColor,
+		borderRadius: verticalScale(10)
+	}
 });
 export default styles;

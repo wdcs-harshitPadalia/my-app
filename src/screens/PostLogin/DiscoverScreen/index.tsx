@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
 	FlatList,
 	Keyboard,
@@ -11,16 +11,16 @@ import {
 	ImageBackground,
 	NativeScrollEvent
 } from 'react-native';
-import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import {
 	useIsFocused,
 	useNavigation,
 	useRoute,
 	useScrollToTop
 } from '@react-navigation/native';
-import {useDispatch, useSelector} from 'react-redux';
-import {Directions} from 'react-native-gesture-handler';
+import { useDispatch, useSelector } from 'react-redux';
+import { Directions } from 'react-native-gesture-handler';
 
 import icons from '../../../assets/icon';
 
@@ -56,12 +56,12 @@ import {
 	markSeen,
 	updateChannel
 } from '../../../redux/apiHandler/apiActions';
-import {updateApiLoader} from '../../../redux/reducerSlices/preLogin';
-import {RootState} from '../../../redux/store';
-import {Colors, horizontalScale, verticalScale} from '../../../theme';
+import { updateApiLoader } from '../../../redux/reducerSlices/preLogin';
+import { RootState } from '../../../redux/store';
+import { Colors, horizontalScale, verticalScale } from '../../../theme';
 
 import styles from './style';
-import {defaultTheme} from '../../../theme/defaultTheme';
+import { defaultTheme } from '../../../theme/defaultTheme';
 import {
 	gradientColorAngle,
 	height,
@@ -73,7 +73,7 @@ import colors from '../../../theme/colors';
 // import FastImage from 'react-native-fast-image';
 import ExpoFastImage from 'expo-fast-image';
 import OtherUserProfileReplicateBetComponent from '../../../components/OtherUserProfileReplicateBetComponent';
-import {BetEventtInfoView} from '../../../components/BetEventtInfoView';
+import { BetEventtInfoView } from '../../../components/BetEventtInfoView';
 import {
 	hideBottomTab,
 	showInviteUser,
@@ -81,11 +81,11 @@ import {
 	updateDiscoverRefreshOnFocus
 } from '../../../redux/reducerSlices/dashboard';
 import DeviceInfo from 'react-native-device-info';
-import {LinearGradient} from 'expo-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient';
 import LottieView from 'lottie-react-native';
-import Lottie, {LottieRefCurrentProps} from 'lottie-react';
+import Lottie, { LottieRefCurrentProps } from 'lottie-react';
 import DiscoverVideoPlayer from '../../../components/DiscoverVideoPlayer';
-import {useIsForeground} from '../../../components/CustomHooks/useIsForeground';
+import { useIsForeground } from '../../../components/CustomHooks/useIsForeground';
 // import {event} from 'react-native-reanimated';
 import ErrorComponent from '../../../components/ErrorComponent';
 
@@ -98,7 +98,7 @@ let hasNotch = false;
 const DiscoverScreen: React.FC<any> = props => {
 	const navigation = useNavigation();
 	const dispatch = useDispatch();
-	const {params} = useRoute();
+	const { params } = useRoute();
 	const isFocused = useIsFocused();
 	const isForeground = useIsForeground();
 	const isVideoPlay = isFocused && isForeground;
@@ -157,14 +157,14 @@ const DiscoverScreen: React.FC<any> = props => {
 	useScrollToTop(scrollRef);
 
 	const beforeClickTopTabData = [
-		{id: 1, title: Strings.str_for_you},
-		{id: 2, title: Strings.str_live_chat}
+		{ id: 1, title: Strings.str_for_you },
+		{ id: 2, title: Strings.str_live_chat }
 	];
 
 	const afterClickTopTabData = [
-		{id: 1, title: Strings.recents},
-		{id: 2, title: Strings.events_Bets},
-		{id: 3, title: Strings.users}
+		{ id: 1, title: Strings.recents },
+		{ id: 2, title: Strings.events_Bets },
+		{ id: 3, title: Strings.users }
 	];
 
 	const noDataItemArray = [
@@ -372,7 +372,7 @@ const DiscoverScreen: React.FC<any> = props => {
 	const getDiscoverMatchData = (videoId?: string) => {
 		if (discoverPage === 0) {
 			setVisibleParentIndex(0);
-			dispatch(updateApiLoader({apiLoader: true}));
+			dispatch(updateApiLoader({ apiLoader: true }));
 		} else {
 			setIsLoadDiscoverMatch(true);
 		}
@@ -384,7 +384,7 @@ const DiscoverScreen: React.FC<any> = props => {
 
 		getExploreData(uploadData)
 			.then(res => {
-				dispatch(updateApiLoader({apiLoader: false}));
+				dispatch(updateApiLoader({ apiLoader: false }));
 				console.log('getExploreData res ::  ', JSON.stringify(res));
 				const discoverMatches = res?.data?.exploreData;
 				if (discoverPage !== 0) {
@@ -400,7 +400,7 @@ const DiscoverScreen: React.FC<any> = props => {
 				}
 			})
 			.catch(err => {
-				dispatch(updateApiLoader({apiLoader: false}));
+				dispatch(updateApiLoader({ apiLoader: false }));
 				console.log('getDiscoverMatches Data Err : ', err);
 				setIsRefresh(false);
 				setIsLoadDiscoverMatch(false);
@@ -431,7 +431,7 @@ const DiscoverScreen: React.FC<any> = props => {
 			})
 			.catch(err => {
 				console.log('getDiscoverBetsData Data Err : ', err);
-				dispatch(updateApiLoader({apiLoader: false}));
+				dispatch(updateApiLoader({ apiLoader: false }));
 			});
 	};
 
@@ -443,18 +443,18 @@ const DiscoverScreen: React.FC<any> = props => {
 				isSelectedIndex === 1
 					? 'recent' // events
 					: isSelectedIndex === 2
-					? 'friends'
-					: 'recent',
+						? 'friends'
+						: 'recent',
 			searchText: searchText
 		};
 		if (cancel != undefined) {
 			cancel();
 		}
-		dispatch(updateApiLoader({apiLoader: true}));
+		dispatch(updateApiLoader({ apiLoader: true }));
 
 		getDiscoverData(uploadData)
 			.then(res => {
-				dispatch(updateApiLoader({apiLoader: false}));
+				dispatch(updateApiLoader({ apiLoader: false }));
 				setIsLoading(false);
 				console.log('getDiscoverData Response : ', res);
 				// if (searchTextUpdated.trim().length === 0) {
@@ -511,7 +511,7 @@ const DiscoverScreen: React.FC<any> = props => {
 				setTotalDiscoverSearch(res?.data?.count);
 			})
 			.catch(err => {
-				dispatch(updateApiLoader({apiLoader: false}));
+				dispatch(updateApiLoader({ apiLoader: false }));
 				setIsLoading(false);
 				console.log('getDiscoverData Data Err : ', err);
 				setIsShowNoRecent(true);
@@ -541,7 +541,7 @@ const DiscoverScreen: React.FC<any> = props => {
 	// );
 
 	const recentRemove = (selected_id: any) => {
-		deleteDiscoverData({id: selected_id})
+		deleteDiscoverData({ id: selected_id })
 			.then(res => {
 				console.log('recentRemove Response : ', res);
 				if (res?.statusCode === 200) {
@@ -549,7 +549,7 @@ const DiscoverScreen: React.FC<any> = props => {
 				} else {
 				}
 			})
-			.catch(err => {});
+			.catch(err => { });
 	};
 
 	const removeUser = (selected_id: any) => {
@@ -581,7 +581,8 @@ const DiscoverScreen: React.FC<any> = props => {
 
 	const viewabilityConfig = {
 		// minimumViewTime: 150,
-		itemVisiblePercentThreshold: 100
+		// itemVisiblePercentThreshold: 50,
+		viewAreaCoveragePercentThreshold: 70
 	};
 
 	const videoMarkSeen = (video_id: string) => {
@@ -632,19 +633,19 @@ const DiscoverScreen: React.FC<any> = props => {
 	// 	},
 	// 	[]
 	// );
-	const onViewableItemsChanged = useCallback(({viewableItems, changed}) => {
-		console.log('callkkdsjdkjdsksdjkdsjkdsjkdsjklds!!!');
+	const onViewableItemsChanged = useCallback(({ viewableItems, changed }) => {
 		if (changed && changed.length > 0) {
+			console.log('callkkdsjdkjdsksdjkdsjkdsjkdsjklds!!!', changed);
 			//setVisibleItemIndex(changed[0].index);
 		}
 	}, []);
 	const viewabilityConfigCallbackPairs = useRef([
-		{viewabilityConfig, onViewableItemsChanged}
+		{ viewabilityConfig, onViewableItemsChanged }
 	]);
 
 	const onSwipeHandle = (directionName, showBeforClickTab) => {
 		// const {SWIPE_LEFT, SWIPE_RIGHT} = swipeDirections;
-		const {LEFT, RIGHT} = Directions;
+		const { LEFT, RIGHT } = Directions;
 		setSearchText('');
 		switch (directionName) {
 			case LEFT:
@@ -672,7 +673,7 @@ const DiscoverScreen: React.FC<any> = props => {
 		}
 	};
 
-	const renderFollowersUserItem = ({item, index}) => (
+	const renderFollowersUserItem = ({ item, index }) => (
 		<FollowersUserView
 			levelRank={item?.friends?.level}
 			displayName={getLevelRank(item?.friends?.level)?.type}
@@ -694,7 +695,7 @@ const DiscoverScreen: React.FC<any> = props => {
 		/>
 	);
 
-	const renderSuggestedUserItem = ({item, index}) => (
+	const renderSuggestedUserItem = ({ item, index }) => (
 		<FollowingUserView
 			levelRank={item?.friends?.level}
 			username={item?.friends?.userName}
@@ -740,13 +741,13 @@ const DiscoverScreen: React.FC<any> = props => {
 		/>
 	);
 
-	const renderForYouItem = ({item, index}) =>
+	const renderForYouItem = ({ item, index }) =>
 		item?.dataType === 'video' ? (
 			<View
 				style={{
-					height: height
+					height: height,
 					// width: '100%'
-					// backgroundColor: 'red',
+					//backgroundColor: 'green',
 					// borderColor: 'green',
 					// borderWidth: 10
 				}}>
@@ -754,16 +755,13 @@ const DiscoverScreen: React.FC<any> = props => {
 				<DiscoverVideoPlayer
 					ref={ref => (mediaRefs.current[item._id] = ref)}
 					itemData={item}
-					visibleParentIndex={visibleParentIndex}
-					isFocus={isVideoFocus}
-					parentIndex={index}
 					screenOriginalHeight={height}
 				/>
 			</View>
 		) : (
 			// </View>
 			<ImageBackground
-				style={[styles.fullScreenImageBg, {height: screenActualHeight}]}
+				style={[styles.fullScreenImageBg, { height: screenActualHeight }]}
 				source={{
 					uri: item.subcategories?.imageUrl ?? item?.categories?.imageUrl
 				}}
@@ -794,7 +792,7 @@ const DiscoverScreen: React.FC<any> = props => {
 							itemData={item}
 							isHideReplicateBet={false}
 							isOnlyHideBetTitle={item?.bet_type === 1 ? true : false}
-							handleMenuPress={() => {}}
+							handleMenuPress={() => { }}
 							handleBetMakerUserPicked={() => {
 								navigation.navigate(ScreenNames.OtherUserProfileScreen, {
 									userId: item?.users?._id
@@ -947,8 +945,8 @@ const DiscoverScreen: React.FC<any> = props => {
 											searchText.trim().length > 2 ? false : true
 										}
 										isRefreshing={false}
-										onRefreshCall={() => {}}
-										onNextPageLoaded={() => {}}
+										onRefreshCall={() => { }}
+										onNextPageLoaded={() => { }}
 										onCloseButtonPress={itemId => recentRemove(itemId)}
 									/>
 								</View>
@@ -984,7 +982,7 @@ const DiscoverScreen: React.FC<any> = props => {
 										addRecent={true}
 										betInfo={recentBetsData}
 										selectedIndex={1}
-										onNextPageLoaded={() => {}}
+										onNextPageLoaded={() => { }}
 										isMenuHide={true}
 									/>
 								</View>
@@ -1032,7 +1030,7 @@ const DiscoverScreen: React.FC<any> = props => {
 											showWatchButton={true}
 											shouldShowCloseButton={false}
 											isRefreshing={false}
-											onRefreshCall={() => {}}
+											onRefreshCall={() => { }}
 											onNextPageLoaded={() => {
 												if (
 													totalDiscoverSearch !== discoverSearchData?.length &&
@@ -1067,7 +1065,7 @@ const DiscoverScreen: React.FC<any> = props => {
 										onNextPageLoaded={() => {
 											if (
 												totalDiscoverSearchBets !==
-													discoverSearchBetsData?.length &&
+												discoverSearchBetsData?.length &&
 												!isSearchTextEmpty()
 											) {
 												pageBets = pageBets + 1;
@@ -1082,7 +1080,7 @@ const DiscoverScreen: React.FC<any> = props => {
 					)}
 
 					{isSelectedIndex === 2 && (
-						<View style={{paddingBottom: verticalScale(120)}}>
+						<View style={{ paddingBottom: verticalScale(120) }}>
 							<ButtonGradient
 								onPress={() => {
 									navigation.navigate(ScreenNames.DiscoverFindFriendsScreen);
@@ -1144,11 +1142,11 @@ const DiscoverScreen: React.FC<any> = props => {
 							<NoDataComponent
 								noData={
 									noDataItemArray[
-										isSelectedIndex !== 0
-											? isSearchTextEmpty()
-												? 0
-												: isSelectedIndex
+									isSelectedIndex !== 0
+										? isSearchTextEmpty()
+											? 0
 											: isSelectedIndex
+										: isSelectedIndex
 									]
 								}
 							/>
@@ -1435,12 +1433,13 @@ const DiscoverScreen: React.FC<any> = props => {
 	// 		)}
 	// 	</View>
 	// );
-
 	const onScroll = useCallback(
 		(event: NativeSyntheticEvent<NativeScrollEvent>) => {
 			const slideSize = event.nativeEvent.layoutMeasurement.height;
 			const index = event.nativeEvent.contentOffset.y / slideSize;
 			const roundIndex = Math.round(index);
+			console.log('roundIndex1:',slideSize, roundIndex, visibleParentIndex);
+
 			if (roundIndex === visibleParentIndex) return;
 			// const cell = mediaRefs.current[discoverMatchData[roundIndex]?._id];
 
@@ -1454,7 +1453,7 @@ const DiscoverScreen: React.FC<any> = props => {
 	);
 
 	return (
-		<View style={{flex: 1}}>
+		<View style={{ flex: 1 }}>
 			<View style={[styles.tabView]}>
 				<CustomTopTabView
 					dataSource={beforeClickTopTabData}
@@ -1492,12 +1491,18 @@ const DiscoverScreen: React.FC<any> = props => {
 				</TouchableOpacity>
 			</View>
 			{beforeClickTopTabIndex === 0 && (
-				<View style={{flex: 1, height: height}}>
+				<View style={{ flex: 1, backgroundColor: defaultTheme.backGroundColor }}>
 					<FlatList
 						// style={{flex: 1}}
+						//contentContainerStyle={{flex: 1}}
 						data={discoverMatchData}
 						renderItem={renderForYouItem}
 						pagingEnabled
+						useTextureView={false}
+						playInBackground={true}
+						// maxToRenderPerBatch={1}
+						// initialNumToRender={1}
+						disableFocus={true}
 						keyboardShouldPersistTaps={'handled'}
 						keyExtractor={(item, index) => `${item?._id}${index}`}
 						onEndReachedThreshold={0.5}
@@ -1530,24 +1535,24 @@ const DiscoverScreen: React.FC<any> = props => {
 						ListEmptyComponent={() => (
 							<>
 								{isShowNoForYou && (
-									<View style={{height: height, width: width}}>
+									<View style={{ height: height, width: width }}>
 										<NoDataComponent noData={noDataForYou} />
 									</View>
 								)}
 							</>
 						)}
 						// windowSize={4}
-						//initialNumToRender={0}
-						//maxToRenderPerBatch={1}
-						snapToInterval={screenHeight}
-						decelerationRate={'normal'}
-						removeClippedSubviews
-						snapToAlignment={'start'}
-						initialScrollIndex={0}
-						disableIntervalMomentum
+						// initialNumToRender={1}
+						// maxToRenderPerBatch={1}
+						// snapToInterval={height}
+						// decelerationRate={'normal'}
+						// removeClippedSubviews={false}
+						// snapToAlignment={'center'}
+						// initialScrollIndex={0}			
+						// disableIntervalMomentum
 						onScroll={(event) => {
 							isFocused && setIsShowSwipeUp(false);
-							onScroll(event)
+							// onScroll(event)
 						}}
 						//onScroll={onScroll}
 						// viewabilityConfig={{
@@ -1558,7 +1563,7 @@ const DiscoverScreen: React.FC<any> = props => {
 						viewabilityConfigCallbackPairs={
 							viewabilityConfigCallbackPairs.current
 						}
-						// initialScrollIndex={visibleParentIndex}
+						initialScrollIndex={0}
 					/>
 				</View>
 			)}

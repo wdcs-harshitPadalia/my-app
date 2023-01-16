@@ -6,8 +6,8 @@ import {
 	joinChannel,
 	runQuery
 } from '@amityco/ts-sdk';
-import {MessageType} from '@flyerhq/react-native-chat-ui';
-import {useNavigation} from '@react-navigation/native';
+import { MessageType } from '@flyerhq/react-native-chat-ui';
+import { useNavigation } from '@react-navigation/native';
 import React, {
 	memo,
 	useMemo,
@@ -29,9 +29,9 @@ import {
 	Alert
 } from 'react-native';
 import ExpoFastImage from 'expo-fast-image';
-import {LinearGradient} from 'expo-linear-gradient';
-import {Video} from 'expo-av';
-import {useDispatch} from 'react-redux';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Video } from 'expo-av';
+import { useDispatch } from 'react-redux';
 import icons from '../assets/icon';
 import {
 	downloadVideo,
@@ -44,26 +44,29 @@ import {
 	getUserMessageList,
 	updateChannel
 } from '../redux/apiHandler/apiActions';
-import {updateApiLoader} from '../redux/reducerSlices/preLogin';
-import {RootState} from '../redux/store';
+import { updateApiLoader } from '../redux/reducerSlices/preLogin';
+import { RootState } from '../redux/store';
 
-import {horizontalScale, verticalScale} from '../theme';
+import { horizontalScale, verticalScale } from '../theme';
 import colors from '../theme/colors';
-import {defaultTheme} from '../theme/defaultTheme';
+import { defaultTheme } from '../theme/defaultTheme';
 import {
 	gradientColorAngle,
 	height,
 	Metrics,
-	screenWidth
+	screenWidth,
+	width
 } from '../theme/metrics';
 import OtherUserProfileReplicateBetComponent from './OtherUserProfileReplicateBetComponent';
 import ShareVideoModal from './ShareVideoModal';
-const {v4: uuidv4} = require('uuid');
-import {useSelector} from 'react-redux';
+const { v4: uuidv4 } = require('uuid');
+import { useSelector } from 'react-redux';
 // import convertToProxyURL from 'react-native-video-cache';
 // import {openSettings, PERMISSIONS, request} from 'react-native-permissions';
 import Strings from '../constants/strings';
 import ReactPlayer from 'react-player';
+import VisibilitySensor from '@svanboxel/visibility-sensor-react-native'
+
 interface Props {
 	parentIndex: number;
 	visibleParentIndex?: number;
@@ -107,7 +110,7 @@ const DiscoverVideoPlayer = React.forwardRef((props, parentRef) => {
 		stop
 	}));
 
-	const [isPreLoading, setIsPreLoading] = useState(false);
+	const [isPreLoading, setIsPreLoading] = useState(true);
 	const [isVideoPlay, setIsVideoPlay] = useState(false);
 
 	const [isShowShareModal, setIsShowShareModal] = useState(false);
@@ -117,6 +120,8 @@ const DiscoverVideoPlayer = React.forwardRef((props, parentRef) => {
 	const [pageUser, setPageUser] = useState(0);
 
 	const [isVideoPaused, setIsVideoPaused] = useState(true);
+
+	const [isVisible, setIsVisible] = useState(true);
 
 	const userInfo = useSelector((state: RootState) => {
 		return state.userInfo.data;
@@ -187,7 +192,8 @@ const DiscoverVideoPlayer = React.forwardRef((props, parentRef) => {
 	};
 
 	const unload = async () => {
-		setIsVideoPlay(false)
+		console.log("unload called@")
+		setIsVideoPaused(true)
 		return;
 		if (ref.current == null) {
 			return;
@@ -217,14 +223,15 @@ const DiscoverVideoPlayer = React.forwardRef((props, parentRef) => {
 	}, [visibleParentIndex, isFocus]);
 
 	const onTap = () => {
-		isVideoPlay ? stop() : play();
+		//isVideoPlay ? stop() : play();
 		//setIsVideoPlay(!isVideoPlay);
+		setpaused(!paused)
 	};
 
 	// api call for getting the friend list
 	const getAllUserList = () => {
 		if (pageUser === 0) {
-			dispatch(updateApiLoader({apiLoader: true}));
+			dispatch(updateApiLoader({ apiLoader: true }));
 		}
 
 		const uploadData = {
@@ -234,7 +241,7 @@ const DiscoverVideoPlayer = React.forwardRef((props, parentRef) => {
 
 		getUserMessageList(uploadData)
 			.then(res => {
-				dispatch(updateApiLoader({apiLoader: false}));
+				dispatch(updateApiLoader({ apiLoader: false }));
 
 				// console.log('getAllUserList :: getUserVideoList :: res ::', res);
 				if (pageUser !== 0) {
@@ -251,7 +258,7 @@ const DiscoverVideoPlayer = React.forwardRef((props, parentRef) => {
 				}
 			})
 			.catch(err => {
-				dispatch(updateApiLoader({apiLoader: false}));
+				dispatch(updateApiLoader({ apiLoader: false }));
 				// console.log('getAllUserList :: getUserVideoList :: res ::', err);
 			});
 	};
@@ -337,7 +344,7 @@ const DiscoverVideoPlayer = React.forwardRef((props, parentRef) => {
 					}
 				});
 
-				runQuery(query, ({data: textMessage, ...options}) => {
+				runQuery(query, ({ data: textMessage, ...options }) => {
 					//console.log('sent????', textMessage, options);
 					//addMessage(message.metadata?.data);
 					if (options?.error || options?.loading) {
@@ -405,7 +412,7 @@ const DiscoverVideoPlayer = React.forwardRef((props, parentRef) => {
 							}
 						});
 
-						runQuery(query, ({data: textMessage, ...options}) => {
+						runQuery(query, ({ data: textMessage, ...options }) => {
 							//console.log('sent????', textMessage, options);
 							if (options?.error || options?.loading) {
 								return;
@@ -455,194 +462,149 @@ const DiscoverVideoPlayer = React.forwardRef((props, parentRef) => {
 		// console.log('reqPermission ::', reqPermission);
 		// setIsShowShareModal(!isShowShareModal);
 	};
-
+	useEffect(() => {
+		console.log('visibleParentIndex', visibleParentIndex, 'parentIndex', parentIndex)
+	}, [visibleParentIndex, parentIndex])
+	const [paused, setpaused] = useState(true)
 	return (
-		<View style={styles.container}>
-			<ImageBackground
-				source={icons.imageBgSplashHolder}
-				resizeMode="contain"
-				style={styles.imageBgStyle}
-			/>
+		<VisibilitySensor onChange={(isVisible) => {
+			return (
+				console.log(isVisible),
+				setIsPreLoading(true),
+				setIsVisible(isVisible),
+				isVisible ? setpaused(false) : setpaused(true)
+			)
+		}
+		}
+		>
+			<View style={[styles.container, { height: screenOriginalHeight }]}>
+				<ImageBackground
+					source={icons.imageBgSplashHolder}
+					resizeMode="contain"
+					style={styles.imageBgStyle}
+				/>
 
-			<TouchableOpacity
-				style={{width: '100%', height: '100%'}}
-				onPress={onTap}
-				activeOpacity={1}>
-				<>
-					{Platform.OS === 'android' ? (
-						<Video
-							// progressUpdateIntervalMillis={2000}
-							ref={ref}
-							source={{uri: itemData?.video_url}}
-							style={{width: '100%', height: screenOriginalHeight}}
-							resizeMode="contain"
-							posterSource={{uri: itemData?.video_thumbnail}}
-							shouldPlay={false}
-							onError={(event: any) => {
-								console.log('Video Error : ', event);
-								setIsPreLoading(false);
-								stop();
-								// Alert.alert('', 'Sorry! this video is not compatible with your device so it might not play properly!')
-							}}
-							onLoad={item => {
-								console.log('onLoad');
-								//setIsPreLoading(false);
-								onVideoLoaded && onVideoLoaded(item);
-							}}
-							onLoadStart={() => {
-								console.log('onLoadStart ::', itemData?.video_url);
-								setIsPreLoading(true);
-							}}
-							onReadyForDisplay={(event: any) => {
-								//console.log('event ::', event);
-								setIsPreLoading(false);
-							}}
-							usePoster
-							isLooping={true}
-							posterStyle={{resizeMode: 'cover'}}
-						/>
-					) : (
-						// <FastVideo
-						// 	source={{uri: convertToProxyURL(itemData?.video_url)}}
-						// 	style={StyleSheet.absoluteFill}
-						// 	currentTime={0}
-						// 	paused={isVideoPaused}
-						// 	posterResizeMode="cover"
-						// 	poster={itemData?.video_thumbnail}
-						// 	playInBackground={false}
-						// 	repeat={true}
-						// 	resizeMode="contain"
-						// 	playWhenInactive={false}
-						// 	ref={ref}
-						// 	muted={false}
-						// 	onError={(event: any) => {
-						// 		console.log('Video Error : ', event);
-						// 	}}
-						// 	onLoad={item => {
-						// 		console.log('onLoad');
-						// 		setIsPreLoading(false);
-						// 		onVideoLoaded && onVideoLoaded(item);
-						// 	}}
-						// 	onLoadStart={() => {
-						// 		console.log('onLoadStart');
-						// 		setIsPreLoading(true);
-						// 	}}
-						// 	onBuffer={(event: any) => {
-						// 		console.log('event.isBuffering ::', event.isBuffering);
-						// 		setIsPreLoading(event.isBuffering ? true : false);
-						// 	}}
-						// 	minLoadRetryCount={5}
-						// 	allowsExternalPlayback={false}
-						// 	automaticallyWaitsToMinimizeStalling={false}
-						// 	useTextureView={false}
-						// 	controls={false}
-						// 	disableFocus={true}
-						// 	ignoreSilentSwitch="ignore"
-						// />
-
-						// <video
-						// 	// progressUpdateIntervalMillis={2000}
-						// 	ref={ref}
-						// 	src={itemData?.video_url}
-						// 	style={{width: '100%', height: screenOriginalHeight}}
-						// 	// autoPlay={isVideoPlay}
-						// 	loop
-						// 	controls={false}
-						// 	poster={itemData?.video_thumbnail}
-						// 	// resizeMode="cover"
-						// 	// posterSource={{uri: itemData?.video_thumbnail}}
-						// 	// shouldPlay={true}
-						// 	// onError={(event: any) => {
-						// 	// 	console.log('Video Error : ', event);
-						// 	// 	setIsPreLoading(false);
-						// 	// 	stop();
-						// 	// }}
-						// 	// onLoad={item => {
-						// 	// 	console.log('onLoad');
-						// 	// 	//setIsPreLoading(false);
-						// 	// 	onVideoLoaded && onVideoLoaded(item);
-						// 	// }}
-						// 	// onLoadStart={() => {
-						// 	// 	console.log('onLoadStart ::', itemData?.video_url);
-						// 	// 	setIsPreLoading(true);
-						// 	// }}
-						// 	// onReadyForDisplay={(event: any) => {
-						// 	// 	//console.log('event ::', event);
-						// 	// 	setIsPreLoading(false);
-						// 	// }}
-						// 	// usePoster
-						// 	// isLooping={true}
-						// 	// posterStyle={{resizeMode: 'contain'}}
-						// />
-
-
-
-						<ReactPlayer
-							url={itemData?.video_url}
-							width="100%"
-							height="100%"
-							controls={false}
-							style={{
-								flex: 1,
-								backgroundColor: 'red',
-								// height: '100%',
-							}}
-							// light={
-							// 	shortVideos?.video_thumbnail ?? betShortVideos?.video_thumbnail
-							// }
-							// ref={ref}
-							playing={isPlayVideo}
-							onStart={() => {
-								console.log('onStart ::');
-								//isVideoLoaded = false;
-							}}
-							
-							onDuration={duration => {
-								console.log('onDuration ::');
-								//isVideoLoaded = false;
-							}}
-							onProgress={state => {
-								// console.log('onProgress ::', state);
-								// if (!isVideoLoaded && !props.isNewStory) {
-								// 	props.onVideoLoaded(state);
-								// 	isVideoLoaded = true;
+				<TouchableOpacity
+					style={{ width: '100%', height: screenOriginalHeight }}
+					onPress={onTap}
+					activeOpacity={1}>
+					<>
+						{Platform.OS === 'android' ? (
+							<Video
+								// progressUpdateIntervalMillis={2000}
+								ref={ref}
+								source={{ uri: itemData?.video_url }}
+								style={{ width: '100%', flexGrow: 1, backgroundColor: 'red' }}
+								resizeMode="contain"
+								posterSource={{ uri: itemData?.video_thumbnail }}
+								shouldPlay={false}
+								onError={(event: any) => {
+									console.log('Video Error : ', event);
+									setIsPreLoading(false);
+									stop();
+									// Alert.alert('', 'Sorry! this video is not compatible with your device so it might not play properly!')
+								}}
+								onLoad={item => {
+									console.log('onLoad');
+									setIsPreLoading(false);
+									onVideoLoaded && onVideoLoaded(item);
+								}}
+								onLoadStart={() => {
+									console.log('onLoadStart ::', itemData?.video_url);
+									// setIsPreLoading(false);
+								}}
+								onReadyForDisplay={(event: any) => {
+									//console.log('event ::', event);
+									// setIsPreLoading(false);
+								}}
+								usePoster
+								isLooping={true}
+								posterStyle={{ resizeMode: 'cover' }}
+							/>
+						) : (
+							isVisible && (<ReactPlayer
+								url={itemData?.video_url}
+								width="100%"
+								height="100%"
+								fluid
+								key={itemData?.video_url}
+								controls={false}
+								style={{
+									flex: 1,
+									// margin: 0,
+									// padding : 0
+									backgroundColor: defaultTheme.backGroundColor,
+									//height: screenOriginalHeight
+								}}
+								playsinline
+								// light={
+								// 	itemData?.video_thumbnail
 								// }
-								// const played = parseInt(state.played);
-								// if (played === 1) {
-								// 	isVideoLoaded = false;
-								// }
-							}}
-							onEnded={() => {
-								console.log('onEnded ::');
-								//isVideoLoaded = false;
-							}}
-							onError={(error, data) => {
-								console.log('onError :: error ::', error);
-								//props.next();
-							}}
+								//ref={ref}
+								loop
+								// muted={true}
+								// autoPlay
+								playing={!paused}
+								onStart={() => {
+									setIsPreLoading(false)
+									console.log('onStart ::');
+									//isVideoLoaded = false;
+								}}
+
+								onDuration={duration => {
+									console.log('onDuration ::');
+									// setIsPreLoading(false)
+
+									//isVideoLoaded = false;
+								}}
+								// onBuffer={() => {
+								// 	setIsPreLoading(true)
+								// }}
+
+								onProgress={state => {
+									// setIsPreLoading(true)
+									// console.log('onProgress ::', state);
+									// if (!isVideoLoaded && !props.isNewStory) {
+									// 	props.onVideoLoaded(state);
+									// 	isVideoLoaded = true;
+									// }
+									const played = parseInt(state.played);
+									// if (played === 1) {
+									// 	setIsPreLoading(false);
+									// }
+								}}
+								onEnded={() => {
+									console.log('onEnded ::');
+									//setIsPreLoading(false)
+									//isVideoLoaded = false;
+								}}
+								onError={(error, data) => {
+									setIsPreLoading(false)
+									console.log('onError :: error ::', error);
+									//props.next();
+								}}
 							// onPause={handlePause}
 							// onPlay={handlePlay}
-						/>
-					)}
-				</>
+							/>)
+						)}
+					</>
 
-				<LinearGradient colors={['black', 'black']} style={styles.gradient} />
-			</TouchableOpacity>
+					<LinearGradient colors={['black', 'black']} style={styles.gradient} />
+				</TouchableOpacity>
 
-			{isPreLoading && (
-				<ActivityIndicator
-					animating
-					size="large"
-					color={colors.gray}
-					style={styles.activityIndicator}
-				/>
-			)}
+				{isPreLoading && (
+					<ActivityIndicator
+						animating
+						size="large"
+						color={colors.gray}
+						style={styles.activityIndicator}
+					/>
+				)}
+				{/* <View style={styles.innerRootView}> */}
+				{/* <View style={styles.innerTopView} /> */}
 
-			{/* <View style={styles.innerRootView}> */}
-			{/* <View style={styles.innerTopView} /> */}
-
-			{/* <View style={styles.innerBottomView}> */}
-			{/* <View style={styles.betsView}>
+				{/* <View style={styles.innerBottomView}> */}
+				<View style={styles.betsView}>
 				{itemData?.bet && Object.keys(itemData?.bet).length !== 0 && (
 					<OtherUserProfileReplicateBetComponent
 						itemData={{
@@ -694,52 +656,56 @@ const DiscoverVideoPlayer = React.forwardRef((props, parentRef) => {
 						</LinearGradient>
 					</TouchableOpacity>
 				)}
-			</View> */}
-			{/* </View> */}
-			{/* </View> */}
+			</View>
+				{/* </View> */}
+				{/* </View> */}
 
-			<ShareVideoModal
-				isVisible={isShowShareModal}
-				onBtnClose={() => {
-					setIsShowShareModal(!isShowShareModal);
-				}}
-				friendList={userListData}
-				onSendLink={() => {
-					handleShareVideo();
-				}}
-				onEndReach={() => {
-					onEndReached();
-				}}
-				onBtnDownload={() => {
-					handleDownloadVideo();
-				}}
-				onFriendViewSelection={(item: any) => {
-					sendVideoLinkWithFriend(item);
-				}}
-			/>
-		</View>
+				<ShareVideoModal
+					isVisible={isShowShareModal}
+					onBtnClose={() => {
+						setIsShowShareModal(!isShowShareModal);
+					}}
+					friendList={userListData}
+					onSendLink={() => {
+						handleShareVideo();
+					}}
+					onEndReach={() => {
+						onEndReached();
+					}}
+					onBtnDownload={() => {
+						handleDownloadVideo();
+					}}
+					onFriendViewSelection={(item: any) => {
+						sendVideoLinkWithFriend(item);
+					}}
+				/>
+			</View>
+		</VisibilitySensor>
 	);
 });
 
 const styles = StyleSheet.create({
 	container: {
 		// height: screen_Height,
-		width: screenWidth,
+		width: '100%',
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
+		// backgroundColor: 'red',
+		// ...StyleSheet.absoluteFillObject,
+		// width: screenWidth,
 	},
 	imageBgStyle: {
 		// width: screenWidth - horizontalScale(120),
 		aspectRatio: 0.6,
 		opacity: 0.2,
-		position: 'absolute'
-		// width: '100%',
-		// aspectRatio: 1,
-		// opacity: 0.2,
-		// position: 'absolute',
-		// justifyContent: 'center',
-		// alignItems: 'center'
+		position: 'absolute',
+		width: '100%',
+		aspectRatio: 1,
+		opacity: 0.2,
+		position: 'absolute',
+		justifyContent: 'center',
+		alignItems: 'center'
 	},
 	activityIndicator: {
 		// height: 50,
@@ -759,11 +725,11 @@ const styles = StyleSheet.create({
 		left: 0,
 		right: 0,
 		top: 0,
-		height: '100%',
+		// height: '100%',
 		opacity: 0.4
 	},
 	betsView: {
-		bottom: verticalScale(120),
+		bottom: 120,
 		width: screenWidth - horizontalScale(16),
 		position: 'absolute'
 	},

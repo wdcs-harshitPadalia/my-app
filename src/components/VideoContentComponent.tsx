@@ -76,7 +76,8 @@ const styles = StyleSheet.create({
 	imgView: {
 		justifyContent: 'center',
 		height: verticalScale(178),
-		borderRadius: verticalScale(10)
+		borderRadius: verticalScale(10),
+		overflow: 'hidden'
 	},
 	deleteImgView: {
 		alignSelf: 'flex-end',

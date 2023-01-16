@@ -1,11 +1,7 @@
 import {StackActions, useNavigation, useRoute} from '@react-navigation/native';
 import {useWalletConnect} from '@walletconnect/react-native-dapp';
 import React, {useEffect, useState} from 'react';
-import {
-	ScrollView,
-	TouchableOpacity,
-	View
-} from 'react-native';
+import {ScrollView, TouchableOpacity, View} from 'react-native';
 import {Text} from 'react-native-elements';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
@@ -30,7 +26,8 @@ import ScreenNames from '../../../../navigation/screenNames';
 import {
 	claimAmount,
 	getConvertCurrencyData,
-	getDisputeResult
+	getDisputeResult,
+	getUserAncestor
 } from '../../../../redux/apiHandler/apiActions';
 import {updateApiLoader} from '../../../../redux/reducerSlices/preLogin';
 import {RootState} from '../../../../redux/store';
@@ -82,7 +79,8 @@ const DisputeResultScreen: React.FC<any> = props => {
 		betStatus,
 		getPassiveIncome,
 		passiveIncomeAmount,
-		liquidity
+		liquidity,
+		claimUserData
 	} = useBetCreateContract(false);
 
 	let isResultViewHide;
@@ -240,7 +238,8 @@ const DisputeResultScreen: React.FC<any> = props => {
 						maker_winning_amount: betMakerWinningAmount,
 						maker_winning_amount_usd:
 							parseFloat(betMakerWinningAmount) * parseFloat(convertCurrency),
-						passive_income: passiveIncome * (passiveIncomeAmount / 100)
+						passive_income: passiveIncome * (passiveIncomeAmount / 100),
+						referral: claimUserData
 					};
 				} else {
 					const winningAmount =
@@ -253,7 +252,8 @@ const DisputeResultScreen: React.FC<any> = props => {
 						bet_winning_amount_usd: (
 							winningAmount * parseFloat(convertCurrency)
 						).toFixed(decimalValue),
-						passive_income: passiveIncome * (passiveIncomeAmount / 100)
+						passive_income: passiveIncome * (passiveIncomeAmount / 100),
+						referral: claimUserData
 					};
 				}
 
@@ -281,6 +281,20 @@ const DisputeResultScreen: React.FC<any> = props => {
 	useEffect(() => {
 		getDisputeResultData();
 	}, [betId]);
+
+	const getUserAncestorData = () => {
+		dispatch(updateApiLoader({apiLoader: true}));
+		getUserAncestor()
+			.then(res => {
+				console.log('getUserAncestorData Response >>> ', JSON.stringify(res));
+				dispatch(updateApiLoader({apiLoader: false}));
+				handleClaimWinningAmount(res?.data);
+			})
+			.catch(err => {
+				console.log('getTokenTypeData Data Err >>> ', JSON.stringify(err));
+				dispatch(updateApiLoader({apiLoader: false}));
+			});
+	};
 
 	const getDisputeResultData = () => {
 		dispatch(updateApiLoader({apiLoader: true}));
@@ -425,7 +439,9 @@ const DisputeResultScreen: React.FC<any> = props => {
 				result,
 				['0x0000000000000000000000000000000000000000000000000000000000000000'],
 				'0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
-				'0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+				'0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+				userData?.users,
+				userData?.rewardPercentage
 			);
 		} else {
 			resolveBetResult(
@@ -433,7 +449,9 @@ const DisputeResultScreen: React.FC<any> = props => {
 				result,
 				resultData?.HashSignatureObject?.hash,
 				resultData?.HashSignatureObject?.makerSignature,
-				resultData?.HashSignatureObject?.takerSignature
+				resultData?.HashSignatureObject?.takerSignature,
+				userData?.users,
+				userData?.rewardPercentage
 			);
 		}
 
@@ -717,7 +735,7 @@ const DisputeResultScreen: React.FC<any> = props => {
 										redirectType === 'DISPUTE_RESULT' ||
 										redirectType === 'ADMIN_RESULT_DISPUTE'
 									) {
-										handleClaimWinningAmount();
+										getUserAncestorData();
 									} else {
 										navigation.dispatch(StackActions.popToTop());
 									}
@@ -733,7 +751,7 @@ const DisputeResultScreen: React.FC<any> = props => {
 										redirectType === 'DISPUTE_RESULT' ||
 										redirectType === 'ADMIN_RESULT_DISPUTE'
 									) {
-										handleClaimWinningAmount();
+										getUserAncestorData();
 									} else {
 										navigation.dispatch(StackActions.popToTop());
 									}

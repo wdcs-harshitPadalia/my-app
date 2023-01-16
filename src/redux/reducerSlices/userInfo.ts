@@ -36,6 +36,8 @@ export interface UserState {
 			betsVisible: string;
 			messagesVisible: string;
 			videoCount: number;
+			referralUserInfo: {_id: string; userName: string};
+			affiliateCode: string;
 		};
 		token: string;
 		isNewUser: boolean;
@@ -81,8 +83,12 @@ const initialState: UserState = {
 		videosVisible: '',
 		balanceVisible: '',
 		betsVisible: '',
-		messagesVisible: '',
 		videoCount: 0,
+		referralUserInfo: {
+			_id: '',
+			userName: ''
+		},
+		affiliateCode: '',
 		token: '',
 		isNewUser: false,
 		isAppLaunched: true,

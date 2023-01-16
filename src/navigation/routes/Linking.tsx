@@ -37,6 +37,17 @@ const config = {
 						}
 					}
 				},
+				DiscoverRouter: {
+                    initialRouteName: ScreenNames.DiscoverScreen,
+                    screens: {
+                        DiscoverScreen: {
+                            path: 'DiscoverScreen/:video_id?'
+                            // parse: {
+                            //   betId: (betId: String) => `${betId}`,
+                            // },
+                        }
+                    }
+                },
 				ProfileRouter: {
 					initialRouteName: ScreenNames.ProfileScreen,
 					screens: {

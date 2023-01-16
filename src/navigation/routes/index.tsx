@@ -40,7 +40,7 @@ import {OAuthExtension} from '@magic-ext/react-native-oauth';
 import {MAGIC_API_KEY} from '@env';
 import {Magic as MagicWeb} from 'magic-sdk';
 import {OAuthExtension as OAuthExtensionWeb} from '@magic-ext/oauth';
-
+import ReferralProgramScreen from '../../screens/PostLogin/ReferralProgramScreen';
 
 const customNodeOptions = {
 	rpcUrl: RpcURL, // Polygon RPC URL
@@ -235,6 +235,11 @@ export const LiveTabRoutes = (_props: any) => (
 		<Stack.Screen
 			name={ScreenNames.MediaPage}
 			component={MediaPage}
+			options={{headerShown: false}}
+		/>
+		<Stack.Screen
+			name={ScreenNames.VideoContentScreen}
+			component={VideoContentScreen}
 			options={{headerShown: false}}
 		/>
 	</Stack.Navigator>
@@ -528,6 +533,11 @@ const FeedsRouter = () => (
 			component={VideoCreationScreen}
 			options={{headerShown: false, gestureEnabled: false}}
 		/>
+		<Stack.Screen
+			name={ScreenNames.VideoContentScreen}
+			component={VideoContentScreen}
+			options={{headerShown: false}}
+		/>
 	</Stack.Navigator>
 );
 
@@ -649,6 +659,21 @@ const DiscoverRouter = () => (
 		<Stack.Screen
 			name={ScreenNames.MediaPage}
 			component={MediaPage}
+			options={{headerShown: false}}
+		/>
+		<Stack.Screen
+			name={ScreenNames.ChatListScreen}
+			component={ChatListScreen}
+			options={{headerShown: false}}
+		/>
+		<Stack.Screen
+			name={ScreenNames.ChatDetailsScreen}
+			component={ChatDetailsScreen}
+			options={{headerShown: false}}
+		/>
+		<Stack.Screen
+			name={ScreenNames.VideoContentScreen}
+			component={VideoContentScreen}
 			options={{headerShown: false}}
 		/>
 	</Stack.Navigator>
@@ -805,6 +830,11 @@ const ProfileRouter = () => (
 		<Stack.Screen
 			name={ScreenNames.VideoContentScreen}
 			component={VideoContentScreen}
+			options={{headerShown: false}}
+		/>
+		<Stack.Screen
+			name={ScreenNames.ReferralProgramScreen}
+			component={ReferralProgramScreen}
 			options={{headerShown: false}}
 		/>
 	</Stack.Navigator>

@@ -71,6 +71,7 @@ const TotalBalanceComponent: React.FC<Props> = props => {
 					currencyData[i]?.tokenPriceUsd;
 				console.log('totalMaticBalance ::', totalMaticBalance);
 				totalBalance = totalBalance + totalMaticBalance;
+				dispatch(updateTotalBalance(parseFloat(totalBalance).toFixed(2)));
 				setTokenCount(tokenCount + 1);
 			} else {
 				getBalanceAsync(currencyData[i]?.contractAddress);

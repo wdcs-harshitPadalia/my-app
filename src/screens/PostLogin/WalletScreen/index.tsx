@@ -293,7 +293,9 @@ const WalletScreen: React.FC<any> = () => {
 				setTokenCount(tokenCount + 1);
 				if (currencyData.length === 1) {
 					setCurrentBalance(getRoundDecimalValue(totalBalance));
-					setIsLoading(false);
+					if (showTokenWiseBalance) {
+						setIsLoading(false);
+					}
 				}
 			} else {
 				getBalanceAsync(currencyData[i]?.contractAddress);
@@ -490,6 +492,7 @@ const WalletScreen: React.FC<any> = () => {
 							if (item) {
 								if (showPopupType === '0') {
 									if (item._id === isSelectCurrency?._id) {
+										showTokenWiseBalance = true;
 										setIsSelectCurrency({});
 										setIsLoading(true);
 										handleGetBalance();

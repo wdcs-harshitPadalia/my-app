@@ -272,7 +272,9 @@ const DiscoverScreen: React.FC<any> = props => {
 	// }, []);
 
 	useUpdateEffect(() => {
-		videoMarkSeen(discoverMatchData[visibleParentIndex]._id);
+		if (discoverMatchData[visibleParentIndex].dataType === 'video') {
+			videoMarkSeen(discoverMatchData[visibleParentIndex]._id);
+		}
 	}, [visibleParentIndex]);
 
 	useUpdateEffect(() => {
@@ -770,7 +772,7 @@ const DiscoverScreen: React.FC<any> = props => {
 		) : (
 			// </View>
 			<ImageBackground
-				style={[styles.fullScreenImageBg, {height: screenActualHeight}]}
+				style={[styles.fullScreenImageBg, {height: height}]}
 				source={{
 					uri: item.subcategories?.imageUrl ?? item?.categories?.imageUrl
 				}}
@@ -1357,55 +1359,55 @@ const DiscoverScreen: React.FC<any> = props => {
 	// 			</>
 	// 		)}
 
-	// 		{searchClicked && screenActualHeight !== 0 && (
-	// 			<>
-	// 				<View style={styles.viewSearch}>
-	// 					<SearchBarWIthBack
-	// 						placeholderText={searchBarPlaceHolderText}
-	// 						searchPhrase={searchText}
-	// 						setSearchPhrase={value => {
-	// 							setSearchText(value);
-	// 							searchTextUpdated = value;
-	// 						}}
-	// 						onBackPress={() => {
-	// 							setDiscoverSearchData([]);
-	// 							setSearchClicked(false);
-	// 							setSearchText('');
-	// 							Keyboard.dismiss();
-	// 							setIsSelectedIndex(0);
-	// 						}}
-	// 						searchClicked={searchClicked}
-	// 						isEditable={true}
-	// 						selectedIndex={isSelectedIndex}
-	// 						onClearPress={() => {
-	// 							setSearchText('');
-	// 						}}
-	// 					/>
-	// 				</View>
-	// 				<ScrollableCustomTabView
-	// 					dataSource={afterClickTopTabData}
-	// 					isFromDiscover={true}
-	// 					onTabChange={item => {
-	// 						// if (item === isSelectedIndex) return;
-	// 						setSearchText('');
-	// 						// setDiscoverSearchData([]);
-	// 						// setRecentMatcheData([]);
-	// 						// setRecentFriendData([]);
-	// 						// setRecentBetsData([]);
-	// 						// setDiscoverSearchBetsData([]);
-	// 						const searchIndex = afterClickTopTabData.findIndex(
-	// 							arrData => arrData === item
-	// 						);
-	// 						setIsSelectedIndex(searchIndex);
-	// 					}}
-	// 					selectedIndex={isSelectedIndex}
-	// 					onClearPress={() => {
-	// 						setSearchText('');
-	// 					}}
-	// 				/>
-	// 				<AfterSearchClickComponent />
-	// 			</>
-	// 		)}
+	// {searchClicked && screenActualHeight !== 0 && (
+	// 	<>
+	// 		<View style={styles.viewSearch}>
+	// 			<SearchBarWIthBack
+	// 				placeholderText={searchBarPlaceHolderText}
+	// 				searchPhrase={searchText}
+	// 				setSearchPhrase={value => {
+	// 					setSearchText(value);
+	// 					searchTextUpdated = value;
+	// 				}}
+	// 				onBackPress={() => {
+	// 					setDiscoverSearchData([]);
+	// 					setSearchClicked(false);
+	// 					setSearchText('');
+	// 					Keyboard.dismiss();
+	// 					setIsSelectedIndex(0);
+	// 				}}
+	// 				searchClicked={searchClicked}
+	// 				isEditable={true}
+	// 				selectedIndex={isSelectedIndex}
+	// 				onClearPress={() => {
+	// 					setSearchText('');
+	// 				}}
+	// 			/>
+	// 		</View>
+	// 		<ScrollableCustomTabView
+	// 			dataSource={afterClickTopTabData}
+	// 			isFromDiscover={true}
+	// 			onTabChange={item => {
+	// 				// if (item === isSelectedIndex) return;
+	// 				setSearchText('');
+	// 				// setDiscoverSearchData([]);
+	// 				// setRecentMatcheData([]);
+	// 				// setRecentFriendData([]);
+	// 				// setRecentBetsData([]);
+	// 				// setDiscoverSearchBetsData([]);
+	// 				const searchIndex = afterClickTopTabData.findIndex(
+	// 					arrData => arrData === item
+	// 				);
+	// 				setIsSelectedIndex(searchIndex);
+	// 			}}
+	// 			selectedIndex={isSelectedIndex}
+	// 			onClearPress={() => {
+	// 				setSearchText('');
+	// 			}}
+	// 		/>
+	// 		<AfterSearchClickComponent />
+	// 	</>
+	// )}
 	// 		{isShowTutorial && screenActualHeight !== 0 && (
 	// 			<TutorialView
 	// 				style={{top: 0, bottom: 0, position: 'absolute'}}
@@ -1462,8 +1464,8 @@ const DiscoverScreen: React.FC<any> = props => {
 	);
 
 	return (
-		<View style={{flex: 1}}>
-			<View style={[styles.tabView]}>
+		<View style={{flex: 1, backgroundColor : defaultTheme.backGroundColor}}>
+			{/* <View style={[styles.tabView]}>
 				<CustomTopTabView
 					dataSource={beforeClickTopTabData}
 					onTabChange={selectedIndex => {
@@ -1498,8 +1500,9 @@ const DiscoverScreen: React.FC<any> = props => {
 						resizeMode={'contain'}
 					/>
 				</TouchableOpacity>
-			</View>
+			</View> */}
 			{beforeClickTopTabIndex === 0 &&
+				!searchClicked &&
 				(isVideoUnAvailable ? (
 					<View style={styles.fullScreenImageBg}>
 						<ErrorComponent
@@ -1572,7 +1575,7 @@ const DiscoverScreen: React.FC<any> = props => {
 							// disableIntervalMomentum
 							onScroll={event => {
 								isFocused && setIsShowSwipeUp(false);
-								// onScroll(event)
+								onScroll(event);
 							}}
 							//onScroll={onScroll}
 							// viewabilityConfig={{
@@ -1580,14 +1583,63 @@ const DiscoverScreen: React.FC<any> = props => {
 							// 	// minimumViewTime: 2000,
 							// }}
 							// onViewableItemsChanged={onViewableItemsChanged}
-							viewabilityConfigCallbackPairs={
-								viewabilityConfigCallbackPairs.current
-							}
+							// viewabilityConfigCallbackPairs={
+							// 	viewabilityConfigCallbackPairs.current
+							// }
 							initialScrollIndex={0}
 						/>
 					</View>
 				))}
 
+{searchClicked  && (
+				<>
+					<View style={styles.viewSearch}>
+						<SearchBarWIthBack
+							placeholderText={searchBarPlaceHolderText}
+							searchPhrase={searchText}
+							setSearchPhrase={value => {
+								setSearchText(value);
+								searchTextUpdated = value;
+							}}
+							onBackPress={() => {
+								setDiscoverSearchData([]);
+								setSearchClicked(false);
+								setSearchText('');
+								Keyboard.dismiss();
+								setIsSelectedIndex(0);
+							}}
+							searchClicked={searchClicked}
+							isEditable={true}
+							selectedIndex={isSelectedIndex}
+							onClearPress={() => {
+								setSearchText('');
+							}}
+						/>
+					</View>
+					<ScrollableCustomTabView
+						dataSource={afterClickTopTabData}
+						isFromDiscover={true}
+						onTabChange={item => {
+							// if (item === isSelectedIndex) return;
+							setSearchText('');
+							// setDiscoverSearchData([]);
+							// setRecentMatcheData([]);
+							// setRecentFriendData([]);
+							// setRecentBetsData([]);
+							// setDiscoverSearchBetsData([]);
+							const searchIndex = afterClickTopTabData.findIndex(
+								arrData => arrData === item
+							);
+							setIsSelectedIndex(searchIndex);
+						}}
+						selectedIndex={isSelectedIndex}
+						onClearPress={() => {
+							setSearchText('');
+						}}
+					/>
+					<AfterSearchClickComponent />
+				</>
+			)}
 			{beforeClickTopTabIndex === 1 && (
 				<View
 					style={{
@@ -1642,6 +1694,43 @@ const DiscoverScreen: React.FC<any> = props => {
 					)}
 				</View>
 			)}
+
+			{!searchClicked && <View style={[styles.tabView, {top: insets.top}]}>
+				<CustomTopTabView
+					dataSource={beforeClickTopTabData}
+					onTabChange={selectedIndex => {
+						setBeforeClickTopTabIndex(selectedIndex);
+					}}
+					selectedIndex={beforeClickTopTabIndex}
+					viewWidth={110}
+				/>
+
+				<TouchableOpacity
+					onPress={() => {
+						setSearchClicked(true);
+						setIsSelectedIndex(0);
+
+						setDiscoverSearchData([]);
+						setRecentMatcheData([]);
+						setRecentFriendData([]);
+						setRecentBetsData([]);
+						setDiscoverSearchBetsData([]);
+
+						page = 0;
+						pageBets = 0;
+
+						setTimeout(() => {
+							getDiscoverSearchData();
+						}, 500);
+					}}
+					style={styles.btnSearch}>
+					<ExpoFastImage
+						style={styles.iconSearch}
+						source={icons.search}
+						resizeMode={'contain'}
+					/>
+				</TouchableOpacity>
+			</View>}
 		</View>
 	);
 };

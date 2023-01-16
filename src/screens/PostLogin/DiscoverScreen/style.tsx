@@ -26,7 +26,8 @@ const styles = StyleSheet.create({
 
 	viewSearch: {
 		marginHorizontal: horizontalScale(16),
-		marginTop: verticalScale(12)
+		marginTop: verticalScale(12),
+		backgroundColor: defaultTheme.backGroundColor
 	},
 	viewSubContain: {
 		// marginHorizontal: horizontalScale(16),

@@ -1,5 +1,5 @@
 import React, { createRef, useRef, useState } from "react";
-import { View, StyleSheet, TextInputProps, Text } from "react-native";
+import { View, StyleSheet, TextInputProps, Text, Platform } from "react-native";
 import Strings from "../constants/strings";
 import { Fonts, moderateScale, verticalScale } from "../theme";
 import colors from "../theme/colors";
@@ -94,6 +94,14 @@ const styles = StyleSheet.create({
 
   marginInput: {
     marginBottom: verticalScale(20),
+    ...Platform.select({
+			ios: {
+        width: width * 0.7
+			},
+      android: {
+        width: width * 0.7
+			}
+		})
   },
 });
 

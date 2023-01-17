@@ -226,6 +226,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   inputStyle: {
+    outlineStyle: 'none',
     fontSize: moderateScale(22),
     fontFamily: Fonts.type.Inter_Bold,
     textTransform: "uppercase",

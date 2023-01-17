@@ -13,6 +13,7 @@ export const styles = StyleSheet.create({
 		flex: 1
 	},
 	input: {
+		outlineStyle: 'none',
 		fontSize: 16,
 		flex: 1
 	},

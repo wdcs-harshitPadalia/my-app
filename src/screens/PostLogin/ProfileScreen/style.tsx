@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: defaultTheme.backGroundColor,
-    marginBottom: Platform.OS === "ios" ? 0 : horizontalScale(20),
+    marginBottom: (Platform.OS === "ios" || Platform.OS === 'web') ? 0 : horizontalScale(20),
   },
   viewContain: {
     marginTop: verticalScale(20),

@@ -1,6 +1,6 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {Share, View} from 'react-native';
+import {Platform, Share, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch} from 'react-redux';
 // import {TouchableOpacity} from 'react-native-gesture-handler';
@@ -127,27 +127,43 @@ export default function EventDetailsScreen() {
 	}, [currentPage]);
 
 	const handleShareUrl = async () => {
-		try {
-			const result = await Share.share({
-				message: createBetDetailsPreviewShareUrl(
-					title,
-					matchId,
-					matchId,
-					betCreationType,
-					false
-				)
-			});
-			if (result.action === Share.sharedAction) {
-				if (result.activityType) {
-					// shared with activity type of result.activityType
-				} else {
-					// shared
-				}
-			} else if (result.action === Share.dismissedAction) {
-				// dismissed
+		if (Platform.OS === 'web') {
+			try {
+				await navigator.share({
+					url: createBetDetailsPreviewShareUrl(
+						title,
+						matchId,
+						matchId,
+						betCreationType,
+						false
+					)
+				});
+			} catch (error) {
+				showErrorAlert('', error.message);
 			}
-		} catch (error) {
-			showErrorAlert('', error.message);
+		} else {
+			try {
+				const result = await Share.share({
+					message: createBetDetailsPreviewShareUrl(
+						title,
+						matchId,
+						matchId,
+						betCreationType,
+						false
+					)
+				});
+				if (result.action === Share.sharedAction) {
+					if (result.activityType) {
+						// shared with activity type of result.activityType
+					} else {
+						// shared
+					}
+				} else if (result.action === Share.dismissedAction) {
+					// dismissed
+				}
+			} catch (error) {
+				showErrorAlert('', error.message);
+			}
 		}
 	};
 	return (

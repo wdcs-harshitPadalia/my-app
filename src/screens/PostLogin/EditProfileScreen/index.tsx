@@ -239,16 +239,23 @@ const EditProfileScreen: React.FC<any> = props => {
 				return;
 			}
 
-			const result = await ImagePicker.launchCameraAsync();
+			if (Platform.OS === 'web') {
+				myRef.current.click(function () {
+					changeHandler();
+				});
+			} else {
+				const result = await ImagePicker.launchCameraAsync();
 
-			// Explore the result
-			console.log(result);
-			setModalIsSuccess(false);
+				// Explore the result
+				console.log(result);
+				setModalIsSuccess(false);
 
-			if (!result.canceled) {
-				console.log('source', result.assets[0]);
-				setProfilePic(result.assets[0]);
-				setIsAvatarSelect(false);
+				if (!result.canceled) {
+					console.log('source', result.assets[0]);
+					setProfilePic(result.assets[0]);
+					setIsAvatarSelect(false);
+					setIsBase64(false);
+				}
 			}
 		} else {
 			// Ask the user for the permission to access the media library
@@ -378,14 +385,28 @@ const EditProfileScreen: React.FC<any> = props => {
 	const handleUploadPhoto = async () => {
 		dispatch(updateApiLoader({apiLoader: true}));
 
-		// console.log(
-		//   "createFormData(profilePic) >>>> ",
-		//   "" + JSON.stringify(createFormData(profilePic))
-		// );
-		// return;
+		console.log(
+			'createFormData(profilePic) >>>> ',
+			'' + JSON.stringify(await createFormData(profilePic))
+		);
+
+		const profileFormData = await createFormData(profilePic);
+
+		// editUserProfile(profileFormData)
+		// 	.then(response => {
+		// 		console.log('upload succes', JSON.stringify(response));
+		// 		dispatch(updateApiLoader({apiLoader: false}));
+		// 		navigation.goBack();
+		// 	})
+		// 	.catch(error => {
+		// 		console.log('upload error', JSON.stringify(error));
+		// 		dispatch(updateApiLoader({apiLoader: false}));
+		// 		navigation.goBack();
+		// 	});
+
 		fetch(ApiBaseUrl + ApiConstants.EditProfile, {
 			method: Api.PUT,
-			body: await createFormData(profilePic),
+			body: profileFormData,
 			headers: {
 				Authorization: 'Bearer ' + userInfo.token
 			}

@@ -70,6 +70,7 @@ const StoryDetailsContainer: React.FC<Props> = (props: Props) => {
 	const [duration, setDuration] = useState(
 		stories[currentIndex].duration ? stories[currentIndex].duration : 3
 	);
+	const [isInputFocus, setIsInputFocus] = useState(false);
 	// const [duration, setDuration] = useState(3);
 
 	// useEffect(() => {
@@ -147,15 +148,17 @@ const StoryDetailsContainer: React.FC<Props> = (props: Props) => {
 
 	const replyModalOpen = () => {
 		console.log('replyModalOpen >>');
-		setIsPause(true);
 		storyRef.current.handlePause();
+		setIsPause(true);
+		setIsInputFocus(true);
 		// setIsModelOpen(true);
 	};
 
 	const replyModalClose = () => {
 		console.log('replyModalClose >>');
-		setIsPause(false);
 		storyRef.current.handlePlay();
+		setIsPause(false);
+		setIsInputFocus(false);
 		// setIsModelOpen(false);
 	};
 
@@ -206,6 +209,7 @@ const StoryDetailsContainer: React.FC<Props> = (props: Props) => {
 			<TouchableOpacity
 				activeOpacity={1}
 				delayLongPress={500}
+				disabled={isInputFocus}
 				onPress={e => changeStory(e.nativeEvent)}
 				onLongPress={() => onPause(true)}
 				onPressOut={() => onPause(false)}
@@ -262,8 +266,8 @@ const StoryDetailsContainer: React.FC<Props> = (props: Props) => {
 						progress={{id: currentIndex}}
 					/>
 				</View>
-
-				{/* <Modal
+			</TouchableOpacity>
+			{/* <Modal
 					style={[
 						styles.modal,
 						{backgroundColor: isModelOpen ? 'transparent' : ''}
@@ -272,168 +276,167 @@ const StoryDetailsContainer: React.FC<Props> = (props: Props) => {
 					<View
 						style={{height: '100%', backgroundColor: 'red'}}
 						onTouchEndCapture={replyModalClose}> */}
-				{dataStories?._id !== userInfo?.user?._id && (
-					<View
-						style={{
-							width: '100%',
-							position: 'absolute',
-							bottom: 30,
-							paddingHorizontal: verticalScale(20)
-						}}>
-						<CommentInput
-							profileImage={userInfo.user?.picture}
-							style={{backgroundColor: 'transparent'}}
-							rightIconPath={icons.ic_chatSend}
-							placeholder="Type a message..."
-							rightIconClick={async text => {
-								console.log('rightIconClick >>', stories[currentIndex]);
-								const data = {
-									senderId: userInfo?.user?._id,
-									receiverId: dataStories?._id,
-									channelId:
-										'amity_' +
-										uniqueIdGenerateFrom2Ids([
-											userInfo?.user?._id,
-											dataStories?._id
-										])
-								};
-								await updateChannel1(data);
-
-								const channelId =
+			{dataStories?._id !== userInfo?.user?._id && (
+				<View
+					style={{
+						width: '100%',
+						position: 'absolute',
+						bottom: 30,
+						paddingHorizontal: verticalScale(20)
+					}}>
+					<CommentInput
+						profileImage={userInfo.user?.picture}
+						style={{backgroundColor: 'transparent'}}
+						rightIconPath={icons.ic_chatSend}
+						placeholder="Type a message..."
+						rightIconClick={async text => {
+							console.log('rightIconClick >>', stories[currentIndex]);
+							const data = {
+								senderId: userInfo?.user?._id,
+								receiverId: dataStories?._id,
+								channelId:
 									'amity_' +
 									uniqueIdGenerateFrom2Ids([
-										userInfo.user?._id,
+										userInfo?.user?._id,
 										dataStories?._id
-									]);
-								const query5 = createQuery(getChannel, channelId);
-								let shareURL = '';
+									])
+							};
+							await updateChannel1(data);
 
-								if (story.type === 'video') {
-									shareURL =
-										getVideoShareUrl(
-											story?.shortVideos?._id ?? story?.betShortVideos?._id
-										) +
-										'\n' +
-										text;
-								} else {
-									shareURL =
-										(story?.bet && Object.keys(story.bet).length > 0
-											? createJoinBetShareUrl(story.bet?._id)
-											: createMatchDetailsShareUrl(
-													Strings.feed,
-													story?.match?._id,
-													1
-											  )) +
-										'\n' +
-										text;
-								}
-								runQuery(query5, result => {
-									//console.log('getChannelByID', result);
-									if (result.data) {
-										const user = {
-											id: userInfo.user?._id,
-											avatarName: userInfo.user?.userName,
-											firstName: userInfo.user?.userName,
-											lastName: '',
-											imageUrl: userInfo.user?.picture
-										};
-										const textMessage: MessageType.Text = {
-											author: user,
-											createdAt: Date.now(),
-											id: uuidv4(),
-											text: shareURL,
-											type: 'text'
-											//uri: 'https://cdn.pixabay.com/photo/2015/04/19/08/32/marguerite-729510_960_720.jpg',
-										};
-										const query = createQuery(createMessage, {
-											channelId: channelId,
-											type: 'text',
+							const channelId =
+								'amity_' +
+								uniqueIdGenerateFrom2Ids([
+									userInfo.user?._id,
+									dataStories?._id
+								]);
+							const query5 = createQuery(getChannel, channelId);
+							let shareURL = '';
+
+							if (story.type === 'video') {
+								shareURL =
+									getVideoShareUrl(
+										story?.shortVideos?._id ?? story?.betShortVideos?._id
+									) +
+									'\n' +
+									text;
+							} else {
+								shareURL =
+									(story?.bet && Object.keys(story.bet).length > 0
+										? createJoinBetShareUrl(story.bet?._id)
+										: createMatchDetailsShareUrl(
+												Strings.feed,
+												story?.match?._id,
+												1
+										  )) +
+									'\n' +
+									text;
+							}
+							runQuery(query5, result => {
+								//console.log('getChannelByID', result);
+								if (result.data) {
+									const user = {
+										id: userInfo.user?._id,
+										avatarName: userInfo.user?.userName,
+										firstName: userInfo.user?.userName,
+										lastName: '',
+										imageUrl: userInfo.user?.picture
+									};
+									const textMessage: MessageType.Text = {
+										author: user,
+										createdAt: Date.now(),
+										id: uuidv4(),
+										text: shareURL,
+										type: 'text'
+										//uri: 'https://cdn.pixabay.com/photo/2015/04/19/08/32/marguerite-729510_960_720.jpg',
+									};
+									const query = createQuery(createMessage, {
+										channelId: channelId,
+										type: 'text',
+										data: {
+											text: shareURL
+										},
+										metadata: {
+											data: textMessage
+										}
+									});
+
+									runQuery(query, ({data: textMessage, ...options}) => {
+										//console.log('sent????', textMessage, options);
+										//addMessage(message.metadata?.data);
+										if (options?.error || options?.loading) {
+											return;
+										}
+										Alert.alert('', 'Message sent successfully.');
+									});
+									let query1 = createQuery(joinChannel, channelId);
+									runQuery(query1, result =>
+										console.log('result?.data?.channelId???', result)
+									);
+								} else if (result.loading === false) {
+									const query2 = createQuery(createChannel, {
+										channelId: channelId,
+										userIds: [dataStories?._id],
+										type: 'live',
+										metadata: {
 											data: {
-												text: shareURL
-											},
-											metadata: {
-												data: textMessage
+												[userInfo?.user?._id]: userInfo.user,
+												[dataStories?._id]: dataStories?._id
 											}
-										});
-
-										runQuery(query, ({data: textMessage, ...options}) => {
-											//console.log('sent????', textMessage, options);
-											//addMessage(message.metadata?.data);
-											if (options?.error || options?.loading) {
-												return;
-											}
-											Alert.alert('', 'Message sent successfully.');
-										});
-										let query1 = createQuery(joinChannel, channelId);
-										runQuery(query1, result =>
-											console.log('result?.data?.channelId???', result)
-										);
-									} else if (result.loading === false) {
-										const query2 = createQuery(createChannel, {
-											channelId: channelId,
-											userIds: [dataStories?._id],
-											type: 'live',
-											metadata: {
+										}
+									});
+									runQuery(query2, result => {
+										if (result.data) {
+											const user = {
+												id: userInfo.user?._id,
+												avatarName: userInfo.user?.userName,
+												firstName: userInfo.user?.userName,
+												lastName: '',
+												imageUrl: userInfo.user?.picture
+											};
+											const textMessage: MessageType.Text = {
+												author: user,
+												createdAt: Date.now(),
+												id: uuidv4(),
+												text: shareURL,
+												type: 'text'
+												//uri: 'https://cdn.pixabay.com/photo/2015/04/19/08/32/marguerite-729510_960_720.jpg',
+											};
+											const query = createQuery(createMessage, {
+												channelId: channelId,
+												type: 'text',
 												data: {
-													[userInfo?.user?._id]: userInfo.user,
-													[dataStories?._id]: dataStories?._id
+													text: shareURL
+												},
+												metadata: {
+													data: textMessage
 												}
-											}
-										});
-										runQuery(query2, result => {
-											if (result.data) {
-												const user = {
-													id: userInfo.user?._id,
-													avatarName: userInfo.user?.userName,
-													firstName: userInfo.user?.userName,
-													lastName: '',
-													imageUrl: userInfo.user?.picture
-												};
-												const textMessage: MessageType.Text = {
-													author: user,
-													createdAt: Date.now(),
-													id: uuidv4(),
-													text: shareURL,
-													type: 'text'
-													//uri: 'https://cdn.pixabay.com/photo/2015/04/19/08/32/marguerite-729510_960_720.jpg',
-												};
-												const query = createQuery(createMessage, {
-													channelId: channelId,
-													type: 'text',
-													data: {
-														text: shareURL
-													},
-													metadata: {
-														data: textMessage
-													}
-												});
+											});
 
-												runQuery(query, ({data: textMessage, ...options}) => {
-													//console.log('sent????', textMessage, options);
-													if (options?.error || options?.loading) {
-														return;
-													}
-													Alert.alert('', 'Message sent successfully.');
+											runQuery(query, ({data: textMessage, ...options}) => {
+												//console.log('sent????', textMessage, options);
+												if (options?.error || options?.loading) {
+													return;
+												}
+												Alert.alert('', 'Message sent successfully.');
 
-													//addMessage(message.metadata?.data);
-												});
-											}
-										});
-									}
-								});
-								console.log('rightIconClick');
-							}}
-							onLeftIconPress={() => {
-								console.log('onLeftIconPress');
-							}}
-							onFocus={replyModalOpen}
-							onBlur={replyModalClose}
-						/>
-					</View>
-				)}
-				{/* </View>
+												//addMessage(message.metadata?.data);
+											});
+										}
+									});
+								}
+							});
+							console.log('rightIconClick');
+						}}
+						onLeftIconPress={() => {
+							console.log('onLeftIconPress');
+						}}
+						onFocus={replyModalOpen}
+						onBlur={replyModalClose}
+					/>
+				</View>
+			)}
+			{/* </View>
 				</Modal> */}
-			</TouchableOpacity>
 			{/* </GestureRecognizer> */}
 		</SafeAreaView>
 	);

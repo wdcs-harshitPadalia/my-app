@@ -13,9 +13,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		//marginTop: verticalScale(20),
 		//marginHorizontal: horizontalScale(12),
-		marginBottom: verticalScale(
-			Platform.OS === 'web' ? 0 : screenBottomNavHeight
-		),
 		backgroundColor: defaultTheme.backGroundColor
 	},
 	container1: {

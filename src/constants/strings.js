@@ -234,7 +234,7 @@ const Strings = {
 	mainMarkets: 'Main markets',
 	markets: 'Market',
 
-	writeInBetDescription: 'Write in Bet description',
+	writeInBetDescription: 'Write Bet description',
 	placeYourBet: 'Place your bet',
 	You_pay: 'You pay',
 	You_get: 'You get',

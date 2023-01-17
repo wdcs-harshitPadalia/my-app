@@ -585,7 +585,7 @@ const BetsCategoryScreen: React.FC<any> = () => {
 				if (params?.matchData?.categories?.isCustom === true) {
 					if (params?.matchData?.categories?.subCategoryCount >= 0) {
 						seIsProgress('20%');
-						seIsTitle(Strings.time_to_create_your_market);
+						seIsTitle(Strings.let_create_market);
 						setIsBackButtonDisable(true);
 						setStep(2);
 						setIsSelectedLeagueType(1);
@@ -1183,7 +1183,7 @@ const BetsCategoryScreen: React.FC<any> = () => {
 					setIsSelectedCategory(item.name);
 					setIsSelectedLeagueType(1);
 					seIsProgress('20%');
-					seIsTitle(Strings.time_to_create_your_market);
+					seIsTitle(Strings.let_create_market);
 					setIsSelectResults(0);
 					setStep(2);
 					setQuestion('');
@@ -2239,7 +2239,7 @@ const BetsCategoryScreen: React.FC<any> = () => {
 					setIsNoLeagueData(false);
 					setIsLeagueId('');
 					seIsProgress('20%');
-					seIsTitle(Strings.time_to_create_your_market);
+					seIsTitle(Strings.let_create_market);
 					setIsSelectResults(0);
 					setStep(2);
 					setQuestion('');
@@ -2700,7 +2700,7 @@ const BetsCategoryScreen: React.FC<any> = () => {
 					setStep(2);
 				} else if (isSelectedLeagueType === 1) {
 					seIsProgress('20%');
-					seIsTitle(Strings.time_to_create_your_market);
+					seIsTitle(Strings.let_create_market);
 					setIsBackButtonDisable(true);
 					setIsSelectResults(0);
 					setStep(2);

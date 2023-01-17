@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
 	},
 	container1: {
 		flex: 1,
+		marginBottom: Platform.OS === 'web' ? 0 : verticalScale(screenBottomNavHeight),
 		//marginTop: verticalScale(20),
 		//marginHorizontal: horizontalScale(12),
 		//marginBottom: verticalScale(screenBottomNavHeight),

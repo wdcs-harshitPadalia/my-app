@@ -774,6 +774,7 @@ const Strings = {
 	try_again: 'Try it again.',
 	video_sharing_text:
 		'%s has created this video! 📹  \n\nClick on this link, watch it and find out if there is a bet attached 👀 🤔',
-	no_pending_claim: 'NO PENDING REWARDS TO CLAIM'
+	no_pending_claim: 'NO PENDING REWARDS TO CLAIM',
+	let_create_market: "Let's create your market"
 };
 export default Strings;

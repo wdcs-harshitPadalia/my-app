@@ -113,7 +113,8 @@ const styles = StyleSheet.create({
 		borderTopWidth: 1,
 		paddingTop: verticalScale(16),
 		marginHorizontal: verticalScale(16),
-		marginTop: verticalScale(16)
+		marginTop: verticalScale(16),
+		width: "80%",
 	}
 });
 

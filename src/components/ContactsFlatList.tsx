@@ -426,6 +426,7 @@ const styles = StyleSheet.create({
 		marginBottom: verticalScale(10)
 	},
 	input: {
+		outlineStyle: 'none',
 		fontSize: moderateScale(12),
 		flex: 1,
 		marginHorizontal: horizontalScale(8),

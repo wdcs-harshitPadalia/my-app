@@ -93,7 +93,7 @@ import {connectClient} from '@amityco/ts-sdk';
 let page = 0;
 let pageBets = 0;
 let searchTextUpdated = '';
-let discoverPage = 0;
+// let discoverPage = 0;
 let hasNotch = false;
 
 const DiscoverScreen: React.FC<any> = props => {
@@ -103,6 +103,8 @@ const DiscoverScreen: React.FC<any> = props => {
 	const isFocused = useIsFocused();
 	const isForeground = useIsForeground();
 	const isVideoPlay = isFocused && isForeground;
+	const [ViewableItem, SetViewableItem] = useState('');
+	const [discoverPage, setDiscoverPage] = useState(0);
 
 	const insets = useSafeAreaInsets();
 	const userInfo = useSelector((state: RootState) => {
@@ -327,6 +329,10 @@ const DiscoverScreen: React.FC<any> = props => {
 	//     setDiscoverSearchData([]);
 	//   }
 	// }, []);
+
+	useEffect(() => {
+		getDiscoverMatchData();
+	}, [discoverPage])
 
 	useUpdateEffect(() => {
 		console.log('isSelectedIndex ::', isSelectedIndex);
@@ -643,13 +649,28 @@ const DiscoverScreen: React.FC<any> = props => {
 	// 	},
 	// 	[]
 	// );
-	const onViewableItemsChanged = useCallback(({viewableItems, changed}) => {
-		if (changed && changed.length > 0) {
-			console.log('callkkdsjdkjdsksdjkdsjkdsjkdsjklds!!!', changed);
-			//videoMarkSeen(element.item?._id);
-			//setVisibleItemIndex(changed[0].index);
-		}
-	}, []);
+	const onViewableItemsChanged = useRef(({changed}) => {
+		console.log('changed??', changed);
+		changed.forEach(element => {
+			const cell = mediaRefs.current[element?.key];
+			if (cell) {
+				if (element.isViewable) {
+					// if (element?.item?.dataType === 'video') {
+					// 	videoMarkSeen(element.item);
+					// }
+					console.log('play called??', changed);
+					// setVisibleParentIndex(element.index)
+					// if (!profile) {
+					//     setCurrentUserProfileItemInView(element.item.creator)
+					// }
+					cell.play();
+				} else {
+					cell.stop();
+				}
+			}
+		});
+	});
+
 	const viewabilityConfigCallbackPairs = useRef([
 		{viewabilityConfig, onViewableItemsChanged}
 	]);
@@ -766,6 +787,11 @@ const DiscoverScreen: React.FC<any> = props => {
 				<DiscoverVideoPlayer
 					ref={ref => (mediaRefs.current[item._id] = ref)}
 					itemData={item}
+					ViewableItem={ViewableItem}
+					_id={item?._id}
+					// isFocus={isFocused}
+					// parentIndex={visibleParentIndex}
+					// index={index}
 					screenOriginalHeight={height}
 				/>
 			</View>
@@ -1449,22 +1475,33 @@ const DiscoverScreen: React.FC<any> = props => {
 			const slideSize = event.nativeEvent.layoutMeasurement.height;
 			const index = event.nativeEvent.contentOffset.y / slideSize;
 			const roundIndex = Math.round(index);
-			console.log('roundIndex1:', slideSize, roundIndex, visibleParentIndex);
+			console.log('roundIndex1:',  roundIndex, discoverMatchData.length, totalDiscoverMatchCount);
 
 			if (roundIndex === visibleParentIndex) return;
-			// const cell = mediaRefs.current[discoverMatchData[roundIndex]?._id];
-			// videoMarkSeen(discoverMatchData[roundIndex].item?._id);
-			// if (cell) {
-			// 	cell?.play()
-			// }
-			setVisibleParentIndex(roundIndex);
-			console.log('roundIndex:', roundIndex);
+			if(roundIndex === discoverMatchData.length - 1 &&  discoverMatchData.length < totalDiscoverMatchCount){
+				setDiscoverPage(discoverPage + 1)
+			}
+			// setVisibleParentIndex(roundIndex);
+			// // const cell = mediaRefs.current[discoverMatchData[roundIndex]?._id];
+			// // videoMarkSeen(discoverMatchData[roundIndex].item?._id);
+			// // if (cell) {
+			// // 	cell?.play()
+			// // }
+			// setVisibleParentIndex(roundIndex);
+			//console.log('roundIndex:', roundIndex);
 		},
-		[]
+		[discoverMatchData]
 	);
 
+	const onViewRef = useRef(viewableItems => {
+		console.log('onViewRef?>>>', viewableItems?.viewableItems);
+		if (viewableItems?.viewableItems?.length > 0)
+			SetViewableItem(viewableItems.viewableItems[0].item._id || 0);
+	});
+	const viewConfigRef = useRef({viewAreaCoveragePercentThreshold: 70});
+
 	return (
-		<View style={{flex: 1, backgroundColor : defaultTheme.backGroundColor}}>
+		<View style={{flex: 1, backgroundColor: defaultTheme.backGroundColor}}>
 			{/* <View style={[styles.tabView]}>
 				<CustomTopTabView
 					dataSource={beforeClickTopTabData}
@@ -1502,7 +1539,7 @@ const DiscoverScreen: React.FC<any> = props => {
 				</TouchableOpacity>
 			</View> */}
 			{beforeClickTopTabIndex === 0 &&
-				!searchClicked &&
+				!searchClicked && isFocused &&
 				(isVideoUnAvailable ? (
 					<View style={styles.fullScreenImageBg}>
 						<ErrorComponent
@@ -1522,39 +1559,43 @@ const DiscoverScreen: React.FC<any> = props => {
 							renderItem={renderForYouItem}
 							pagingEnabled
 							useTextureView={false}
-							playInBackground={true}
-							// maxToRenderPerBatch={1}
+							playInBackground={false}
+							maxToRenderPerBatch={2}
+							getItemLayout={(_data, index) => ({
+								length: height,
+								offset: height * index,
+								index
+							})}
+							decelerationRate={0.9}
 							// initialNumToRender={1}
-							disableFocus={true}
+							// removeClippedSubviews
+							disableFocus={false}
 							keyboardShouldPersistTaps={'handled'}
 							keyExtractor={(item, index) => `${item?._id}${index}`}
-							onEndReachedThreshold={0.5}
-							onEndReached={() => {
-								console.log(
-									'getDiscoverMatchData next page',
-									totalDiscoverMatchCount,
-									discoverMatchData?.length
-								);
-								if (totalDiscoverMatchCount !== discoverMatchData?.length) {
-									discoverPage = discoverPage + 1;
-									getDiscoverMatchData();
-								}
-							}}
+							// onEndReachedThreshold={0.0025}
+							// onEndReached={() => {
+							// 	console.log(
+							// 		'getDiscoverMatchData next page'
+							// 	);
+							// 	//if (totalDiscoverMatchCount !== discoverMatchData?.length) {
+							// 		setDiscoverPage(discoverPage + 1);
+							// 	//}
+							// }}
+							disableIntervalMomentum
 							ListFooterComponent={() => (
 								<>{isLoadDiscoverMatch && <LoadMoreLoaderView />}</>
 							)}
-							refreshControl={
-								<RefreshControl
-									refreshing={isRefresh}
-									onRefresh={() => {
-										discoverPage = 0;
-										getDiscoverMatchData();
-									}}
-									title="Pull to refresh"
-									tintColor="#fff"
-									titleColor="#fff"
-								/>
-							}
+							// refreshControl={
+							// 	<RefreshControl
+							// 		refreshing={isRefresh}
+							// 		onRefresh={() => {
+							// 			setDiscoverPage(0)
+							// 		}}
+							// 		title="Pull to refresh"
+							// 		tintColor="#fff"
+							// 		titleColor="#fff"
+							// 	/>
+							// }
 							ListEmptyComponent={() => (
 								<>
 									{isShowNoForYou && (
@@ -1577,21 +1618,24 @@ const DiscoverScreen: React.FC<any> = props => {
 								isFocused && setIsShowSwipeUp(false);
 								onScroll(event);
 							}}
+							//onViewableItemsChanged={onViewableItemsChanged.current}
 							//onScroll={onScroll}
 							// viewabilityConfig={{
-							// 	itemVisiblePercentThreshold: 100,
+							// 	itemVisiblePercentThreshold: 100
 							// 	// minimumViewTime: 2000,
 							// }}
+							onViewableItemsChanged={onViewRef.current}
+							viewabilityConfig={viewConfigRef.current}
 							// onViewableItemsChanged={onViewableItemsChanged}
 							// viewabilityConfigCallbackPairs={
 							// 	viewabilityConfigCallbackPairs.current
 							// }
-							initialScrollIndex={0}
+							// initialScrollIndex={0}
 						/>
 					</View>
 				))}
 
-{searchClicked  && (
+			{searchClicked && (
 				<>
 					<View style={styles.viewSearch}>
 						<SearchBarWIthBack
@@ -1695,42 +1739,44 @@ const DiscoverScreen: React.FC<any> = props => {
 				</View>
 			)}
 
-			{!searchClicked && <View style={[styles.tabView, {top: insets.top}]}>
-				<CustomTopTabView
-					dataSource={beforeClickTopTabData}
-					onTabChange={selectedIndex => {
-						setBeforeClickTopTabIndex(selectedIndex);
-					}}
-					selectedIndex={beforeClickTopTabIndex}
-					viewWidth={110}
-				/>
-
-				<TouchableOpacity
-					onPress={() => {
-						setSearchClicked(true);
-						setIsSelectedIndex(0);
-
-						setDiscoverSearchData([]);
-						setRecentMatcheData([]);
-						setRecentFriendData([]);
-						setRecentBetsData([]);
-						setDiscoverSearchBetsData([]);
-
-						page = 0;
-						pageBets = 0;
-
-						setTimeout(() => {
-							getDiscoverSearchData();
-						}, 500);
-					}}
-					style={styles.btnSearch}>
-					<ExpoFastImage
-						style={styles.iconSearch}
-						source={icons.search}
-						resizeMode={'contain'}
+			{!searchClicked && (
+				<View style={[styles.tabView, {top: insets.top}]}>
+					<CustomTopTabView
+						dataSource={beforeClickTopTabData}
+						onTabChange={selectedIndex => {
+							setBeforeClickTopTabIndex(selectedIndex);
+						}}
+						selectedIndex={beforeClickTopTabIndex}
+						viewWidth={110}
 					/>
-				</TouchableOpacity>
-			</View>}
+
+					<TouchableOpacity
+						onPress={() => {
+							setSearchClicked(true);
+							setIsSelectedIndex(0);
+
+							setDiscoverSearchData([]);
+							setRecentMatcheData([]);
+							setRecentFriendData([]);
+							setRecentBetsData([]);
+							setDiscoverSearchBetsData([]);
+
+							page = 0;
+							pageBets = 0;
+
+							setTimeout(() => {
+								getDiscoverSearchData();
+							}, 500);
+						}}
+						style={styles.btnSearch}>
+						<ExpoFastImage
+							style={styles.iconSearch}
+							source={icons.search}
+							resizeMode={'contain'}
+						/>
+					</TouchableOpacity>
+				</View>
+			)}
 		</View>
 	);
 };

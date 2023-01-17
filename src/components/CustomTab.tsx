@@ -435,12 +435,14 @@ const styles = (
 			//paddingTop: verticalScale(24),
 			// position: 'absolute',
 			borderRadius: 20,
-			marginBottom:
-				Platform.OS === 'ios'
-					? props.hasNotch
-						? verticalScale(20)
-						: verticalScale(16)
-					: verticalScale(20)
+			...Platform.select({
+				ios: {
+					marginBottom: props.hasNotch ? verticalScale(20) : verticalScale(16)
+				},
+				android: {
+					marginBottom: verticalScale(20)
+				}
+			}),
 			// left: 8,
 			// right: 8,
 		},
@@ -504,7 +506,7 @@ const styles = (
 			shadowRadius: 5,
 			...Platform.select({
 				web: {
-					height: 32,
+					height: 26.22,
 					width: 32,
 					borderRadius: 16
 				},

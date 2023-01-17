@@ -21,7 +21,8 @@ import {useWalletConnect} from '@walletconnect/react-native-dapp';
 import useUpdateEffect from '../../../../components/CustomHooks/useUpdateEffect';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../../../redux/store';
-import {gradientColorAngle} from '../../../../theme/metrics';
+import {gradientColorAngle, screenWidth} from '../../../../theme/metrics';
+import { FlashList } from "@shopify/flash-list";
 
 const JuryIntroArrayData = [
 	{
@@ -48,7 +49,7 @@ const JuryIntroScreen: React.FC<any> = () => {
 	const navigation = useNavigation();
 
 	const [currentPageNo, setCurrentPageNo] = useState(0);
-	const [scrollEnabled, setScrollEnabled] = useState(true);
+	const [scrollEnabled, setScrollEnabled] = useState(false);
 
 	const flatListRef = useRef(null);
 
@@ -106,7 +107,7 @@ const JuryIntroScreen: React.FC<any> = () => {
 		let viewSize = e.nativeEvent.layoutMeasurement;
 
 		// Divide the horizontal offset by the width of the view to see which page is visible
-		let pageNum = Math.floor(contentOffset.x / viewSize.width);
+		let pageNum = Math.round(contentOffset.x / viewSize.width);
 
 		setCurrentPageNo(pageNum);
 	};
@@ -136,17 +137,18 @@ const JuryIntroScreen: React.FC<any> = () => {
 					// name={Strings.back}
 				/>
 				<View style={{marginTop: verticalScale(60)}}>
-					<FlatList
+					<FlashList
 						ref={flatListRef}
 						data={JuryIntroArrayData}
 						keyExtractor={item => item.id}
 						renderItem={renderItem}
 						horizontal
-						pagingEnabled
+						//pagingEnabled
 						showsHorizontalScrollIndicator={false}
 						// onMomentumScrollEnd={onScrollEnd}
 						onScroll={onScrollEnd}
 						scrollEnabled={scrollEnabled}
+						estimatedItemSize={screenWidth}
 					/>
 				</View>
 			</View>

@@ -2,6 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {
 	Alert,
 	Platform,
+	SafeAreaView,
 	Share,
 	Text,
 	TouchableOpacity,
@@ -484,7 +485,7 @@ const FeedScreen: React.FC<any> = props => {
 	};
 
 	return (
-		<View style={styles.container}>
+		<SafeAreaView style={styles.container}>
 			<HeaderComponent
 				onAddMenuPress={async () => {
 					// //navigation.navigate(ScreenNames.SettingsScreen);
@@ -822,7 +823,7 @@ const FeedScreen: React.FC<any> = props => {
 					}}
 				/>
 			)}
-		</View>
+		</SafeAreaView>
 	);
 };
 

@@ -178,6 +178,7 @@ const styles = StyleSheet.create({
 		marginLeft: verticalScale(10)
 	},
 	inputStyle: {
+		outlineStyle: 'none',
 		flex: 1,
 		marginRight: 5,
 		color: colors.white,

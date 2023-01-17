@@ -369,6 +369,7 @@ const styles: {[key in StyleKeys]: ViewStyle} = {
 		width: '100%',
 	},
 	searchBar: {
+		outlineStyle: 'none',
 		flex: 1,
 		backgroundColor: '#f5f5f5',
 		borderRadius: 10,

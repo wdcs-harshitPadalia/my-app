@@ -28,19 +28,19 @@ const FaqQuestionComponent: React.FC<FaqProps> = props => {
 		return item.id;
 	};
 	return (
-		<KeyboardAwareScrollView bounces={false}>
-			<View style={styles.creditCardViewStyle}>
-				<FlatList
-					data={data}
-					renderItem={renderItem}
-					showsVerticalScrollIndicator={false}
-					alwaysBounceVertical={false}
-					keyExtractor={keyExtractor}
-					scrollEnabled={false}
-					nestedScrollEnabled={true}
-				/>
-			</View>
-		</KeyboardAwareScrollView>
+		<View style={styles.creditCardViewStyle}>
+			<FlatList
+				data={data}
+				renderItem={renderItem}
+				showsVerticalScrollIndicator={false}
+				alwaysBounceVertical={false}
+				keyExtractor={keyExtractor}
+				scrollEnabled={true}
+				nestedScrollEnabled={true}
+				initialNumToRender={50}
+				bounces={false}
+			/>
+		</View>
 	);
 };
 

@@ -92,7 +92,8 @@ const styles = StyleSheet.create({
 		// position: 'absolute',
 		top: 0,
 		left: 0,
-		right: 0
+		right: 0,
+		paddingBottom: 14
 	},
 	bioGraphyStyle: {
 		fontSize: moderateScale(12),

@@ -1,13 +1,13 @@
 /* eslint-disable prettier/prettier */
-import { Platform, StyleSheet } from "react-native";
+import {Platform, StyleSheet} from 'react-native';
 import {
-  Fonts,
-  horizontalScale,
-  moderateScale,
-  verticalScale,
-} from "../../../theme";
-import colors from "../../../theme/colors";
-import { defaultTheme } from "../../../theme/defaultTheme";
+	Fonts,
+	horizontalScale,
+	moderateScale,
+	verticalScale
+} from '../../../theme';
+import colors from '../../../theme/colors';
+import {defaultTheme} from '../../../theme/defaultTheme';
 const styles = StyleSheet.create({
   container: {
     flex: 1,

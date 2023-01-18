@@ -1,12 +1,11 @@
 {
   "expo": {
-    "name": "defibet.house",
+    "name": "truly.fun",
     "slug": "my-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "description": "defibet.house",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -28,9 +27,7 @@
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png",
-      "shortName": "defibet.house",
-      "display" : "fullscreen"
+      "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "react-native-compressor"

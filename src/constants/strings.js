@@ -775,6 +775,7 @@ const Strings = {
 	video_sharing_text:
 		'%s has created this video! 📹  \n\nClick on this link, watch it and find out if there is a bet attached 👀 🤔',
 	no_pending_claim: 'NO PENDING REWARDS TO CLAIM',
-	let_create_market: "Let's create your market"
+	let_create_market: "Let's create your market",
+	txt_age_validation : 'You must be 18 years old or above to use this app.'
 };
 export default Strings;

@@ -13,7 +13,10 @@ import styles from './style';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import DatepickerComponet from '../../../components/DatepickerComponet';
 import CountryPickerComponent from '../../../components/CountryPickerComponent';
-import {getInitialDate} from '../../../constants/utils/Function';
+import {
+	getInitialDate,
+	showErrorAlert
+} from '../../../constants/utils/Function';
 import {Formik} from 'formik';
 import Validation from '../../../constants/utils/Validation';
 import {useDispatch, useSelector} from 'react-redux';
@@ -122,6 +125,17 @@ const ProfileSetupScreen: React.FC<any> = props => {
 		hideDatePicker();
 	};
 
+	const getAge = dateString => {
+		var today = new Date();
+		var birthDate = new Date(dateString);
+		var age = today.getFullYear() - birthDate.getFullYear();
+		var m = today.getMonth() - birthDate.getMonth();
+		if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+			age--;
+		}
+		return age;
+	};
+
 	const showAuthenticationDialog = () => {};
 
 	return (
@@ -160,56 +174,72 @@ const ProfileSetupScreen: React.FC<any> = props => {
 							validationSchema={Validation.setupProfile}
 							onSubmit={async values => {
 								try {
-									//let token = await messaging().getToken();
-									console.log('HO', values.isTermsAccepted);
-									let requestObject = {};
-									if (userInfo?.user?.email || userInfo?.user?.mobile_number) {
-										requestObject = {
-											userName: values.userName,
-											country: values.country,
-											birthDate: moment(date).format('DD-MM-YYYY').toString(),
-											walletAddress: params?.address ?? undefined,
-											friendsAffiliateCode: referralCode
-											//deviceToken: userInfo.fcmToken ?? token
-										};
+									const ageValue = getAge(date);
+									if (parseInt(ageValue) > 17) {
+										//let token = await messaging().getToken();
+										console.log('HO', values.isTermsAccepted);
+										let requestObject = {};
+										if (
+											userInfo?.user?.email ||
+											userInfo?.user?.mobile_number
+										) {
+											requestObject = {
+												userName: values.userName,
+												country: values.country,
+												birthDate: moment(date).format('DD-MM-YYYY').toString(),
+												walletAddress: params?.address ?? undefined,
+												friendsAffiliateCode: referralCode
+												//deviceToken: userInfo.fcmToken ?? token
+											};
+										} else {
+											requestObject = {
+												email: values.email,
+												userName: values.userName,
+												country: values.country,
+												birthDate: moment(date).format('DD-MM-YYYY').toString(),
+												walletAddress: params?.address ?? undefined,
+												friendsAffiliateCode: referralCode
+												//deviceToken: userInfo.fcmToken ?? token
+											};
+										}
+										//console.log('userInfo.fcmToken>>>>', token);
+										callEditProfileApi(requestObject);
 									} else {
-										requestObject = {
-											email: values.email,
-											userName: values.userName,
-											country: values.country,
-											birthDate: moment(date).format('DD-MM-YYYY').toString(),
-											walletAddress: params?.address ?? undefined,
-											friendsAffiliateCode: referralCode
-											//deviceToken: userInfo.fcmToken ?? token
-										};
+										showErrorAlert('', Strings.txt_age_validation);
 									}
-									//console.log('userInfo.fcmToken>>>>', token);
-									callEditProfileApi(requestObject);
 								} catch {
-									console.log('HO', values.isTermsAccepted);
-									let requestObject = {};
-									if (userInfo?.user?.email || userInfo?.user?.mobile_number) {
-										requestObject = {
-											userName: values.userName,
-											country: values.country,
-											birthDate: moment(date).format('DD-MM-YYYY').toString(),
-											walletAddress: params?.address ?? undefined,
-											friendsAffiliateCode: referralCode
-											//deviceToken: userInfo.fcmToken ?? ''
-										};
+									const ageValue = getAge(date);
+									if (parseInt(ageValue) > 17) {
+										console.log('HO', values.isTermsAccepted);
+										let requestObject = {};
+										if (
+											userInfo?.user?.email ||
+											userInfo?.user?.mobile_number
+										) {
+											requestObject = {
+												userName: values.userName,
+												country: values.country,
+												birthDate: moment(date).format('DD-MM-YYYY').toString(),
+												walletAddress: params?.address ?? undefined,
+												friendsAffiliateCode: referralCode
+												//deviceToken: userInfo.fcmToken ?? ''
+											};
+										} else {
+											requestObject = {
+												email: values.email,
+												userName: values.userName,
+												country: values.country,
+												birthDate: moment(date).format('DD-MM-YYYY').toString(),
+												walletAddress: params?.address ?? undefined,
+												friendsAffiliateCode: referralCode
+												//deviceToken: userInfo.fcmToken ?? token
+											};
+										}
+										// console.log('userInfo.fcmToken>>>>', token);
+										callEditProfileApi(requestObject);
 									} else {
-										requestObject = {
-											email: values.email,
-											userName: values.userName,
-											country: values.country,
-											birthDate: moment(date).format('DD-MM-YYYY').toString(),
-											walletAddress: params?.address ?? undefined,
-											friendsAffiliateCode: referralCode
-											//deviceToken: userInfo.fcmToken ?? token
-										};
+										showErrorAlert('', Strings.txt_age_validation);
 									}
-									// console.log('userInfo.fcmToken>>>>', token);
-									callEditProfileApi(requestObject);
 								}
 								//emailLogin(values?.email);
 								//fa_ref.current.validate()
@@ -291,12 +321,19 @@ const ProfileSetupScreen: React.FC<any> = props => {
 											<View style={styles.dOBViewContain}>
 												<TouchableOpacity
 													onPress={() => {
-														dateTimePickerRef.current.handlePickDateTime();
+														//dateTimePickerRef.current.handlePickDateTime();
 													}}>
-													<Text
-														style={styles.dOBValueStyle(values.date != null)}>
-														{values.date ?? Strings.pickDate.toUpperCase()}
-													</Text>
+													<View style={styles.viewInput}>
+														<ExpoFastImage
+															resizeMode={'contain'}
+															source={icons.calendar_today}
+															style={styles.leftImg}
+														/>
+														<Text
+															style={styles.dOBValueStyle(values.date != null)}>
+															{values.date ?? Strings.pickDate.toUpperCase()}
+														</Text>
+													</View>
 												</TouchableOpacity>
 											</View>
 											<Text style={styles.errStyle}>
@@ -304,17 +341,22 @@ const ProfileSetupScreen: React.FC<any> = props => {
 											</Text>
 											<View
 												style={{
-													marginHorizontal: horizontalScale(16),
-													paddingVertical: verticalScale(2)
+													// marginHorizontal: horizontalScale(16),
+													paddingVertical: verticalScale(2),
+													position: 'absolute',
+													bottom: verticalScale(4),
+													width: '100%',
+													margin: 0,
+													opacity: 0
 												}}>
 												<DatePickerWeb
 													selected={getInitialDate()}
 													ref={dateTimePickerRef}
 													handleChange={val => {
+														console.log('DatePickerWeb', val);
 														setDate(val);
 														setisSubmitted(false);
 														values.date = val;
-														console.log('DatePickerWeb', val);
 													}}
 													isPickOnlyDate={true}
 													maximumDate={getInitialDate()}

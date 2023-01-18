@@ -80,6 +80,7 @@ import * as ImagePicker from 'expo-image-picker';
 import FullScreenImageComponent from './FullScreenImageComponent';
 import {date} from 'yup';
 import ScreenNames from '../navigation/screenNames';
+import { useNavigation } from '@react-navigation/native';
 
 const {v4: uuidv4} = require('uuid');
 interface Props extends TextInputProps {
@@ -152,6 +153,9 @@ const ChatViewComponent: React.FC<Props> = props => {
 		useState<Amity.RunQueryOptions<typeof queryMessages>>();
 
 	const {loading, prevPage, error} = options ?? {};
+
+	const navigation = useNavigation();
+
 
 	useEffect(() => {
 		if (chatType === 'amity') {
@@ -1083,7 +1087,9 @@ const styles = StyleSheet.create({
 		width: verticalScale(200),
 		//backgroundColor: 'red',
 		borderRadius: 8,
-		overflow: 'hidden'
+		overflow: 'hidden',
+		alignItems: 'center',
+		justifyContent: 'center'
 	},
 	noDataContainer: {
 		position: 'absolute',
@@ -1098,5 +1104,16 @@ const styles = StyleSheet.create({
 		marginVertical: verticalScale(24),
 		textAlign: 'center',
 		marginTop: verticalScale(80)
-	}
+	},
+	videoContainer: {
+		backgroundColor: defaultTheme.backGroundColor,
+		padding: 4
+	},
+	playImageStyle: {
+		height: verticalScale(48),
+		width: verticalScale(48),
+		tintColor: 'rgba(255,255,255,0.9)',
+		backgroundColor: colors.graytransparent,
+		borderRadius: verticalScale(24)
+	},
 });

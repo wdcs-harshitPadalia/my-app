@@ -163,7 +163,8 @@ export const FeedBetsView = ({
 	isFromStreaming,
 	isRecent,
 	handleShareStory,
-	handleShareUrl
+	handleShareUrl,
+	handleBetShare
 }) => {
 	const [images, setImages] = useState([]);
 	const [isSelectedIndex, setIsSelectedIndex] = useState(1);
@@ -484,7 +485,8 @@ export const FeedBetsView = ({
 									break;
 								case 1:
 									setTimeout(() => {
-										handleShareUrl();
+										// handleShareUrl();
+										handleBetShare(selectedDataObj);
 									}, 500);
 									break;
 								case 2:

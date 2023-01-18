@@ -332,7 +332,7 @@ const DiscoverScreen: React.FC<any> = props => {
 
 	useEffect(() => {
 		getDiscoverMatchData();
-	}, [discoverPage])
+	}, [discoverPage]);
 
 	useUpdateEffect(() => {
 		console.log('isSelectedIndex ::', isSelectedIndex);
@@ -1475,11 +1475,19 @@ const DiscoverScreen: React.FC<any> = props => {
 			const slideSize = event.nativeEvent.layoutMeasurement.height;
 			const index = event.nativeEvent.contentOffset.y / slideSize;
 			const roundIndex = Math.round(index);
-			console.log('roundIndex1:',  roundIndex, discoverMatchData.length, totalDiscoverMatchCount);
+			console.log(
+				'roundIndex1:',
+				roundIndex,
+				discoverMatchData.length,
+				totalDiscoverMatchCount
+			);
 
 			if (roundIndex === visibleParentIndex) return;
-			if(roundIndex === discoverMatchData.length - 1 &&  discoverMatchData.length < totalDiscoverMatchCount){
-				setDiscoverPage(discoverPage + 1)
+			if (
+				roundIndex === discoverMatchData.length - 1 &&
+				discoverMatchData.length < totalDiscoverMatchCount
+			) {
+				setDiscoverPage(discoverPage + 1);
 			}
 			// setVisibleParentIndex(roundIndex);
 			// // const cell = mediaRefs.current[discoverMatchData[roundIndex]?._id];
@@ -1539,7 +1547,8 @@ const DiscoverScreen: React.FC<any> = props => {
 				</TouchableOpacity>
 			</View> */}
 			{beforeClickTopTabIndex === 0 &&
-				!searchClicked && isFocused &&
+				!searchClicked &&
+				isFocused &&
 				(isVideoUnAvailable ? (
 					<View style={styles.fullScreenImageBg}>
 						<ErrorComponent
@@ -1687,10 +1696,9 @@ const DiscoverScreen: React.FC<any> = props => {
 			{beforeClickTopTabIndex === 1 && (
 				<View
 					style={{
-						marginHorizontal: horizontalScale(16),
+						marginHorizontal: horizontalScale(8),
 						marginBottom: verticalScale(16),
-						height: '100%',
-						width: '100%'
+						height: '83%'
 					}}>
 					<ChatViewComponent
 						// isTitleShown

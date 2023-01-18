@@ -16,6 +16,8 @@ import SelecteableTag from '../../../components/SelecteableTag';
 import Strings from '../../../constants/strings';
 import {
 	createBetDetailsPreviewShareUrl,
+	dateTimeConvert,
+	getEventShareUrl,
 	showErrorAlert
 } from '../../../constants/utils/Function';
 import ScreenNames from '../../../navigation/screenNames';
@@ -178,17 +180,12 @@ const FeedFilterScreen: React.FC<any> = props => {
 		}
 	}, [currentPage]);
 
-	const handleShare = async matchId => {
+	const handleShare = async (matchId, endTime) => {
+		const eventEndTime = dateTimeConvert(endTime);
 		if (Platform.OS === 'web') {
 			try {
 				await navigator.share({
-					url: createBetDetailsPreviewShareUrl(
-						Strings.feed,
-						matchId,
-						matchId,
-						1,
-						false
-					)
+					text: getEventShareUrl(matchId, eventEndTime, Strings.feed, 1)
 				});
 			} catch (error) {
 				showErrorAlert('', error.message);
@@ -196,13 +193,7 @@ const FeedFilterScreen: React.FC<any> = props => {
 		} else {
 			try {
 				const result = await Share.share({
-					message: createBetDetailsPreviewShareUrl(
-						Strings.feed,
-						matchId,
-						matchId,
-						1,
-						false
-					)
+					message: getEventShareUrl(matchId, eventEndTime, Strings.feed, 1)
 				});
 				if (result.action === Share.sharedAction) {
 					if (result.activityType) {
@@ -325,7 +316,7 @@ const FeedFilterScreen: React.FC<any> = props => {
 							case 1:
 								console.log('item._id >> ', item._id);
 								setTimeout(() => {
-									handleShare(item._id);
+									handleShare(item._id, item?.match_end_time);
 								}, 1000);
 								break;
 							case 2:

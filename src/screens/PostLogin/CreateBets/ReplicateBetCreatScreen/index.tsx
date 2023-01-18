@@ -931,7 +931,7 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 		if (Platform.OS === 'web') {
 			try {
 				await navigator.share({
-					url: url
+					text: url
 				});
 			} catch (error) {
 				showErrorAlert('', error?.message);

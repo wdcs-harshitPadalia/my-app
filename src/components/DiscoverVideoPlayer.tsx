@@ -37,6 +37,7 @@ import {
 	downloadVideo,
 	getVideoShareMessage,
 	getVideoShareUrl,
+	showErrorAlert,
 	uniqueIdGenerateFrom2Ids
 } from '../constants/utils/Function';
 import ScreenNames from '../navigation/screenNames';
@@ -102,7 +103,7 @@ const DiscoverVideoPlayer = React.forwardRef((props, parentRef) => {
 		item,
 		screenOriginalHeight,
 		ViewableItem,
-		_id,
+		_id
 	} = props;
 	const navigation = useNavigation();
 	const dispatch = useDispatch();
@@ -268,28 +269,41 @@ const DiscoverVideoPlayer = React.forwardRef((props, parentRef) => {
 	};
 	// For sharing video
 	const handleShareVideo = async () => {
-		try {
-			const result = await Share.share({
-				message: getVideoShareMessage(
-					itemData?.users?.displayName || itemData?.users?.userName,
-					itemData?._id
-				)
-			});
-			if (result.action === Share.sharedAction) {
-				if (result.activityType) {
-					// shared with activity type of result.activityType
-					console.log('result.activityType');
-					setIsShowShareModal(!isShowShareModal);
-				} else {
-					// shared
-					// console.log('shared');
-					setIsShowShareModal(!isShowShareModal);
-				}
-			} else if (result.action === Share.dismissedAction) {
-				// dismissed
+		if (Platform.OS === 'web') {
+			try {
+				await navigator.share({
+					text: getVideoShareMessage(
+						itemData?.users?.displayName || itemData?.users?.userName,
+						itemData?._id
+					)
+				});
+			} catch (error) {
+				showErrorAlert('', error?.message);
 			}
-		} catch (error) {
-			Alert.alert(error.message);
+		} else {
+			try {
+				const result = await Share.share({
+					message: getVideoShareMessage(
+						itemData?.users?.displayName || itemData?.users?.userName,
+						itemData?._id
+					)
+				});
+				if (result.action === Share.sharedAction) {
+					if (result.activityType) {
+						// shared with activity type of result.activityType
+						console.log('result.activityType');
+						setIsShowShareModal(!isShowShareModal);
+					} else {
+						// shared
+						// console.log('shared');
+						setIsShowShareModal(!isShowShareModal);
+					}
+				} else if (result.action === Share.dismissedAction) {
+					// dismissed
+				}
+			} catch (error) {
+				showErrorAlert('', error?.message);
+			}
 		}
 	};
 

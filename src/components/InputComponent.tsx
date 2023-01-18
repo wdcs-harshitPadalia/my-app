@@ -107,6 +107,7 @@ const styles = StyleSheet.create({
   },
   inputStyle: {
     // flex: 1,
+    outlineStyle: 'none',
     width: "100%",
     color: colors.white,
     fontSize: moderateScale(14),

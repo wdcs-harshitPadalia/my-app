@@ -2,6 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {
 	Alert,
 	Platform,
+	SafeAreaView,
 	Share,
 	Text,
 	TouchableOpacity,
@@ -14,7 +15,6 @@ import {connectClient} from '@amityco/ts-sdk';
 import {useNavigation} from '@react-navigation/native';
 import {useWalletConnect} from '@walletconnect/react-native-dapp';
 import {Directions} from 'react-native-gesture-handler';
-
 
 import icons from '../../../assets/icon';
 import styles from './style';
@@ -386,9 +386,9 @@ const FeedScreen: React.FC<any> = props => {
 	// );
 
 	const handleShare = async (id, matchId, isBet, betQuestion) => {
-		if (Platform.OS === 'ios') {
+		if (Platform.OS === 'web') {
 			try {
-				const result = await Share.share({
+				await navigator.share({
 					url: isBet
 						? createBetDetailsPreviewShareUrl(
 								Strings.str_bet_details,
@@ -405,17 +405,8 @@ const FeedScreen: React.FC<any> = props => {
 								isBet
 						  )
 				});
-				if (result.action === Share.sharedAction) {
-					if (result.activityType) {
-						// shared with activity type of result.activityType
-					} else {
-						// shared
-					}
-				} else if (result.action === Share.dismissedAction) {
-					// dismissed
-				}
 			} catch (error) {
-				Alert.alert(error.message);
+				showErrorAlert('', error.message);
 			}
 		} else {
 			try {
@@ -494,7 +485,7 @@ const FeedScreen: React.FC<any> = props => {
 	};
 
 	return (
-		<View style={styles.container}>
+		<SafeAreaView style={styles.container}>
 			<HeaderComponent
 				onAddMenuPress={async () => {
 					// //navigation.navigate(ScreenNames.SettingsScreen);
@@ -832,7 +823,7 @@ const FeedScreen: React.FC<any> = props => {
 					}}
 				/>
 			)}
-		</View>
+		</SafeAreaView>
 	);
 };
 

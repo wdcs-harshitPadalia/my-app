@@ -179,7 +179,7 @@ const PlaceBetsAmountView: React.FC<Props> = props => {
 					textValue={payOutAmount + ''}
 					keyboardType="decimal-pad"
 					maxLength={10}
-					editable={isEditOdds === false ? false : !isShowError}
+					editable={Platform.OS === 'web' ? false : isEditOdds === false ? false : !isShowError}
 					btnDisabled={true}
 				/>
 				{isEditOdds && (

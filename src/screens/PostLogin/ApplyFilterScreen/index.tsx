@@ -545,7 +545,17 @@ export default function ApplyFilterScreen() {
 									keyExtractor={item => item._id}
 									style={{
 										borderRadius: 8,
-										overflow: 'hidden',
+										...Platform.select({
+											web: {
+												overflow: 'scroll'
+											},
+											ios: {
+												overflow: 'hidden'
+											},
+											android: {
+												overflow: 'hidden'
+											}
+										}),
 										marginTop: verticalScale(10),
 										width:
 											categoryData.length >= 3

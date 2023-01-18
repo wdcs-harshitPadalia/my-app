@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
 		fontWeight: 'bold',
 		color: 'white',
 		//backgroundColor: defaultTheme.primaryColor,
-		width: 25,
+		width: 30,
 		// height: 30,
 		padding: 4,
 		textAlign: 'center',

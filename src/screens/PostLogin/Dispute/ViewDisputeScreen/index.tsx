@@ -565,7 +565,7 @@ const ViewDisputeScreen: React.FC<any> = () => {
 
 				<ScrollView
 					style={{
-						marginHorizontal: horizontalScale(16),
+						paddingHorizontal: horizontalScale(16),
 						flex: 1,
 						paddingBottom: verticalScale(50)
 					}}

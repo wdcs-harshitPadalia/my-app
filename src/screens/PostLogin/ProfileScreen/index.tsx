@@ -5,13 +5,15 @@ import {
 } from '@react-navigation/native';
 import {useWalletConnect} from '@walletconnect/react-native-dapp';
 import React, {useEffect, useRef, useState} from 'react';
-import {ScrollView, Share, View} from 'react-native';
+import {Platform, ScrollView, Share, View} from 'react-native';
+import DropShadow from 'react-native-drop-shadow';
 import {Text} from 'react-native-elements';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
 import icons from '../../../assets/icon';
 import BetsListView from '../../../components/BetsListView';
 import BetsProgress from '../../../components/BetsProgress';
+import ButtonLeftIconGradient from '../../../components/ButtonLeftIconGradient';
 import ConformationPopupComponet from '../../../components/ConformationPopupComponet';
 import CurrencyBalanceVIew from '../../../components/CurrencyBalanceVIew';
 import useUpdateEffect from '../../../components/CustomHooks/useUpdateEffect';
@@ -44,7 +46,7 @@ import {updateApiLoader} from '../../../redux/reducerSlices/preLogin';
 import {RootState} from '../../../redux/store';
 import colors from '../../../theme/colors';
 import {defaultTheme} from '../../../theme/defaultTheme';
-import {gradientColorAngle} from '../../../theme/metrics';
+import {gradientColorAngle, verticalScale} from '../../../theme/metrics';
 import styles from './style';
 
 const ProfileScreen: React.FC<any> = props => {
@@ -258,21 +260,31 @@ const ProfileScreen: React.FC<any> = props => {
 	);
 
 	const onShare = async (url: string) => {
-		try {
-			const result = await Share.share({
-				message: url
-			});
-			if (result.action === Share.sharedAction) {
-				if (result.activityType) {
-					// shared with activity type of result.activityType
-				} else {
-					// shared
-				}
-			} else if (result.action === Share.dismissedAction) {
-				// dismissed
+		if (Platform.OS === 'web') {
+			try {
+				await navigator.share({
+					text: url
+				});
+			} catch (error) {
+				showErrorAlert('', error?.message);
 			}
-		} catch (error) {
-			showErrorAlert('', error.message);
+		} else {
+			try {
+				const result = await Share.share({
+					message: url
+				});
+				if (result.action === Share.sharedAction) {
+					if (result.activityType) {
+						// shared with activity type of result.activityType
+					} else {
+						// shared
+					}
+				} else if (result.action === Share.dismissedAction) {
+					// dismissed
+				}
+			} catch (error) {
+				showErrorAlert('', error.message);
+			}
 		}
 	};
 
@@ -361,7 +373,7 @@ const ProfileScreen: React.FC<any> = props => {
 									leftIconPath={icons.ic_contact_green}
 									textType={'none'}
 								/>
-							</DropShadow>
+							</DropShadow> */}
 							<DropShadow
 								style={{
 									shadowColor: defaultTheme.secondaryBackGroundColor,
@@ -371,7 +383,14 @@ const ProfileScreen: React.FC<any> = props => {
 									},
 									shadowOpacity: 0.5,
 									shadowRadius: 5,
-									elevation: 5
+									elevation: 5,
+									...Platform.select({
+										web: {
+											marginTop: verticalScale(16),
+											borderRadius: verticalScale(50),
+											padding: verticalScale(6)
+										}
+									})
 								}}>
 								<ButtonLeftIconGradient
 									onPress={() => {
@@ -388,7 +407,7 @@ const ProfileScreen: React.FC<any> = props => {
 									leftIconPath={icons.share_green_gradient}
 									textType={'none'}
 								/>
-							</DropShadow> */}
+							</DropShadow>
 
 							<View style={styles.viewUserInfo}>
 								<UserInfoComponent

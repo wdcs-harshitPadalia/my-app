@@ -24,6 +24,7 @@ import Strings from '../../../constants/strings';
 import {
 	createBetDetailsPreviewShareUrl,
 	dateTimeConvert,
+	getBetShareUrl,
 	showErrorAlert
 } from '../../../constants/utils/Function';
 import ScreenNames from '../../../navigation/screenNames';
@@ -56,6 +57,9 @@ export default function CustomBetDetailsScreen() {
 	const [totalFollowUser, setTotalFollowUser] = useState(-1);
 	const [followUserData, setFollowUserData] = useState([]);
 	const [isFromBackButton, setIsFromBackButton] = useState(false);
+
+	const eventEndTime =
+		feedObject?.betEndDate && dateTimeConvert(feedObject?.betEndDate);
 
 	const userInfo = useSelector((state: RootState) => {
 		return state.userInfo.data;
@@ -149,12 +153,13 @@ export default function CustomBetDetailsScreen() {
 		if (Platform.OS === 'web') {
 			try {
 				await navigator.share({
-					url: createBetDetailsPreviewShareUrl(
-						Strings.str_bet_details,
-						id,
+					text: getBetShareUrl(
+						feedObject?.users?.displayName || '@' + feedObject?.users?.userName,
+						eventEndTime,
 						betId,
-						betCreationType,
-						true
+						id,
+						Strings.str_bet_details,
+						betCreationType
 					)
 				});
 			} catch (error) {
@@ -163,12 +168,13 @@ export default function CustomBetDetailsScreen() {
 		} else {
 			try {
 				const result = await Share.share({
-					message: createBetDetailsPreviewShareUrl(
-						Strings.str_bet_details,
-						id,
+					message: getBetShareUrl(
+						feedObject?.users?.displayName || '@' + feedObject?.users?.userName,
+						eventEndTime,
 						betId,
-						betCreationType,
-						true
+						id,
+						Strings.str_bet_details,
+						betCreationType
 					)
 				});
 				if (result.action === Share.sharedAction) {

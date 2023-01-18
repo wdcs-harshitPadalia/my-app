@@ -1693,7 +1693,7 @@ const DiscoverScreen: React.FC<any> = props => {
 					<AfterSearchClickComponent />
 				</>
 			)}
-			{beforeClickTopTabIndex === 1 && (
+			{beforeClickTopTabIndex === 1 && !searchClicked && (
 				<View
 					style={{
 						marginHorizontal: horizontalScale(8),
@@ -1715,37 +1715,39 @@ const DiscoverScreen: React.FC<any> = props => {
 				</View>
 			)}
 
-			{discoverMatchData.length > 1 && isShowSwipeUp && (
-				<View pointerEvents="none" style={styles.swipeView}>
-					{Platform.OS === 'web' ? (
-						<Lottie
-							style={{
-								height: 150,
-								width: 150,
-								alignSelf: 'center'
-							}}
-							animationData={require('../../../assets/animations/swipe_up.json')}
-							// autoPlay
-							// loop={isShowSwipeUp}
-							lottieRef={lottieRef}
-						/>
-					) : (
-						<LottieView
-							style={{
-								height: 100,
-								width: 100,
-								alignSelf: 'center'
-							}}
-							source={require('../../../assets/animations/swipe_up.json')}
-							autoPlay
-							loop={isShowSwipeUp}
-							ref={ref => {
-								animation.current = ref;
-							}}
-						/>
-					)}
-				</View>
-			)}
+			{discoverMatchData.length > 1 &&
+				isShowSwipeUp &&
+				beforeClickTopTabIndex == 0 && (
+					<View pointerEvents="none" style={styles.swipeView}>
+						{Platform.OS === 'web' ? (
+							<Lottie
+								style={{
+									height: 150,
+									width: 150,
+									alignSelf: 'center'
+								}}
+								animationData={require('../../../assets/animations/swipe_up.json')}
+								// autoPlay
+								// loop={isShowSwipeUp}
+								lottieRef={lottieRef}
+							/>
+						) : (
+							<LottieView
+								style={{
+									height: 100,
+									width: 100,
+									alignSelf: 'center'
+								}}
+								source={require('../../../assets/animations/swipe_up.json')}
+								autoPlay
+								loop={isShowSwipeUp}
+								ref={ref => {
+									animation.current = ref;
+								}}
+							/>
+						)}
+					</View>
+				)}
 
 			{!searchClicked && (
 				<View style={[styles.tabView, {top: insets.top}]}>

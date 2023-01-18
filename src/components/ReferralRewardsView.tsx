@@ -137,6 +137,7 @@ export default function ReferralRewardsView(props: ReferralRewardsViewProps) {
 						)
 					}
 					style={styles.marginInput}
+					btnDisabled={!(parseFloat(props?.claimAmount) > 0)}
 				/>
 			)}
 		</View>

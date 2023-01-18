@@ -41,6 +41,7 @@ import {MAGIC_API_KEY} from '@env';
 import {Magic as MagicWeb} from 'magic-sdk';
 import {OAuthExtension as OAuthExtensionWeb} from '@magic-ext/oauth';
 import ReferralProgramScreen from '../../screens/PostLogin/ReferralProgramScreen';
+import WithdrawSuccessScreen from '../../screens/PostLogin/WithdrawSuccessScreen';
 
 const customNodeOptions = {
 	rpcUrl: RpcURL, // Polygon RPC URL
@@ -187,6 +188,11 @@ export const WalletTabRoutes = (_props: any) => (
 		<Stack.Screen
 			name={ScreenNames.TransakWebView}
 			component={TransakWebView}
+			options={{headerShown: false, gestureEnabled: false}}
+		/>
+		<Stack.Screen
+			name={ScreenNames.WithdrawSuccessScreen}
+			component={WithdrawSuccessScreen}
 			options={{headerShown: false, gestureEnabled: false}}
 		/>
 	</Stack.Navigator>

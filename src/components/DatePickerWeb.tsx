@@ -10,7 +10,7 @@ import moment from 'moment';
 import colors from '../theme/colors';
 
 interface DatePickerWebProps {
-	selected: string;
+	selected: any;
 	handleChange: () => void;
 	isPickOnlyDate?: boolean;
 	maximumDate?: string;
@@ -63,15 +63,18 @@ const DatePickerWeb = forwardRef((props: DatePickerWebProps, ref) => {
 	// with whatever you return from the callback passed
 	// as the second argument
 	useImperativeHandle(ref, () => ({
-		handlePickDateTime() {
-			const userAgentName = window.navigator.userAgent.toLowerCase();
-			if (userAgentName.includes('iphone')) {
-				dateRef.current.focus();
-			} else {
-				dateRef.current.showPicker();
-			}
-		}
+		handlePickDateTime
 	}));
+
+	const handlePickDateTime = () => {
+		const userAgentName = window.navigator.userAgent.toLowerCase();
+		console.log('userAgentName ::', userAgentName);
+		if (userAgentName.includes('iphone')) {
+			dateRef.current.focus();
+		} else {
+			dateRef.current.showPicker();
+		}
+	};
 
 	return (
 		<View
@@ -79,16 +82,13 @@ const DatePickerWeb = forwardRef((props: DatePickerWebProps, ref) => {
 			<input
 				ref={dateRef}
 				id="elogdate"
-				value={date}
+				// value={date}
 				onChange={_handleChange}
 				type={isPickOnlyDate ? 'date' : 'datetime-local'}
 				style={{flex: 1, backgroundColor: colors.black, opacity: 0}}
-				max={maximumDate && moment(maximumDate).format('YYYY-MM-DD')}
+				max={maximumDate && moment(maximumDate).format('YYYY-MM-DDTHH:mm')}
 				min={minimumDate && moment(minimumDate).format('YYYY-MM-DDTHH:mm')}
-				// defaultValue={moment()
-				// 	.add(10, 'minutes')
-				// 	.format('YYYY-MM-DDTHH:mm')
-				// 	.toString()}
+				defaultValue={date}
 			/>
 		</View>
 	);

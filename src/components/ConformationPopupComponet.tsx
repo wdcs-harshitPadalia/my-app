@@ -42,7 +42,7 @@ const ConformationPopupComponet: React.FC<Props> = props => {
 	return (
 		<Modal animationType="fade" transparent={true} visible={isVisible}>
 			<View style={styles.bgView}>
-				<TouchableOpacity activeOpacity={1} onPress={onPressCancel}>
+				<TouchableOpacity activeOpacity={1} onPress={onPressCancel} style={{flex:1}}>
 					<View style={styles.centeredView}>
 						<View style={styles.viewDetails}>
 							<Text style={[styles.titleStyle, {...style}]}>{popupTitle}</Text>

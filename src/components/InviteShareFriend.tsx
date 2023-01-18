@@ -5,7 +5,8 @@ import {
 	TextInputProps,
 	Text,
 	Share,
-	Platform} from 'react-native';
+	Platform
+} from 'react-native';
 import ExpoFastImage from 'expo-fast-image';
 import {useSelector} from 'react-redux';
 import icons from '../assets/icon';
@@ -34,7 +35,7 @@ const InviteShareFriend: React.FC<Props> = props => {
 		if (Platform.OS === 'web') {
 			try {
 				await navigator.share({
-					url: url
+					text: url
 				});
 			} catch (error) {
 				showErrorAlert('', error?.message);

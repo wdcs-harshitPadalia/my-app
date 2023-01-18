@@ -1,7 +1,7 @@
 /* eslint-disable quotes */
 /* eslint-disable prettier/prettier */
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, Text, Alert} from 'react-native';
+import {View, StyleSheet, Text, Alert, Platform} from 'react-native';
 import {FlatList} from 'react-native-gesture-handler';
 import {LinearGradient} from 'expo-linear-gradient';
 import {useDispatch, useSelector} from 'react-redux';
@@ -130,18 +130,26 @@ const SelectCryptoAmount: React.FC<Props> = props => {
 			console.log('currencyDataArray ::', currencyDataArray);
 
 			if (currencyDataArray.length < 1) {
-				Alert.alert(
-					'Insufficient Balance'.toUpperCase(),
-					Strings.enough_balance,
-					[
-						{
-							text: 'OK',
-							onPress: () => {
-								props?.selectedObj();
+				if (Platform.OS === 'web') {
+					let retVal = confirm(Strings.enough_balance);
+					if (retVal == true) {
+						props?.selectedObj();
+					} else {
+						props?.selectedObj();
+					}
+				} else {
+					Alert.alert(
+						'Insufficient Balance'.toUpperCase(),
+						Strings.enough_balance,
+						[
+							{
+								text: 'OK',
+								onPress: () => {
+									props?.selectedObj();
+								}
 							}
-						}
-					]
-				);
+					]);
+				}
 			}
 		}
 	}, [tokenCount]);

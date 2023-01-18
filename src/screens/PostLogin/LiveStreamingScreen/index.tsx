@@ -279,27 +279,9 @@ const LiveStreamingScreen: React.FC<any> = props => {
 
 					{(feedInfo?.matchList?.length === 0 && feedErrorInfo === true) ||
 					categories.length === 1 ? (
-						<FlingGestureHandler
-							direction={Directions.LEFT}
-							onHandlerStateChange={ev => {
-								if (ev.nativeEvent.oldState === State.ACTIVE) {
-									onSwipeChange(Directions.LEFT);
-								}
-							}}
-							style={styles.container}>
-							<FlingGestureHandler
-								direction={Directions.RIGHT}
-								onHandlerStateChange={ev => {
-									if (ev.nativeEvent.oldState === State.ACTIVE) {
-										onSwipeChange(Directions.RIGHT);
-									}
-								}}
-								style={styles.container}>
 								<View style={styles.noDataContainer}>
 									<NoDataComponent noData={noDataItem} />
 								</View>
-							</FlingGestureHandler>
-						</FlingGestureHandler>
 					) : (
 						<></>
 					)}

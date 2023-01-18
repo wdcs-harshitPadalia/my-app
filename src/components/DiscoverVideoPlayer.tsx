@@ -37,6 +37,7 @@ import {
 	downloadVideo,
 	getVideoShareMessage,
 	getVideoShareUrl,
+	showErrorAlert,
 	uniqueIdGenerateFrom2Ids
 } from '../constants/utils/Function';
 import ScreenNames from '../navigation/screenNames';
@@ -58,6 +59,7 @@ import {
 	width
 } from '../theme/metrics';
 import OtherUserProfileReplicateBetComponent from './OtherUserProfileReplicateBetComponent';
+import useDownloader from 'react-use-downloader';
 import ShareVideoModal from './ShareVideoModal';
 const {v4: uuidv4} = require('uuid');
 import {useSelector} from 'react-redux';
@@ -102,7 +104,7 @@ const DiscoverVideoPlayer = React.forwardRef((props, parentRef) => {
 		item,
 		screenOriginalHeight,
 		ViewableItem,
-		_id,
+		_id
 	} = props;
 	const navigation = useNavigation();
 	const dispatch = useDispatch();
@@ -113,6 +115,9 @@ const DiscoverVideoPlayer = React.forwardRef((props, parentRef) => {
 		unload,
 		stop
 	}));
+
+	const {size, elapsed, percentage, download, cancel, error, isInProgress} =
+		useDownloader();
 
 	const [isPreLoading, setIsPreLoading] = useState(true);
 	const [isVideoPlay, setIsVideoPlay] = useState(false);
@@ -268,28 +273,41 @@ const DiscoverVideoPlayer = React.forwardRef((props, parentRef) => {
 	};
 	// For sharing video
 	const handleShareVideo = async () => {
-		try {
-			const result = await Share.share({
-				message: getVideoShareMessage(
-					itemData?.users?.displayName || itemData?.users?.userName,
-					itemData?._id
-				)
-			});
-			if (result.action === Share.sharedAction) {
-				if (result.activityType) {
-					// shared with activity type of result.activityType
-					console.log('result.activityType');
-					setIsShowShareModal(!isShowShareModal);
-				} else {
-					// shared
-					// console.log('shared');
-					setIsShowShareModal(!isShowShareModal);
-				}
-			} else if (result.action === Share.dismissedAction) {
-				// dismissed
+		if (Platform.OS === 'web') {
+			try {
+				await navigator.share({
+					text: getVideoShareMessage(
+						itemData?.users?.displayName || itemData?.users?.userName,
+						itemData?._id
+					)
+				});
+			} catch (error) {
+				showErrorAlert('', error?.message);
 			}
-		} catch (error) {
-			Alert.alert(error.message);
+		} else {
+			try {
+				const result = await Share.share({
+					message: getVideoShareMessage(
+						itemData?.users?.displayName || itemData?.users?.userName,
+						itemData?._id
+					)
+				});
+				if (result.action === Share.sharedAction) {
+					if (result.activityType) {
+						// shared with activity type of result.activityType
+						console.log('result.activityType');
+						setIsShowShareModal(!isShowShareModal);
+					} else {
+						// shared
+						// console.log('shared');
+						setIsShowShareModal(!isShowShareModal);
+					}
+				} else if (result.action === Share.dismissedAction) {
+					// dismissed
+				}
+			} catch (error) {
+				showErrorAlert('', error?.message);
+			}
 		}
 	};
 
@@ -443,29 +461,32 @@ const DiscoverVideoPlayer = React.forwardRef((props, parentRef) => {
 	};
 
 	const handleDownloadVideo = async () => {
-		// let reqPermission = await request(
-		// 	Platform.OS === 'android'
-		// 		? PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE
-		// 		: PERMISSIONS.IOS.PHOTO_LIBRARY
-		// );
-		// if (reqPermission === 'granted') {
-		// 	downloadVideo(itemData?.video_url);
-		// } else {
-		// 	Alert.alert('Alert', Strings.galleryAccess, [
-		// 		{
-		// 			text: 'Open Settings',
-		// 			onPress: () => openSettings(),
-		// 			style: 'destructive'
-		// 		},
-		// 		{
-		// 			text: 'Cancel',
-		// 			onPress: () => console.log('Cancel Pressed')
-		// 		}
-		// 	]);
-		// }
-		// console.log('reqPermission ::', reqPermission);
-		// setIsShowShareModal(!isShowShareModal);
+		console.log("itemData?.video_url???>>", itemData?.video_url)
+		download(itemData?.video_url, 'defibethouse.mp4');
+		//downloadVideo(itemData?.video_url);
 	};
+	// let reqPermission = await request(
+	// 	Platform.OS === 'android'
+	// 		? PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE
+	// 		: PERMISSIONS.IOS.PHOTO_LIBRARY
+	// );
+	// if (reqPermission === 'granted') {
+	// 	downloadVideo(itemData?.video_url);
+	// } else {
+	// 	Alert.alert('Alert', Strings.galleryAccess, [
+	// 		{
+	// 			text: 'Open Settings',
+	// 			onPress: () => openSettings(),
+	// 			style: 'destructive'
+	// 		},
+	// 		{
+	// 			text: 'Cancel',
+	// 			onPress: () => console.log('Cancel Pressed')
+	// 		}
+	// 	]);
+	// }
+	// console.log('reqPermission ::', reqPermission);
+	// setIsShowShareModal(!isShowShareModal);
 	// useEffect(() => {
 	// 	console.log(
 	// 		'visibleParentIndex',
@@ -484,8 +505,34 @@ const DiscoverVideoPlayer = React.forwardRef((props, parentRef) => {
 		}
 	}, [ViewableItem]);
 	const [paused, setpaused] = useState(true);
+	useEffect(() => {
+		if (isInProgress) {
+			if (percentage == 100) {
+				setTimeout(() => {
+					dispatch(updateApiLoader({apiLoader: false}));
+				}, 400);
+			} else {
+				dispatch(updateApiLoader({apiLoader: true}));
+			}
+		}
+		console.log(
+			'percentage??',
+			percentage,
+			'elapsed???',
+			elapsed,
+			'isInProgress>>>',
+			isInProgress,
+			error
+		);
+	}, [percentage, error]);
 	return (
 		<View style={[styles.container, {height: screenOriginalHeight}]}>
+			{/* <p>Download is in {isInProgress ? 'in progress' : 'stopped'}</p>
+			<p>Download size in bytes {size}</p>
+			<label for="file">Downloading progress:</label>
+			<progress id="file" value={percentage} max="100" />
+			<p>Elapsed time in seconds {elapsed}</p>
+			{error && <p>possible error {JSON.stringify(error)}</p>} */}
 			{!isVisible && (
 				<ImageBackground
 					source={itemData?.video_thumbnail}

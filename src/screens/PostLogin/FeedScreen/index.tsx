@@ -23,6 +23,9 @@ import {defaultTheme} from '../../../theme/defaultTheme';
 import Strings from '../../../constants/strings';
 import {
 	createBetDetailsPreviewShareUrl,
+	dateTimeConvert,
+	getBetShareUrl,
+	getEventShareUrl,
 	showErrorAlert
 } from '../../../constants/utils/Function';
 
@@ -385,25 +388,21 @@ const FeedScreen: React.FC<any> = props => {
 	//   />
 	// );
 
-	const handleShare = async (id, matchId, isBet, betQuestion) => {
+	const handleShare = async (name, id, matchId, isBet, endTime) => {
+		const eventEndTime = dateTimeConvert(endTime);
 		if (Platform.OS === 'web') {
 			try {
 				await navigator.share({
-					url: isBet
-						? createBetDetailsPreviewShareUrl(
+					text: isBet
+						? getBetShareUrl(
+								name,
+								eventEndTime,
+								matchId,
+								id,
 								Strings.str_bet_details,
-								id,
-								matchId,
-								1,
-								isBet
+								1
 						  )
-						: createBetDetailsPreviewShareUrl(
-								Strings.feed,
-								id,
-								matchId,
-								1,
-								isBet
-						  )
+						: getEventShareUrl(matchId, eventEndTime, Strings.feed, 1)
 				});
 			} catch (error) {
 				showErrorAlert('', error.message);
@@ -412,20 +411,15 @@ const FeedScreen: React.FC<any> = props => {
 			try {
 				const result = await Share.share({
 					message: isBet
-						? createBetDetailsPreviewShareUrl(
+						? getBetShareUrl(
+								name,
+								eventEndTime,
+								matchId,
+								id,
 								Strings.str_bet_details,
-								id,
-								matchId,
-								1,
-								isBet
+								1
 						  )
-						: createBetDetailsPreviewShareUrl(
-								Strings.feed,
-								id,
-								matchId,
-								1,
-								isBet
-						  )
+						: getEventShareUrl(matchId, eventEndTime, Strings.feed, 1)
 				});
 				if (result.action === Share.sharedAction) {
 					if (result.activityType) {
@@ -677,13 +671,21 @@ const FeedScreen: React.FC<any> = props => {
 									setTimeout(() => {
 										if (item?.dataType === 'customBet') {
 											handleShare(
-												item._id,
+												item?.betMaker?.displayName ||
+													'@' + item?.betMaker?.userName,
+												item?._id,
 												item?.bet_id,
 												true,
-												item?.betQuestion
+												item?.betEndDate
 											);
 										} else {
-											handleShare(item._id, item._id, false, '');
+											handleShare(
+												item?.users?.displayName || '@' + item?.users?.userName,
+												item._id,
+												item._id,
+												false,
+												item?.match_end_time
+											);
 										}
 									}, 500);
 									break;

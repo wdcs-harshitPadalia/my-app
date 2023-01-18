@@ -41,6 +41,7 @@ interface Props extends TextInputProps {
 	openbet?: number;
 	isCallFromSuggestedUser?: boolean;
 	prefixText?: string;
+	isFromLive?: boolean;
 }
 
 const UserGroupView: React.FC<Props> = props => {
@@ -65,7 +66,8 @@ const UserGroupView: React.FC<Props> = props => {
 		openbet,
 		volume,
 		isCallFromSuggestedUser,
-		prefixText
+		prefixText,
+		isFromLive
 	} = props;
 
 	// const getUsersName = () => {
@@ -116,10 +118,15 @@ const UserGroupView: React.FC<Props> = props => {
 					angle={angle ? angle : gradientColorAngle}
 					colors={colorArray}>
 					<View style={styles.parentView}>
-						<TouchableOpacity activeOpacity={0.9} onPress={onPressViewAll}>
+						<TouchableOpacity
+							activeOpacity={0.9}
+							onPress={onPressViewAll}
+							style={{alignItems: 'flex-end'}}>
 							{showWatchButton ? (
-								<DynamicButtonGradient
-									style={{marginRight: 8}}
+								<ButtonGradient
+									style={{
+										width: '100%'
+									}}
 									buttonText={rightBtnText ?? 'Watch'}
 									buttonTextcolor={colors.white}
 									onPress={onWatchButtonClicked}
@@ -274,42 +281,44 @@ const UserGroupView: React.FC<Props> = props => {
 									) : (
 										<Text style={styles.andLabelStyle}>
 											{`${
-												userArray?.length === 1
+												!userCount
 													? getUsersName === 'You'
 														? ' are'
 														: ' is'
-													: userCount == 0
-													? ' are'
-													: ''
-											}` + Strings.betting_on_this_event}
+													: ' are'
+											} ${
+												isFromLive
+													? Strings.watching
+													: Strings.betting_on_this_event
+											} `}
 										</Text>
 									)}
 								</Text>
 							</View>
 
 							{/* {leftIconPath !== undefined ? ( */}
-							{showWatchButton ? (
-								<DynamicButtonGradient
-									style={{marginRight: 8}}
-									buttonText={rightBtnText ?? 'Watch'}
-									buttonTextcolor={colors.white}
-									onPress={onWatchButtonClicked}
-									colorArray={
-										rightBtnTextColorArray ?? defaultTheme.textGradientColor
-									}
-								/>
-							) : (
+							{shouldShowCloseButton && (
 								<TouchableOpacity onPress={onCloseButtonPress}>
-									{shouldShowCloseButton && (
-										<ExpoFastImage
-											style={styles.btnClose}
-											source={icons.closeBlack}
-											// resizeMode={'cover'}
-										/>
-									)}
+									<ExpoFastImage
+										style={styles.btnClose}
+										source={icons.closeBlack}
+										// resizeMode={'cover'}
+									/>
 								</TouchableOpacity>
 							)}
 						</TouchableOpacity>
+
+						{showWatchButton && (
+							<ButtonGradient
+								style={{width: '100%'}}
+								buttonText={rightBtnText ?? 'Watch'}
+								buttonTextcolor={colors.white}
+								onPress={onWatchButtonClicked}
+								colorArray={
+									rightBtnTextColorArray ?? defaultTheme.textGradientColor
+								}
+							/>
+						)}
 
 						{shouldShowBottomButtons && (
 							<>

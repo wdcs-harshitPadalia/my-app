@@ -23,6 +23,7 @@ import colors from '../../../theme/colors';
 import {defaultTheme} from '../../../theme/defaultTheme';
 import {gradientColorAngle} from '../../../theme/metrics';
 import styles from './style';
+import ScreenNames from '../../../navigation/screenNames';
 
 const ReferralProgramScreen = () => {
 	const navigation = useNavigation();
@@ -68,7 +69,10 @@ const ReferralProgramScreen = () => {
 								await Clipboard.setString(userInfo?.user?.affiliateCode);
 								Alert.alert(Strings.copy_wallet_add_desc);
 							}}>
-							<ExpoFastImage style={styles.imageStyle} source={icons.clipboard} />
+							<ExpoFastImage
+								style={styles.imageStyle}
+								source={icons.clipboard}
+							/>
 						</TouchableOpacity>
 					</View>
 					<Text style={styles.codeDesText}>{Strings.referral_des}</Text>
@@ -78,11 +82,17 @@ const ReferralProgramScreen = () => {
 				Object.keys(userInfo?.user?.referralUserInfo).length !== 0 ? (
 					<View style={styles.viewAlreadyReferral}>
 						<Text style={styles.referralText}>{Strings.referral_buddy}</Text>
-						<GradientText
-							colors={defaultTheme.primaryGradientColor}
-							style={styles.referralText}>
-							{`@${userInfo?.user?.referralUserInfo?.userName}`}
-						</GradientText>
+						<TouchableOpacity
+							onPress={() => {
+								navigation.navigate(ScreenNames.OtherUserProfileScreen, {
+									userId: userInfo?.user?.referralUserInfo?._id
+								});
+							}}>
+							<Text
+								style={[styles.referralText, {color: defaultTheme.primaryGradientColor[0]}]}>
+								{`@${userInfo?.user?.referralUserInfo?.userName}`}
+							</Text>
+						</TouchableOpacity>
 					</View>
 				) : (
 					<View style={styles.viewReferral}>

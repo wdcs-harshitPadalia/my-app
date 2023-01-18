@@ -651,42 +651,64 @@ const BetsCategoryScreen: React.FC<any> = () => {
 	};
 
 	const getCategoryData = async () => {
-		// if (
-		// 	userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask' &&
-		// 	!connector.connected
-		// ) {
-		// 	console.log('getCategoryData:::============');
-		// 	// Alert.alert(Strings.txt_session_expire_msg);
-		// 	Alert.alert(Strings.txt_session_expire_msg, '', [
-		// 		{
-		// 			text: 'Ok',
-		// 			onPress: () => {
-		// 				dispatch(logout());
-		// 				dispatch(updateDeviceToken({deviceToken: ''}));
-		// 				dispatch(resetProfileData({}));
-		// 			}
-		// 		}
-		// 	]);
-		// 	return;
-		// } else {
-		// 	if (userInfo?.user?.socialLoginType?.toLowerCase() !== 'metamask') {
-		// 		const loginStatus = await magic.user.isLoggedIn();
-		// 		console.log('loginStatus ::', loginStatus);
-		// 		if (!loginStatus) {
-		// 			Alert.alert(Strings.txt_session_expire_msg, '', [
-		// 				{
-		// 					text: 'Ok',
-		// 					onPress: () => {
-		// 						dispatch(logout());
-		// 						dispatch(updateDeviceToken({deviceToken: ''}));
-		// 						dispatch(resetProfileData({}));
-		// 					}
-		// 				}
-		// 			]);
-		// 			return;
-		// 		}
-		// 	}
-		// }
+		if (
+			userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask' &&
+			!connector.connected
+		) {
+			if (Platform.OS === 'web') {
+				let retVal = confirm(Strings.txt_session_expire_msg);
+				if (retVal == true) {
+					dispatch(logout());
+					dispatch(updateDeviceToken({deviceToken: ''}));
+					dispatch(resetProfileData({}));
+					return true;
+				} else {
+					return false;
+				}
+			} else {
+				Alert.alert(Strings.txt_session_expire_msg, '', [
+					{
+						text: 'Ok',
+						onPress: () => {
+							dispatch(logout());
+							dispatch(updateDeviceToken({deviceToken: ''}));
+							dispatch(resetProfileData({}));
+						}
+					}
+				]);
+			}
+			return;
+		} else {
+			if (userInfo?.user?.socialLoginType?.toLowerCase() !== 'metamask') {
+				const loginStatus = await magic.user.isLoggedIn();
+				console.log('loginStatus ::', loginStatus);
+				if (!loginStatus) {
+					if (Platform.OS === 'web') {
+						let retVal = confirm(Strings.txt_session_expire_msg);
+						if (retVal == true) {
+							dispatch(logout());
+							dispatch(updateDeviceToken({deviceToken: ''}));
+							dispatch(resetProfileData({}));
+							return true;
+						} else {
+							return false;
+						}
+					} else {
+						Alert.alert(Strings.txt_session_expire_msg, '', [
+							{
+								text: 'Ok',
+								onPress: () => {
+									dispatch(logout());
+									dispatch(updateDeviceToken({deviceToken: ''}));
+									dispatch(resetProfileData({}));
+								}
+							}
+						]);
+					}
+					return;
+				}
+			}
+		}
 		getCategory()
 			.then(res => {
 				console.log('getCategoryData :: getCategory :: res ::', res);
@@ -1387,7 +1409,7 @@ const BetsCategoryScreen: React.FC<any> = () => {
 		if (Platform.OS === 'web') {
 			try {
 				await navigator.share({
-					url: url
+					text: url
 				});
 			} catch (error) {
 				showErrorAlert('', error?.message);

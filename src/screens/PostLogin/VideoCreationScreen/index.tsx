@@ -186,7 +186,7 @@ const VideoCreationScreen = () => {
 		if (Platform.OS === 'web') {
 			try {
 				await navigator.share({
-					url: url
+					text: url
 				});
 			} catch (error) {
 				showErrorAlert('', error.message);
@@ -276,16 +276,16 @@ const VideoCreationScreen = () => {
 								<ShareOptionView
 									onPressShare={text => {
 										if (text === Strings.share_on_whatsapp) {
-											Linking.openURL('whatsapp://send?text=' + '');
+											Linking.openURL('whatsapp://send?text=' + shareMessage);
 										} else if (text === Strings.share_on_telegram) {
-											Linking.openURL('tg://msg?text=' + '');
+											Linking.openURL('tg://msg?text=' + shareMessage);
 										} else if (text === Strings.share_on_twitter) {
-											Linking.openURL('twitter://post?message=' + '');
+											Linking.openURL('twitter://post?message=' + shareMessage);
 										} else if (text === Strings.copy_link) {
-											Clipboard.setString('');
+											Clipboard.setString(shareUrl);
 											showErrorAlert('', Strings.copy_link_desc);
 										} else {
-											onShare('');
+											onShare(shareMessage);
 										}
 									}}
 								/>

@@ -345,8 +345,11 @@ export const EventInfoView = ({
 					activeOpacity={0.8}
 					style={{flex: 1}}>
 					<UserGroupView
-						userArray={item?.users}
-						userCount={item?.betUserCount > 0 && item?.betUserCount}
+						userArray={item?.users ?? item?.liveViewUserData}
+						userCount={
+							item?.liveViewsCount ??
+							(item?.betUserCount > 0 && item?.betUserCount)
+						}
 						onPress={() => {
 							// handleSubmit();
 							// navigation.replace(ScreenNames.BottomTabScreen);
@@ -374,6 +377,8 @@ export const EventInfoView = ({
 						volume={item?.totalVolume}
 						openbet={item?.openBets}
 						prefixText={Strings.str_prefix_p2p_bets}
+						isFromLive={item?.liveViewUserData}
+						isCallFromSuggestedUser={true}
 					/>
 				</TouchableOpacity>
 			)}

@@ -40,6 +40,7 @@ interface Props extends TextInputProps {
   styleOfRightIcon?: ViewStyle;
   onPressInfoIcon?: () => void;
   short_nameTextStyle?: TextStyle;
+  isRightIconVisible?: boolean;
 }
 
 const ButtonGradientWithRightIcon: React.FC<Props> = (props) => {
@@ -64,6 +65,7 @@ const ButtonGradientWithRightIcon: React.FC<Props> = (props) => {
     styleOfRightIcon,
     onPressInfoIcon,
     onEndEditing,
+    isRightIconVisible
   } = props;
 
   return (
@@ -125,13 +127,13 @@ style={[
                   if (onPressInfoIcon) onPressInfoIcon();
                 }}
               >
-                <ExpoFastImage
+                {isRightIconVisible ? (<ExpoFastImage
                   resizeMode={"contain"}
                   source={rightIcon ? rightIcon : icons.downGray}
                   style={
                     styleOfRightIcon ? styleOfRightIcon : styles.dropDownImage
                   }
-                />
+                />) : null}
               </TouchableOpacity>
             ) : null}
           </View>

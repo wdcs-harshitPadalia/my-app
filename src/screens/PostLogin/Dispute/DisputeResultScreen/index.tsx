@@ -121,7 +121,7 @@ const DisputeResultScreen: React.FC<any> = props => {
 	}, [redirectType]);
 
 	useUpdateEffect(() => {
-		const tokenName = resultData?.tokenType?.short_name.toUpperCase();
+		const tokenName = resultData?.tokenType?.short_name?.toUpperCase();
 		let decimals;
 		if (tokenName === 'USDC' || tokenName === 'USDT') {
 			decimals = 6;
@@ -283,11 +283,17 @@ const DisputeResultScreen: React.FC<any> = props => {
 	}, [betId]);
 
 	const getUserAncestorData = () => {
-		dispatch(updateApiLoader({apiLoader: true}));
+		dispatch(
+			updateApiLoader({
+				apiLoader: true,
+				showAlertWithText:
+					Strings.just_a_few_more_seconds_your_funds_are_being_transferred_to_your_wallet
+			})
+		);
 		getUserAncestor()
 			.then(res => {
 				console.log('getUserAncestorData Response >>> ', JSON.stringify(res));
-				dispatch(updateApiLoader({apiLoader: false}));
+				// dispatch(updateApiLoader({apiLoader: false}));
 				handleClaimWinningAmount(res?.data);
 			})
 			.catch(err => {

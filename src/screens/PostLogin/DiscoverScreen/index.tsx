@@ -1684,12 +1684,12 @@ const DiscoverScreen: React.FC<any> = props => {
 					<AfterSearchClickComponent />
 				</>
 			)}
-			{beforeClickTopTabIndex === 1 && (
+			{beforeClickTopTabIndex === 1 && !searchClicked  && (
 				<View
 					style={{
 						marginHorizontal: horizontalScale(16),
-						marginBottom: verticalScale(16),
-						height: '100%',
+						// marginBottom: 100,
+						height: '85%',
 						width: '100%'
 					}}>
 					<ChatViewComponent
@@ -1707,7 +1707,7 @@ const DiscoverScreen: React.FC<any> = props => {
 				</View>
 			)}
 
-			{discoverMatchData.length > 1 && isShowSwipeUp && (
+			{discoverMatchData.length > 1 && isShowSwipeUp && beforeClickTopTabIndex == 0 && (
 				<View pointerEvents="none" style={styles.swipeView}>
 					{Platform.OS === 'web' ? (
 						<Lottie

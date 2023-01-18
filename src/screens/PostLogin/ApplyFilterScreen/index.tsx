@@ -26,7 +26,7 @@ import moment from 'moment';
 import ScreenNames from '../../../navigation/screenNames';
 import LeftIconWithTextComponent from '../../../components/LeftIconWithTextComponent';
 import DatePickerWeb from '../../../components/DatePickerWeb';
-import { isValidDate } from '../../../constants/utils/Function'; 
+import {isValidDate} from '../../../constants/utils/Function';
 
 export default function ApplyFilterScreen() {
 	const params = useRoute().params;
@@ -647,7 +647,7 @@ export default function ApplyFilterScreen() {
 										gradientColors={defaultTheme.ternaryGradientColor}
 										onPress={() => {
 											if (date === Strings.pick_end_date_time) {
-												dateTimePickerRef.current.handlePickDateTime();
+												// dateTimePickerRef.current.handlePickDateTime();
 											} else {
 												setDate(Strings.pick_end_date_time);
 											}
@@ -662,6 +662,37 @@ export default function ApplyFilterScreen() {
 											source={icons.calendar_today}
 										/>
 									</TagView>
+									{date && (
+										<View
+											style={{
+												// marginHorizontal: horizontalScale(16),
+												paddingVertical: verticalScale(12),
+												position: 'absolute',
+												bottom: verticalScale(10),
+												width: '96%',
+												opacity: 0
+											}}>
+											<DatePickerWeb
+												selected={
+													date === Strings.pick_end_date_time
+														? moment()
+																.add(4, 'minutes')
+																.format('YYYY-MM-DDTHH:mm')
+																.toString()
+														: date
+												}
+												handleChange={val => {
+													console.log('DatePickerWeb', val);
+													handleDateValidation(val);
+												}}
+												ref={dateTimePickerRef}
+												minimumDate={moment(new Date())
+													.add(4, 'minutes')
+													.format('YYYY-MM-DDTHH:mm')
+													.toString()}
+											/>
+										</View>
+									)}
 									{/* <TagView
                     isSelected={isDurationTimeId === durationList[1].title}
                     enabled
@@ -686,7 +717,7 @@ export default function ApplyFilterScreen() {
 								</>
 							)}
 						</View>
-						{date && (
+						{/* {date && (
 							<DatePickerWeb
 							selected={
 								date === Strings.pick_end_date_time
@@ -703,7 +734,7 @@ export default function ApplyFilterScreen() {
 							ref={dateTimePickerRef}
 							minimumDate={moment(new Date()).add(4, 'minutes').format('YYYY-MM-DDTHH:mm').toString()}
 						/>
-						)}
+						)} */}
 						<TagView
 							isSelected={
 								filters.filter(item => item.title !== '')?.length > 0

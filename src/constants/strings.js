@@ -789,6 +789,7 @@ const Strings = {
 	just_a_few_more_seconds_your_funds_are_being_transferred_from_your_wallet:
 		'Just a few more seconds! Your funds are being transferred to recipient wallet',
 	no_pending_claim: 'NO PENDING REWARDS TO CLAIM',
-	let_create_market: "Let's create your market"
+	let_create_market: "Let's create your market",
+	txt_age_validation : 'You must be 18 years old or above to use this app.'
 };
 export default Strings;

@@ -101,5 +101,17 @@ const styles = StyleSheet.create({
 		paddingHorizontal: horizontalScale(16),
 		paddingTop: 5
 	},
+	viewInput: {
+		width: '100%',
+		flexDirection: 'row',
+	},
+	leftImg: {
+		height: 17,
+		width: 17,
+		marginRight: verticalScale(8),
+		marginLeft: verticalScale(2),
+		tintColor: colors.white,
+		top: Platform.OS === 'ios' ? -2 : 0
+	},
 });
 export default styles;

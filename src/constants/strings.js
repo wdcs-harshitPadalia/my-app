@@ -788,6 +788,7 @@ const Strings = {
 		'You don´t have enough balance to transfer. Please add more funds to your wallet or deposit via credit card.',
 	just_a_few_more_seconds_your_funds_are_being_transferred_from_your_wallet:
 		'Just a few more seconds! Your funds are being transferred to recipient wallet',
-	no_pending_claim: 'NO PENDING REWARDS TO CLAIM'
+	no_pending_claim: 'NO PENDING REWARDS TO CLAIM',
+	let_create_market: "Let's create your market"
 };
 export default Strings;

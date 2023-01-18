@@ -227,7 +227,7 @@ const BetMakerResultScreen: React.FC<any> = () => {
 	}, [resolveBetAddress]);
 
 	useUpdateEffect(() => {
-		const tokenName = eventBetData?.bet?.tokentypes?.short_name.toUpperCase();
+		const tokenName = eventBetData?.bet?.tokentypes?.short_name?.toUpperCase();
 		let decimals;
 		if (tokenName === 'USDC' || tokenName === 'USDT') {
 			decimals = 6;
@@ -395,11 +395,17 @@ const BetMakerResultScreen: React.FC<any> = () => {
 	}, [betLiquidyAmount]);
 
 	const getUserAncestorData = () => {
-		dispatch(updateApiLoader({apiLoader: true}));
+		dispatch(
+			updateApiLoader({
+				apiLoader: true,
+				showAlertWithText:
+					Strings.just_a_few_more_seconds_your_funds_are_being_transferred_to_your_wallet
+			})
+		);
 		getUserAncestor()
 			.then(res => {
 				console.log('getUserAncestorData Response >>> ', JSON.stringify(res));
-				dispatch(updateApiLoader({apiLoader: false}));
+				// dispatch(updateApiLoader({apiLoader: false}));
 				handleClaimWinningAmount(res?.data);
 			})
 			.catch(err => {

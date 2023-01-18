@@ -240,7 +240,7 @@ const Strings = {
 	You_get: 'You get',
 	add_a_card: 'add a card',
 	add_card_and_buy: 'add card and buy',
-	Polygon_Transfer: 'Polygon Transfer',
+	Polygon_Transfer: 'Polygon transfer',
 	Debit_Credit_Card: 'Debit / Credit Card',
 	ETH_Network_Transfer: 'ETH Network Transfer',
 	searchToken: 'search token...',
@@ -774,6 +774,20 @@ const Strings = {
 	try_again: 'Try it again.',
 	video_sharing_text:
 		'%s has created this video! 📹  \n\nClick on this link, watch it and find out if there is a bet attached 👀 🤔',
+	withdraw_via_Credit_Card: 'Withdraw via Credit Card',
+	transfer_amount: 'Transfer amount',
+	recipients_polygon_wallet: `Recipient's Polygon Wallet`,
+	enter_polygon_address: 'Enter Polygon address',
+	i_am_withdrawing_polygon: 'I am withdrawing %s to Polygon',
+	withdrawing:
+		'Are you sure you are withdrawing %S to a wallet address on the Polygon blockchain? Using the wrong blockchain will result in a loss of funds.',
+	you_will_transfer: 'You will transfer',
+	to_address: 'to this address',
+	successful_withdrawal: 'transfer has been successful',
+	enough_balance_to_transfer:
+		'You don´t have enough balance to transfer. Please add more funds to your wallet or deposit via credit card.',
+	just_a_few_more_seconds_your_funds_are_being_transferred_from_your_wallet:
+		'Just a few more seconds! Your funds are being transferred to recipient wallet',
 	no_pending_claim: 'NO PENDING REWARDS TO CLAIM',
 	let_create_market: "Let's create your market"
 };

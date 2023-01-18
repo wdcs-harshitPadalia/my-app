@@ -20,6 +20,7 @@ import Strings from '../strings';
 // import RNFetchBlob from 'rn-fetch-blob';
 import {getBundleId} from 'react-native-device-info';
 import {saveToCameraRoll} from '@react-native-community/cameraroll';
+import axios from 'axios';
 
 const appSharePostFixURL = 'share/?shareapp=true&deeplinktype=share';
 const eventSharePostFixUrl =
@@ -500,6 +501,25 @@ export const getBetShareUrl = (
 };
 
 export const downloadVideo = (fileUrl: string) => {
+	axios({
+        url: fileUrl,
+        method: "GET",
+        //headers: headers,
+        responseType: "blob" // important
+    }).then(response => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute(
+            "download",
+            'abc.mp4'
+        );
+        document.body.appendChild(link);
+        link.click();
+
+        // Clean up and remove the link
+        link.parentNode.removeChild(link);
+    });
 	// const {config} = RNFetchBlob;
 	// const {
 	// 	dirs: {DownloadDir, DocumentDir}

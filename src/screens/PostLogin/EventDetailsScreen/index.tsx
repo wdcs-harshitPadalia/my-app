@@ -11,6 +11,9 @@ import ShareBottomSheet from '../../../components/ShareBottomSheet';
 import Strings from '../../../constants/strings';
 import {
 	createBetDetailsPreviewShareUrl,
+	dateTimeConvert,
+	getBetShareUrl,
+	getEventShareUrl,
 	showErrorAlert
 } from '../../../constants/utils/Function';
 import ScreenNames from '../../../navigation/screenNames';
@@ -49,6 +52,9 @@ export default function EventDetailsScreen() {
 	//   () => <FeedBetsView item={feedObject} />,
 	//   [feedObject],
 	// );
+
+	const eventEndTime =
+		feedObject?.match_end_time && dateTimeConvert(feedObject?.match_end_time);
 
 	useEffect(() => {
 		console.log('title >> ', title);
@@ -126,17 +132,21 @@ export default function EventDetailsScreen() {
 		getFollowersData();
 	}, [currentPage]);
 
-	const handleShareUrl = async () => {
+	const handleShareUrl = async (isBet, data) => {
 		if (Platform.OS === 'web') {
 			try {
 				await navigator.share({
-					url: createBetDetailsPreviewShareUrl(
-						title,
-						matchId,
-						matchId,
-						betCreationType,
-						false
-					)
+					text: isBet
+						? getBetShareUrl(
+								data?.bets[0]?.users?.displayName ||
+									'@' + data?.bets[0]?.users?.userName,
+								eventEndTime,
+								data?.bet_id,
+								data?.bets[0]?._id,
+								Strings.str_bet_details,
+								betCreationType
+						  )
+						: getEventShareUrl(matchId, eventEndTime, title, betCreationType)
 				});
 			} catch (error) {
 				showErrorAlert('', error.message);
@@ -144,13 +154,17 @@ export default function EventDetailsScreen() {
 		} else {
 			try {
 				const result = await Share.share({
-					message: createBetDetailsPreviewShareUrl(
-						title,
-						matchId,
-						matchId,
-						betCreationType,
-						false
-					)
+					message: isBet
+						? getBetShareUrl(
+								data?.bets[0]?.users?.displayName ||
+									'@' + data?.bets[0]?.users?.userName,
+								eventEndTime,
+								data?.bet_id,
+								data?.bets[0]?._id,
+								Strings.str_bet_details,
+								betCreationType
+						  )
+						: getEventShareUrl(matchId, eventEndTime, title, betCreationType)
 				});
 				if (result.action === Share.sharedAction) {
 					if (result.activityType) {
@@ -193,7 +207,9 @@ export default function EventDetailsScreen() {
 						selectedBetType={params?.selectedBetType}
 						isRecent={isRecent}
 						handleShareStory={data => handleShareStory('custom_bet', data)}
-						handleShareUrl={handleShareUrl}
+						handleBetShare={(data: any) => {
+							handleShareUrl(true, data);
+						}}
 					/>
 				)}
 				{feedObject && selectedBetType && !params?.isFromStreaming && (
@@ -203,7 +219,9 @@ export default function EventDetailsScreen() {
 						selectedBetType={selectedBetType}
 						isRecent={isRecent}
 						handleShareStory={data => handleShareStory('custom_bet', data)}
-						handleShareUrl={handleShareUrl}
+						handleBetShare={(data: any) => {
+							handleShareUrl(true, data);
+						}}
 					/>
 				)}
 				{/* </KeyboardAwareScrollView> */}
@@ -214,7 +232,9 @@ export default function EventDetailsScreen() {
 					}}
 					users={followUserData}
 					handleShareEvent={() => handleShareStory('match', feedObject)}
-					handleShareUrl={handleShareUrl}
+					handleShareUrl={() => {
+						handleShareUrl(false);
+					}}
 					shareURL={createBetDetailsPreviewShareUrl(
 						title,
 						matchId,

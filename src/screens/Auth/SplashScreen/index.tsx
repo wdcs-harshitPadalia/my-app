@@ -174,7 +174,7 @@ const SplashScreen: React.FC<any> = () => {
 			userInfo.token && !userInfo.isNewUser
 				?  navigation.replace(ScreenNames.BottomTabScreen)
 				: navigation.replace(ScreenNames.Login);
-		}, 1500);
+		}, 3000);
 		return () => {
 			clearTimeout(timeOut);
 		};

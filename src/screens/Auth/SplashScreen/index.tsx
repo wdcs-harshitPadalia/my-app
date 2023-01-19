@@ -29,17 +29,17 @@ const SplashScreen: React.FC<any> = () => {
 
 	const [biometryType, setBiometryType] = useState();
 
-	const detectFingerprintAvailable = () => {
-		FingerprintScanner.isSensorAvailable()
-			.then(biometry => {
-				setBiometryType(biometry);
-				FingerprintScanner.release();
-			})
-			.catch(error => {
-				console.log('isSensorAvailable error => ', error);
-				FingerprintScanner.release();
-			});
-	};
+	// const detectFingerprintAvailable = () => {
+	// 	FingerprintScanner.isSensorAvailable()
+	// 		.then(biometry => {
+	// 			setBiometryType(biometry);
+	// 			FingerprintScanner.release();
+	// 		})
+	// 		.catch(error => {
+	// 			console.log('isSensorAvailable error => ', error);
+	// 			FingerprintScanner.release();
+	// 		});
+	// };
 
 	const getMessage = () => {
 		if (biometryType == 'Face ID') {
@@ -162,7 +162,7 @@ const SplashScreen: React.FC<any> = () => {
 		// dispatch(showTutorial({isShowTutorial: true}));
 		// dispatch(showCreateHighlights({isShowCreateHighlights: true}));
 		globalThis.firstTime = false;
-		detectFingerprintAvailable();
+		// detectFingerprintAvailable();
 	}, []);
 
 	useEffect(() => {

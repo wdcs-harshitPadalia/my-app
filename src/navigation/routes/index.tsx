@@ -901,7 +901,7 @@ const RootRouter = () => {
 					cardStyleInterpolator: cardStyleType,
 					cardStyle: styles.cardContainerStyle
 				}}>
-				{globalThis.firstTime && (
+				{/* {globalThis.firstTime && (
 					<Stack.Screen
 						name={ScreenNames.SplashScreen}
 						component={SplashScreen}
@@ -910,7 +910,7 @@ const RootRouter = () => {
 							cardStyleInterpolator: CardStyleInterpolators.forNoAnimation
 						}}
 					/>
-				)}
+				)} */}
 				<Stack.Screen
 					name={ScreenNames.BottomTabScreen}
 					component={BottomTabs}
@@ -930,7 +930,7 @@ const RootRouter = () => {
 					cardStyleInterpolator: cardStyleType,
 					cardStyle: styles.cardContainerStyle
 				}}>
-				{global.firstTime && (
+				{/* {global.firstTime && (
 					<Stack.Screen
 						name={ScreenNames.SplashScreen}
 						component={SplashScreen}
@@ -939,7 +939,7 @@ const RootRouter = () => {
 							cardStyleInterpolator: CardStyleInterpolators.forNoAnimation
 						}}
 					/>
-				)}
+				)} */}
 				{LoginRouter()}
 			</Stack.Navigator>
 		);
@@ -1000,6 +1000,7 @@ const Routes = () => {
 			onReady={() => {
 				routeNameRef.current = navigationRef.current.getCurrentRoute().name;
 			}}
+			fallback={<Login />}
 			>
 			{/* Render the Magic iframe! */}
 			{/* <magic.Relayer /> */}

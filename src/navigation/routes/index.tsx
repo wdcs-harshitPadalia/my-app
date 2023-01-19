@@ -930,7 +930,7 @@ const RootRouter = () => {
 					cardStyleInterpolator: cardStyleType,
 					cardStyle: styles.cardContainerStyle
 				}}>
-				{global.firstTime && (
+				{globalThis.firstTime && (
 					<Stack.Screen
 						name={ScreenNames.SplashScreen}
 						component={SplashScreen}
@@ -1000,6 +1000,7 @@ const Routes = () => {
 			onReady={() => {
 				routeNameRef.current = navigationRef.current.getCurrentRoute().name;
 			}}
+			fallback={<Login />}
 			>
 			{/* Render the Magic iframe! */}
 			{/* <magic.Relayer /> */}

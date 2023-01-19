@@ -57,6 +57,14 @@ const DropDownGradientView: React.FC<Props> = props => {
 				useAngle={true}
 				angle={angle ? angle : gradientColorAngle}
 				colors={colorArray}>
+				{leftIconPath && (
+					<ExpoFastImage
+						resizeMode={'contain'}
+						source={{uri: leftIconPath}}
+						style={styles.leftImg}
+					/>
+				)}
+
 				<Text
 					style={[
 						styles.inputStyle,
@@ -81,14 +89,6 @@ const DropDownGradientView: React.FC<Props> = props => {
 						style={[styles.rightImg, leftIconStyle]}
 					/>
 				) : null}
-				{leftIconPath && (
-					<ExpoFastImage
-						resizeMode={'contain'}
-						source={{uri: leftIconPath}}
-						style={styles.leftImg}
-					/>
-				)}
-
 			</LinearGradient>
 		</TouchableOpacity>
 	);

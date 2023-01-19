@@ -17,6 +17,8 @@ import {
 	showCreateHighlights,
 	showTutorial
 } from '../../../redux/reducerSlices/dashboard';
+import ExpoFastImage from 'expo-fast-image';
+
 
 const SplashScreen: React.FC<any> = () => {
 	const theme = useTheme();
@@ -170,9 +172,7 @@ const SplashScreen: React.FC<any> = () => {
 
 		const timeOut = setTimeout(() => {
 			userInfo.token && !userInfo.isNewUser
-				? userInfo?.isBiometric
-					? showAuthenticationDialog()
-					: navigation.replace(ScreenNames.BottomTabScreen)
+				?  navigation.replace(ScreenNames.BottomTabScreen)
 				: navigation.replace(ScreenNames.Login);
 		}, 1500);
 		return () => {
@@ -190,10 +190,10 @@ const SplashScreen: React.FC<any> = () => {
 				{/* <Text style={styles.smallTextStyle}>{Strings.welcome}</Text>
         <View style={styles.spacerViewStyle} />
         <Text style={styles.largeTextStyle}>{Strings.defibetHouse}</Text> */}
-				<Image
+				<ExpoFastImage
 					source={icons.splash_text}
 					resizeMode={'contain'}
-					style={{width: 250}}
+					style={{width: 250, height: 250}}
 				/>
 			</View>
 			{userInfo?.isBiometric ? (

@@ -179,6 +179,8 @@ const icons = {
 	delete_white: require('../icon/ic_delete.png'),
 	video_thumb: require('../icon/video_thumb.png'),
 	download: require('../icon/download.png'),
-	imageBgSplashHolder: require('../icon/imageBgSplashHolder.png')
+	imageBgSplashHolder: require('../icon/imageBgSplashHolder.png'),
+	money_withdraw: require('../icon/money_withdraw.png'),
+	up_gray: require('../icon/up_gray.png')
 };
 export default icons;

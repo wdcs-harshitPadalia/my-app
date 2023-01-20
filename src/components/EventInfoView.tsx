@@ -121,6 +121,7 @@ export const EventInfoView = ({
 							</View>
 							{props.moreMenuOptionHidden ? null : (
 								<TouchableOpacity
+									style={{zIndex: 100, height: 20, width: 20}}
 									onPress={onShareSheetOpen}
 									hitSlop={{left: 18, top: 18, right: 18, bottom: 18}}>
 									<ExpoFastImage

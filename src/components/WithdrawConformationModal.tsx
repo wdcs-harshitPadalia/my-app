@@ -77,7 +77,7 @@ const WithdrawConformationModal: React.FC<Props> = props => {
 						useAngle={true}
 						angle={gradientColorAngle}
 						colors={defaultTheme.ternaryGradientColor}>
-						<Text style={styles.addressTextStyle}>{address}</Text>
+						<Text style={styles.addressTextStyle} numberOfLines={2}>{address}</Text>
 					</LinearGradient>
 
 					<View style={styles.viewBackButton}>

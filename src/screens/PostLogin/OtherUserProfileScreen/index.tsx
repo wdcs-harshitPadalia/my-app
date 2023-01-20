@@ -197,7 +197,8 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 				navigation.navigate(ScreenNames.BetDetailsScreen, {
 					bet_id: item?._id,
 					redirectType: item.betStatus,
-					isFromOtherUser: true
+					isFromOtherUser: true,
+					userId : userId
 				});
 			}}
 			// gameImage={

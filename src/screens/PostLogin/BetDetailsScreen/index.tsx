@@ -384,7 +384,11 @@ const BetDetailsScreen: React.FC<any> = () => {
 
 	const getUserBetResultData = () => {
 		dispatch(updateApiLoader({apiLoader: true}));
-		getUserBetResult(bet_id)
+		const uploadData = {
+			bet_id: bet_id,
+			user_id: params?.userId
+		};
+		getUserBetResult(uploadData)
 			.then(res => {
 				dispatch(updateApiLoader({apiLoader: false}));
 				console.log(

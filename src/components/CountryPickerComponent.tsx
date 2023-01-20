@@ -50,7 +50,6 @@ const CountryPickerComponent: React.FC<Props> = props => {
 						{country}
 					</Text>
 				</TouchableOpacity>
-				{isShowError ? <Text style={styles.errStyle}>{errMessage}</Text> : null}
 				<CountryPicker
 					show={show}
 					style={{
@@ -72,6 +71,7 @@ const CountryPickerComponent: React.FC<Props> = props => {
 					onBackdropPress={() => setShow(false)}
 				/>
 			</View>
+			{isShowError ? <Text style={styles.errStyle}>{errMessage}</Text> : null}
 		</>
 	);
 };

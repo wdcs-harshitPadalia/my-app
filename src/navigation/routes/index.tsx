@@ -995,6 +995,7 @@ const Routes = () => {
 	// console.log('chece',isLoggedin);
 	return (
 		<NavigationContainer
+		    theme={{ colors: { background: '#000' } }}
 			ref={navigationRef}
 			linking={userInfo.token && !userInfo.isNewUser && Linking}
 			onReady={() => {

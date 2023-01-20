@@ -461,9 +461,9 @@ const DiscoverVideoPlayer = React.forwardRef((props, parentRef) => {
 	};
 
 	const handleDownloadVideo = async () => {
-		console.log('itemData?.video_url???>>', itemData?.video_url);
+		console.log('itemData?.video_url???>>', itemData?.watermark_short_videos);
 		const date = new Date()
-		download(itemData?.video_url, `TF_${date.getTime()}.mp4`);
+		download(itemData?.watermark_short_videos, `TF_${date.getTime()}.mp4`);
 
 		setTimeout(() => {
 			setIsShowShareModal(false);

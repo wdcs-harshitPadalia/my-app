@@ -65,7 +65,10 @@ const NoDataComponent = (props: Props) => {
 				<Text style={styles.descriptionText(colors.white)}>
 					{noData.description_text}
 					<Text
-						style={[styles.descriptionText(colors.red), {fontWeight: '700'}]}>
+						style={[
+							styles.descriptionText(colors.red),
+							{fontWeight: '700', marginHorizontal: 0}
+						]}>
 						{' ' + noData.highlightText + ' '}
 					</Text>
 					<Text>{noData.description_text2}</Text>

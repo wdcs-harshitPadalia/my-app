@@ -193,7 +193,7 @@ const SplashScreen: React.FC<any> = () => {
 				<ExpoFastImage
 					source={icons.splash_text}
 					resizeMode={'contain'}
-					style={{width: 250, height: 250}}
+					style={{width: 230, height: 230}}
 				/>
 			</View>
 			{userInfo?.isBiometric ? (

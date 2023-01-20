@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-native-svg-charts/lib/module/pie-chart.js b/node_modules/react-native-svg-charts/lib/module/pie-chart.js
+index 55c7285..f65f02d 100644
+--- a/node_modules/react-native-svg-charts/lib/module/pie-chart.js
++++ b/node_modules/react-native-svg-charts/lib/module/pie-chart.js
+@@ -167,7 +167,7 @@ class PieChart extends PureComponent {
+       }, svg, {
+         d: arcs[index](slice),
+         animate: animate,
+-        animationDuration: animationDuration
++        animationduration: animationDuration
+       }));
+     }), React.Children.map(children, child => {
+       if (child && !child.props.belowChart) {

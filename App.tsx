@@ -69,6 +69,7 @@ import './global';
 let persistor = persistStore(store);
 
 const App = () => {
+	globalThis.firstTime = true;
 	const [fontsLoaded] = useFonts({
 		'Inter-Bold': require('./src/assets/fonts/Inter-Bold.ttf'),
 		'Inter-ExtraBold': require('./src/assets/fonts/Inter-ExtraBold.ttf'),
@@ -88,6 +89,20 @@ const App = () => {
 		return null;
 	}
 
+	// useEffect(() => {
+	// 	globalThis.firstTime = true;
+	// 	// const apiKey = 'b0eeb95b6fd2f76c1f33de14560b16888400dfe2bb633924';
+
+	// 	// const client = createClient(apiKey, API_REGIONS.EU);
+
+	// 	//enableCache();
+	// 	// disableCache();
+	// 	// if (Platform.OS === 'ios') {
+	// 	// 	KeyboardManager.setEnableAutoToolbar(false);
+	// 	// 	KeyboardManager.setEnable(true);
+	// 	// }
+	// 	// initSmartLookSession();
+	// }, []);
 	// useEffect(() => {
 	// 	globalThis.firstTime = true;
 	// 	const apiKey = 'b0eeb95b6fd2f76c1f33de14560b16888400dfe2bb633924';

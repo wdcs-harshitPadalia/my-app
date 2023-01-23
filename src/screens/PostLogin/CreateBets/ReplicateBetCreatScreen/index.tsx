@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-lone-blocks */
 import React, {useEffect, useState} from 'react';
-import {Alert, BackHandler, Linking, Share, View} from 'react-native';
+import {Alert, BackHandler, Linking, Share, View, Platform} from 'react-native';
 import {Text} from 'react-native-elements';
 import icons from '../../../../assets/icon';
 import Strings from '../../../../constants/strings';
@@ -31,6 +31,7 @@ import {
 	dateConvert,
 	getMetamaskBalance,
 	getRoundDecimalValue,
+	showErrorAlert,
 	timeConvert
 } from '../../../../constants/utils/Function';
 import {useWalletConnect} from '@walletconnect/react-native-dapp';
@@ -61,6 +62,7 @@ import BetsOptionWithAmountView from '../../../../components/BetsOptionWithAmoun
 import {decimalValue} from '../../../../constants/api';
 import LottieView from 'lottie-react-native';
 import {updateDiscoverRefreshOnFocus} from '../../../../redux/reducerSlices/dashboard';
+import Lottie from 'lottie-react';
 
 const ReplicateBetCreatScreen: React.FC<any> = () => {
 	const navigation = useNavigation();
@@ -89,7 +91,7 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 
 	const [selectedGame, setSelectedGame] = useState();
 
-	const [isSelectMainMarket] = useState(params?.eventBetData?.mainmarkets);
+	const [isSelectMainMarket, setIsSelectMainMarket] = useState();
 
 	const [isSelectChooseSideType, setIsSelectChooseSideType] = useState(null);
 
@@ -147,6 +149,7 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 		useState(false);
 
 	const [customeSelectTokenId, setCustomeSelectTokenId] = useState(0);
+	const [isShowNote, setIsShowNote] = useState(false);
 
 	const {
 		bet_id,
@@ -236,10 +239,9 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 
 			if (parseFloat(betAmount.replace(',', '.')) > parseFloat(dbethBalance)) {
 				setIsBackButtonDisable(false);
-
-				Alert.alert(
-					'Insufficient Balance'.toUpperCase(),
-					'Please add more funds.'
+				showErrorAlert(
+					Strings.txt_insufficient_balance,
+					Strings.txt_add_more_fund
 				);
 				return;
 			}
@@ -247,32 +249,56 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 				userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask' &&
 				!connector.connected
 			) {
-				Alert.alert(Strings.txt_session_expire_msg, '', [
-					{
-						text: 'Ok',
-						onPress: () => {
-							dispatch(logout());
-							dispatch(updateDeviceToken({deviceToken: ''}));
-							dispatch(resetProfileData({}));
-						}
+				if (Platform.OS === 'web') {
+					let retVal = confirm(Strings.txt_session_expire_msg);
+					if (retVal == true) {
+						dispatch(logout());
+						dispatch(updateDeviceToken({deviceToken: ''}));
+						dispatch(resetProfileData({}));
+						return true;
+					} else {
+						return false;
 					}
-				]);
+				} else {
+					Alert.alert(Strings.txt_session_expire_msg, '', [
+						{
+							text: 'Ok',
+							onPress: () => {
+								dispatch(logout());
+								dispatch(updateDeviceToken({deviceToken: ''}));
+								dispatch(resetProfileData({}));
+							}
+						}
+					]);
+				}
 				return;
 			} else {
 				if (userInfo?.user?.socialLoginType?.toLowerCase() !== 'metamask') {
 					const loginStatus = await magic.user.isLoggedIn();
 					console.log('loginStatus', loginStatus);
 					if (!loginStatus) {
-						Alert.alert(Strings.txt_session_expire_msg, '', [
-							{
-								text: 'Ok',
-								onPress: () => {
-									dispatch(logout());
-									dispatch(updateDeviceToken({deviceToken: ''}));
-									dispatch(resetProfileData({}));
-								}
+						if (Platform.OS === 'web') {
+							let retVal = confirm(Strings.txt_session_expire_msg);
+							if (retVal == true) {
+								dispatch(logout());
+								dispatch(updateDeviceToken({deviceToken: ''}));
+								dispatch(resetProfileData({}));
+								return true;
+							} else {
+								return false;
 							}
-						]);
+						} else {
+							Alert.alert(Strings.txt_session_expire_msg, '', [
+								{
+									text: 'Ok',
+									onPress: () => {
+										dispatch(logout());
+										dispatch(updateDeviceToken({deviceToken: ''}));
+										dispatch(resetProfileData({}));
+									}
+								}
+							]);
+						}
 						return;
 					}
 				}
@@ -327,10 +353,9 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 		} else {
 			if (parseFloat(betAmount.replace(',', '.')) > parseFloat(dbethBalance)) {
 				setIsBackButtonDisable(false);
-
-				Alert.alert(
-					'Insufficient Balance'.toUpperCase(),
-					'Please add more funds.'
+				showErrorAlert(
+					Strings.txt_insufficient_balance,
+					Strings.txt_add_more_fund
 				);
 				return;
 			}
@@ -338,32 +363,56 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 				userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask' &&
 				!connector.connected
 			) {
-				Alert.alert(Strings.txt_session_expire_msg, '', [
-					{
-						text: 'Ok',
-						onPress: () => {
-							dispatch(logout());
-							dispatch(updateDeviceToken({deviceToken: ''}));
-							dispatch(resetProfileData({}));
-						}
+				if (Platform.OS === 'web') {
+					let retVal = confirm(Strings.txt_session_expire_msg);
+					if (retVal == true) {
+						dispatch(logout());
+						dispatch(updateDeviceToken({deviceToken: ''}));
+						dispatch(resetProfileData({}));
+						return true;
+					} else {
+						return false;
 					}
-				]);
+				} else {
+					Alert.alert(Strings.txt_session_expire_msg, '', [
+						{
+							text: 'Ok',
+							onPress: () => {
+								dispatch(logout());
+								dispatch(updateDeviceToken({deviceToken: ''}));
+								dispatch(resetProfileData({}));
+							}
+						}
+					]);
+				}
 				return;
 			} else {
 				if (userInfo?.user?.socialLoginType?.toLowerCase() !== 'metamask') {
 					const loginStatus = await magic.user.isLoggedIn();
 					console.log('loginStatus', loginStatus);
 					if (!loginStatus) {
-						Alert.alert(Strings.txt_session_expire_msg, '', [
-							{
-								text: 'Ok',
-								onPress: () => {
-									dispatch(logout());
-									dispatch(updateDeviceToken({deviceToken: ''}));
-									dispatch(resetProfileData({}));
-								}
+						if (Platform.OS === 'web') {
+							let retVal = confirm(Strings.txt_session_expire_msg);
+							if (retVal == true) {
+								dispatch(logout());
+								dispatch(updateDeviceToken({deviceToken: ''}));
+								dispatch(resetProfileData({}));
+								return true;
+							} else {
+								return false;
 							}
-						]);
+						} else {
+							Alert.alert(Strings.txt_session_expire_msg, '', [
+								{
+									text: 'Ok',
+									onPress: () => {
+										dispatch(logout());
+										dispatch(updateDeviceToken({deviceToken: ''}));
+										dispatch(resetProfileData({}));
+									}
+								}
+							]);
+						}
 						return;
 					}
 				}
@@ -421,15 +470,23 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 
 	useEffect(() => {
 		console.log('eventBetData >> stringify >>', JSON.stringify(eventBetData));
-
 		getUserBetDetailsData();
+		checkGasFeeAmount();
 	}, [params?.eventBetData]);
 
+	const checkGasFeeAmount = async () => {
+		let balance = await getMetamaskBalance(
+			connector.connected ? connector?.accounts[0] : userInfo.user.walletAddress
+		);
+		setIsShowNote(parseFloat(balance).toFixed(decimalValue) <= 0.5);
+	};
 	const getUserBetDetailsData = () => {
 		dispatch(updateApiLoader({apiLoader: true}));
 		getUserBetDetails(params?.eventBetData?._id)
 			.then(res => {
-				dispatch(updateApiLoader({apiLoader: false}));
+				setTimeout(() => {
+					dispatch(updateApiLoader({apiLoader: false}));
+				}, 500);
 				// console.log('getUserBetDetails Response : ', JSON.stringify(res));
 				const betObj = res?.data?.bet;
 				setEventBetData(betObj);
@@ -456,6 +513,7 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 				setIsSelectBetsType(betObj?.bettypes);
 
 				setIsSelectChooseSideType(betObj?.bet_creator_side_option);
+				setIsSelectMainMarket(betObj?.mainmarkets);
 
 				setQuestion(betObj?.betQuestion);
 				setOptions1(betObj?.betOptionOne);
@@ -513,9 +571,9 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 		try {
 			let res = await getMetamaskBalance(address);
 			console.log('res balance', res);
-			setMyBalance(getRoundDecimalValue(res) + ' MATIC');
+			setMyBalance(getRoundDecimalValue(res));
 		} catch (error) {
-			setMyBalance(0 + '');
+			setMyBalance(0);
 		}
 	};
 
@@ -530,8 +588,11 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 				dispatch(updateApiLoader({apiLoader: false}));
 
 				console.log('getTokenTypeData Data : ', res?.data);
+				let filteredTokensData = res?.data?.tokens?.filter(function (item) {
+					return item?.short_name.toLowerCase() !== 'dbeth';
+				});
 
-				setCurrencyData(res?.data.tokens);
+				setCurrencyData(filteredTokensData);
 				setIsSelectCurrency(res?.data.tokens[0]);
 				setBetOdds(res?.data.odds);
 				if (isSelectedLeagueType !== 0) {
@@ -867,21 +928,31 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 	};
 
 	const onShare = async (url: string) => {
-		try {
-			const result = await Share.share({
-				message: url
-			});
-			if (result.action === Share.sharedAction) {
-				if (result.activityType) {
-					// shared with activity type of result.activityType
-				} else {
-					// shared
-				}
-			} else if (result.action === Share.dismissedAction) {
-				// dismissed
+		if (Platform.OS === 'web') {
+			try {
+				await navigator.share({
+					text: url
+				});
+			} catch (error) {
+				showErrorAlert('', error?.message);
 			}
-		} catch (error) {
-			Alert.alert(error.message);
+		} else {
+			try {
+				const result = await Share.share({
+					message: url
+				});
+				if (result.action === Share.sharedAction) {
+					if (result.activityType) {
+						// shared with activity type of result.activityType
+					} else {
+						// shared
+					}
+				} else if (result.action === Share.dismissedAction) {
+					// dismissed
+				}
+			} catch (error) {
+				showErrorAlert('', error.message);
+			}
 		}
 	};
 
@@ -894,7 +965,7 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 			isSelectSubMainMarket && Object.keys(isSelectSubMainMarket).length > 0
 				? isSelectSubMainMarket
 				: isSelectMainMarket;
-		console.log('type0Odds >> ', type0Odds);
+		// console.log('type0Odds >> ', type0Odds);
 
 		switch (step) {
 			case 1:
@@ -1252,7 +1323,7 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 									Linking.openURL('twitter://post?message=' + shareMessage);
 								} else if (text === Strings.copy_link) {
 									Clipboard.setString(shareUrl);
-									Alert.alert(Strings.copy_link_desc);
+									showErrorAlert('', Strings.copy_link_desc);
 								} else {
 									onShare(shareMessage);
 								}
@@ -1282,17 +1353,31 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 								userInfo?.user?.displayName || userInfo?.user?.userName
 							)}
 						</Text>
-						<LottieView
-							style={{
-								height: 300,
-								width: 300,
-								alignSelf: 'center',
-								position: 'absolute'
-							}}
-							source={require('../../../../assets/animations/confetti_day.json')}
-							autoPlay
-							loop={false}
-						/>
+
+						{Platform.OS === 'web' ? (
+							<Lottie
+								style={{
+									height: 300,
+									width: 300,
+									alignSelf: 'center',
+									position: 'absolute'
+								}}
+								animationData={require('../../../../assets/animations/confetti_day.json')}
+								loop={false}
+							/>
+						) : (
+							<LottieView
+								style={{
+									height: 300,
+									width: 300,
+									alignSelf: 'center',
+									position: 'absolute'
+								}}
+								source={require('../../../../assets/animations/confetti_day.json')}
+								autoPlay
+								loop={false}
+							/>
+						)}
 					</View>
 				);
 		}
@@ -1328,7 +1413,7 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 							setIsBackButtonDisable(false);
 							Alert.alert(
 								'Insufficient Balance'.toUpperCase(),
-								'Please add more funds.'
+								Strings.enough_balance
 							);
 							return;
 						}
@@ -1338,10 +1423,9 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 
 					if (parseFloat(betAmount.replace(',', '.')) > parseFloat(myBalance)) {
 						setIsBackButtonDisable(false);
-
-						Alert.alert(
-							'Insufficient Balance'.toUpperCase(),
-							'Please add more funds.'
+						showErrorAlert(
+							Strings.txt_insufficient_balance,
+							Strings.txt_add_more_fund
 						);
 						return;
 					}
@@ -1349,32 +1433,56 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 						userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask' &&
 						!connector.connected
 					) {
-						Alert.alert(Strings.txt_session_expire_msg, '', [
-							{
-								text: 'Ok',
-								onPress: () => {
-									dispatch(logout());
-									dispatch(updateDeviceToken({deviceToken: ''}));
-									dispatch(resetProfileData({}));
-								}
+						if (Platform.OS === 'web') {
+							let retVal = confirm(Strings.txt_session_expire_msg);
+							if (retVal == true) {
+								dispatch(logout());
+								dispatch(updateDeviceToken({deviceToken: ''}));
+								dispatch(resetProfileData({}));
+								return true;
+							} else {
+								return false;
 							}
-						]);
+						} else {
+							Alert.alert(Strings.txt_session_expire_msg, '', [
+								{
+									text: 'Ok',
+									onPress: () => {
+										dispatch(logout());
+										dispatch(updateDeviceToken({deviceToken: ''}));
+										dispatch(resetProfileData({}));
+									}
+								}
+							]);
+						}
 						return;
 					} else {
 						if (userInfo?.user?.socialLoginType?.toLowerCase() !== 'metamask') {
 							const loginStatus = await magic.user.isLoggedIn();
 							console.log('loginStatus', loginStatus);
 							if (!loginStatus) {
-								Alert.alert(Strings.txt_session_expire_msg, '', [
-									{
-										text: 'Ok',
-										onPress: () => {
-											dispatch(logout());
-											dispatch(updateDeviceToken({deviceToken: ''}));
-											dispatch(resetProfileData({}));
-										}
+								if (Platform.OS === 'web') {
+									let retVal = confirm(Strings.txt_session_expire_msg);
+									if (retVal == true) {
+										dispatch(logout());
+										dispatch(updateDeviceToken({deviceToken: ''}));
+										dispatch(resetProfileData({}));
+										return true;
+									} else {
+										return false;
 									}
-								]);
+								} else {
+									Alert.alert(Strings.txt_session_expire_msg, '', [
+										{
+											text: 'Ok',
+											onPress: () => {
+												dispatch(logout());
+												dispatch(updateDeviceToken({deviceToken: ''}));
+												dispatch(resetProfileData({}));
+											}
+										}
+									]);
+								}
 								return;
 							}
 						}
@@ -1449,9 +1557,9 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 						parseFloat(betAmount.replace(',', '.')) > parseFloat(dbethBalance)
 					) {
 						setIsBackButtonDisable(false);
-						Alert.alert(
-							'Insufficient Balance'.toUpperCase(),
-							'Please add more funds.'
+						showErrorAlert(
+							Strings.txt_insufficient_balance,
+							Strings.txt_add_more_fund
 						);
 						return;
 					}
@@ -1460,10 +1568,9 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 				}
 				if (parseFloat(betAmount.replace(',', '.')) > parseFloat(myBalance)) {
 					setIsBackButtonDisable(false);
-
-					Alert.alert(
-						'Insufficient Balance'.toUpperCase(),
-						'Please add more funds.'
+					showErrorAlert(
+						Strings.txt_insufficient_balance,
+						Strings.txt_add_more_fund
 					);
 					return;
 				}
@@ -1471,32 +1578,56 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 					userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask' &&
 					!connector.connected
 				) {
-					Alert.alert(Strings.txt_session_expire_msg, '', [
-						{
-							text: 'Ok',
-							onPress: () => {
-								dispatch(logout());
-								dispatch(updateDeviceToken({deviceToken: ''}));
-								dispatch(resetProfileData({}));
-							}
+					if (Platform.OS === 'web') {
+						let retVal = confirm(Strings.txt_session_expire_msg);
+						if (retVal == true) {
+							dispatch(logout());
+							dispatch(updateDeviceToken({deviceToken: ''}));
+							dispatch(resetProfileData({}));
+							return true;
+						} else {
+							return false;
 						}
-					]);
+					} else {
+						Alert.alert(Strings.txt_session_expire_msg, '', [
+							{
+								text: 'Ok',
+								onPress: () => {
+									dispatch(logout());
+									dispatch(updateDeviceToken({deviceToken: ''}));
+									dispatch(resetProfileData({}));
+								}
+							}
+						]);
+					}
 					return;
 				} else {
 					if (userInfo?.user?.socialLoginType?.toLowerCase() !== 'metamask') {
 						const loginStatus = await magic.user.isLoggedIn();
 						console.log('loginStatus', loginStatus);
 						if (!loginStatus) {
-							Alert.alert(Strings.txt_session_expire_msg, '', [
-								{
-									text: 'Ok',
-									onPress: () => {
-										dispatch(logout());
-										dispatch(updateDeviceToken({deviceToken: ''}));
-										dispatch(resetProfileData({}));
-									}
+							if (Platform.OS === 'web') {
+								let retVal = confirm(Strings.txt_session_expire_msg);
+								if (retVal == true) {
+									dispatch(logout());
+									dispatch(updateDeviceToken({deviceToken: ''}));
+									dispatch(resetProfileData({}));
+									return true;
+								} else {
+									return false;
 								}
-							]);
+							} else {
+								Alert.alert(Strings.txt_session_expire_msg, '', [
+									{
+										text: 'Ok',
+										onPress: () => {
+											dispatch(logout());
+											dispatch(updateDeviceToken({deviceToken: ''}));
+											dispatch(resetProfileData({}));
+										}
+									}
+								]);
+							}
 							return;
 						}
 					}
@@ -1613,6 +1744,9 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 				/>
 
 				{step !== -1 && <View style={styles.viewContain}>{showViews()}</View>}
+				{isShowNote && (
+					<Text style={styles.noteStyle}>{Strings.enough_gas_fee}</Text>
+				)}
 				{isViewNextBackBtn ? (
 					<View style={styles.viewBackButton}>
 						<ButtonGradient

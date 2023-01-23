@@ -17,7 +17,7 @@ export interface SettingKeyList {
 }
 const SettingKeyListView: React.FC<SettingKeyList> = props => {
 	const {data, setSettingKeyValue} = props;
-	const renderItem = (item: NotificationData) => {
+	const renderItem = (item: NotificationData, section) => {
 		return (
 			<SettingKeyComponent
 				title={item?.item?.title}
@@ -28,15 +28,13 @@ const SettingKeyListView: React.FC<SettingKeyList> = props => {
 				}}
 				isTopRadius={item?.index === 0 ? true : false}
 				isBottomRadius={
-					item?.index === data[data?.length - 1]?.data?.length - 1
-						? true
-						: false
+					item?.index === item?.section?.data?.length - 1 ? true : false
 				}
 			/>
 		);
 	};
 	const keyExtractor = (item: NotificationData, index) => {
-		return item + index;
+		return index;
 	};
 
 	return (
@@ -48,6 +46,7 @@ const SettingKeyListView: React.FC<SettingKeyList> = props => {
 					keyExtractor={keyExtractor}
 					showsVerticalScrollIndicator={false}
 					alwaysBounceVertical={false}
+					initialNumToRender={25}
 					renderSectionHeader={({section: {sectionTitle}}) => (
 						<View style={styles.SectionTitleView}>
 							<Text style={styles.sectionTitleText}>

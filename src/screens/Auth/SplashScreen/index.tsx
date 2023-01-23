@@ -17,6 +17,8 @@ import {
 	showCreateHighlights,
 	showTutorial
 } from '../../../redux/reducerSlices/dashboard';
+import ExpoFastImage from 'expo-fast-image';
+
 
 const SplashScreen: React.FC<any> = () => {
 	const theme = useTheme();
@@ -29,17 +31,17 @@ const SplashScreen: React.FC<any> = () => {
 
 	const [biometryType, setBiometryType] = useState();
 
-	const detectFingerprintAvailable = () => {
-		FingerprintScanner.isSensorAvailable()
-			.then(biometry => {
-				setBiometryType(biometry);
-				FingerprintScanner.release();
-			})
-			.catch(error => {
-				console.log('isSensorAvailable error => ', error);
-				FingerprintScanner.release();
-			});
-	};
+	// const detectFingerprintAvailable = () => {
+	// 	FingerprintScanner.isSensorAvailable()
+	// 		.then(biometry => {
+	// 			setBiometryType(biometry);
+	// 			FingerprintScanner.release();
+	// 		})
+	// 		.catch(error => {
+	// 			console.log('isSensorAvailable error => ', error);
+	// 			FingerprintScanner.release();
+	// 		});
+	// };
 
 	const getMessage = () => {
 		if (biometryType == 'Face ID') {
@@ -162,7 +164,7 @@ const SplashScreen: React.FC<any> = () => {
 		// dispatch(showTutorial({isShowTutorial: true}));
 		// dispatch(showCreateHighlights({isShowCreateHighlights: true}));
 		globalThis.firstTime = false;
-		detectFingerprintAvailable();
+		// detectFingerprintAvailable();
 	}, []);
 
 	useEffect(() => {
@@ -170,11 +172,9 @@ const SplashScreen: React.FC<any> = () => {
 
 		const timeOut = setTimeout(() => {
 			userInfo.token && !userInfo.isNewUser
-				? userInfo?.isBiometric
-					? showAuthenticationDialog()
-					: navigation.replace(ScreenNames.BottomTabScreen)
+				?  navigation.replace(ScreenNames.BottomTabScreen)
 				: navigation.replace(ScreenNames.Login);
-		}, 1500);
+		}, 3000);
 		return () => {
 			clearTimeout(timeOut);
 		};
@@ -190,10 +190,10 @@ const SplashScreen: React.FC<any> = () => {
 				{/* <Text style={styles.smallTextStyle}>{Strings.welcome}</Text>
         <View style={styles.spacerViewStyle} />
         <Text style={styles.largeTextStyle}>{Strings.defibetHouse}</Text> */}
-				<Image
+				<ExpoFastImage
 					source={icons.splash_text}
 					resizeMode={'contain'}
-					style={{width: 250}}
+					style={{width: 230, height: 230}}
 				/>
 			</View>
 			{userInfo?.isBiometric ? (

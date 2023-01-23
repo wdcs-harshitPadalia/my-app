@@ -68,7 +68,7 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 
 	const noDataItemArray = [
 		{
-			image_url: icons.star_congrates,
+			image_url: icons.star_congrats,
 			title_text: userId
 				? Strings.No_bets_for_now
 				: Strings.you_have_not_made_any_bets_yet,
@@ -77,7 +77,7 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 				: ''
 		},
 		{
-			image_url: icons.star_congrates,
+			image_url: icons.star_congrats,
 			title_text: Strings.no_prediction_market,
 			description_text: userId
 				? Strings.This_user_has_not_made_any_bets_yet
@@ -197,7 +197,8 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 				navigation.navigate(ScreenNames.BetDetailsScreen, {
 					bet_id: item?._id,
 					redirectType: item.betStatus,
-					isFromOtherUser: true
+					isFromOtherUser: true,
+					userId : userId
 				});
 			}}
 			// gameImage={
@@ -303,6 +304,22 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 			return false;
 		} else if (
 			userProfileInfo?.user?.betsVisible?.toLowerCase() === 'friends' &&
+			isFollowing === 2
+		) {
+			return true;
+		}
+		return false;
+	};
+
+	const isUserVideosShow = () => {
+		if (userProfileInfo?.user?.visible === false) {
+			return false;
+		} else if (
+			userProfileInfo?.user?.videosVisible?.toLowerCase() === 'anyone'
+		) {
+			return true;
+		} else if (
+			userProfileInfo?.user?.videosVisible?.toLowerCase() === 'friends' &&
 			isFollowing === 2
 		) {
 			return true;
@@ -458,6 +475,17 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 									}
 									isSendMsgShow={isSendMsgShow()}
 									isShowPlusIcon={isFollowing === 2 ? false : true}
+									isVideoViewVisible={
+										isUserVideosShow() && userProfileInfo?.user?.videoCount > 0
+											? true
+											: false
+									}
+									videosCount={userProfileInfo?.user?.videoCount}
+									onVideosBtnPress={() => {
+										navigation.navigate(ScreenNames.VideoContentScreen, {
+											userId: userId
+										});
+									}}
 								/>
 							</View>
 

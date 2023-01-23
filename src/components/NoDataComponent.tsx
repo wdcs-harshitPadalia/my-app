@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, Platform} from 'react-native';
 import ExpoFastImage from 'expo-fast-image';
 import {Fonts} from '../theme';
 import colors from '../theme/colors';
@@ -20,6 +20,8 @@ interface NoDataProps {
 	description_text: string;
 	shouldShowButton?: boolean;
 	onButtonPress?: () => void;
+	description_text2?: string;
+	highlightText?: string;
 }
 
 interface Props {
@@ -29,6 +31,7 @@ interface Props {
 	onButtonPress?: () => void;
 	btnTitle?: string;
 	colorArray?: string[];
+	isFromWithdrawal?: boolean;
 }
 
 const NoDataComponent = (props: Props) => {
@@ -38,7 +41,8 @@ const NoDataComponent = (props: Props) => {
 		shouldShowButton,
 		onButtonPress,
 		btnTitle,
-		colorArray
+		colorArray,
+		isFromWithdrawal = false
 	} = props;
 	return (
 		<View
@@ -57,7 +61,23 @@ const NoDataComponent = (props: Props) => {
 				resizeMode={'contain'}
 			/>
 			<Text style={styles.titleText}>{noData.title_text}</Text>
-			<Text style={styles.descriptionText}>{noData.description_text}</Text>
+			{isFromWithdrawal ? (
+				<Text style={styles.descriptionText(colors.white)}>
+					{noData.description_text}
+					<Text
+						style={[
+							styles.descriptionText(colors.red),
+							{fontWeight: '700', marginHorizontal: 0}
+						]}>
+						{' ' + noData.highlightText + ' '}
+					</Text>
+					<Text>{noData.description_text2}</Text>
+				</Text>
+			) : (
+				<Text style={styles.descriptionText(colors.textTitle)}>
+					{noData.description_text}
+				</Text>
+			)}
 			{shouldShowButton && (
 				<ButtonGradient
 					colorArray={colorArray ?? defaultTheme.primaryGradientColor}
@@ -81,7 +101,12 @@ const styles = StyleSheet.create({
 		alignItems: 'center'
 	},
 	buttonInputStyle: {
-		marginVertical: verticalScale(20)
+		marginVertical: verticalScale(20),
+		...Platform.select({
+			web: {
+				width: '100%'
+			}
+		})
 	},
 	imageIcon: {
 		height: verticalScale(240),
@@ -95,15 +120,15 @@ const styles = StyleSheet.create({
 		textAlign: 'center'
 		// marginHorizontal: horizontalScale(58),
 	},
-	descriptionText: {
+	descriptionText: (color: string) => ({
 		fontSize: moderateFontScale(16),
-		color: colors.textTitle,
+		color: color,
 		fontFamily: Fonts.type.Inter_Regular,
 		fontWeight: '500',
 		textAlign: 'center',
 		marginTop: verticalScale(10),
 		marginHorizontal: horizontalScale(44)
-	}
+	})
 });
 
 export default NoDataComponent;

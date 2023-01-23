@@ -1,12 +1,12 @@
-import {StyleSheet} from 'react-native';
+import { Platform, StyleSheet } from "react-native";
 import {
-	Fonts,
-	horizontalScale,
-	moderateScale,
-	verticalScale
-} from '../../../theme';
-import colors from '../../../theme/colors';
-import {defaultTheme} from '../../../theme/defaultTheme';
+  Fonts,
+  horizontalScale,
+  moderateScale,
+  verticalScale,
+} from "../../../theme";
+import colors from "../../../theme/colors";
+import { defaultTheme } from "../../../theme/defaultTheme";
 const styles = StyleSheet.create({
 	container: {
 		flex: 1
@@ -72,7 +72,46 @@ const styles = StyleSheet.create({
 		marginRight: horizontalScale(10)
 	},
 	acceptTextViewStyle: {
-		marginRight: verticalScale(60)
-	}
+		marginRight: verticalScale(Platform.OS === 'web' ? 0 : 60),
+		flexShrink: Platform.OS === 'web' ? 1 : 0
+	},
+	dOBViewContain: {
+		borderBottomColor: colors.gray,
+		borderBottomWidth: 1,
+		marginHorizontal: horizontalScale(16)
+	},
+	dOBTitleStyle: {
+		color: colors.textTitle,
+		fontSize: moderateScale(14),
+		fontFamily: Fonts.type.Inter_ExtraBold,
+		paddingHorizontal: horizontalScale(16),
+		paddingTop: verticalScale(20),
+		paddingBottom: Platform.OS === 'ios' ? 0 : 6
+	},
+	dOBValueStyle: (isValues: boolean) => ({
+		color: isValues ? colors.white : colors.placeholderColor,
+		fontSize: moderateScale(14),
+		fontFamily: Fonts.type.Inter_ExtraBold,
+		paddingBottom: Platform.OS === 'ios' ? 0 : 6
+	}),
+  errStyle: {
+		color: colors.red,
+		fontSize: moderateScale(12),
+		fontFamily: Fonts.type.Inter_Regular,
+		paddingHorizontal: horizontalScale(16),
+		paddingTop: 5
+	},
+	viewInput: {
+		width: '100%',
+		flexDirection: 'row',
+	},
+	leftImg: {
+		height: 17,
+		width: 17,
+		marginRight: verticalScale(8),
+		marginLeft: verticalScale(2),
+		tintColor: colors.white,
+		top: Platform.OS === 'ios' ? -2 : 0
+	},
 });
 export default styles;

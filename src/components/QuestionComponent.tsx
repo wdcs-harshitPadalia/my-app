@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   View,
   useWindowDimensions,
+  Platform,
 } from "react-native";
 import Collapsible from "react-native-collapsible";
 import ExpoFastImage from "expo-fast-image";
@@ -16,7 +17,7 @@ import icons from "../assets/icon";
 import colors from "../theme/colors";
 import fonts from "../theme/fonts";
 import { height, moderateFontScale, verticalScale } from "../theme/metrics";
-import RenderHtml from "react-native-render-html";
+// import RenderHtml from "react-native-render-html";
 
 export interface FaqData {
   id?: string;
@@ -63,15 +64,26 @@ const QuestionComponent: React.FC<FaqData> = (props) => {
         <ScrollView
           style={{ marginBottom: 16, marginTop: 11, maxHeight: height * 0.3 }}
         >
-          <RenderHtml
-            contentWidth={width}
-            source={{
-              html: `
-  <body style='color: white;'>
-	${answer}
-  </body>`,
-            }}
-          />
+          {Platform.OS === "web" ? (
+            <div
+              style={webStyle.divStyle}
+              dangerouslySetInnerHTML={{
+                __html: answer,
+              }}
+            />
+          ) : (
+            <View style={{ flex: 1 }}>
+              {/* <RenderHtml
+                contentWidth={width}
+                source={{
+                  html: `
+                <body style='color: white;'>
+                ${answer}
+                </body>`,
+                }}
+              /> */}
+            </View>
+          )}
         </ScrollView>
       </Collapsible>
     </>
@@ -101,12 +113,12 @@ const styles = StyleSheet.create({
 });
 
 const webStyle = StyleSheet.create({
-  p: {
+  divStyle: {
     color: colors.white,
     fontSize: moderateFontScale(14),
     backgroundColor: "transparent",
     fontFamily: fonts.type.Inter_Medium,
-    opacity: 0.7,
+    opacity: 0.5,
     flexWrap: "wrap",
   },
 });

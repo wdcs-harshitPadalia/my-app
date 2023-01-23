@@ -9,6 +9,7 @@ import {
   TextInput,
   TextStyle,
   ViewStyle,
+  Platform,
 } from "react-native";
 import { Fonts, horizontalScale, moderateScale, verticalScale } from "../theme";
 import { LinearGradient } from "expo-linear-gradient";
@@ -39,6 +40,7 @@ interface Props extends TextInputProps {
   styleOfRightIcon?: ViewStyle;
   onPressInfoIcon?: () => void;
   short_nameTextStyle?: TextStyle;
+  isRightIconVisible?: boolean;
 }
 
 const ButtonGradientWithRightIcon: React.FC<Props> = (props) => {
@@ -63,6 +65,7 @@ const ButtonGradientWithRightIcon: React.FC<Props> = (props) => {
     styleOfRightIcon,
     onPressInfoIcon,
     onEndEditing,
+    isRightIconVisible
   } = props;
 
   return (
@@ -107,11 +110,13 @@ style={[
             onEndEditing={onEndEditing}
           />
           <View style={styles.imageContainer}>
+            {rightIconPath !== undefined ? (
             <ExpoFastImage
               resizeMode={"contain"}
               source={{ uri: rightIconPath }}
               style={styles.rightImg}
             />
+            ) : null}
             <Text style={[styles.currencyTextStyle, short_nameTextStyle]}>
               {short_name}
             </Text>
@@ -122,13 +127,13 @@ style={[
                   if (onPressInfoIcon) onPressInfoIcon();
                 }}
               >
-                <ExpoFastImage
+                {isRightIconVisible ? (<ExpoFastImage
                   resizeMode={"contain"}
                   source={rightIcon ? rightIcon : icons.downGray}
                   style={
                     styleOfRightIcon ? styleOfRightIcon : styles.dropDownImage
                   }
-                />
+                />) : null}
               </TouchableOpacity>
             ) : null}
           </View>
@@ -181,11 +186,13 @@ style={[
               onEndEditing={onEndEditing}
             />
             <View style={styles.imageContainer}>
+              {rightIconPath !== undefined ? (
               <ExpoFastImage
                 resizeMode={"contain"}
                 source={{ uri: rightIconPath }}
                 style={styles.rightImg}
               />
+            ) : null}
               <Text style={[styles.currencyTextStyle, short_nameTextStyle]}>
                 {short_name}
               </Text>
@@ -221,6 +228,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   inputStyle: {
+    outlineStyle: 'none',
     fontSize: moderateScale(22),
     fontFamily: Fonts.type.Inter_Bold,
     textTransform: "uppercase",
@@ -231,6 +239,11 @@ const styles = StyleSheet.create({
     marginVertical: verticalScale(10),
     height: "100%",
     paddingVertical: 0,
+    ...Platform.select({
+			web: {
+        width: '50%'
+			}
+		})
   },
   circleGradient: {
     height: "100%",
@@ -243,7 +256,7 @@ const styles = StyleSheet.create({
     fontSize: moderateScale(12),
     fontFamily: Fonts.type.Inter_Medium,
     textTransform: "uppercase",
-    textAlign: "left",
+    textAlign: 'right',
     color: colors.white,
   },
   leftImg: {

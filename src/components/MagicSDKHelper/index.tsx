@@ -12,8 +12,7 @@ export const emailLogin = async (email, loaderMessage: any) => {
 	return new Promise(function (resolve, reject) {
 		try {
 			const req = magic.auth.loginWithMagicLink({
-				email,
-				redirectURI: window.location.origin
+				email
 			});
 			req
 				.on('email-sent', () => {

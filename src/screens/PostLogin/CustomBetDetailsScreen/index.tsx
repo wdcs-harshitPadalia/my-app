@@ -1,8 +1,8 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {
-	Alert,
 	FlatList,
+	Platform,
 	ScrollView,
 	Share,
 	Text,
@@ -23,7 +23,9 @@ import {BotomSharePopupData} from '../../../constants/api';
 import Strings from '../../../constants/strings';
 import {
 	createBetDetailsPreviewShareUrl,
-	dateTimeConvert
+	dateTimeConvert,
+	getBetShareUrl,
+	showErrorAlert
 } from '../../../constants/utils/Function';
 import ScreenNames from '../../../navigation/screenNames';
 import {
@@ -54,6 +56,10 @@ export default function CustomBetDetailsScreen() {
 	const [currentPage, setCurrentPage] = useState(0);
 	const [totalFollowUser, setTotalFollowUser] = useState(-1);
 	const [followUserData, setFollowUserData] = useState([]);
+	const [isFromBackButton, setIsFromBackButton] = useState(false);
+
+	const eventEndTime =
+		feedObject?.betEndDate && dateTimeConvert(feedObject?.betEndDate);
 
 	const userInfo = useSelector((state: RootState) => {
 		return state.userInfo.data;
@@ -101,7 +107,7 @@ export default function CustomBetDetailsScreen() {
 		);
 		console.log('====================================');
 		getUserBetDetailsData();
-	}, [betId]);
+	}, [betId, isFromBackButton]);
 
 	const handleShareStory = () => {
 		setIsShowShareBottomSheet(false);
@@ -144,27 +150,45 @@ export default function CustomBetDetailsScreen() {
 	}, [currentPage]);
 
 	const handleShareBetDetailsUrl = async () => {
-		try {
-			const result = await Share.share({
-				message: createBetDetailsPreviewShareUrl(
-					Strings.str_bet_details,
-					id,
-					betId,
-					betCreationType,
-					true
-				)
-			});
-			if (result.action === Share.sharedAction) {
-				if (result.activityType) {
-					// shared with activity type of result.activityType
-				} else {
-					// shared
-				}
-			} else if (result.action === Share.dismissedAction) {
-				// dismissed
+		if (Platform.OS === 'web') {
+			try {
+				await navigator.share({
+					text: getBetShareUrl(
+						feedObject?.users?.displayName || '@' + feedObject?.users?.userName,
+						eventEndTime,
+						betId,
+						id,
+						Strings.str_bet_details,
+						betCreationType
+					)
+				});
+			} catch (error) {
+				showErrorAlert('', error?.message);
 			}
-		} catch (error) {
-			Alert.alert(error?.message);
+		} else {
+			try {
+				const result = await Share.share({
+					message: getBetShareUrl(
+						feedObject?.users?.displayName || '@' + feedObject?.users?.userName,
+						eventEndTime,
+						betId,
+						id,
+						Strings.str_bet_details,
+						betCreationType
+					)
+				});
+				if (result.action === Share.sharedAction) {
+					if (result.activityType) {
+						// shared with activity type of result.activityType
+					} else {
+						// shared
+					}
+				} else if (result.action === Share.dismissedAction) {
+					// dismissed
+				}
+			} catch (error) {
+				showErrorAlert('', error?.message);
+			}
 		}
 	};
 
@@ -288,6 +312,7 @@ export default function CustomBetDetailsScreen() {
 			<View style={styles.container}>
 				<HeaderComponent
 					onLeftMenuPress={() => {
+						setIsFromBackButton(true);
 						navigation.goBack();
 					}}
 					name={Strings.bet_details}
@@ -375,7 +400,7 @@ export default function CustomBetDetailsScreen() {
 						console.log('data :: ', data);
 						console.log('====================================');
 						postReportMatch(data).then(res => {
-							Alert.alert('', res?.message ?? Strings.somethingWentWrong);
+							showErrorAlert('', res?.message ?? Strings.somethingWentWrong);
 						});
 					}}
 					isVisible={isReportPopupShown}

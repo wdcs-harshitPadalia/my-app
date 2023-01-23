@@ -4,7 +4,8 @@ import {
 	TextInputProps,
 	TouchableOpacity,
 	Text,
-	View
+	View,
+	Platform
 } from 'react-native';
 import {Fonts, moderateScale, verticalScale} from '../theme';
 import {LinearGradient} from 'expo-linear-gradient';
@@ -150,7 +151,12 @@ const styles = StyleSheet.create({
 		},
 		shadowOpacity: 0.5,
 		elevation: 3,
-		shadowRadius: 3
+		shadowRadius: 3,
+		...Platform.select({
+			web: {
+				borderRadius: 23
+			}
+		})
 	},
 	viewImageStyle: {
 		width: 46,

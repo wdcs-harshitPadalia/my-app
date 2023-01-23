@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 import {
 	Fonts,
 	horizontalScale,
@@ -13,11 +13,11 @@ const styles = StyleSheet.create({
 		flex: 1,
 		//marginTop: verticalScale(20),
 		//marginHorizontal: horizontalScale(12),
-		marginBottom: verticalScale(screenBottomNavHeight),
 		backgroundColor: defaultTheme.backGroundColor
 	},
 	container1: {
 		flex: 1,
+		marginBottom: Platform.OS === 'web' ? 0 : verticalScale(screenBottomNavHeight),
 		//marginTop: verticalScale(20),
 		//marginHorizontal: horizontalScale(12),
 		//marginBottom: verticalScale(screenBottomNavHeight),

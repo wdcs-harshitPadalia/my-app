@@ -25,6 +25,7 @@ interface Props extends TextInputProps {
 	btnDisabled?: boolean;
 	paddingVertical?: number;
 	leftIconStyle?: ImageStyle;
+	leftIconPath?: string;
 }
 
 const DropDownGradientView: React.FC<Props> = props => {
@@ -39,7 +40,8 @@ const DropDownGradientView: React.FC<Props> = props => {
 		angle,
 		btnDisabled,
 		paddingVertical,
-		leftIconStyle
+		leftIconStyle,
+		leftIconPath
 	} = props;
 
 	return (
@@ -55,6 +57,14 @@ const DropDownGradientView: React.FC<Props> = props => {
 				useAngle={true}
 				angle={angle ? angle : gradientColorAngle}
 				colors={colorArray}>
+				{leftIconPath && (
+					<ExpoFastImage
+						resizeMode={'contain'}
+						source={{uri: leftIconPath}}
+						style={styles.leftImg}
+					/>
+				)}
+
 				<Text
 					style={[
 						styles.inputStyle,
@@ -112,6 +122,11 @@ const styles = StyleSheet.create({
 		height: 12,
 		width: 12,
 		marginRight: verticalScale(20)
+	},
+	leftImg: {
+		height: verticalScale(16),
+		width: verticalScale(16),
+		marginLeft: verticalScale(8)
 	}
 });
 

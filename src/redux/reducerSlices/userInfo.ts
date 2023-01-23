@@ -26,7 +26,18 @@ export interface UserState {
 				bet_replicate: boolean;
 				bet_invitation: boolean;
 				new_followers: boolean;
+				direct_messages: boolean;
+				events_you_like: boolean;
+				people_you_know: boolean;
+				your_friends_bet: boolean;
 			};
+			videosVisible: string;
+			balanceVisible: string;
+			betsVisible: string;
+			messagesVisible: string;
+			videoCount: number;
+			referralUserInfo: {_id: string; userName: string};
+			affiliateCode: string;
 		};
 		token: string;
 		isNewUser: boolean;
@@ -62,9 +73,22 @@ const initialState: UserState = {
 				bet_join: false,
 				bet_replicate: false,
 				bet_invitation: false,
-				new_followers: false
+				new_followers: false,
+				direct_messages: false,
+				events_you_like: false,
+				people_you_know: false,
+				your_friends_bet: false
 			}
 		},
+		videosVisible: '',
+		balanceVisible: '',
+		betsVisible: '',
+		videoCount: 0,
+		referralUserInfo: {
+			_id: '',
+			userName: ''
+		},
+		affiliateCode: '',
 		token: '',
 		isNewUser: false,
 		isAppLaunched: true,
@@ -126,6 +150,11 @@ export const userInfoSlice = createSlice({
 		updateSyncContact: (state, action: PayloadAction<any>) => {
 			console.log('action.payload.updateSyncContact', action.payload);
 			state.data.isSyncContact = action.payload;
+		},
+		resetNotificationData: (state, action: PayloadAction<any>) => {
+			//console.log('state.data?>?', state.data);
+			state.notification = {};
+			// console.log('state.data?>?', state.data);
 		}
 	},
 
@@ -196,7 +225,8 @@ export const {
 	updateBiometric,
 	updateChatBadgeStatus,
 	updateSyncContact,
-	updateTotalBalance
+	updateTotalBalance,
+	resetNotificationData
 } = userInfoSlice.actions;
 
 export default userInfoSlice.reducer;

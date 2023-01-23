@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import {StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 import {Fonts, horizontalScale} from '../../../theme';
 import colors from '../../../theme/colors';
 import {defaultTheme} from '../../../theme/defaultTheme';
@@ -211,7 +211,17 @@ const styles = StyleSheet.create({
 	p2pBetHeaderText: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
-		alignItems : 'center',
+		...Platform.select({
+			web: {
+				alignItems: 'flex-start'
+			},
+			ios: {
+				alignItems: 'center'
+			},
+			android: {
+				alignItems: 'center'
+			}
+		}),
 		flex: 1
 	},
 	replicateBetContainer: {

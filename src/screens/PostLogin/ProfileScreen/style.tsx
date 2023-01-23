@@ -12,7 +12,8 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: defaultTheme.backGroundColor,
-		marginBottom: Platform.OS === 'ios' ? 0 : horizontalScale(20)
+		// marginBottom:
+		// 	Platform.OS === 'ios' || Platform.OS === 'web' ? 0 : horizontalScale(20)
 	},
 	viewContain: {
 		marginTop: verticalScale(20),
@@ -62,7 +63,7 @@ const styles = StyleSheet.create({
 		borderRadius: verticalScale(10),
 		marginTop: verticalScale(16),
 		paddingBottom: verticalScale(16),
-		marginBottom: verticalScale(16),
+		marginBottom: verticalScale(16)
 	},
 	statisticsTitleStyle: {
 		fontSize: moderateScale(18),
@@ -76,7 +77,9 @@ const styles = StyleSheet.create({
 		color: colors.white,
 		fontFamily: Fonts.type.Inter_Bold,
 		textAlign: 'left',
-		margin: verticalScale(16)
+		marginHorizontal: verticalScale(16),
+		marginTop: verticalScale(16),
+		marginBottom: verticalScale(Platform.OS === 'web' ? 0 : 16)
 	},
 	currencyStyle: {
 		// marginTop: verticalScale(16),
@@ -99,7 +102,7 @@ const styles = StyleSheet.create({
 		marginBottom: verticalScale(24)
 	},
 	loginButtonSocial: {
-		marginTop: verticalScale(16),
+		marginTop: verticalScale(Platform.OS === 'web' ? 0 : 16),
 		borderRadius: verticalScale(50),
 		overflow: 'hidden'
 	}

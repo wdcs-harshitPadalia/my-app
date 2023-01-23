@@ -6,7 +6,8 @@ import {
 	StyleSheet,
 	TextInputProps,
 	Text,
-	TouchableOpacity
+	TouchableOpacity,
+	Platform
 } from 'react-native';
 import ExpoFastImage from 'expo-fast-image';
 import icons from '../assets/icon';
@@ -88,7 +89,8 @@ const PlaceBetsAmountView: React.FC<Props> = props => {
 				<TouchableOpacity
 					onPress={() => {
 						onPressNeedHelp && onPressNeedHelp('betInfo');
-					}}>
+					}}
+					hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
 					<ExpoFastImage
 						resizeMode={'contain'}
 						source={icons.about}
@@ -120,7 +122,8 @@ const PlaceBetsAmountView: React.FC<Props> = props => {
 				<TouchableOpacity
 					onPress={() => {
 						onPressNeedHelp && onPressNeedHelp('odds');
-					}}>
+					}}
+					hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
 					<ExpoFastImage
 						resizeMode={'contain'}
 						source={icons.about}
@@ -176,7 +179,7 @@ const PlaceBetsAmountView: React.FC<Props> = props => {
 					textValue={payOutAmount + ''}
 					keyboardType="decimal-pad"
 					maxLength={10}
-					editable={isEditOdds === false ? false : !isShowError}
+					editable={Platform.OS === 'web' ? false : isEditOdds === false ? false : !isShowError}
 					btnDisabled={true}
 				/>
 				{isEditOdds && (
@@ -247,15 +250,29 @@ const PlaceBetsAmountView: React.FC<Props> = props => {
 					<Text style={[styles.amountStyle, {color: colors.placeholderColor}]}>
 						{Strings.you_will_win + ': '}
 					</Text>
-					<GradientText
-						colors={defaultTheme.textGradientColor}
-						style={styles.amountStyle}>
-						{'$' +
-							getRoundDecimalValue(
-								addedAmount?.replace(',', '.') * betOdds -
-									addedAmount?.replace(',', '.')
-							)}
-					</GradientText>
+					{Platform.OS === 'web' ? (
+						<Text
+							style={[
+								styles.amountStyle,
+								{color: defaultTheme.textGradientColor[1]}
+							]}>
+							{'$' +
+								getRoundDecimalValue(
+									addedAmount?.replace(',', '.') * betOdds -
+										addedAmount?.replace(',', '.')
+								)}
+						</Text>
+					) : (
+						<GradientText
+							colors={defaultTheme.textGradientColor}
+							style={styles.amountStyle}>
+							{'$' +
+								getRoundDecimalValue(
+									addedAmount?.replace(',', '.') * betOdds -
+										addedAmount?.replace(',', '.')
+								)}
+						</GradientText>
+					)}
 				</View>
 			)}
 

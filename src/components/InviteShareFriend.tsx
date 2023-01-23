@@ -4,22 +4,19 @@ import {
 	StyleSheet,
 	TextInputProps,
 	Text,
-	TouchableOpacity,
 	Share,
-	Alert
+	Platform
 } from 'react-native';
 import ExpoFastImage from 'expo-fast-image';
-import {LinearGradient} from 'expo-linear-gradient';
 import {useSelector} from 'react-redux';
 import icons from '../assets/icon';
 import Strings from '../constants/strings';
-import {getProfileShareUrl} from '../constants/utils/Function';
-import {getCMS} from '../redux/apiHandler/apiActions';
+import {getProfileShareUrl, showErrorAlert} from '../constants/utils/Function';
 import {RootState} from '../redux/store';
 import {Fonts, moderateScale, verticalScale} from '../theme';
 import colors from '../theme/colors';
 import {defaultTheme} from '../theme/defaultTheme';
-import {gradientColorAngle, height} from '../theme/metrics';
+import {gradientColorAngle} from '../theme/metrics';
 import ButtonLeftIconGradient from './ButtonLeftIconGradient';
 interface Props extends TextInputProps {
 	onSharePress?: () => void;
@@ -35,21 +32,31 @@ const InviteShareFriend: React.FC<Props> = props => {
 		return state.userInfo.data;
 	});
 	const onShare = async (url: string) => {
-		try {
-			const result = await Share.share({
-				message: url
-			});
-			if (result.action === Share.sharedAction) {
-				if (result.activityType) {
-					// shared with activity type of result.activityType
-				} else {
-					// shared
-				}
-			} else if (result.action === Share.dismissedAction) {
-				// dismissed
+		if (Platform.OS === 'web') {
+			try {
+				await navigator.share({
+					text: url
+				});
+			} catch (error) {
+				showErrorAlert('', error?.message);
 			}
-		} catch (error) {
-			Alert.alert(error.message);
+		} else {
+			try {
+				const result = await Share.share({
+					message: url
+				});
+				if (result.action === Share.sharedAction) {
+					if (result.activityType) {
+						// shared with activity type of result.activityType
+					} else {
+						// shared
+					}
+				} else if (result.action === Share.dismissedAction) {
+					// dismissed
+				}
+			} catch (error) {
+				showErrorAlert('', error.message);
+			}
 		}
 	};
 	useEffect(() => {

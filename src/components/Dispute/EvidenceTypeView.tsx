@@ -15,7 +15,6 @@ import {
 } from 'react-native';
 
 import {ScrollView} from 'react-native-gesture-handler';
-import * as ImagePicker from 'react-native-image-picker';
 // import {openSettings, PERMISSIONS, request} from 'react-native-permissions';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -25,7 +24,9 @@ import {Api, ApiBaseUrl, ApiConstants} from '../../constants/api';
 import Strings from '../../constants/strings';
 import {
 	createThumbnailFromUrl,
-	handleOpenUrlInBrowser
+	handleOpenUrlInBrowser,
+	showErrorAlert,
+	isValidUrl
 } from '../../constants/utils/Function';
 import {validationRegex} from '../../constants/utils/Validation';
 import {magic} from '../../navigation/routes';
@@ -104,6 +105,8 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 		[]
 	);
 
+	const myRef = React.useRef();
+
 	const [isShowVideoModal, setIsShowVideoModal] = useState<boolean>(false);
 
 	const [imageUrl, setImageUrl] = useState<string>('');
@@ -124,10 +127,7 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 
 	useUpdateEffect(() => {
 		if (hashObj?.error) {
-			Alert.alert(
-				'Error',
-				'Please check your internet connection and try again'
-			);
+			showErrorAlert(Strings.txt_error, Strings.txt_check_internet_connection);
 		} else {
 			if (isOpenDispute) {
 				createDisputeRoom(
@@ -170,7 +170,7 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 	};
 
 	const checkValidationAndAddURL = () => {
-		if (validationRegex.url.test(urlText)) {
+		if (validationRegex.url.test(urlText) && isValidUrl(urlText)) {
 			var urlItemObj = {
 				id: urlItemsArray.length + 1,
 				url: urlText
@@ -183,7 +183,7 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 
 			handleSendButtonDisable(false);
 		} else {
-			Alert.alert('', Strings.please_enter_valid_url);
+			showErrorAlert('', Strings.please_enter_valid_url);
 		}
 	};
 
@@ -209,12 +209,105 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 
 	const showHideImageVideoView = () => {
 		if (evidenceItemsArray.length < 5) {
-			setShowImageSelectionView(!showImageSelectionView);
+			if (Platform.OS === 'web') {
+				myRef.current.click(function () {
+					changeHandler();
+				});
+			} else {
+				setShowImageSelectionView(!showImageSelectionView);
+			}
 			if (enterUrlView) {
 				setEnterUrlView(!enterUrlView);
 			}
 		} else {
-			Alert.alert(Strings.reach_max_limit);
+			showErrorAlert('', Strings.reach_max_limit);
+		}
+	};
+
+	const changeHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
+		if (!event.target.files) {
+			return;
+		}
+		checkValidationAndAddEvidenceFormWeb(event.target.files[0]);
+	};
+
+	const getVideoMetaData = async file =>
+		new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.onload = () => {
+				const media = new Audio(reader.result);
+				media.onloadedmetadata = () => resolve(media);
+			};
+			reader.readAsDataURL(file);
+			reader.onerror = error => reject(error);
+		});
+
+	const fileToBase64 = async file =>
+		new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.readAsDataURL(file);
+			reader.onload = () => resolve(reader.result);
+			reader.onerror = e => reject(e);
+		});
+
+	const checkValidationAndAddEvidenceFormWeb = async responseData => {
+		const {type, name, size, length, webkitRelativePath} = responseData;
+		//const imageStrUri = await fileToBase64(responseData);
+		let videoMetaData;
+
+		let imageThumbPath;
+		console.log(
+			'createThumbnailFromUrl :: imageThumbPath :: ',
+			videoMetaData?.duration,
+			type,
+			name,
+			size,
+			length,
+			webkitRelativePath
+		);
+
+		if (type.includes('video')) {
+			videoMetaData = await getVideoMetaData(responseData);
+			//imageThumbPath = await createThumbnailFromUrl(webkitRelativePath, name);
+			console.log(
+				'createThumbnailFromUrl :: imageThumbPath :: ', videoMetaData?.duration,
+				imageThumbPath
+			);
+		}
+
+		if (evidenceItemsArray.length < 5) {
+			var evidenceItemObj = {
+				id: Date.now(),
+				name: name,
+				type: type,
+				// uri:
+				//   Platform.OS === 'android'
+				//     ? type.includes('video')
+				//       ? uri + '.' + type.split('/')[1]
+				//       : uri
+				//     : uri.replace('file://', ''),
+				uri: responseData,
+				file: await fileToBase64(responseData),
+				image_thumb: type.includes('video') ? imageThumbPath : ''
+			};
+
+			console.log('====================================');
+			console.log('evidenceItemObj :: ', evidenceItemObj);
+			console.log('====================================');
+
+			if (type.includes('video')) {
+				if (parseInt(videoMetaData?.duration) > 30) {
+					alert(Strings.upload_video_30s);
+				} else if (size / 1024 ** 2 > 30) {
+					alert(Strings.upload_video_30mb);
+				} else {
+					setEvidenceItemsArray([...evidenceItemsArray, evidenceItemObj]);
+					handleSendButtonDisable(false);
+				}
+			} else {
+				setEvidenceItemsArray([...evidenceItemsArray, evidenceItemObj]);
+				handleSendButtonDisable(false);
+			}
 		}
 	};
 
@@ -226,7 +319,6 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 		// 			: PERMISSIONS.IOS.CAMERA
 		// 	);
 		// 	console.log('pickImage reqPermission :: ', reqPermission);
-
 		// 	if (reqPermission === 'granted') {
 		// 		setTimeout(() => {
 		// 			ImagePicker.launchCamera(
@@ -301,7 +393,7 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 
 		if (evidenceItemsArray.length < 5) {
 			var evidenceItemObj = {
-				id: evidenceItemsArray.length + 1,
+				id: Date.now(),
 				name: type.includes('video')
 					? Platform.OS === 'android'
 						? fileName + '.' + type.split('/')[1]
@@ -326,11 +418,11 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 			console.log('evidenceItemObj :: ', evidenceItemObj);
 			console.log('====================================');
 
-			if (type === 'video/mp4') {
+			if (type.includes('video')) {
 				if (parseInt(duration) > 30) {
-					Alert.alert(Strings.upload_video_30s);
+					showErrorAlert('', Strings.upload_video_30s);
 				} else if (fileSize / 1024 ** 2 > 30) {
-					Alert.alert(Strings.upload_video_30mb);
+					showErrorAlert('', Strings.upload_video_30mb);
 				} else {
 					setEvidenceItemsArray([...evidenceItemsArray, evidenceItemObj]);
 					handleSendButtonDisable(false);
@@ -366,10 +458,10 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 						style={styles.imageEvidenceBg}
 						onPress={() => {
 							setIsShowImageModal(true);
-							setImageUrl(item.uri);
+							setImageUrl(Platform.OS === 'web' ? item.file : item.uri);
 						}}>
 						<ImageBackground
-							source={{uri: item.uri}}
+							source={{uri: Platform.OS === 'web' ? item.file : item.uri}}
 							style={styles.imageEvidenceBg}
 							resizeMode={'contain'}>
 							<TouchableOpacity onPress={() => handleRemoveEvidence(item.id)}>
@@ -383,7 +475,8 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 				) : (
 					<ImageBackground
 						style={styles.videoEvidenceBg}
-						source={{uri: item.image_thumb}}>
+						//source={{uri: item.image_thumb}}
+						>
 						<TouchableOpacity
 							onPress={() => {
 								setIsShowVideoModal(true);
@@ -394,11 +487,11 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 								// } else {
 								//   setVideoUrl(item.uri);
 								// }
-								setVideoUrl(item.uri);
+								setVideoUrl(Platform.OS === 'web' ? item.file : item.uri);
 								setVideoThumb(item.image_thumb);
 							}}
 							activeOpacity={0.8}>
-							<Image source={icons.playIcon} style={styles.imgPlayIcon} />
+							<Image source={icons.video_thumb} style={styles.imgPlayIcon} />
 						</TouchableOpacity>
 						<TouchableOpacity
 							style={styles.videoEvidenceDeleteRootContainer}
@@ -452,7 +545,7 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 		);
 		//formData.append('evidenceFile', evidenceItemsArray);
 		evidenceItemsArray.forEach(evidenceFile =>
-			formData.append('evidenceFile', evidenceFile)
+			formData.append('evidenceFile', Platform.OS === 'web' ? evidenceFile.uri : evidenceFile)
 		);
 		console.log('formData >> ', JSON.stringify(formData));
 
@@ -464,23 +557,35 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 			userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask' &&
 			!connector.connected
 		) {
-			Alert.alert(Strings.txt_session_expire_msg);
+			showErrorAlert('', Strings.txt_session_expire_msg);
 			return;
 		} else {
 			if (userInfo?.user?.socialLoginType?.toLowerCase() !== 'metamask') {
 				const loginStatus = await magic.user.isLoggedIn();
 				console.log('loginStatus', loginStatus);
 				if (!loginStatus) {
-					Alert.alert(Strings.txt_session_expire_msg, '', [
-						{
-							text: 'Ok',
-							onPress: () => {
-								dispatch(logout());
-								dispatch(updateDeviceToken({deviceToken: ''}));
-								dispatch(resetProfileData({}));
-							}
+					if (Platform.OS === 'web') {
+						let retVal = confirm(Strings.txt_session_expire_msg);
+						if (retVal == true) {
+							dispatch(logout());
+							dispatch(updateDeviceToken({deviceToken: ''}));
+							dispatch(resetProfileData({}));
+							return true;
+						} else {
+							return false;
 						}
-					]);
+					} else {
+						Alert.alert(Strings.txt_session_expire_msg, '', [
+							{
+								text: 'Ok',
+								onPress: () => {
+									dispatch(logout());
+									dispatch(updateDeviceToken({deviceToken: ''}));
+									dispatch(resetProfileData({}));
+								}
+							}
+						]);
+					}
 					return;
 				}
 			}
@@ -488,12 +593,12 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 		personalSign(bet_contract_address);
 	};
 
-	const handleUploadEvidence = () => {
+	const handleUploadEvidence = async() => {
 		dispatch(updateApiLoader({apiLoader: true}));
 
 		fetch(ApiBaseUrl + ApiConstants.addResultDispute, {
 			method: Api.POST,
-			body: createFormData(),
+			body: await createFormData(),
 			headers: {
 				Authorization: 'Bearer ' + userInfo.token
 			}
@@ -505,13 +610,13 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 				if (response?.statusCode.toString().includes('200')) {
 					navigateToThankYouScreen();
 				} else {
-					Alert.alert('', response?.message);
+					showErrorAlert('', response?.message);
 				}
 			})
 			.catch(error => {
 				console.log('handleUploadEvidence error', JSON.stringify(error));
 				dispatch(updateApiLoader({apiLoader: false}));
-				Alert.alert(
+				showErrorAlert(
 					'',
 					error.response?.data?.message ?? Strings.somethingWentWrong
 				);
@@ -630,6 +735,15 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 				</View>
 			</View>
 
+			<input
+				ref={myRef}
+				id="input"
+				type="file"
+				name="file"
+				accept="image/png, image/jpeg, video/*"
+				onChange={changeHandler}
+				style={{opacity: 0, height: 0, width: 0}}
+			/>
 			<TokenConfirmationModel
 				title={Strings.signature_Request}
 				infoDescription={Strings.signature_request_message}
@@ -731,9 +845,9 @@ const styles = StyleSheet.create({
 		overflow: 'hidden'
 	},
 	imgPlayIcon: {
-		height: 48,
-		width: 48,
-		tintColor: 'rgba(255,255,255,0.9)',
+		height: 130,
+		width: 130,
+		//tintColor: 'rgba(255,255,255,0.9)',
 		alignSelf: 'center',
 		justifyContent: 'center'
 	},

@@ -1,127 +1,161 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
-import {View, TouchableOpacity} from 'react-native';
-import Collapsible from 'react-native-collapsible';
-import {Text} from 'react-native-elements';
-import ExpoFastImage from 'expo-fast-image';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-// import {TouchableOpacity} from 'react-native-gesture-handler';
-import {LinearGradient} from 'expo-linear-gradient';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {useSelector} from 'react-redux';
-import icons from '../../../assets/icon';
-import ButtonGradient from '../../../components/ButtonGradient';
-import GetPrivateKey from '../../../components/GetPrivateKey';
-import HeaderComponent from '../../../components/HeaderComponent';
-import Strings from '../../../constants/strings';
-import ScreenNames from '../../../navigation/screenNames';
-import {getTokenType} from '../../../redux/apiHandler/apiActions';
-import {RootState} from '../../../redux/store';
-import colors from '../../../theme/colors';
-import {defaultTheme} from '../../../theme/defaultTheme';
-import {gradientColorAngle} from '../../../theme/metrics';
-import styles from './style';
+import React, { useEffect, useState } from "react";
+import { View, TouchableOpacity, Text, Linking } from "react-native";
+
+import Collapsible from "react-native-collapsible";
+import ExpoFastImage from "expo-fast-image";
+
+import { useNavigation } from "@react-navigation/native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { LinearGradient } from "expo-linear-gradient";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useSelector } from "react-redux";
+import * as Crypto from "expo-crypto";
+import * as WebBrowser from "expo-web-browser";
+
+import styles from "./style";
+import colors from "../../../theme/colors";
+import { defaultTheme } from "../../../theme/defaultTheme";
+import { gradientColorAngle } from "../../../theme/metrics";
+
+import icons from "../../../assets/icon";
+
+import { widgetBaseUrl } from "../../../constants/api";
+import Strings from "../../../constants/strings";
+import ScreenNames from "../../../navigation/screenNames";
+import { getTokenType } from "../../../redux/apiHandler/apiActions";
+import { RootState } from "../../../redux/store";
+
+import ButtonGradient from "../../../components/ButtonGradient";
+import GetPrivateKey from "../../../components/GetPrivateKey";
+import HeaderComponent from "../../../components/HeaderComponent";
 
 export default function WalletDepositScreen() {
-	const [isCollapsed, setIsCollapsed] = useState(true);
+  const navigation = useNavigation();
 
-	const userInfo = useSelector((state: RootState) => {
-		return state.userInfo.data;
-	});
+  const [isCollapsed, setIsCollapsed] = useState(true);
 
-	const [currencyData, setCurrencyData] = useState();
-	const [isSelectCurrency, setIsSelectCurrency] = useState({});
+  const userInfo = useSelector((state: RootState) => {
+    return state.userInfo.data;
+  });
 
-	const [isPopupShow, setIsPopupShow] = useState({});
-	const [depositAmount, setDepositAmount] = useState('');
-	const [description, setDescription] = useState('');
+  const [currencyData, setCurrencyData] = useState();
+  const [isSelectCurrency, setIsSelectCurrency] = useState({});
 
-	const [buttonAlpha, setButtonAlpha] = useState(0);
+  const [isPopupShow, setIsPopupShow] = useState(false);
+  const [depositAmount, setDepositAmount] = useState("");
+  const [description, setDescription] = useState("");
 
-	const [isSecondLevelCollapsed, setIsSecondLevelCollapsed] = useState(true);
-	const [showTokenSelectionPopup, setShowTokenSelectionPopup] = useState(false);
-	const topTabData = [
-		{id: 1, title: 'All', badgeCount: '9'},
-		{id: 2, title: 'Bets', badgeCount: '4'},
-		{id: 3, title: 'Friends', badgeCount: '5'}
-	];
+  const [buttonAlpha, setButtonAlpha] = useState(false);
 
-	useEffect(() => {
-		getTokenTypeData();
-	}, []);
+  const [isSecondLevelCollapsed, setIsSecondLevelCollapsed] = useState(true);
+  const [showTokenSelectionPopup, setShowTokenSelectionPopup] = useState(false);
+  const topTabData = [
+    { id: 1, title: "All", badgeCount: "9" },
+    { id: 2, title: "Bets", badgeCount: "4" },
+    { id: 3, title: "Friends", badgeCount: "5" },
+  ];
 
-	// const currencyData = [
-	//   {
-	//     id: 1,
-	//     currency_short: 'ETH',
-	//     currency: 'Ethereum',
-	//     balance: '1,02',
-	//   },
-	//   {
-	//     id: 1,
-	//     currency_short: 'BTC',
-	//     currency: 'Bitcoin',
-	//     balance: '1,02',
-	//   },
-	//   {
-	//     id: 1,
-	//     currency_short: 'DOGE',
-	//     currency: 'Dogecoin',
-	//     balance: '1,02',
-	//   },
-	// ];
+  useEffect(() => {
+    getTokenTypeData();
+  }, []);
 
-	const getTokenTypeData = () => {
-		const uploadData = {};
-		getTokenType(uploadData)
-			.then(res => {
-				console.log('getTokenTypeData Response : ', JSON.stringify(res));
-				setCurrencyData(res?.data.tokens);
-				setIsSelectCurrency(res?.data.tokens[0]);
-			})
-			.catch(err => {
-				console.log('getTokenTypeData Data Err : ', err);
-			});
-	};
+  // const currencyData = [
+  //   {
+  //     id: 1,
+  //     currency_short: 'ETH',
+  //     currency: 'Ethereum',
+  //     balance: '1,02',
+  //   },
+  //   {
+  //     id: 1,
+  //     currency_short: 'BTC',
+  //     currency: 'Bitcoin',
+  //     balance: '1,02',
+  //   },
+  //   {
+  //     id: 1,
+  //     currency_short: 'DOGE',
+  //     currency: 'Dogecoin',
+  //     balance: '1,02',
+  //   },
+  // ];
 
-	const navigation = useNavigation();
-	return (
-		<SafeAreaView edges={['right', 'left', 'top']} style={styles.container}>
-			<View style={styles.container}>
-				<HeaderComponent
-					onLeftMenuPress={() => {
-						navigation.goBack();
-					}}
-					name={Strings.Deposit}
-					onLeftIconPath={icons.back}
-				/>
-				{/* <HeaderView fontSize={24} title={Strings.Deposit} /> */}
-				{/* <CustomTopTabView dataSource={topTabData} /> */}
-				<KeyboardAwareScrollView bounces={false}>
-					<View style={styles.creditCardViewStyle}>
-						<TouchableOpacity
-							activeOpacity={1}
-							onPress={() => {
-								setIsCollapsed(!isCollapsed);
-							}}>
-							<LinearGradient
-								style={[styles.buttonContainerStyle]}
-								colors={['black', 'black']}
-								start={{x: 0, y: 0}}
-								end={{x: 1, y: 0}}>
-								<Text style={styles.buttonTitleText}>
-									{Strings.Polygon_Transfer}
-								</Text>
-								<ExpoFastImage source={icons.downGray} style={styles.img} />
-							</LinearGradient>
-						</TouchableOpacity>
-						<Collapsible
-							duration={400}
-							easing="easeInOutCubic"
-							align="center"
-							collapsed={isCollapsed}>
-							<View style={{marginBottom: 16}}>
-								{/* <WalletAddressView
+  const getTokenTypeData = () => {
+    const uploadData = {};
+    getTokenType(uploadData)
+      .then((res) => {
+        console.log("getTokenTypeData Response : ", JSON.stringify(res));
+        setCurrencyData(res?.data.tokens);
+        setIsSelectCurrency(res?.data.tokens[0]);
+      })
+      .catch((err) => {
+        console.log("getTokenTypeData Data Err : ", err);
+      });
+  };
+
+  const getPaymentUrl = () => {
+    const walletAddress = userInfo?.user?.walletAddress;
+    const cryptoHash = Crypto.digestStringAsync(
+      Crypto.CryptoDigestAlgorithm.SHA512,
+      "0x8001c03501d88c3Fa61a62786c91f6bdf15CcA0e" +
+        "822c9e5f7149734f927c4b77cdc437cb"
+    );
+
+    let webUrl =
+      widgetBaseUrl +
+      "f49448ba-2a9b-438e-8bb6-fdbdb30f5818" +
+      "&type=" +
+      Strings.buy +
+      "&return_url=" +
+      Strings.defibetHouseUrl +
+      "&address=" +
+      walletAddress +
+      "&signature=" +
+      cryptoHash;
+
+    return webUrl;
+  };
+
+  return (
+    <SafeAreaView edges={["right", "left", "top"]} style={styles.container}>
+      <View style={styles.container}>
+        <HeaderComponent
+          onLeftMenuPress={() => {
+            navigation.goBack();
+          }}
+          name={Strings.Deposit}
+          onLeftIconPath={icons.back}
+        />
+        {/* <HeaderView fontSize={24} title={Strings.Deposit} /> */}
+        {/* <CustomTopTabView dataSource={topTabData} /> */}
+        <KeyboardAwareScrollView bounces={false}>
+          <View style={styles.creditCardViewStyle}>
+            <TouchableOpacity
+              activeOpacity={1}
+              onPress={() => {
+                setIsCollapsed(!isCollapsed);
+              }}
+            >
+              <LinearGradient
+                style={[styles.buttonContainerStyle]}
+                colors={["black", "black"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+              >
+                <Text style={styles.buttonTitleText}>
+                  {Strings.Polygon_Transfer}
+                </Text>
+                <ExpoFastImage source={icons.downGray} style={styles.img} />
+              </LinearGradient>
+            </TouchableOpacity>
+            <Collapsible
+              duration={400}
+              easing="easeInOutCubic"
+              align="center"
+              collapsed={isCollapsed}
+            >
+              <View style={{ marginBottom: 16 }}>
+                {/* <WalletAddressView
                   address={userInfo.user.walletAddress}
                   style={{
                     marginTop: verticalScale(0),
@@ -130,7 +164,7 @@ export default function WalletDepositScreen() {
                   }}
                   isHideTitle
                 /> */}
-								{/* <ButtonGradientWithRightIcon
+                {/* <ButtonGradientWithRightIcon
                   colorArray={defaultTheme.ternaryGradientColor}
                   angle={gradientColorAngle}
                   rightIconPath={isSelectCurrency?.tokenImageUrl}
@@ -140,27 +174,29 @@ export default function WalletDepositScreen() {
                   textValue={depositAmount}
                   btnDisabled={true}
                 /> */}
-								<ButtonGradient
-									colorArray={defaultTheme.secondaryGradientColor}
-									angle={gradientColorAngle}
-									onPress={() => {
-										// setIsPopupShow(true);
-										navigation.navigate(ScreenNames.TransakWebView, {
-											type: Strings.deposit
-										});
-									}}
-									buttonTextcolor={colors.white}
-									buttonText={Strings.deposit}
-									//rightIconPath={icons.Currency_Ethereum}
-									// eslint-disable-next-line react-native/no-inline-styles
-									style={{marginTop: 16}}
-									paddingVertical={20}
-								/>
-							</View>
-						</Collapsible>
-					</View>
-					{/* <Collapsible collapsed={isCollapsed}> */}
-					{/* <View style={styles.creditCardViewStyle}>
+                <ButtonGradient
+                  colorArray={defaultTheme.secondaryGradientColor}
+                  angle={gradientColorAngle}
+                  onPress={async () => {
+                    // setIsPopupShow(true);
+                    // navigation.navigate(ScreenNames.TransakWebView, {
+                    //   type: Strings.deposit,
+                    // });
+                    // Linking.openURL(getPaymentUrl());
+                    await WebBrowser.openBrowserAsync(getPaymentUrl());
+                  }}
+                  buttonTextcolor={colors.white}
+                  buttonText={Strings.deposit}
+                  //rightIconPath={icons.Currency_Ethereum}
+                  // eslint-disable-next-line react-native/no-inline-styles
+                  style={{ marginTop: 16 }}
+                  paddingVertical={20}
+                />
+              </View>
+            </Collapsible>
+          </View>
+          {/* <Collapsible collapsed={isCollapsed}> */}
+          {/* <View style={styles.creditCardViewStyle}>
             <TouchableOpacity
               activeOpacity={1}
               onPress={() => {
@@ -295,30 +331,30 @@ export default function WalletDepositScreen() {
               </Collapsible>
             </Collapsible>
           </View> */}
-				</KeyboardAwareScrollView>
-				<GetPrivateKey
-					setDescription={description => {
-						setDescription(description);
-						if (description.trim() !== '') {
-							setButtonAlpha(true);
-						} else {
-							setButtonAlpha(false);
-						}
-					}}
-					onPressOk={() => {
-						setIsPopupShow(false);
-						setButtonAlpha(false);
-						navigation.navigate(ScreenNames.TransakWebView, {
-							privateKey: description
-						});
-					}}
-					onPressCancel={() => {
-						setIsPopupShow(false);
-					}}
-					isVisible={isPopupShow}
-					isAlpha={buttonAlpha}
-				/>
-			</View>
-		</SafeAreaView>
-	);
+        </KeyboardAwareScrollView>
+        <GetPrivateKey
+          setDescription={(description) => {
+            setDescription(description);
+            if (description.trim() !== "") {
+              setButtonAlpha(true);
+            } else {
+              setButtonAlpha(false);
+            }
+          }}
+          onPressOk={() => {
+            setIsPopupShow(false);
+            setButtonAlpha(false);
+            navigation.navigate(ScreenNames.TransakWebView, {
+              privateKey: description,
+            });
+          }}
+          onPressCancel={() => {
+            setIsPopupShow(false);
+          }}
+          isVisible={isPopupShow}
+          isAlpha={buttonAlpha}
+        />
+      </View>
+    </SafeAreaView>
+  );
 }

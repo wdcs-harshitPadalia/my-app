@@ -5,8 +5,6 @@ import {
 	StyleSheet,
 	View,
 	Text,
-	Alert,
-	Share,
 	TouchableOpacity,
 	Linking,
 	Platform,
@@ -14,7 +12,7 @@ import {
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import Strings from '../constants/strings';
-import {generateColor} from '../constants/utils/Function';
+import {generateColor, showErrorAlert} from '../constants/utils/Function';
 import {
 	filterUserContacts,
 	followUnfollowUser,
@@ -219,7 +217,7 @@ const ContactsFlatList: React.FC<Props> = props => {
 
 	function selectvalue(item: any) {
 		if (userContacts.length >= 10) {
-			Alert.alert(Strings.you_can_only_share_with_upto_10_users);
+			showErrorAlert('', Strings.you_can_only_share_with_upto_10_users);
 			return;
 		}
 		let isExists = userContacts.includes(item?.mobile_number);
@@ -428,6 +426,7 @@ const styles = StyleSheet.create({
 		marginBottom: verticalScale(10)
 	},
 	input: {
+		outlineStyle: 'none',
 		fontSize: moderateScale(12),
 		flex: 1,
 		marginHorizontal: horizontalScale(8),

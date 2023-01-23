@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {
-	Alert,
 	FlatList,
 	Image,
 	Platform,
@@ -13,7 +12,7 @@ import icons from '../../../assets/icon';
 import InputComponent from '../../../components/InputComponent';
 import Strings from '../../../constants/strings';
 import styles from './style';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+// import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import {Fonts, horizontalScale, verticalScale} from '../../../theme';
 import HeaderComponent from '../../../components/HeaderComponent';
 import SwichView from '../../../components/SwichView';
@@ -25,14 +24,18 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import SelectImageComponet from '../../../components/SelectImageComponet';
 
 import {useDispatch, useSelector} from 'react-redux';
-import {ImageIndicator} from '../../../constants/utils/Function';
+import {
+	ImageIndicator,
+	showErrorAlert
+} from '../../../constants/utils/Function';
 import colors from '../../../theme/colors';
 import {
 	getAvatarList,
 	getCategory,
 	getSubcategory
 } from '../../../redux/apiHandler/apiActions';
-import * as ImagePicker from 'react-native-image-picker';
+// import * as ImagePicker from 'react-native-image-picker';
+import * as ImagePicker from 'expo-image-picker';
 // import {openSettings, PERMISSIONS, request} from 'react-native-permissions';
 import {updateApiLoader} from '../../../redux/reducerSlices/preLogin';
 import {Api, ApiBaseUrl, ApiConstants} from '../../../constants/api';
@@ -40,6 +43,7 @@ import SelectAvatarComponent from '../../../components/SelectAvatarComponent';
 import {moderateFontScale} from '../../../theme/metrics';
 
 const EditProfileScreen: React.FC<any> = props => {
+	const myRef = React.useRef();
 	const navigation = useNavigation();
 	const dispatch = useDispatch();
 
@@ -78,6 +82,9 @@ const EditProfileScreen: React.FC<any> = props => {
 	const [sendDirectMessage, setSendDirectMessage] = useState(
 		userInfo?.user?.messagesVisible
 	);
+	const [whoCanSeeVideos, setWhoCanSeeVideos] = useState(
+		userInfo?.user?.videosVisible
+	);
 
 	const [categoryData, setCategoryData] = useState();
 	const [isCategoryId, setIsCategoryId] = useState(userInfo?.user?.category_id);
@@ -92,9 +99,21 @@ const EditProfileScreen: React.FC<any> = props => {
 	const [showAvatarSelectSheet, setShowAvatarSelectSheet] = useState(false);
 	const [avatarDataArray, setAvatarDataArray] = useState([]);
 	const [isAvatarSelect, setIsAvatarSelect] = useState(false);
+	const [isBase64, setIsBase64] = useState(false);
+	const [profileImageBase64, setProfileImageBase64] = useState<String>('');
+
 	const [isNotificationEnabled, setIsNotificationEnabled] = useState(
 		userInfo?.user?.push_notifications?.pause_all_notifications
 	);
+
+	const videoArrOptions = [
+		{
+			name: Strings.anyone
+		},
+		{
+			name: Strings.friends
+		}
+	];
 
 	const toggleSwitch = (type: string) => {
 		if (type === 'privacy') {
@@ -113,6 +132,8 @@ const EditProfileScreen: React.FC<any> = props => {
 			setWhoCanSeeBets(value);
 		} else if (type === Strings.directMessages) {
 			setSendDirectMessage(value);
+		} else if (type === Strings.video_content) {
+			setWhoCanSeeVideos(value);
 		}
 	};
 
@@ -160,7 +181,7 @@ const EditProfileScreen: React.FC<any> = props => {
 			})
 			.catch(err => {
 				console.log('getAvatarList Data Err : ', err);
-				Alert.alert('getAvatarList', Strings.somethingWentWrong);
+				showErrorAlert('', Strings.somethingWentWrong);
 			});
 	};
 
@@ -208,75 +229,70 @@ const EditProfileScreen: React.FC<any> = props => {
 	);
 
 	const pickImage = async (from: String) => {
-		// if (from === 'camera') {
-		// 	let reqPermission = await request(
-		// 		Platform.OS === 'android'
-		// 			? PERMISSIONS.ANDROID.CAMERA
-		// 			: PERMISSIONS.IOS.CAMERA
-		// 	);
-		// 	console.log('Response = ', reqPermission);
+		if (from === 'camera') {
+			// Ask the user for the permission to access the camera
+			const permissionResult =
+				await ImagePicker.requestCameraPermissionsAsync();
 
-		// 	if (reqPermission === 'granted') {
-		// 		setTimeout(() => {
-		// 			ImagePicker.launchCamera(
-		// 				{
-		// 					// saveToPhotos: true,
-		// 					mediaType: 'photo',
-		// 					includeBase64: false,
-		// 					maxHeight: 400,
-		// 					maxWidth: 400
-		// 				},
-		// 				async response => {
-		// 					console.log({response});
-		// 					setModalIsSuccess(false);
+			if (permissionResult.granted === false) {
+				alert("You've refused to allow this appp to access your camera!");
+				return;
+			}
 
-		// 					if (response.didCancel) {
-		// 						console.log(' Photo picker didCancel');
-		// 					} else if (response.error) {
-		// 						console.log('ImagePicker Error: ', response.error);
-		// 					} else {
-		// 						console.log('source', response.assets[0]);
-		// 						setProfilePic(response.assets[0]);
-		// 						setIsAvatarSelect(false);
-		// 					}
-		// 				}
-		// 			);
-		// 		}, 200);
-		// 	} else {
-		// 		// Alert.alert('Alert', Strings.cameraAccess, [
-		// 		// 	{
-		// 		// 		text: 'Open Settings',
-		// 		// 		onPress: () => openSettings()
-		// 		// 	},
-		// 		// 	{
-		// 		// 		text: 'Cancel',
-		// 		// 		onPress: () => console.log('Cancel Pressed')
-		// 		// 	}
-		// 		// ]);
-		// 	}
-		// } else {
-		// 	ImagePicker.launchImageLibrary(
-		// 		{
-		// 			mediaType: 'photo',
-		// 			includeBase64: false,
-		// 			maxHeight: 200,
-		// 			maxWidth: 200
-		// 		},
-		// 		async response => {
-		// 			setModalIsSuccess(false);
-		// 			console.log('source', response.assets[0]);
+			if (Platform.OS === 'web') {
+				myRef.current.click(function () {
+					changeHandler();
+				});
+			} else {
+				const result = await ImagePicker.launchCameraAsync();
 
-		// 			setProfilePic(response.assets[0]);
-		// 			setIsAvatarSelect(false);
-		// 		}
-		// 	);
-		// }
+				// Explore the result
+				console.log(result);
+				setModalIsSuccess(false);
+
+				if (!result.canceled) {
+					console.log('source', result.assets[0]);
+					setProfilePic(result.assets[0]);
+					setIsAvatarSelect(false);
+					setIsBase64(false);
+				}
+			}
+		} else {
+			// Ask the user for the permission to access the media library
+			const permissionResult =
+				await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+			if (permissionResult.granted === false) {
+				alert("You've refused to allow this appp to access your photos!");
+				return;
+			}
+
+			if (Platform.OS === 'web') {
+				myRef.current.click(function () {
+					changeHandler();
+				});
+			} else {
+				const result = await ImagePicker.launchImageLibraryAsync();
+
+				// Explore the result
+				console.log(result);
+				setModalIsSuccess(false);
+
+				if (!result.canceled) {
+					console.log('source', result.assets[0]);
+					setProfilePic(result.assets[0]);
+					setIsAvatarSelect(false);
+					setIsBase64(false);
+				}
+			}
+		}
 	};
-	const createFormData = photo => {
+
+	const createFormData = async photo => {
 		const formData = new FormData();
 		formData.append('displayName', displayName);
 		formData.append('biography', bioGraphy);
-		//
+
 		// formData.append('userName', userName);
 		// formData.append('website', webSite);
 		formData.append('visible', isProfileVisible);
@@ -290,6 +306,7 @@ const EditProfileScreen: React.FC<any> = props => {
 		formData.append('balanceVisible', whoCanSeeYourBalance.toLowerCase());
 		formData.append('betsVisible', whoCanSeeBets.toLowerCase());
 		formData.append('messagesVisible', sendDirectMessage.toLowerCase());
+		formData.append('videosVisible', whoCanSeeVideos?.toLowerCase());
 		if (isCategoryId) {
 			formData.append('category_id', isCategoryId);
 		}
@@ -301,19 +318,25 @@ const EditProfileScreen: React.FC<any> = props => {
 		}
 
 		formData.append('isAvatar', isAvatarSelect);
+		// formData.append('isBase64', isBase64);
 
 		if (profilePic) {
 			if (isAvatarSelect) {
 				formData.append('picture', profilePic);
 			} else {
-				formData.append('picture', {
-					name: photo.fileName,
-					type: photo.type,
-					uri:
-						Platform.OS === 'android'
-							? photo.uri
-							: photo.uri.replace('file://', '')
-				});
+				formData.append(
+					'picture',
+					Platform.OS === 'web'
+						? photo
+						: {
+								name: photo.fileName,
+								type: photo.type,
+								uri:
+									Platform.OS === 'android'
+										? photo.uri
+										: photo.uri.replace('file://', '')
+						  }
+				);
 			}
 		}
 		const settingsKeys = {
@@ -340,18 +363,50 @@ const EditProfileScreen: React.FC<any> = props => {
 			'push_notifications[new_followers]',
 			userInfo?.user?.push_notifications?.new_followers
 		);
-
+		formData.append(
+			'push_notifications[direct_messages]',
+			userInfo?.user?.push_notifications?.direct_messages
+		);
+		formData.append(
+			'push_notifications[events_you_like]',
+			userInfo?.user?.push_notifications?.events_you_like
+		);
+		formData.append(
+			'push_notifications[people_you_know]',
+			userInfo?.user?.push_notifications?.people_you_know
+		);
+		formData.append(
+			'push_notifications[your_friends_bet]',
+			userInfo?.user?.push_notifications?.your_friends_bet
+		);
 		return formData;
 	};
 
-	const handleUploadPhoto = () => {
+	const handleUploadPhoto = async () => {
 		dispatch(updateApiLoader({apiLoader: true}));
 
-		console.log('createFormData(profilePic) >>>> ', createFormData(profilePic));
+		console.log(
+			'createFormData(profilePic) >>>> ',
+			'' + JSON.stringify(await createFormData(profilePic))
+		);
+
+		const profileFormData = await createFormData(profilePic);
+
+		// editUserProfile(profileFormData)
+		// 	.then(response => {
+		// 		console.log('upload succes', JSON.stringify(response));
+		// 		dispatch(updateApiLoader({apiLoader: false}));
+		// 		navigation.goBack();
+		// 	})
+		// 	.catch(error => {
+		// 		console.log('upload error', JSON.stringify(error));
+		// 		dispatch(updateApiLoader({apiLoader: false}));
+		// 		navigation.goBack();
+		// 	});
 
 		fetch(ApiBaseUrl + ApiConstants.EditProfile, {
 			method: Api.PUT,
-			body: createFormData(profilePic),
+			body: profileFormData,
 			headers: {
 				Authorization: 'Bearer ' + userInfo.token
 			}
@@ -376,9 +431,37 @@ const EditProfileScreen: React.FC<any> = props => {
 			setShowAvatarSelectSheet(true);
 		}, 500);
 	};
+
 	const handleOnPressPushNotification = () => {
 		navigation.navigate(ScreenNames.PushNotificationScreen, {});
 	};
+
+	const changeHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
+		if (!event.target.files) {
+			return;
+		}
+
+		const filestr = event.target.files[0];
+		const imageStrUri = await fileToBase64(filestr);
+
+		// console.log("filestr ::", filestr);
+		// console.log("imageStrUri ::", imageStrUri);
+
+		setModalIsSuccess(false);
+
+		setProfilePic(filestr);
+		setProfileImageBase64(imageStrUri);
+		setIsBase64(true);
+		setIsAvatarSelect(false);
+	};
+
+	const fileToBase64 = async file =>
+		new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.readAsDataURL(file);
+			reader.onload = () => resolve(reader.result);
+			reader.onerror = e => reject(e);
+		});
 
 	return (
 		<SafeAreaView style={styles.container}>
@@ -394,7 +477,7 @@ const EditProfileScreen: React.FC<any> = props => {
 					onSaveIconPath={icons.right}
 					name={Strings.cancel}
 				/>
-				<ScrollView  bounces={false}>
+				<ScrollView bounces={false}>
 					<Text style={styles.titleStyle}>{Strings.settings}</Text>
 					<View
 						style={[
@@ -413,7 +496,11 @@ const EditProfileScreen: React.FC<any> = props => {
 								resizeMode="cover"
 								source={
 									profilePic
-										? {uri: isAvatarSelect ? profilePic : profilePic.uri}
+										? {
+												uri: isAvatarSelect
+													? profilePic
+													: profilePic.uri ?? profileImageBase64
+										  }
 										: {uri: userInfo?.user?.picture}
 								}
 								style={styles.imgIconStyle}
@@ -425,6 +512,15 @@ const EditProfileScreen: React.FC<any> = props => {
 								}}
 							/>
 						</TouchableOpacity>
+						<View style={{opacity: 0}}>
+							<input
+								ref={myRef}
+								type="file"
+								name="file"
+								accept="image/png, image/jpeg"
+								onChange={changeHandler}
+							/>
+						</View>
 					</View>
 					<View style={styles.viewContain}>
 						<Text style={styles.subTitleStyle}>{Strings.editProfile}</Text>
@@ -577,6 +673,18 @@ const EditProfileScreen: React.FC<any> = props => {
 									}}
 									title={Strings.sendYouDirectMessages.toUpperCase()}
 									selectedType={sendDirectMessage}
+								/>
+								<SelectWhoCan
+									onMenuPress={() => {
+										navigation.navigate(ScreenNames.WhoCanViewScreen, {
+											description: Strings.who_can_see_your_videos,
+											setWhoCanSee: whoCanSeeVideos,
+											whoCanSeeGet,
+											arrOptions: videoArrOptions
+										});
+									}}
+									title={Strings.see_your_video_content.toUpperCase()}
+									selectedType={whoCanSeeVideos}
 								/>
 							</>
 						)}

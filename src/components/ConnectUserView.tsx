@@ -5,7 +5,8 @@ import {
 	TouchableOpacity,
 	ImageSourcePropType,
 	Text,
-	View
+	View,
+	Platform
 } from 'react-native';
 import {Fonts, horizontalScale, moderateScale, verticalScale} from '../theme';
 import {LinearGradient} from 'expo-linear-gradient';
@@ -166,7 +167,17 @@ const styles = StyleSheet.create({
 	leftButtonStyle: (padding: number) => ({
 		//height: verticalScale(30),
 		paddingRight: moderateScale(padding),
-		flex: 0.5
+		...Platform.select({
+			ios: {
+				flex: 0.5
+			},
+			android: {
+				flex: 0.5
+			},
+			web: {
+				flex: 1
+			}
+		})
 	}),
 	imgNameStyle: {
 		fontSize: moderateScale(18),

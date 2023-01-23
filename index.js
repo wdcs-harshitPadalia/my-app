@@ -3,6 +3,7 @@
  */
 import 'react-native-gesture-handler';
 import {AppRegistry, LogBox, Platform} from 'react-native';
+import {registerRootComponent} from 'expo';
 // import messaging from '@react-native-firebase/messaging';
 import App from './App';
 import {createRoot}  from 'react-dom/client';
@@ -21,13 +22,15 @@ polyfill();
 
 //console.log = () => {};
 // LogBox.ignoreAllLogs();
-if ('web' === Platform.OS) {
-    // const rootTag = createRoot(document.getElementById('root') ?? document.getElementById('main'));
-    // rootTag.render(createElement(App));
-    AppRegistry.registerComponent('12', () => App);
+// if ('web' === Platform.OS) {
+//     // const rootTag = createRoot(document.getElementById('root') ?? document.getElementById('main'));
+//     // rootTag.render(createElement(App));
+//     AppRegistry.registerComponent('12', () => App);
 
 
-  } else {
-    AppRegistry.registerComponent('23', () => App);
+//   } else {
+//     AppRegistry.registerComponent('23', () => App);
 
-  }
+//   }
+
+  registerRootComponent(App);

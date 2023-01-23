@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
 	ActivityIndicator,
 	Dimensions,
@@ -7,7 +7,8 @@ import {
 	View,
 	TouchableOpacity,
 	Image,
-	Text
+	Text,
+	Alert
 } from 'react-native';
 
 import Modal from 'react-native-modal';
@@ -28,6 +29,7 @@ import Strings from '../../constants/strings';
 import {
 	createJoinBetShareUrl,
 	createMatchDetailsShareUrl,
+	getVideoShareUrl,
 	uniqueIdGenerateFrom2Ids
 } from '../../constants/utils/Function';
 import {MessageType} from '@flyerhq/react-native-chat-ui';
@@ -40,6 +42,7 @@ import {
 	runQuery
 } from '@amityco/ts-sdk';
 import {updateChannel} from '../../redux/apiHandler/apiActions';
+import {updateChannel as updateChannel1} from '../../redux/apiHandler/apiActions';
 const {v4: uuidv4} = require('uuid');
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -54,6 +57,8 @@ type Props = {
 };
 
 const StoryDetailsContainer: React.FC<Props> = (props: Props) => {
+	const storyRef = useRef();
+
 	const {dataStories} = props;
 	const {stories = []} = dataStories || {};
 	const [currentIndex, setCurrentIndex] = useState(0);
@@ -65,6 +70,7 @@ const StoryDetailsContainer: React.FC<Props> = (props: Props) => {
 	const [duration, setDuration] = useState(
 		stories[currentIndex].duration ? stories[currentIndex].duration : 3
 	);
+	const [isInputFocus, setIsInputFocus] = useState(false);
 	// const [duration, setDuration] = useState(3);
 
 	// useEffect(() => {
@@ -81,8 +87,8 @@ const StoryDetailsContainer: React.FC<Props> = (props: Props) => {
 	});
 
 	const changeStory = (evt: NativeTouchEvent) => {
-		console.log('changeStory >>');
-		if (evt.locationX > SCREEN_WIDTH / 2 - 100) {
+		storyRef.current.handlePlay();
+		if (evt.pageX > SCREEN_WIDTH / 2 - 100) {
 			nextStory();
 		} else {
 			prevStory();
@@ -99,6 +105,7 @@ const StoryDetailsContainer: React.FC<Props> = (props: Props) => {
 			);
 		} else {
 			setCurrentIndex(0);
+			setIsPause(false);
 			props.onStoryNext(false);
 		}
 	};
@@ -113,34 +120,45 @@ const StoryDetailsContainer: React.FC<Props> = (props: Props) => {
 			);
 		} else {
 			setCurrentIndex(0);
+			setIsPause(false);
 			props.onStoryPrevious(false);
 		}
 	};
 
 	const onImageLoaded = () => {
 		console.log('onImageLoaded >>');
+		setDuration(
+			stories[currentIndex].duration ? stories[currentIndex].duration : 3
+		);
 		setLoaded(true);
 	};
 
 	const onVideoLoaded = length => {
-		console.log('onVideoLoaded >>');
+		console.log('length :: ', length);
+		// console.log('onVideoLoaded >>', length.duration);
 		setLoaded(true);
 		setDuration(stories[currentIndex].duration);
+		// setDuration(length.duration);
 	};
 
 	const onPause = result => {
-		console.log('onPause >>');
+		console.log('onPause >>', result);
 		setIsPause(result);
 	};
 
 	const replyModalOpen = () => {
 		console.log('replyModalOpen >>');
+		storyRef.current.handlePause();
 		setIsPause(true);
+		setIsInputFocus(true);
 		// setIsModelOpen(true);
 	};
+
 	const replyModalClose = () => {
 		console.log('replyModalClose >>');
+		storyRef.current.handlePlay();
 		setIsPause(false);
+		setIsInputFocus(false);
 		// setIsModelOpen(false);
 	};
 
@@ -164,13 +182,6 @@ const StoryDetailsContainer: React.FC<Props> = (props: Props) => {
 		}
 	};
 
-	const config = {
-		velocityThreshold: 0.3,
-		directionalOffsetThreshold: 80,
-		detectSwipeLeft: false,
-		detectSwipeRight: false
-	};
-
 	const onSwipeDown = () => {
 		console.log('onSwipeDown >>');
 		props.onClose();
@@ -190,43 +201,50 @@ const StoryDetailsContainer: React.FC<Props> = (props: Props) => {
 
 	return (
 		<SafeAreaView style={styles.container}>
-			
-				<TouchableOpacity
-					activeOpacity={1}
-					delayLongPress={500}
-					onPress={e => changeStory(e.nativeEvent)}
-					onLongPress={() => onPause(true)}
-					onPressOut={() => onPause(false)}
-					style={styles.container}>
-					<View style={styles.container}>
-						<Story
-							onImageLoaded={onImageLoaded}
-							pause={isPause}
-							isNewStory={props.isNewStory}
-							onVideoLoaded={onVideoLoaded}
-							story={story}
-							friendProfile={dataStories.picture}
-							userName={'@' + dataStories.userName}
-							storyClose={props.onClose}
-							friendLevel={dataStories.level}
-						/>
+			{/* <GestureRecognizer
+				onSwipeDown={onSwipeDown}
+				onSwipeUp={onSwipeUp}
+				config={config}
+				style={styles.container}> */}
+			<TouchableOpacity
+				activeOpacity={1}
+				delayLongPress={500}
+				disabled={isInputFocus}
+				onPress={e => changeStory(e.nativeEvent)}
+				onLongPress={() => onPause(true)}
+				onPressOut={() => onPause(false)}
+				style={styles.container}>
+				<View style={styles.container}>
+					<Story
+						ref={storyRef}
+						onImageLoaded={onImageLoaded}
+						pause={isPause}
+						isNewStory={props.isNewStory}
+						onVideoLoaded={onVideoLoaded}
+						story={story}
+						friendProfile={dataStories.picture}
+						userName={'@' + dataStories.userName}
+						storyClose={props.onClose}
+						friendLevel={dataStories.level}
+						next={nextStory}
+					/>
 
-						{/* {loading()} */}
+					{/* {loading()} */}
 
-						<UserView
-							username={
-								dataStories?._id === userInfo?.user?._id
-									? Strings.your_story
-									: '@' + dataStories.userName
-							}
-							profileImg={dataStories.picture}
-							timeLeft={stories[currentIndex].createdAt}
-							onClosePress={props.onClose}
-							friendLevel={dataStories.level}
-							handleRedirectUser={props.onHandleRedirectUser}
-						/>
+					<UserView
+						username={
+							dataStories?._id === userInfo?.user?._id
+								? Strings.your_story
+								: '@' + dataStories.userName
+						}
+						profileImg={dataStories.picture}
+						timeLeft={stories[currentIndex].createdAt}
+						onClosePress={props.onClose}
+						friendLevel={dataStories.level}
+						handleRedirectUser={props.onHandleRedirectUser}
+					/>
 
-						{/* {!isModelOpen && dataStories?._id !== userInfo?.user?._id && (
+					{/* {!isModelOpen && dataStories?._id !== userInfo?.user?._id && (
               <TouchableOpacity
                 onPress={replyModalOpen}
                 style={styles.replyContainer}>
@@ -235,52 +253,138 @@ const StoryDetailsContainer: React.FC<Props> = (props: Props) => {
               </TouchableOpacity>
             )} */}
 
-						<ProgressArray
-							next={nextStory}
-							isLoaded={isLoaded}
-							duration={duration}
-							pause={isPause}
-							isNewStory={props.isNewStory}
-							stories={stories}
-							currentIndex={currentIndex}
-							currentStory={stories[currentIndex]}
-							length={stories.map((_, i) => i)}
-							progress={{id: currentIndex}}
-						/>
-					</View>
+					<ProgressArray
+						next={nextStory}
+						isLoaded={isLoaded}
+						duration={duration}
+						pause={isPause}
+						isNewStory={props.isNewStory}
+						stories={stories}
+						currentIndex={currentIndex}
+						currentStory={stories[currentIndex]}
+						length={stories.map((_, i) => i)}
+						progress={{id: currentIndex}}
+					/>
+				</View>
+			</TouchableOpacity>
+			{/* <Modal
+					style={[
+						styles.modal,
+						{backgroundColor: isModelOpen ? 'transparent' : ''}
+					]}
+					isVisible={isModelOpen}>
+					<View
+						style={{height: '100%', backgroundColor: 'red'}}
+						onTouchEndCapture={replyModalClose}> */}
+			{dataStories?._id !== userInfo?.user?._id && (
+				<View
+					style={{
+						width: '100%',
+						position: 'absolute',
+						bottom: 30,
+						paddingHorizontal: verticalScale(20)
+					}}>
+					<CommentInput
+						profileImage={userInfo.user?.picture}
+						style={{backgroundColor: 'transparent'}}
+						rightIconPath={icons.ic_chatSend}
+						placeholder="Type a message..."
+						rightIconClick={async text => {
+							console.log('rightIconClick >>', stories[currentIndex]);
+							const data = {
+								senderId: userInfo?.user?._id,
+								receiverId: dataStories?._id,
+								channelId:
+									'amity_' +
+									uniqueIdGenerateFrom2Ids([
+										userInfo?.user?._id,
+										dataStories?._id
+									])
+							};
+							await updateChannel1(data);
 
-					{/* <Modal
-            style={[
-              styles.modal,
-              {backgroundColor: isModelOpen ? 'transparent' : ''},
-            ]}
-            isVisible={isModelOpen}>
-            <View style={{height: '100%', backgroundColor : 'red'}} onTouchEndCapture={replyModalClose}> */}
-					{dataStories?._id !== userInfo?.user?._id && (
-						<View
-							style={{
-								width: '100%',
-								position: 'absolute',
-								bottom: 30,
-								paddingHorizontal: verticalScale(20)
-							}}>
-							<CommentInput
-								profileImage={userInfo.user?.picture}
-								style={{backgroundColor: 'transparent'}}
-								rightIconPath={icons.ic_chatSend}
-								placeholder="Type a message..."
-								rightIconClick={async text => {
-									console.log('rightIconClick >>', stories[currentIndex]);
-									return;
-									const channelId =
-										'amity_' +
-										uniqueIdGenerateFrom2Ids([
-											userInfo.user?._id,
-											dataStories?._id
-										]);
-									const query5 = createQuery(getChannel, channelId);
-									runQuery(query5, result => {
-										//console.log('getChannelByID', result);
+							const channelId =
+								'amity_' +
+								uniqueIdGenerateFrom2Ids([
+									userInfo.user?._id,
+									dataStories?._id
+								]);
+							const query5 = createQuery(getChannel, channelId);
+							let shareURL = '';
+
+							if (story.type === 'video') {
+								shareURL =
+									getVideoShareUrl(
+										story?.shortVideos?._id ?? story?.betShortVideos?._id
+									) +
+									'\n' +
+									text;
+							} else {
+								shareURL =
+									(story?.bet && Object.keys(story.bet).length > 0
+										? createJoinBetShareUrl(story.bet?._id)
+										: createMatchDetailsShareUrl(
+												Strings.feed,
+												story?.match?._id,
+												1
+										  )) +
+									'\n' +
+									text;
+							}
+							runQuery(query5, result => {
+								//console.log('getChannelByID', result);
+								if (result.data) {
+									const user = {
+										id: userInfo.user?._id,
+										avatarName: userInfo.user?.userName,
+										firstName: userInfo.user?.userName,
+										lastName: '',
+										imageUrl: userInfo.user?.picture
+									};
+									const textMessage: MessageType.Text = {
+										author: user,
+										createdAt: Date.now(),
+										id: uuidv4(),
+										text: shareURL,
+										type: 'text'
+										//uri: 'https://cdn.pixabay.com/photo/2015/04/19/08/32/marguerite-729510_960_720.jpg',
+									};
+									const query = createQuery(createMessage, {
+										channelId: channelId,
+										type: 'text',
+										data: {
+											text: shareURL
+										},
+										metadata: {
+											data: textMessage
+										}
+									});
+
+									runQuery(query, ({data: textMessage, ...options}) => {
+										//console.log('sent????', textMessage, options);
+										//addMessage(message.metadata?.data);
+										if (options?.error || options?.loading) {
+											return;
+										}
+										Alert.alert('', 'Message sent successfully.');
+									});
+									let query1 = createQuery(joinChannel, channelId);
+									runQuery(query1, result =>
+										console.log('result?.data?.channelId???', result)
+									);
+								} else if (result.loading === false) {
+									const query2 = createQuery(createChannel, {
+										channelId: channelId,
+										userIds: [dataStories?._id],
+										type: 'live',
+										metadata: {
+											data: {
+												[userInfo?.user?._id]: userInfo.user,
+												[dataStories?._id]: dataStories?._id
+											}
+										}
+									});
+									runQuery(query2, result => {
 										if (result.data) {
 											const user = {
 												id: userInfo.user?._id,
@@ -293,7 +397,7 @@ const StoryDetailsContainer: React.FC<Props> = (props: Props) => {
 												author: user,
 												createdAt: Date.now(),
 												id: uuidv4(),
-												text: text,
+												text: shareURL,
 												type: 'text'
 												//uri: 'https://cdn.pixabay.com/photo/2015/04/19/08/32/marguerite-729510_960_720.jpg',
 											};
@@ -301,16 +405,7 @@ const StoryDetailsContainer: React.FC<Props> = (props: Props) => {
 												channelId: channelId,
 												type: 'text',
 												data: {
-													text:
-														(story?.bet && Object.keys(story.bet).length > 0
-															? createJoinBetShareUrl(story.bet?._id)
-															: createMatchDetailsShareUrl(
-																Strings.feed,
-																story?.match?._id,
-																	1
-															  )) +
-														'\n' +
-														text
+													text: shareURL
 												},
 												metadata: {
 													data: textMessage
@@ -319,88 +414,30 @@ const StoryDetailsContainer: React.FC<Props> = (props: Props) => {
 
 											runQuery(query, ({data: textMessage, ...options}) => {
 												//console.log('sent????', textMessage, options);
-												//addMessage(message.metadata?.data);
-											});
-											let query1 = createQuery(joinChannel, channelId);
-											runQuery(query1, result =>
-												console.log('result?.data?.channelId???', result)
-											);
-										} else if (result.loading === false) {
-											const query2 = createQuery(createChannel, {
-												channelId: channelId,
-												userIds: [dataStories?._id],
-												type: 'live',
-												metadata: {
-													data: {
-														[userInfo?.user?._id]: userInfo.user,
-														[dataStories?._id]: dataStories
-													}
+												if (options?.error || options?.loading) {
+													return;
 												}
-											});
-											runQuery(query2, result => {
-												if (result.data) {
-													const user = {
-														id: userInfo.user?._id,
-														avatarName: userInfo.user?.userName,
-														firstName: userInfo.user?.userName,
-														lastName: '',
-														imageUrl: userInfo.user?.picture
-													};
-													const textMessage: MessageType.Text = {
-														author: user,
-														createdAt: Date.now(),
-														id: uuidv4(),
-														text: text,
-														type: 'text'
-														//uri: 'https://cdn.pixabay.com/photo/2015/04/19/08/32/marguerite-729510_960_720.jpg',
-													};
-													const query = createQuery(createMessage, {
-														channelId: channelId,
-														type: 'text',
-														data: {
-															text:
-																(story?.bet && Object.keys(story.bet).length > 0
-																	? createJoinBetShareUrl(story.bet?._id)
-																	: createMatchDetailsShareUrl(
-																		Strings.feed,
-																		story?.match?._id,
-																			1
-																	  )) +
-																'\n' +
-																text
-														},
-														metadata: {
-															data: textMessage
-														}
-													});
+												Alert.alert('', 'Message sent successfully.');
 
-													runQuery(query, ({data: textMessage, ...options}) => {
-														//console.log('sent????', textMessage, options);
-														//addMessage(message.metadata?.data);
-													});
-												}
+												//addMessage(message.metadata?.data);
 											});
 										}
 									});
-									const data = {
-										senderId: userInfo?.user?._id,
-										receiverId: dataStories?._id,
-										channelId: channelId
-									};
-									await updateChannel(data);
-									console.log('rightIconClick');
-								}}
-								onLeftIconPress={() => {
-									console.log('onLeftIconPress');
-								}}
-								onFocus={replyModalOpen}
-								onBlur={replyModalClose}
-							/>
-						</View>
-					)}
-					{/* </View>
-          </Modal> */}
-				</TouchableOpacity>
+								}
+							});
+							console.log('rightIconClick');
+						}}
+						onLeftIconPress={() => {
+							console.log('onLeftIconPress');
+						}}
+						onFocus={replyModalOpen}
+						onBlur={replyModalClose}
+					/>
+				</View>
+			)}
+			{/* </View>
+				</Modal> */}
+			{/* </GestureRecognizer> */}
 		</SafeAreaView>
 	);
 };
@@ -409,6 +446,7 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		width: '100%',
+		height: '100%',
 		justifyContent: 'flex-start',
 		alignItems: 'center',
 		backgroundColor: defaultTheme.backGroundColor

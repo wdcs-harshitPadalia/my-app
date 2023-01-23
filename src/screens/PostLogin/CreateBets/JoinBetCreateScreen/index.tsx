@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-lone-blocks */
 import React, {useEffect, useState} from 'react';
-import {Alert, BackHandler, View} from 'react-native';
+import {Alert, BackHandler, View, Platform} from 'react-native';
 import {Text} from 'react-native-elements';
 import icons from '../../../../assets/icon';
 import Strings from '../../../../constants/strings';
@@ -30,6 +30,7 @@ import {
 	dateConvert,
 	getMetamaskBalance,
 	getRoundDecimalValue,
+	showErrorAlert,
 	timeConvert
 } from '../../../../constants/utils/Function';
 import {useWalletConnect} from '@walletconnect/react-native-dapp';
@@ -49,6 +50,7 @@ import {decimalValue, nullAddress} from '../../../../constants/api';
 import {gradientColorAngle} from '../../../../theme/metrics';
 import LottieView from 'lottie-react-native';
 import {updateDiscoverRefreshOnFocus} from '../../../../redux/reducerSlices/dashboard';
+import Lottie from 'lottie-react';
 
 const JoinBetCreateScreen: React.FC<any> = () => {
 	const navigation = useNavigation();
@@ -277,32 +279,56 @@ const JoinBetCreateScreen: React.FC<any> = () => {
 			userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask' &&
 			!connector.connected
 		) {
-			Alert.alert('Session expired please login again', '', [
-				{
-					text: 'Ok',
-					onPress: () => {
-						dispatch(logout());
-						dispatch(updateDeviceToken({deviceToken: ''}));
-						dispatch(resetProfileData({}));
-					}
+			if (Platform.OS === 'web') {
+				let retVal = confirm(Strings.txt_session_expire_login_again);
+				if (retVal == true) {
+					dispatch(logout());
+					dispatch(updateDeviceToken({deviceToken: ''}));
+					dispatch(resetProfileData({}));
+					return true;
+				} else {
+					return false;
 				}
-			]);
+			} else {
+				Alert.alert(Strings.txt_session_expire_login_again, '', [
+					{
+						text: 'Ok',
+						onPress: () => {
+							dispatch(logout());
+							dispatch(updateDeviceToken({deviceToken: ''}));
+							dispatch(resetProfileData({}));
+						}
+					}
+				]);
+			}
 			return;
 		} else {
 			if (userInfo?.user?.socialLoginType?.toLowerCase() !== 'metamask') {
 				const loginStatus = await magic.user.isLoggedIn();
 				console.log('loginStatus', loginStatus);
 				if (!loginStatus) {
-					Alert.alert('Session expired please login again', '', [
-						{
-							text: 'Ok',
-							onPress: () => {
-								dispatch(logout());
-								dispatch(updateDeviceToken({deviceToken: ''}));
-								dispatch(resetProfileData({}));
-							}
+					if (Platform.OS === 'web') {
+						let retVal = confirm(Strings.txt_session_expire_login_again);
+						if (retVal == true) {
+							dispatch(logout());
+							dispatch(updateDeviceToken({deviceToken: ''}));
+							dispatch(resetProfileData({}));
+							return true;
+						} else {
+							return false;
 						}
-					]);
+					} else {
+						Alert.alert(Strings.txt_session_expire_login_again, '', [
+							{
+								text: 'Ok',
+								onPress: () => {
+									dispatch(logout());
+									dispatch(updateDeviceToken({deviceToken: ''}));
+									dispatch(resetProfileData({}));
+								}
+							}
+						]);
+					}
 					return;
 				}
 			}
@@ -313,7 +339,9 @@ const JoinBetCreateScreen: React.FC<any> = () => {
 			// _selectedBetTackerOption:
 			//   eventBetData?.bet_opposite_side_option_index + 1,
 			_selectedBetTackerOption: eventBetData?.bet_opposite_side_option_index,
-			_tokenId: customeSelectTokenId
+			_tokenId: customeSelectTokenId,
+			_betEndTime:
+				(selectedGame?.match_end_time ?? eventBetData?.betEndDate) / 1000
 		});
 	};
 
@@ -437,7 +465,6 @@ const JoinBetCreateScreen: React.FC<any> = () => {
 				setBetJoinMessage(res?.data?.message);
 				setTimeout(async () => {
 					if (res?.data?.isBet === true) {
-						//Alert.alert('dfshjk');
 						//TODO: call contract
 						// if (!connector.connected) {
 						//   setInfoPopUpType(2);
@@ -460,14 +487,14 @@ const JoinBetCreateScreen: React.FC<any> = () => {
 						) {
 							addBetData();
 						} else if (betTakerAddress.toLowerCase() !== nullAddress) {
-							Alert.alert('', Strings.this_bet_already_joined);
+							showErrorAlert('', Strings.this_bet_already_joined);
 						} else {
 							if (isSelectCurrency?.name !== 'MATIC') {
 								if (parseFloat(betAmount) > parseFloat(dbethBalance)) {
 									setIsBackButtonDisable(false);
-									Alert.alert(
-										'Insufficient Balance'.toUpperCase(),
-										'Please add more funds.'
+									showErrorAlert(
+										Strings.txt_insufficient_balance,
+										Strings.txt_add_more_fund
 									);
 									return;
 								}
@@ -477,9 +504,9 @@ const JoinBetCreateScreen: React.FC<any> = () => {
 
 							if (parseFloat(betAmount) > parseFloat(myBalance)) {
 								setIsBackButtonDisable(false);
-								Alert.alert(
-									'Insufficient Balance'.toUpperCase(),
-									'Please add more funds.'
+								showErrorAlert(
+									Strings.txt_insufficient_balance,
+									Strings.txt_add_more_fund
 								);
 								return;
 							}
@@ -487,16 +514,28 @@ const JoinBetCreateScreen: React.FC<any> = () => {
 								userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask' &&
 								!connector.connected
 							) {
-								Alert.alert('Session expired please login again', '', [
-									{
-										text: 'Ok',
-										onPress: () => {
-											dispatch(logout());
-											dispatch(updateDeviceToken({deviceToken: ''}));
-											dispatch(resetProfileData({}));
-										}
+								if (Platform.OS === 'web') {
+									let retVal = confirm(Strings.txt_session_expire_login_again);
+									if (retVal == true) {
+										dispatch(logout());
+										dispatch(updateDeviceToken({deviceToken: ''}));
+										dispatch(resetProfileData({}));
+										return true;
+									} else {
+										return false;
 									}
-								]);
+								} else {
+									Alert.alert(Strings.txt_session_expire_login_again, '', [
+										{
+											text: 'Ok',
+											onPress: () => {
+												dispatch(logout());
+												dispatch(updateDeviceToken({deviceToken: ''}));
+												dispatch(resetProfileData({}));
+											}
+										}
+									]);
+								}
 								return;
 							} else {
 								if (
@@ -505,16 +544,30 @@ const JoinBetCreateScreen: React.FC<any> = () => {
 									const loginStatus = await magic.user.isLoggedIn();
 									console.log('loginStatus', loginStatus);
 									if (!loginStatus) {
-										Alert.alert('Session expired please login again', '', [
-											{
-												text: 'Ok',
-												onPress: () => {
-													dispatch(logout());
-													dispatch(updateDeviceToken({deviceToken: ''}));
-													dispatch(resetProfileData({}));
-												}
+										if (Platform.OS === 'web') {
+											let retVal = confirm(
+												Strings.txt_session_expire_login_again
+											);
+											if (retVal == true) {
+												dispatch(logout());
+												dispatch(updateDeviceToken({deviceToken: ''}));
+												dispatch(resetProfileData({}));
+												return true;
+											} else {
+												return false;
 											}
-										]);
+										} else {
+											Alert.alert(Strings.txt_session_expire_login_again, '', [
+												{
+													text: 'Ok',
+													onPress: () => {
+														dispatch(logout());
+														dispatch(updateDeviceToken({deviceToken: ''}));
+														dispatch(resetProfileData({}));
+													}
+												}
+											]);
+										}
 										return;
 									}
 								}
@@ -524,7 +577,10 @@ const JoinBetCreateScreen: React.FC<any> = () => {
 								_betContractId: eventBetData?.bet_id,
 								_selectedBetTackerOption:
 									eventBetData?.bet_opposite_side_option_index,
-								_tokenId: customeSelectTokenId
+								_tokenId: customeSelectTokenId,
+								_betEndTime:
+									(selectedGame?.match_end_time ?? eventBetData?.betEndDate) /
+									1000
 							});
 						}
 					} else {
@@ -663,17 +719,31 @@ const JoinBetCreateScreen: React.FC<any> = () => {
 								userInfo.user.userName
 							)}
 						</Text>
-						<LottieView
-							style={{
-								height: 300,
-								width: 300,
-								alignSelf: 'center',
-								position: 'absolute'
-							}}
-							source={require('../../../../assets/animations/confetti_day.json')}
-							autoPlay
-							loop={false}
-						/>
+
+						{Platform.OS === 'web' ? (
+							<Lottie
+								style={{
+									height: 300,
+									width: 300,
+									alignSelf: 'center',
+									position: 'absolute'
+								}}
+								animationData={require('../../../../assets/animations/confetti_day.json')}
+								loop={false}
+							/>
+						) : (
+							<LottieView
+								style={{
+									height: 300,
+									width: 300,
+									alignSelf: 'center',
+									position: 'absolute'
+								}}
+								source={require('../../../../assets/animations/confetti_day.json')}
+								autoPlay
+								loop={false}
+							/>
+						)}
 					</View>
 				);
 		}

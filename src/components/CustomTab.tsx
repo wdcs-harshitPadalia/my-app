@@ -1,26 +1,21 @@
-import React, {useEffect, useState} from 'react';
-import {
-	Alert,
-	Platform,
-	StyleSheet,
-	TouchableOpacity,
-	View
-} from 'react-native';
-import DropShadow from 'react-native-drop-shadow';
-import {Badge, Image, Text} from 'react-native-elements';
+import React, {useState} from 'react';
+import {Platform, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Image, Text} from 'react-native-elements';
 import {LinearGradient} from 'expo-linear-gradient';
 import {useSelector} from 'react-redux';
 import DeviceInfo from 'react-native-device-info';
-import icons from '../assets/icon';
 import Strings from '../constants/strings';
 import {getLevelRank} from '../constants/utils/Function';
 import {RootState} from '../redux/store';
 import {horizontalScale, moderateScale, verticalScale} from '../theme';
 import colors from '../theme/colors';
 import fonts from '../theme/fonts';
-import {gradientColorAngle} from '../theme/metrics';
 import ConformationPopupComponet from './ConformationPopupComponet';
 import ScreenNames from '../navigation/screenNames';
+import SelectImageComponet from './SelectImageComponet';
+// import {openSettings, PERMISSIONS, req} from 'expo-permissions';
+import * as ImagePicker from 'react-native-image-picker';
+import {videoMaximumDuration} from '../constants/api';
 
 /*
 const customBadgeView = props => {
@@ -87,7 +82,138 @@ export const CustomTabBar = ({state, descriptors, navigation}) => {
 
 	let hasNotch = DeviceInfo.hasNotch();
 
+	const pickVideoRef = React.useRef();
+
 	const [modalVisible, setModalVisible] = useState(false);
+	const [isMediaTypeVisible, setIsMediaTypeVisible] = useState(false);
+
+	const pickVideoFromGallery = async () => {
+		setTimeout(() => {
+			if (Platform.OS === 'web') {
+				pickVideoRef.current.click(function () {
+					changeHandler();
+				});
+			} else {
+				ImagePicker.launchImageLibrary(
+					{
+						mediaType: 'video',
+						includeBase64: true,
+						maxHeight: 800,
+						maxWidth: 800,
+						videoQuality: 'medium'
+					},
+					async response => {
+						console.log({response});
+						setIsMediaTypeVisible(false);
+						if (response.didCancel) {
+							console.log(' Photo picker didCancel');
+						} else if (response.error) {
+							console.log('ImagePicker Error: ', response.error);
+						} else {
+							//checkVideoValidation(response?.assets[0]);
+						}
+					}
+				);
+			}
+		}, 200);
+	};
+
+	const changeHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
+		setIsMediaTypeVisible(false);
+
+		if (!event.target.files) {
+			return;
+		}
+		// sendImageMessage(event.target.files[0])
+		// let blobURL = URL.createObjectURL(
+		// 	event.target.files[0] ? URL.createObjectURL(event.target.files[0]) : 'default.mp4'
+		// );
+
+		// const videoMetaData = await getVideoDuration(event.target.files[0]);
+		// console.log(videoMetaData.src, 'dslklskdlk<>>');
+		// navigation.navigate(ScreenNames.MediaPage, {
+		// 	path: duration.src,
+		// 	type:  event.target.files[0].type,
+		// 	from: 'launchImageLibrary'
+		// });
+
+		if (event.target.files[0].type) {
+			navigation.navigate(ScreenNames.MediaPage, {
+				path: event.target.files[0],
+				type: event.target.files[0].type,
+				from: 'launchImageLibrary'
+			});
+			// navigation.navigate(ScreenNames.VideoCreationScreen, {
+			// 	path: event.target.files[0],
+			// 	type: event.target.files[0].type,
+			// 	from: 'launchImageLibrary'
+			// });
+		}
+	};
+
+	// const checkVideoValidation = async responseData => {
+	// 	const {type, fileName, fileSize, duration, uri} = responseData;
+
+	// 	if (type === 'video/mp4') {
+	// 		if (parseInt(duration) > videoMaximumDuration) {
+	// 			Alert.alert(Strings.upload_video_15s);
+	// 		} else {
+	// 			navigation.navigate(ScreenNames.MediaPage, {
+	// 				path: uri,
+	// 				type: type,
+	// 				from: 'launchImageLibrary'
+	// 			});
+	// 		}
+	// 	}
+	// };
+	// const checkCameraPermissions = async () => {
+	// 	let reqPermission = await request(
+	// 		Platform.OS === 'android'
+	// 			? PERMISSIONS.ANDROID.CAMERA
+	// 			: PERMISSIONS.IOS.CAMERA
+	// 	);
+	// 	if (reqPermission === 'granted') {
+	// 		checkMicrophonePermissions();
+	// 	} else {
+	// 		Alert.alert('Alert', Strings.cameraAccess, [
+	// 			{
+	// 				text: 'Open Settings',
+	// 				onPress: () => openSettings(),
+	// 				style: 'destructive'
+	// 			},
+	// 			{
+	// 				text: 'Cancel',
+	// 				onPress: () => console.log('Cancel Pressed')
+	// 			}
+	// 		]);
+	// 	}
+	// 	console.log(reqPermission);
+	// };
+
+	// const checkMicrophonePermissions = async () => {
+	// 	let reqPermission = await request(
+	// 		Platform.OS === 'android'
+	// 			? PERMISSIONS.ANDROID.RECORD_AUDIO
+	// 			: PERMISSIONS.IOS.MICROPHONE
+	// 	);
+	// 	if (reqPermission === 'granted') {
+	// 		setIsMediaTypeVisible(false);
+	// 		navigation.navigate(ScreenNames.CameraPage);
+	// 	} else {
+	// 		Alert.alert('Alert', Strings.audioAccess, [
+	// 			{
+	// 				text: 'Open Settings',
+	// 				onPress: () => openSettings(),
+	// 				style: 'destructive'
+	// 			},
+	// 			{
+	// 				text: 'Cancel',
+	// 				onPress: () => console.log('Cancel Pressed')
+	// 			}
+	// 		]);
+	// 	}
+	// 	console.log('reqPermission', reqPermission);
+	// };
 
 	return (
 		<LinearGradient
@@ -227,7 +353,7 @@ export const CustomTabBar = ({state, descriptors, navigation}) => {
 										position: 'absolute',
 										top: 0,
 										right: 0,
-										opacity: isShowTutorial && isFocused ? 1 : 0.05
+										opacity: isShowTutorial && !isFocused ? 0.05 : 1
 									}}>
 									<CustomeBadge label={label} isFocused={isFocused} />
 								</View>
@@ -266,7 +392,33 @@ export const CustomTabBar = ({state, descriptors, navigation}) => {
 				onPressCancel={() => {
 					setModalVisible(!modalVisible);
 				}}
+				isShowSecondButton={true}
+				onPressSecondButton={() => {
+					setModalVisible(!modalVisible);
+					setIsMediaTypeVisible(true);
+				}}
 			/>
+			<SelectImageComponet
+				isVisible={isMediaTypeVisible}
+				setIsVisible={setIsMediaTypeVisible}
+				onPressGallery={pickVideoFromGallery}
+				onPressCamera={() =>
+					Platform.OS === 'web'
+						? pickVideoFromGallery()
+						: navigation.navigate(ScreenNames.CameraPage)
+				}
+				isHideAvatar={true}
+			/>
+			<View style={{opacity: 0}}>
+				<input
+					ref={pickVideoRef}
+					id="input"
+					type="file"
+					name="file"
+					accept="video/*"
+					onChange={changeHandler}
+				/>
+			</View>
 		</LinearGradient>
 	);
 };
@@ -283,12 +435,14 @@ const styles = (
 			//paddingTop: verticalScale(24),
 			// position: 'absolute',
 			borderRadius: 20,
-			marginBottom:
-				Platform.OS === 'ios'
-					? props.hasNotch
-						? verticalScale(20)
-						: verticalScale(16)
-					: verticalScale(20)
+			...Platform.select({
+				ios: {
+					marginBottom: props.hasNotch ? verticalScale(20) : verticalScale(16)
+				},
+				android: {
+					marginBottom: verticalScale(20)
+				}
+			}),
 			// left: 8,
 			// right: 8,
 		},
@@ -350,8 +504,21 @@ const styles = (
 			shadowOpacity: 0.8,
 			elevation: 3,
 			shadowRadius: 5,
-			height: 26.22,
-			width: 40
+			...Platform.select({
+				web: {
+					height: 26.22,
+					width: 32,
+					borderRadius: 16
+				},
+				ios: {
+					height: 26.22,
+					width: 40
+				},
+				android: {
+					height: 26.22,
+					width: 40
+				}
+			})
 		},
 		containerWithOutShadow: {
 			shadowColor: colors.black,

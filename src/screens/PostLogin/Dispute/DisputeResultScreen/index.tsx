@@ -1,7 +1,7 @@
 import {StackActions, useNavigation, useRoute} from '@react-navigation/native';
 import {useWalletConnect} from '@walletconnect/react-native-dapp';
 import React, {useEffect, useState} from 'react';
-import {Alert, ScrollView, TouchableOpacity, View} from 'react-native';
+import {ScrollView, TouchableOpacity, View} from 'react-native';
 import {Text} from 'react-native-elements';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
@@ -15,17 +15,19 @@ import HeaderComponent from '../../../../components/HeaderComponent';
 import InformationPopUpView from '../../../../components/InformationPopUpView';
 import ResultCaseView from '../../../../components/ResultCaseView';
 import ResultHeaderTextView from '../../../../components/ResultHeaderTextView';
-import {decimalValue} from '../../../../constants/api';
+import {decimalValue, nullAddress} from '../../../../constants/api';
 import Strings from '../../../../constants/strings';
 import {
 	getMetamaskBalance,
-	getRoundDecimalValue
+	getRoundDecimalValue,
+	showErrorAlert
 } from '../../../../constants/utils/Function';
 import ScreenNames from '../../../../navigation/screenNames';
 import {
 	claimAmount,
 	getConvertCurrencyData,
-	getDisputeResult
+	getDisputeResult,
+	getUserAncestor
 } from '../../../../redux/apiHandler/apiActions';
 import {updateApiLoader} from '../../../../redux/reducerSlices/preLogin';
 import {RootState} from '../../../../redux/store';
@@ -77,7 +79,8 @@ const DisputeResultScreen: React.FC<any> = props => {
 		betStatus,
 		getPassiveIncome,
 		passiveIncomeAmount,
-		liquidity
+		liquidity,
+		claimUserData
 	} = useBetCreateContract(false);
 
 	let isResultViewHide;
@@ -118,7 +121,7 @@ const DisputeResultScreen: React.FC<any> = props => {
 	}, [redirectType]);
 
 	useUpdateEffect(() => {
-		const tokenName = resultData?.tokenType?.short_name.toUpperCase();
+		const tokenName = resultData?.tokenType?.short_name?.toUpperCase();
 		let decimals;
 		if (tokenName === 'USDC' || tokenName === 'USDT') {
 			decimals = 6;
@@ -235,7 +238,8 @@ const DisputeResultScreen: React.FC<any> = props => {
 						maker_winning_amount: betMakerWinningAmount,
 						maker_winning_amount_usd:
 							parseFloat(betMakerWinningAmount) * parseFloat(convertCurrency),
-						passive_income: passiveIncome * (passiveIncomeAmount / 100)
+						passive_income: passiveIncome * (passiveIncomeAmount / 100),
+						referral: claimUserData
 					};
 				} else {
 					const winningAmount =
@@ -248,7 +252,8 @@ const DisputeResultScreen: React.FC<any> = props => {
 						bet_winning_amount_usd: (
 							winningAmount * parseFloat(convertCurrency)
 						).toFixed(decimalValue),
-						passive_income: passiveIncome * (passiveIncomeAmount / 100)
+						passive_income: passiveIncome * (passiveIncomeAmount / 100),
+						referral: claimUserData
 					};
 				}
 
@@ -266,7 +271,7 @@ const DisputeResultScreen: React.FC<any> = props => {
 					})
 					.catch(err => {
 						dispatch(updateApiLoader({apiLoader: false}));
-						Alert.alert('Claimamount api error', JSON.stringify(err));
+						showErrorAlert('Claimamount api error', JSON.stringify(err));
 						console.log('claimAmount Data Err : ', err);
 					});
 			}
@@ -276,6 +281,26 @@ const DisputeResultScreen: React.FC<any> = props => {
 	useEffect(() => {
 		getDisputeResultData();
 	}, [betId]);
+
+	const getUserAncestorData = () => {
+		dispatch(
+			updateApiLoader({
+				apiLoader: true,
+				showAlertWithText:
+					Strings.just_a_few_more_seconds_your_funds_are_being_transferred_to_your_wallet
+			})
+		);
+		getUserAncestor()
+			.then(res => {
+				console.log('getUserAncestorData Response >>> ', JSON.stringify(res));
+				// dispatch(updateApiLoader({apiLoader: false}));
+				handleClaimWinningAmount(res?.data);
+			})
+			.catch(err => {
+				console.log('getTokenTypeData Data Err >>> ', JSON.stringify(err));
+				dispatch(updateApiLoader({apiLoader: false}));
+			});
+	};
 
 	const getDisputeResultData = () => {
 		dispatch(updateApiLoader({apiLoader: true}));
@@ -420,7 +445,11 @@ const DisputeResultScreen: React.FC<any> = props => {
 				result,
 				['0x0000000000000000000000000000000000000000000000000000000000000000'],
 				'0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
-				'0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+				'0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+				userData?.users?.length === 0 ? [nullAddress] : userData?.users,
+				userData?.rewardPercentage?.length === 0
+					? [0]
+					: userData?.rewardPercentage
 			);
 		} else {
 			resolveBetResult(
@@ -428,7 +457,11 @@ const DisputeResultScreen: React.FC<any> = props => {
 				result,
 				resultData?.HashSignatureObject?.hash,
 				resultData?.HashSignatureObject?.makerSignature,
-				resultData?.HashSignatureObject?.takerSignature
+				resultData?.HashSignatureObject?.takerSignature,
+				userData?.users?.length === 0 ? [nullAddress] : userData?.users,
+				userData?.rewardPercentage?.length === 0
+					? [0]
+					: userData?.rewardPercentage
 			);
 		}
 
@@ -712,7 +745,7 @@ const DisputeResultScreen: React.FC<any> = props => {
 										redirectType === 'DISPUTE_RESULT' ||
 										redirectType === 'ADMIN_RESULT_DISPUTE'
 									) {
-										handleClaimWinningAmount();
+										getUserAncestorData();
 									} else {
 										navigation.dispatch(StackActions.popToTop());
 									}
@@ -728,7 +761,7 @@ const DisputeResultScreen: React.FC<any> = props => {
 										redirectType === 'DISPUTE_RESULT' ||
 										redirectType === 'ADMIN_RESULT_DISPUTE'
 									) {
-										handleClaimWinningAmount();
+										getUserAncestorData();
 									} else {
 										navigation.dispatch(StackActions.popToTop());
 									}

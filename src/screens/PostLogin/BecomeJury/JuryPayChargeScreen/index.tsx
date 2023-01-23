@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity, Alert} from 'react-native';
+import {View, Text, TouchableOpacity, Alert, Platform} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -25,7 +25,10 @@ import {
 } from '../../../../redux/reducerSlices/userInfo';
 import {magic} from '../../../../navigation/routes';
 import {useWalletConnect} from '@walletconnect/react-native-dapp';
-import {getMetamaskBalance} from '../../../../constants/utils/Function';
+import {
+	getMetamaskBalance,
+	showErrorAlert
+} from '../../../../constants/utils/Function';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import TokenConfirmationModel from '../../../../components/TokenConfirmationModel';
 import {gradientColorAngle} from '../../../../theme/metrics';
@@ -152,9 +155,9 @@ const JuryPayChargeScreen: React.FC<any> = () => {
 			parseFloat(juryEscrowDeposit) >= parseFloat(dbethBalance) ||
 			parseFloat(myBalance) <= 0
 		) {
-			Alert.alert(
-				'Insufficient Balance'.toUpperCase(),
-				'Please add more funds.'
+			showErrorAlert(
+				Strings.txt_insufficient_balance,
+				Strings.txt_add_more_fund
 			);
 			return;
 		}
@@ -162,32 +165,58 @@ const JuryPayChargeScreen: React.FC<any> = () => {
 			userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask' &&
 			!connector.connected
 		) {
-			Alert.alert(Strings.txt_session_expire_msg, '', [
-				{
-					text: 'Ok',
-					onPress: () => {
-						dispatch(logout());
-						dispatch(updateDeviceToken({deviceToken: ''}));
-						dispatch(resetProfileData({}));
-					}
+			if (Platform.OS === 'web') {
+				let retVal = confirm(Strings.txt_session_expire_msg);
+				if (retVal == true) {
+					dispatch(logout());
+					dispatch(updateDeviceToken({deviceToken: ''}));
+					dispatch(resetProfileData({}));
+					return true;
+				} else {
+					return false;
 				}
-			]);
+			} else {
+				Alert.alert(Strings.txt_session_expire_msg, '', [
+					{
+						text: 'Ok',
+						onPress: () => {
+							dispatch(logout());
+							dispatch(updateDeviceToken({deviceToken: ''}));
+							dispatch(resetProfileData({}));
+						}
+					}
+				]);
+			}
+
 			return;
 		} else {
 			if (userInfo?.user?.socialLoginType?.toLowerCase() !== 'metamask') {
 				const loginStatus = await magic.user.isLoggedIn();
 				console.log('loginStatus', loginStatus);
 				if (!loginStatus) {
-					Alert.alert(Strings.txt_session_expire_msg, '', [
-						{
-							text: 'Ok',
-							onPress: () => {
-								dispatch(logout());
-								dispatch(updateDeviceToken({deviceToken: ''}));
-								dispatch(resetProfileData({}));
-							}
+					if (Platform.OS === 'web') {
+						let retVal = confirm(Strings.txt_session_expire_msg);
+						if (retVal == true) {
+							dispatch(logout());
+							dispatch(updateDeviceToken({deviceToken: ''}));
+							dispatch(resetProfileData({}));
+							return true;
+						} else {
+							return false;
 						}
-					]);
+					} else {
+						Alert.alert(Strings.txt_session_expire_msg, '', [
+							{
+								text: 'Ok',
+								onPress: () => {
+									dispatch(logout());
+									dispatch(updateDeviceToken({deviceToken: ''}));
+									dispatch(resetProfileData({}));
+								}
+							}
+						]);
+					}
+
 					return;
 				}
 			}
@@ -212,11 +241,21 @@ const JuryPayChargeScreen: React.FC<any> = () => {
 				/>
 				<View style={styles.middleRootContainer}>
 					{/* <Text style={styles.titleText}>{Strings.escrow_deposit}</Text> */}
-					<GradientText
-						colors={defaultTheme.primaryGradientColor}
-						style={styles.amountText}>
-						{juryEscrowDeposit ? juryEscrowDeposit + ' ' + tokenSymbol : ''}
-					</GradientText>
+					{Platform.OS === 'web' ? (
+						<Text
+							style={[
+								styles.amountText,
+								{color: defaultTheme.primaryGradientColor[0]}
+							]}>
+							{juryEscrowDeposit ? juryEscrowDeposit + ' ' + tokenSymbol : ''}
+						</Text>
+					) : (
+						<GradientText
+							colors={defaultTheme.primaryGradientColor}
+							style={styles.amountText}>
+							{juryEscrowDeposit ? juryEscrowDeposit + ' ' + tokenSymbol : ''}
+						</GradientText>
+					)}
 					<Text style={styles.descriptionText}>
 						{juryEscrowDeposit
 							? Strings.you_will_be_charged.replace(

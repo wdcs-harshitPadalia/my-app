@@ -221,9 +221,7 @@ const LiveStreamingScreen: React.FC<any> = props => {
 							style={{
 								flex: 1
 							}}>
-							<FlingGestureComponent
-								onSwipeLeft={() => onSwipeChange(Directions.LEFT)}
-								onSwipeRight={() => onSwipeChange(Directions.RIGHT)}>
+								
 								<LiveStreamingFlatList
 									data={feedInfo?.matchList}
 									onWatchButtonClicked={item => {
@@ -276,33 +274,14 @@ const LiveStreamingScreen: React.FC<any> = props => {
 									}}
 									isLoading={isLoading}
 								/>
-							</FlingGestureComponent>
 						</View>
 					)}
 
 					{(feedInfo?.matchList?.length === 0 && feedErrorInfo === true) ||
 					categories.length === 1 ? (
-						<FlingGestureHandler
-							direction={Directions.LEFT}
-							onHandlerStateChange={ev => {
-								if (ev.nativeEvent.oldState === State.ACTIVE) {
-									onSwipeChange(Directions.LEFT);
-								}
-							}}
-							style={styles.container}>
-							<FlingGestureHandler
-								direction={Directions.RIGHT}
-								onHandlerStateChange={ev => {
-									if (ev.nativeEvent.oldState === State.ACTIVE) {
-										onSwipeChange(Directions.RIGHT);
-									}
-								}}
-								style={styles.container}>
 								<View style={styles.noDataContainer}>
 									<NoDataComponent noData={noDataItem} />
 								</View>
-							</FlingGestureHandler>
-						</FlingGestureHandler>
 					) : (
 						<></>
 					)}

@@ -103,9 +103,13 @@ const ChatUserView: React.FC<Props> = props => {
 				<Text style={styles.usernameStyle} numberOfLines={1}>
 					{'@' + props.data?.userName}
 				</Text>
-				{message?.data?.text && (
+				{message && (
 					<Text style={styles.messageStyle} numberOfLines={1}>
-						{message?.type === 'image' ? '📷  Photo' : message.data?.text}
+						{message?.type === 'image'
+							? '📷  Photo'
+							: message?.metadata?.data?.isVideoType
+							? '📹 Video'
+							: message.data?.text}
 					</Text>
 				)}
 			</View>

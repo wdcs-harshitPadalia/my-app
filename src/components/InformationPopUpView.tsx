@@ -7,7 +7,8 @@ import {
 	Modal,
 	TouchableOpacity,
 	ImageSourcePropType,
-	ScrollView
+	ScrollView,
+	Platform
 } from 'react-native';
 import ExpoFastImage from 'expo-fast-image';
 // import HTMLView from 'react-native-htmlview';
@@ -45,7 +46,9 @@ const InformationPopUpView: React.FC<Props> = props => {
 							style={styles.helpImg}
 							tintColor={colors.placeholderColor}
 						/>
-						<TouchableOpacity onPress={onButtonPress}>
+						<TouchableOpacity
+							onPress={onButtonPress}
+							hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
 							<ExpoFastImage
 								resizeMode={'contain'}
 								source={icons.close}
@@ -56,7 +59,18 @@ const InformationPopUpView: React.FC<Props> = props => {
 					<Text style={styles.titleStyle}>{popupTitle}</Text>
 
 					<ScrollView>
-						{/* <HTMLView value={description} stylesheet={webStyle} /> */}
+						{Platform.OS === 'web' ? (
+							<div
+								style={webStyle.divStyle}
+								dangerouslySetInnerHTML={{
+									__html: description
+								}}
+							/>
+						) : (
+							<>
+								{/* <HTMLView value={description} stylesheet={webStyle} /> */}
+							</>
+						)}
 					</ScrollView>
 				</View>
 			</View>
@@ -79,7 +93,8 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		paddingBottom: verticalScale(16),
 		paddingHorizontal: verticalScale(16),
-		height: '40%'
+		height: '40%',
+		width: '100%'
 	},
 	titleStyle: {
 		color: colors.white,
@@ -104,12 +119,12 @@ const styles = StyleSheet.create({
 });
 
 const webStyle = StyleSheet.create({
-	p: {
+	divStyle: {
 		color: colors.white,
 		fontSize: moderateFontScale(16),
 		backgroundColor: 'transparent',
 		fontFamily: Fonts.type.Inter_Medium,
-		opacity: 0.7,
+		opacity: 0.5,
 		flexWrap: 'wrap'
 	}
 });

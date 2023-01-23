@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {Platform, StyleSheet, Text, View} from 'react-native';
 import Strings from '../constants/strings';
 import {horizontalScale, moderateScale, verticalScale} from '../theme';
 import colors from '../theme/colors';
@@ -36,11 +36,21 @@ const ResultCaseView: React.FC<Props> = props => {
 					<Text style={styles.caseName}>
 						{caseATitle ? caseATitle : Strings.caseA}
 					</Text>
-					<GradientText
-						colors={defaultTheme.textGradientColor}
-						style={styles.caseValueText}>
-						{caseAValue}
-					</GradientText>
+					{Platform.OS === 'web' ? (
+						<Text
+							style={[
+								styles.caseValueText,
+								{color: defaultTheme.textGradientColor[1]}
+							]}>
+							{caseAValue}
+						</Text>
+					) : (
+						<GradientText
+							colors={defaultTheme.textGradientColor}
+							style={styles.caseValueText}>
+							{caseAValue}
+						</GradientText>
+					)}
 				</View>
 
 				{/* Case B */}
@@ -48,11 +58,21 @@ const ResultCaseView: React.FC<Props> = props => {
 					<Text style={styles.caseName}>
 						{caseBTitle ? caseBTitle : Strings.caseB}
 					</Text>
-					<GradientText
-						colors={defaultTheme.primaryGradientColor}
-						style={styles.caseValueText}>
-						{caseBValue}
-					</GradientText>
+					{Platform.OS === 'web' ? (
+						<Text
+							style={[
+								styles.caseValueText,
+								{color: defaultTheme.primaryGradientColor[0]}
+							]}>
+							{caseBValue}
+						</Text>
+					) : (
+						<GradientText
+							colors={defaultTheme.primaryGradientColor}
+							style={styles.caseValueText}>
+							{caseBValue}
+						</GradientText>
+					)}
 				</View>
 
 				{/* Case Void */}
@@ -60,19 +80,35 @@ const ResultCaseView: React.FC<Props> = props => {
 					<Text style={styles.caseName}>
 						{caseCTitle ? caseCTitle : Strings.void}
 					</Text>
-					<GradientText
-						colors={defaultTheme.whiteGredientColor}
-						style={[
-							styles.caseValueText,
-							{
-								marginTop:
-									redirectType === 'DISPUTE_RESULT'
-										? verticalScale(8)
-										: verticalScale(0)
-							}
-						]}>
-						{caseCValue}
-					</GradientText>
+					{Platform.OS === 'web' ? (
+						<Text
+							style={[
+								styles.caseValueText,
+								{
+									color: defaultTheme.whiteGredientColor[0],
+									marginTop:
+										redirectType === 'DISPUTE_RESULT'
+											? verticalScale(8)
+											: verticalScale(0)
+								}
+							]}>
+							{caseCValue}
+						</Text>
+					) : (
+						<GradientText
+							colors={defaultTheme.whiteGredientColor}
+							style={[
+								styles.caseValueText,
+								{
+									marginTop:
+										redirectType === 'DISPUTE_RESULT'
+											? verticalScale(8)
+											: verticalScale(0)
+								}
+							]}>
+							{caseCValue}
+						</GradientText>
+					)}
 				</View>
 			</View>
 		</View>

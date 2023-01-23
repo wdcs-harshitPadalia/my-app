@@ -51,7 +51,7 @@ const FaqScreen = () => {
 	}, []);
 
 	return (
-		<SafeAreaView style={styles.container}>
+		<SafeAreaView style={styles.container} edges={['bottom', 'top']}>
 			<View style={styles.container}>
 				<HeaderComponent
 					onLeftMenuPress={() => {

@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useRef, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {useWalletConnect} from '@walletconnect/react-native-dapp';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import Web3 from 'web3';
@@ -13,18 +13,32 @@ import {
 	DisputeResolutionContractAddress,
 	DISPUTE_RESOLUTION_TOKEN_ABI,
 	LiquidityHolderAddress,
+	LIQUIDITY_EVENT,
+	RewardBalanceAddress,
+	RewardDistributionAddress,
+	REWARD_BALANCE_ABI,
+	REWARD_DISTRIBUTION_ABI,
 	SmartContractAddress,
 	SMART_CONTRACT_ABI,
 	TOKEN_ABI
 } from '../../constants/SmartContract';
 import {useDispatch, useSelector} from 'react-redux';
 import {updateApiLoader} from '../../redux/reducerSlices/preLogin';
-import {Alert, AppState, Platform} from 'react-native';
+import {Platform} from 'react-native';
 import Strings from '../../constants/strings';
-import {chainIdPolygonNetwork, decimalValue, RpcURL} from '../../constants/api';
+import QRCodeModal from '@walletconnect/qrcode-modal';
+
+import {
+	chainIdPolygonNetwork,
+	decimalValue,
+	nullHash,
+	RpcURL
+} from '../../constants/api';
 import analytics from '@react-native-firebase/analytics';
 import {magic} from '../../navigation/routes';
 import {RootState} from '../../redux/store';
+import {showErrorAlert} from '../../constants/utils/Function';
+import toast from 'react-hot-toast';
 
 interface Props {
 	_opponentAmount: any;
@@ -44,6 +58,7 @@ interface JoinBet {
 	_betContractId: any;
 	_selectedBetTackerOption: any;
 	_tokenId: any;
+	_betEndTime: any;
 }
 
 export const useBetCreateContract = () => {
@@ -84,6 +99,11 @@ export const useBetCreateContract = () => {
 	const [juryVersion, setJuryVersion] = useState(0);
 	const [passiveIncomeAmount, setPassiveIncomeAmount] = useState(0);
 	const [liquidity, setLiquidity] = useState({});
+	const [cancelBetLiquidityAmount, setCancelBetLiquidityAmount] = useState([]);
+	const [claimRewardAllowance, setClaimRewardAllowance] = useState(0);
+	const [claimUserData, setClaimUserData] = useState([]);
+	const [maticTransfer, setMaticTransfer] = useState({});
+	const [ercTokenTransfer, setErcTokenTransfer] = useState({});
 
 	const connector = useWalletConnect();
 	const dispatch = useDispatch();
@@ -116,7 +136,7 @@ export const useBetCreateContract = () => {
 		if (connector.connected) {
 			web3 = await initWeb3();
 		} else {
-			web3 = await new Web3(Platform.OS === "web" ? RpcURL : magic.rpcProvider);
+			web3 = await new Web3(magic.rpcProvider);
 		}
 
 		//const balance = await getMetamaskBalance();
@@ -172,6 +192,9 @@ export const useBetCreateContract = () => {
 		setAllowanceAddress('');
 
 		if (connector.connected) {
+			toast('Please open your connected wallet for approve transaction', {
+				duration: 20000
+			});
 			web3 = await initWeb3();
 		} else {
 			web3 = await new Web3(magic.rpcProvider);
@@ -207,7 +230,12 @@ export const useBetCreateContract = () => {
 			}
 			//console.log('decimals >>> ', decimals);
 			console.log('allowanceAmount >>> ', allowanceAmount);
-			console.log('allowanceAmountContract >>> ', allowanceAmountContract);
+			console.log(
+				'allowanceAmountContract >>> ',
+				allowanceAmountContract,
+				connector.connected,
+				connector.accounts[0]
+			);
 
 			a.methods
 				.approve(BetContractAddress, allowanceAmountContract + '') //covert to wei
@@ -231,23 +259,23 @@ export const useBetCreateContract = () => {
 					dispatch(updateApiLoader({apiLoader: false}));
 					setAllowanceAddress('Error');
 					if (error?.toString().includes('insufficient funds')) {
-						Alert.alert(
-							'Insufficient Balance'.toUpperCase(),
-							'Please add more funds.'
+						showErrorAlert(
+							Strings.txt_insufficient_balance,
+							Strings.txt_add_more_fund
 						);
 					} else {
-						Alert.alert(
-							'Contract approval error',
-							'Something went wrong. Please try again later'
+						showErrorAlert(
+							Strings.txt_contract_approval_error,
+							Strings.txt_something_wrong_try_again
 						);
 					}
 				});
 		} catch (error) {
 			dispatch(updateApiLoader({apiLoader: false}));
 			setAllowanceAddress('Error');
-			Alert.alert(
-				'Contract approval error',
-				'Something went wrong. Please try again later'
+			showErrorAlert(
+				Strings.txt_contract_approval_error,
+				Strings.txt_something_wrong_try_again
 			);
 			console.log(error);
 		}
@@ -302,7 +330,70 @@ export const useBetCreateContract = () => {
 	};
 
 	const initWeb3 = async () => {
-		if(Platform.OS !== 'web') {
+		if (Platform.OS === 'web') {
+			const provider = new WalletConnectProvider({
+				rpc: {
+					[chainIdPolygonNetwork]: RpcURL
+				},
+				chainId: chainIdPolygonNetwork,
+				connector: connector,
+				qrcode: true,
+				qrcodeModal: QRCodeModal,
+				qrcodeModalOptions: {
+					mobileLinks: [
+						'rainbow',
+						'metamask',
+						'argent',
+						'trust',
+						'imtoken',
+						'pillar'
+					],
+					desktopLinks: ['metamask']
+				}
+			});
+			// alert(connector.session.clientMeta.url + provider.isWalletConnect);
+
+			// const provider = new WalletConnectProvider({
+			//   rpc: {
+			//     [chainIdPolygonNetwork]: RpcURL,
+			//   },
+			//   qrcodeModalOptions: {
+			//     desktopLinks: [
+			//       "ledger",
+			//       "tokenary",
+			//       "wallet",
+			//       "wallet 3",
+			//       "secuX",
+			//       "ambire",
+			//       "wallet3",
+			//       "apolloX",
+			//       "zerion",
+			//       "sequence",
+			//       "punkWallet",
+			//       "kryptoGO",
+			//       "nft",
+			//       "riceWallet",
+			//       "vision",
+			//       "keyring",
+			//     ],
+			//     mobileLinks: [
+			//       "rainbow",
+			//       "metamask",
+			//       "argent",
+			//       "trust",
+			//       "imtoken",
+			//       "pillar",
+			//     ],
+			//   },
+			//   qrcode: true,
+			// });
+
+			await provider.enable();
+
+			const web3 = new Web3(provider);
+
+			return web3;
+		} else {
 			const provider = new WalletConnectProvider({
 				rpc: {
 					[chainIdPolygonNetwork]: RpcURL
@@ -311,17 +402,12 @@ export const useBetCreateContract = () => {
 				connector: connector,
 				qrcode: false
 			});
-	
+
 			await provider.enable();
-	
+
 			const web3 = new Web3(provider);
 			return web3;
 		}
-		else {
-			const web3 = new Web3(Platform.OS === "web" ? RpcURL : magic.rpcProvider);
-			return web3;
-		}
-	
 	};
 
 	//Done
@@ -330,6 +416,9 @@ export const useBetCreateContract = () => {
 		// if (connector.connected) {
 		let web3;
 		if (connector.connected) {
+			toast('Please open your connected wallet for approve transaction', {
+				duration: 20000
+			});
 			web3 = await initWeb3();
 		} else {
 			web3 = await new Web3(magic.rpcProvider);
@@ -455,34 +544,34 @@ export const useBetCreateContract = () => {
 			//   res.events.BetCreated.returnValues.betAddress_,
 			//   '::DFG::',
 			// );
-			await analytics().logEvent('createP2pBet', {
-				id: bet_id,
-				item: 'p2pBetSmartContractCalled',
-				description: JSON.stringify(res),
-				input: JSON.stringify(betData)
-			});
+			// await analytics().logEvent("createP2pBet", {
+			//   id: bet_id,
+			//   item: "p2pBetSmartContractCalled",
+			//   description: JSON.stringify(res),
+			//   input: JSON.stringify(betData),
+			// });
 		} catch (error) {
 			setBet_id('Error');
 			dispatch(updateApiLoader({apiLoader: false}));
 			if (error?.toString().includes('insufficient funds')) {
-				Alert.alert(
-					'Insufficient Balance'.toUpperCase(),
-					'Please add more funds.'
+				showErrorAlert(
+					Strings.txt_insufficient_balance,
+					Strings.txt_add_more_fund
 				);
 			} else {
-				Alert.alert(
-					'Bet not created',
-					'Something went wrong. Please try again later'
+				showErrorAlert(
+					Strings.txt_bet_not_create,
+					Strings.txt_something_wrong_try_again
 				);
 			}
 
 			try {
-				await analytics().logEvent('createP2pBet', {
-					id: 'createP2pBet',
-					item: 'p2pBetSmartContractError',
-					description: JSON.stringify(error),
-					input: JSON.stringify(betData)
-				});
+				// await analytics().logEvent("createP2pBet", {
+				//   id: "createP2pBet",
+				//   item: "p2pBetSmartContractError",
+				//   description: JSON.stringify(error),
+				//   input: JSON.stringify(betData),
+				// });
 			} catch (firebaseErr) {
 				console.log('firebaseErr??', firebaseErr);
 			}
@@ -508,6 +597,9 @@ export const useBetCreateContract = () => {
 		// console.log('balance', balance);
 		let web3;
 		if (connector.connected) {
+			toast('Please open your connected wallet for approve transaction', {
+				duration: 20000
+			});
 			web3 = await initWeb3();
 		} else {
 			web3 = new Web3(magic.rpcProvider);
@@ -519,6 +611,40 @@ export const useBetCreateContract = () => {
 			? connector.accounts[0]
 			: userInfo.walletAddress;
 		console.log('temp0??>>>>>>', address);
+		dispatch(
+			updateApiLoader({
+				apiLoader: true,
+				showAlertWithText: Strings.do_not_close_the_app_your_bet_will_be_ready
+			})
+		);
+		let date = new Date();
+		const message = `IAMJOININGBETWITHTHISID${
+			data._betContractId
+		}${date.getMilliseconds()}`;
+		console.log('message???', message);
+		const response = await returnMessageSignAndHash(message, web3, address);
+		if (response.error) {
+			dispatch(updateApiLoader({apiLoader: false}));
+			showErrorAlert('', Strings.somethingWentWrong);
+			return;
+		}
+		console.log(
+			'sdkdskdjresponse',
+			data._betContractId,
+			' ',
+			data._betEndTime,
+			' ',
+			response.hash,
+			' ',
+			response.signature,
+			' ',
+			data._betAmount,
+			' ',
+			data._selectedBetTackerOption + 1,
+			' ',
+			data._tokenId
+		);
+
 		//return;
 		let a = new web3.eth.Contract(SMART_CONTRACT_ABI, SmartContractAddress, {
 			from: address
@@ -531,12 +657,12 @@ export const useBetCreateContract = () => {
 			data._betAmount
 		);
 		try {
-			dispatch(
-				updateApiLoader({
-					apiLoader: true,
-					showAlertWithText: Strings.do_not_close_the_app_your_bet_will_be_ready
-				})
-			);
+			// dispatch(
+			// 	updateApiLoader({
+			// 		apiLoader: true,
+			// 		showAlertWithText: Strings.do_not_close_the_app_your_bet_will_be_ready
+			// 	})
+			// );
 			console.log('====================================');
 			console.log('data >> >', JSON.stringify(data));
 			console.log(
@@ -548,6 +674,9 @@ export const useBetCreateContract = () => {
 				const res = await a.methods
 					.ForwardJoinBet(
 						data._betContractId,
+						data._betEndTime,
+						response.hash,
+						response.signature,
 						data._betAmount,
 						data._selectedBetTackerOption + 1,
 						data._tokenId
@@ -574,7 +703,9 @@ export const useBetCreateContract = () => {
 				const res = await a.methods
 					.ForwardJoinBet(
 						data._betContractId,
-						//Web3.utils.toWei(data._betAmount, 'ether'),
+						data._betEndTime,
+						response.hash,
+						response.signature,
 						data._betAmount,
 						data._selectedBetTackerOption + 1,
 						data._tokenId
@@ -615,14 +746,14 @@ export const useBetCreateContract = () => {
 				JSON.stringify(error)
 			);
 			if (error?.toString().includes('insufficient funds')) {
-				Alert.alert(
-					'Insufficient Balance'.toUpperCase(),
-					'Please add more funds.'
+				showErrorAlert(
+					Strings.txt_insufficient_balance,
+					Strings.txt_add_more_fund
 				);
 			} else {
-				Alert.alert(
-					'Bet not joined',
-					'Something went wrong. Please try again later'
+				showErrorAlert(
+					Strings.txt_bet_not_join,
+					Strings.txt_something_wrong_try_again
 				);
 			}
 		}
@@ -668,7 +799,7 @@ export const useBetCreateContract = () => {
 				JSON.stringify(error)
 			);
 
-			Alert.alert('', 'Something went wrong. Please try again later');
+			showErrorAlert('', Strings.txt_something_wrong_try_again);
 		}
 	};
 
@@ -710,6 +841,9 @@ export const useBetCreateContract = () => {
 	const approveDbethTokenAllowance = async (amount: string) => {
 		let web3;
 		if (connector.connected) {
+			toast('Please open your connected wallet for approve transaction', {
+				duration: 20000
+			});
 			web3 = await initWeb3();
 		} else {
 			web3 = await new Web3(magic.rpcProvider);
@@ -770,14 +904,14 @@ export const useBetCreateContract = () => {
 					setAllowanceAddress('Error');
 
 					if (error?.toString().includes('insufficient funds')) {
-						Alert.alert(
-							'Insufficient Balance'.toUpperCase(),
-							'Please add more funds.'
+						showErrorAlert(
+							Strings.txt_insufficient_balance,
+							Strings.txt_add_more_fund
 						);
 					} else {
-						Alert.alert(
-							'Contract approval error',
-							'Something went wrong. Please try again later'
+						showErrorAlert(
+							Strings.txt_contract_approval_error,
+							Strings.txt_something_wrong_try_again
 						);
 					}
 					console.log(error);
@@ -786,9 +920,9 @@ export const useBetCreateContract = () => {
 			dispatch(updateApiLoader({apiLoader: false}));
 			setAllowanceAddress('Error');
 
-			Alert.alert(
-				'Contract approval error',
-				'Something went wrong. Please try again later'
+			showErrorAlert(
+				Strings.txt_contract_approval_error,
+				Strings.txt_something_wrong_try_again
 			);
 
 			console.log(error);
@@ -1007,6 +1141,9 @@ export const useBetCreateContract = () => {
 		setApproveTnsAddress('');
 		let web3;
 		if (connector.connected) {
+			toast('Please open your connected wallet for approve transaction', {
+				duration: 20000
+			});
 			web3 = await initWeb3();
 		} else {
 			web3 = await new Web3(magic.rpcProvider);
@@ -1062,14 +1199,14 @@ export const useBetCreateContract = () => {
 					setApproveTnsAddress('Error');
 
 					if (error?.toString().includes('insufficient funds')) {
-						Alert.alert(
-							'Insufficient Balance'.toUpperCase(),
-							'Please add more funds.'
+						showErrorAlert(
+							Strings.txt_insufficient_balance,
+							Strings.txt_add_more_fund
 						);
 					} else {
-						Alert.alert(
-							'Amount not stake',
-							'Something went wrong. Please try again later'
+						showErrorAlert(
+							Strings.txt_amount_not_stake,
+							Strings.txt_something_wrong_try_again
 						);
 					}
 				});
@@ -1077,10 +1214,31 @@ export const useBetCreateContract = () => {
 			console.log('error', error);
 			dispatch(updateApiLoader({apiLoader: false}));
 			setApproveTnsAddress('Error');
-			Alert.alert(
-				'Amount not stake',
-				'Something went wrong. Please try again later'
+			showErrorAlert(
+				Strings.txt_amount_not_stake,
+				Strings.txt_something_wrong_try_again
 			);
+		}
+	};
+
+	const returnMessageSignAndHash = async (message, web3, address) => {
+		try {
+			// let hash = await web3.eth.accounts.hashMessage(message);
+			// let signature = connector.connected
+			// 	? await connector.signPersonalMessage([address, hash])
+			// 	: await web3.eth.personal.sign(hash, address);
+			let hash = await web3.eth.accounts.hashMessage(message);
+			let sig = await web3.eth.accounts.sign(
+				hash,
+				'a699c008e5bcda9e6b032b930c248eab436690f4f4cfe725553c5d5ed33045a7'
+			);
+			// let response = await  web3.eth.accounts.sign(message, 'a699c008e5bcda9e6b032b930c248eab436690f4f4cfe725553c5d5ed33045a7')
+			console.log('validate>>>>', hash, sig);
+			// let recoveredData = await  web3.eth.accounts.recover(response)
+			// console.log("recoveredData>>>>", recoveredData)
+			return {hash: hash, signature: sig.signature};
+		} catch (error) {
+			return {error: true};
 		}
 	};
 
@@ -1141,7 +1299,7 @@ export const useBetCreateContract = () => {
 				JSON.stringify(error)
 			);
 
-			Alert.alert('', 'Something went wrong. Please try again later');
+			showErrorAlert('', Strings.txt_something_wrong_try_again);
 		}
 	};
 
@@ -1237,6 +1395,9 @@ export const useBetCreateContract = () => {
 	const benBet = async (betAddress: string) => {
 		let web3;
 		if (connector.connected) {
+			toast('Please open your connected wallet for approve transaction', {
+				duration: 20000
+			});
 			web3 = await initWeb3();
 		} else {
 			web3 = await new Web3(magic.rpcProvider);
@@ -1276,13 +1437,13 @@ export const useBetCreateContract = () => {
 					console.log('error', error);
 					setCancle_bet_id('Error');
 					dispatch(updateApiLoader({apiLoader: false}));
-					Alert.alert('', 'Something went wrong. Please try again later');
+					showErrorAlert('', Strings.txt_something_wrong_try_again);
 				});
 		} catch (error) {
 			console.log('error', error);
 			setCancle_bet_id('Error');
 			dispatch(updateApiLoader({apiLoader: false}));
-			Alert.alert('', 'Something went wrong. Please try again later');
+			showErrorAlert('', Strings.txt_something_wrong_try_again);
 		}
 	};
 
@@ -1296,6 +1457,9 @@ export const useBetCreateContract = () => {
 		setVerdictAddress('');
 		let web3;
 		if (connector.connected) {
+			toast('Please open your connected wallet for approve transaction', {
+				duration: 20000
+			});
 			web3 = await initWeb3();
 		} else {
 			web3 = await new Web3(magic.rpcProvider);
@@ -1349,13 +1513,13 @@ export const useBetCreateContract = () => {
 					console.log('error', error);
 					setVerdictAddress('Error');
 					dispatch(updateApiLoader({apiLoader: false}));
-					Alert.alert('', 'Something went wrong. Please try again later');
+					showErrorAlert('', Strings.txt_something_wrong_try_again);
 				});
 		} catch (error) {
 			console.log('error', error);
 			setVerdictAddress('Error');
 			dispatch(updateApiLoader({apiLoader: false}));
-			Alert.alert('', 'Something went wrong. Please try again later');
+			showErrorAlert('', Strings.txt_something_wrong_try_again);
 		}
 	};
 
@@ -1363,6 +1527,9 @@ export const useBetCreateContract = () => {
 	const claimBetAmount = async (betAddress: string) => {
 		let web3;
 		if (connector.connected) {
+			toast('Please open your connected wallet for approve transaction', {
+				duration: 20000
+			});
 			web3 = await initWeb3();
 		} else {
 			web3 = await new Web3(magic.rpcProvider);
@@ -1403,13 +1570,13 @@ export const useBetCreateContract = () => {
 					console.log('error', error);
 					setCancle_bet_id('Error');
 					dispatch(updateApiLoader({apiLoader: false}));
-					Alert.alert('', 'Something went wrong. Please try again later');
+					showErrorAlert('', Strings.txt_something_wrong_try_again);
 				});
 		} catch (error) {
 			console.log('error', error);
 			setCancle_bet_id('Error');
 			dispatch(updateApiLoader({apiLoader: false}));
-			Alert.alert('', 'Something went wrong. Please try again later');
+			showErrorAlert('', Strings.txt_something_wrong_try_again);
 		}
 	};
 
@@ -1419,10 +1586,15 @@ export const useBetCreateContract = () => {
 		finalOption: string,
 		hash: string[],
 		maker: string,
-		taker: string
+		taker: string,
+		usersAddress: string[],
+		rewardPercentage: string[]
 	) => {
 		let web3;
 		if (connector.connected) {
+			toast('Please open your connected wallet for approve transaction', {
+				duration: 20000
+			});
 			web3 = await initWeb3();
 		} else {
 			web3 = await new Web3(magic.rpcProvider);
@@ -1447,18 +1619,40 @@ export const useBetCreateContract = () => {
 			taker
 			// ISCUSTOMIZED
 		);
+		setClaimUserData([]);
 		const hashArr = hash?.reverse();
+		let userHash = await web3.eth.accounts.hashMessage(usersAddress.toString());
+
+		let signUser = await web3.eth.accounts.sign(
+			userHash,
+			'a699c008e5bcda9e6b032b930c248eab436690f4f4cfe725553c5d5ed33045a7'
+		);
+
+
 		try {
-			dispatch(
-				updateApiLoader({
-					apiLoader: true,
-					showAlertWithText:
-						Strings.just_a_few_more_seconds_your_funds_are_being_transferred_to_your_wallet
-				})
-			);
+			// dispatch(
+			// 	updateApiLoader({
+			// 		apiLoader: true,
+			// 		showAlertWithText:
+			// 			Strings.just_a_few_more_seconds_your_funds_are_being_transferred_to_your_wallet
+			// 	})
+			// );
 			//BETADDRESS_, FINALOPTION_, HASH_ , MAKER_,  TAKER_, ISCUSTOMIZED_
 			a.methods
-				.ForwardResolveBet(betAddress, finalOption, hashArr, maker, taker)
+				.ForwardResolveBet(
+					betAddress,
+					finalOption,
+					hashArr,
+					maker,
+					taker,
+					usersAddress,
+					rewardPercentage,
+					// [userHash, percentageHash],
+					// signUser.signature,
+					// signPercentage.signature
+					userHash,
+					signUser.signature
+				)
 				.send({
 					from: address,
 					//value: Web3.utils.toBN(parseInt(betData._betAmount)),
@@ -1468,19 +1662,178 @@ export const useBetCreateContract = () => {
 				.then(function (result) {
 					console.log('result>>????', JSON.stringify(result));
 					setResolveBetAddress(result?.transactionHash);
-					dispatch(updateApiLoader({apiLoader: false}));
+					if (usersAddress.length) {
+						let dataEvent = Object.values(result?.events);
+						console.log('dataEvent result>>????', dataEvent);
+
+						let amountData = [];
+						usersAddress?.map(async eventItem => {
+							let amountUserObj = await dataEvent.filter(function (item) {
+								return item?.raw?.topics
+									?.toString()
+									.includes(eventItem.replace('0x', ''));
+							});
+
+							amountData.push({
+								address: eventItem,
+								amount: parseInt(amountUserObj[0]?.raw?.data) / 10 ** 6
+							});
+						});
+						console.log('ClaimUserData result>>????', amountData);
+
+						setClaimUserData(amountData);
+					}
+					// dispatch(updateApiLoader({apiLoader: false}));
 				})
 				.catch(function (error) {
 					console.log('error', error);
 					setResolveBetAddress('Error');
 					dispatch(updateApiLoader({apiLoader: false}));
-					Alert.alert('', 'Something went wrong. Please try again later');
+					showErrorAlert('', Strings.txt_something_wrong_try_again);
 				});
 		} catch (error) {
 			console.log('error', error);
 			setResolveBetAddress('Error');
 			dispatch(updateApiLoader({apiLoader: false}));
-			Alert.alert('', 'Something went wrong. Please try again later');
+			showErrorAlert('', Strings.txt_something_wrong_try_again);
+		}
+	};
+
+	const liquidityWithdrawalEvent = async (betAddress: string) => {
+		let web3;
+		setCancelBetLiquidityAmount([]);
+		if (connector.connected) {
+			web3 = await initWeb3();
+		} else {
+			web3 = await new Web3(magic.rpcProvider);
+		}
+
+		console.log('temp0??>>>>>>liquidityWithdrawalEvent', betAddress);
+
+		let a = new web3.eth.Contract(LIQUIDITY_EVENT, betAddress);
+
+		try {
+			//BETADDRESS_, FINALOPTION_, HASH_ , MAKER_,  TAKER_, ISCUSTOMIZED_
+			const currentBlock = await web3.eth.getBlockNumber();
+			console.log('currentBlock ::', currentBlock);
+
+			a.getPastEvents(
+				'LiquidityWithdrawal',
+				{
+					filter: {address: betAddress},
+					fromBlock: 0,
+					toBlock: 'latest'
+				},
+				async function (error, result) {
+					if (error) {
+						console.log('liquidityWithdrawalEvent1 :: error ::', error);
+					} else {
+						setCancelBetLiquidityAmount(result);
+						console.log('liquidityWithdrawalEvent :: result ::', result);
+					}
+				}
+			);
+		} catch (error) {
+			console.log('error!!!!!!????', error);
+		}
+	};
+
+	const claimRewardAmount = async () => {
+		let web3;
+		if (connector.connected) {
+			web3 = await initWeb3();
+		} else {
+			web3 = await new Web3(magic.rpcProvider);
+		}
+
+		setWithdrawAddress('');
+		const address = connector.connected
+			? connector.accounts[0]
+			: userInfo.walletAddress;
+		console.log('temp0??>>>>>>', address);
+
+		let a = new web3.eth.Contract(
+			REWARD_DISTRIBUTION_ABI,
+			RewardDistributionAddress,
+			{
+				from: address
+			}
+		);
+		console.log('address>>?', address);
+
+		try {
+			dispatch(
+				updateApiLoader({
+					apiLoader: true,
+					showAlertWithText:
+						Strings.just_a_few_more_seconds_your_funds_are_being_transferred_to_your_wallet
+				})
+			);
+			a.methods
+				.claimReward()
+				.send({
+					from: address,
+					//value: Web3.utils.toBN(parseInt(betData._betAmount)),
+					gasPrice: 60000000000,
+					gasLimit: 6000000
+				})
+				.then(function (result) {
+					console.log('claimRewardAmount result>>????', result);
+					const transactionHash = result.transactionHash;
+					setWithdrawAddress(transactionHash);
+					dispatch(updateApiLoader({apiLoader: false}));
+				})
+				.catch(function (error) {
+					console.log(' claimRewardAmount error', error);
+					setWithdrawAddress('Error');
+					dispatch(updateApiLoader({apiLoader: false}));
+					showErrorAlert('', 'Something went wrong. Please try again later');
+				});
+		} catch (error) {
+			console.log('claimRewardAmount error', error);
+			setWithdrawAddress('Error');
+			dispatch(updateApiLoader({apiLoader: false}));
+			showErrorAlert('', 'Something went wrong. Please try again later');
+		}
+	};
+
+	const getClaimRewardAllowance = async () => {
+		setClaimRewardAllowance(0);
+		let web3;
+		if (connector.connected) {
+			web3 = await initWeb3();
+		} else {
+			web3 = new Web3(magic.rpcProvider);
+		}
+		const address = connector.connected
+			? connector.accounts[0]
+			: userInfo.walletAddress;
+		console.log('temp0??>>>>>>', address);
+
+		try {
+			let a = new web3.eth.Contract(
+				REWARD_DISTRIBUTION_ABI,
+				RewardDistributionAddress,
+				{
+					from: address
+				}
+			);
+			console.log('addressdesd>>?', address);
+
+			a.methods
+				.userAllowance(address)
+				.call({from: address})
+				.then(async function (result) {
+					console.log('getclaimRewardAllowance result', result);
+					setClaimRewardAllowance(`${web3.utils.fromWei(result)}`);
+				})
+				.catch(error => {
+					console.log(error);
+					setAllowedToken('');
+				});
+		} catch (error) {
+			console.log(error);
+			setAllowedToken('');
 		}
 	};
 
@@ -1554,16 +1907,13 @@ export const useBetCreateContract = () => {
 									})
 									.catch(function (error) {
 										console.log('error', error);
-										Alert.alert(
-											'',
-											'Something went wrong. Please try again later'
-										);
+										showErrorAlert('', Strings.txt_something_wrong_try_again);
 										return 'error';
 									});
 							})
 							.catch(function (error) {
 								console.log('error', error);
-								Alert.alert('', 'Something went wrong. Please try again later');
+								showErrorAlert('', Strings.txt_something_wrong_try_again);
 								return 'error';
 							});
 					}
@@ -1655,6 +2005,9 @@ export const useBetCreateContract = () => {
 	) => {
 		let web3;
 		if (connector.connected) {
+			toast('Please open your connected wallet for approve transaction', {
+				duration: 20000
+			});
 			web3 = await initWeb3();
 		} else {
 			web3 = await new Web3(magic.rpcProvider);
@@ -1706,13 +2059,13 @@ export const useBetCreateContract = () => {
 					console.log('error', error);
 					setResolveBetAddress('Error');
 					dispatch(updateApiLoader({apiLoader: false}));
-					Alert.alert('', 'Something went wrong. Please try again later');
+					showErrorAlert('', Strings.txt_something_wrong_try_again);
 				});
 		} catch (error) {
 			console.log('error', error);
 			setResolveBetAddress('Error');
 			dispatch(updateApiLoader({apiLoader: false}));
-			Alert.alert('', 'Something went wrong. Please try again later');
+			showErrorAlert('', Strings.txt_something_wrong_try_again);
 		}
 	};
 
@@ -1720,6 +2073,9 @@ export const useBetCreateContract = () => {
 	const claimJuryStackAmount = async () => {
 		let web3;
 		if (connector.connected) {
+			toast('Please open your connected wallet for approve transaction', {
+				duration: 20000
+			});
 			web3 = await initWeb3();
 		} else {
 			web3 = await new Web3(magic.rpcProvider);
@@ -1762,13 +2118,13 @@ export const useBetCreateContract = () => {
 					console.log('error', error);
 					setWithdrawAddress('Error');
 					dispatch(updateApiLoader({apiLoader: false}));
-					Alert.alert('', 'Something went wrong. Please try again later');
+					showErrorAlert('', Strings.txt_something_wrong_try_again);
 				});
 		} catch (error) {
 			console.log('error', error);
 			setWithdrawAddress('Error');
 			dispatch(updateApiLoader({apiLoader: false}));
-			Alert.alert('', 'Something went wrong. Please try again later');
+			showErrorAlert('', Strings.txt_something_wrong_try_again);
 		}
 	};
 
@@ -1782,6 +2138,9 @@ export const useBetCreateContract = () => {
 		setDisputeAddress('');
 		let web3;
 		if (connector.connected) {
+			toast('Please open your connected wallet for approve transaction', {
+				duration: 20000
+			});
 			web3 = await initWeb3();
 		} else {
 			web3 = await new Web3(magic.rpcProvider);
@@ -1835,13 +2194,13 @@ export const useBetCreateContract = () => {
 					console.log('error', error);
 					setDisputeAddress('Error');
 					dispatch(updateApiLoader({apiLoader: false}));
-					Alert.alert('', 'Something went wrong. Please try again later');
+					showErrorAlert('', Strings.txt_something_wrong_try_again);
 				});
 		} catch (error) {
 			console.log('error', error);
 			setDisputeAddress('Error');
 			dispatch(updateApiLoader({apiLoader: false}));
-			Alert.alert('', 'Something went wrong. Please try again later');
+			showErrorAlert('', Strings.txt_something_wrong_try_again);
 		}
 	};
 
@@ -1855,6 +2214,9 @@ export const useBetCreateContract = () => {
 		setDisputeAddress('');
 		let web3;
 		if (connector.connected) {
+			toast('Please open your connected wallet for approve transaction', {
+				duration: 20000
+			});
 			web3 = await initWeb3();
 		} else {
 			web3 = await new Web3(magic.rpcProvider);
@@ -1908,13 +2270,13 @@ export const useBetCreateContract = () => {
 					console.log('error', error);
 					setDisputeAddress('Error');
 					dispatch(updateApiLoader({apiLoader: false}));
-					Alert.alert('', 'Something went wrong. Please try again later');
+					showErrorAlert('', Strings.txt_something_wrong_try_again);
 				});
 		} catch (error) {
 			console.log('error', error);
 			setDisputeAddress('Error');
 			dispatch(updateApiLoader({apiLoader: false}));
-			Alert.alert('', 'Something went wrong. Please try again later');
+			showErrorAlert('', Strings.txt_something_wrong_try_again);
 		}
 	};
 
@@ -2017,7 +2379,7 @@ export const useBetCreateContract = () => {
 			})
 			.catch(function (error) {
 				console.log('error', error);
-				Alert.alert('', 'Something went wrong. Please try again later');
+				showErrorAlert('', Strings.txt_something_wrong_try_again);
 			});
 	};
 
@@ -2062,15 +2424,126 @@ export const useBetCreateContract = () => {
 					})
 					.catch(function (error) {
 						console.log('error', error);
-						Alert.alert('', 'Something went wrong. Please try again later');
+						showErrorAlert('', Strings.txt_something_wrong_try_again);
 						return 'error';
 					});
 			})
 			.catch(function (error) {
 				console.log('error', error);
-				Alert.alert('', 'Something went wrong. Please try again later');
+				showErrorAlert('', Strings.txt_something_wrong_try_again);
 				return 'error';
 			});
+	};
+
+	const transferMaticToken = async (transferAmount, receiverAddress) => {
+		setMaticTransfer({});
+		let web3;
+		if (connector.connected) {
+			web3 = await initWeb3();
+		} else {
+			web3 = new Web3(magic.rpcProvider);
+		}
+		const address = connector.connected
+			? connector.accounts[0]
+			: userInfo.walletAddress;
+		console.log('transferMaticToken :: address :: ', address);
+		try {
+			dispatch(
+				updateApiLoader({
+					apiLoader: true,
+					showAlertWithText:
+						Strings.just_a_few_more_seconds_your_funds_are_being_transferred_from_your_wallet
+				})
+			);
+			console.log(
+				'transferMaticToken :: amount ::',
+				Web3.utils.toWei('1', 'ether')
+			);
+			const transactionConfig = {
+				from: address,
+				to: receiverAddress,
+				value: Web3.utils.toWei(transferAmount, 'ether'),
+				gasPrice: 40000000000,
+				gasLimit: 4000000
+			};
+			let result = await web3.eth.sendTransaction(transactionConfig);
+			console.log('a :: ', result);
+			setMaticTransfer(result);
+			dispatch(updateApiLoader({apiLoader: false}));
+		} catch (error) {
+			dispatch(updateApiLoader({apiLoader: false}));
+			console.log(
+				'transferMaticToken :: error ::',
+				// typeof error,
+				// error,
+				// typeof error === 'object',
+				//error.includes('insufficient funds'),
+				JSON.stringify(error)
+			);
+
+			if (error?.toString().includes('insufficient funds')) {
+				showErrorAlert(
+					'Insufficient Balance'.toUpperCase(),
+					Strings.enough_balance_to_transfer
+				);
+			} else {
+				showErrorAlert('', 'Something went wrong. Please try again later');
+			}
+		}
+	};
+	// Done
+	const transferERCToken = async (
+		ercContractAddress: string,
+		transferAmount,
+		receiverAddress
+	) => {
+		setErcTokenTransfer({});
+		let web3;
+		if (connector.connected) {
+			web3 = await initWeb3();
+		} else {
+			web3 = new Web3(magic.rpcProvider);
+		}
+		const address = connector.connected
+			? connector.accounts[0]
+			: userInfo.walletAddress;
+		console.log('transferERCToken ::address :: ', address);
+		try {
+			dispatch(
+				updateApiLoader({
+					apiLoader: true,
+					showAlertWithText:
+						Strings.just_a_few_more_seconds_your_funds_are_being_transferred_from_your_wallet
+				})
+			);
+			let a = new web3.eth.Contract(TOKEN_ABI, ercContractAddress, {
+				from: address
+			});
+			let decimals = await a.methods.decimals().call();
+			let transferAmountContract = transferAmount * Math.pow(10, decimals);
+			console.log('decimals ::', decimals);
+			console.log('transferAmountContract ::', transferAmountContract);
+			const transferedToken = await a.methods
+				.transfer(receiverAddress, transferAmountContract)
+				.send({
+					from: address,
+					gas: 6721975
+				});
+			setErcTokenTransfer(transferedToken);
+			console.log('transferERCToken :: transferedToken ::', transferedToken);
+			dispatch(updateApiLoader({apiLoader: false}));
+		} catch (error) {
+			dispatch(updateApiLoader({apiLoader: false}));
+			console.log('transferERCToken :: error :: ', error);
+			if (error?.toString().includes('insufficient funds')) {
+				showErrorAlert(
+					'Insufficient Balance'.toUpperCase(),
+					Strings.enough_balance_to_transfer
+				);
+			} else {
+				showErrorAlert('', 'Something went wrong. Please try again later');
+			}
+		}
 	};
 
 	return {
@@ -2137,6 +2610,16 @@ export const useBetCreateContract = () => {
 		passiveIncomeAmount,
 		getPassiveIncome,
 		getLiquidity,
-		liquidity
+		liquidity,
+		liquidityWithdrawalEvent,
+		claimRewardAmount,
+		cancelBetLiquidityAmount,
+		getClaimRewardAllowance,
+		claimRewardAllowance,
+		claimUserData,
+		transferMaticToken,
+		transferERCToken,
+		maticTransfer,
+		ercTokenTransfer
 	};
 };

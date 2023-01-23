@@ -5,7 +5,8 @@ import {
 	Modal,
 	TouchableOpacity,
 	TextInputProps,
-	Text
+	Text,
+	Platform
 } from 'react-native';
 import icons from '../assets/icon';
 import Strings from '../constants/strings';
@@ -52,7 +53,12 @@ const TokenConfirmationModel: React.FC<Props> = props => {
 					</View>
 					<View
 						style={{
-							marginHorizontal: horizontalScale(8)
+							marginHorizontal: horizontalScale(8),
+							...Platform.select({
+								web: {
+									width: '90%'
+								}
+							})
 						}}>
 						<Text style={styles.modalDescTextStyle}>
 							{infoDescription.replace('%d', tokenPrice)}
@@ -113,7 +119,12 @@ const styles = StyleSheet.create({
 	bottomButtonContainer: {
 		flexDirection: 'row',
 		marginHorizontal: horizontalScale(20),
-		marginTop: verticalScale(16)
+		marginTop: verticalScale(16),
+		...Platform.select({
+			web: {
+				width: '90%'
+			}
+		})
 	},
 	noButtonStyle: {
 		flex: 1,

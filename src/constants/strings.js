@@ -1,4 +1,5 @@
 import app from '../../app.json';
+import {videoMaximumDuration, videoMinimumDuration} from './api';
 const Strings = {
 	signuptostartbetting: 'Connect to start betting',
 	email: 'Email',
@@ -35,7 +36,7 @@ const Strings = {
 	connect_metamask: 'connect with metamask',
 	disconnect_metamask: 'disconnect from metamask',
 	welcome: 'Welcome to',
-	defibetHouse: 'defibet.house',
+	defibetHouse: 'truly.fun',
 
 	//Bottom tabs
 	bottomTabLive: 'Live',
@@ -111,6 +112,12 @@ const Strings = {
 	bet_invitation: 'betting invitations',
 	new_Followers: 'new followers',
 	interactions: 'Interactions',
+	messages: 'Messages',
+	events_bets_suggestions: 'events/bets suggestions',
+	your_friends_bets: 'your friends bets',
+	events_you_might_like: 'events you might like',
+	Other: 'Other',
+	People_you_may_know: 'People you may know',
 
 	//live streaming
 	STREAMING: 'STREAMING',
@@ -227,13 +234,13 @@ const Strings = {
 	mainMarkets: 'Main markets',
 	markets: 'Market',
 
-	writeInBetDescription: 'Write in Bet description',
+	writeInBetDescription: 'Write Bet description',
 	placeYourBet: 'Place your bet',
 	You_pay: 'You pay',
 	You_get: 'You get',
 	add_a_card: 'add a card',
 	add_card_and_buy: 'add card and buy',
-	Polygon_Transfer: 'Polygon Transfer',
+	Polygon_Transfer: 'Polygon transfer',
 	Debit_Credit_Card: 'Debit / Credit Card',
 	ETH_Network_Transfer: 'ETH Network Transfer',
 	searchToken: 'search token...',
@@ -334,13 +341,15 @@ const Strings = {
 
 	set_date: 'Set Date',
 	cameraAccess:
-		'Camera access is restricted. In order to use Camera Service, please enable Camera permission in the Settigs app under Privacy.',
+		'Camera access is restricted. In order to use Camera Service, please enable Camera permission in the setting app under Privacy.',
+	audioAccess:
+		'Audio access is restricted. In order to use Audio Service, please enable Audio permission in the setting app under Privacy.',
 	galleryAccess:
-		'Gallery access is restricted. In order to use Gallery Service, please enable Gallery permission in the Settigs app under Privacy.',
+		'Storage access is restricted. In order to upload video, please enable File and Storage permission in the setting app under Privacy.',
 	biometricAccess:
-		'Biometric access is restricted. In order to use Biometric Service, please enable Biometric permission in the Settigs app under Privacy.',
+		'Biometric access is restricted. In order to use Biometric Service, please enable Biometric permission in the setting app under Privacy.',
 	contactAccess:
-		'Contacts access is restricted. In order to use Contact Service, please enable Contacts permission in the Settigs app under Privacy.',
+		'Contacts access is restricted. In order to use Contact Service, please enable Contacts permission in the setting app under Privacy.',
 	visited_your_profile: ' visited your profile.',
 	my_bets: 'My Bets',
 	view_all: 'View All',
@@ -357,7 +366,8 @@ const Strings = {
 	friendRequest: 'Friend Request',
 	Decline_invitation: 'Decline invitation',
 	biometric_authentication: 'Biometric authentication',
-	enable_biometric_id_to_open_defibet: 'Enable biometric id to open defibet',
+	enable_biometric_id_to_open_defibet:
+		'Enable biometric id to open ' + app.expo.name,
 	disputes: 'Disputes',
 	i_want_to_be_jury_in_disputes: 'I want to be jury in disputes',
 
@@ -370,7 +380,7 @@ const Strings = {
 	url_desc: 'paste your link below:',
 	url: 'url',
 	add_more: 'Add More',
-	betting_on_this_event: ' betting on this event',
+	betting_on_this_event: 'betting on this event',
 	events: 'Events',
 	support: 'Support',
 	create_new_ticket: 'Create New Ticket',
@@ -603,10 +613,10 @@ const Strings = {
 	connect_with_other_users_and_start_betting:
 		'Connect with other users and start betting',
 
-	share_defibet_house: 'Share Defibet.house',
+	share_defibet_house: 'Share ' + app.expo.name,
 	share_the_app_with_your_friends:
 		'Share the app with your friends and challenge them for extra fun and bragging rights!',
-	share_defibet_house_app: 'Share defibet.house app with your friends!',
+	share_defibet_house_app: 'Share ' + app.expo.name + ' app with your friends!',
 	close: 'Close',
 	sync_contacts: 'Sync Contacts',
 	no_conversation_found: 'No conversation history found',
@@ -633,7 +643,7 @@ const Strings = {
 	your_opponent_is_betting: 'your opponent is betting:',
 	your_opponent_will_win: 'Your opponent will win',
 	//Prediction Market
-	str_for_you: 'For you',
+	str_for_you: 'Explore',
 	str_live_chat: 'Live chat',
 	str_active_bets_count: '%d Active bets',
 	str_follow_user_account: '%username',
@@ -676,6 +686,114 @@ const Strings = {
 	us_dollar: 'US$',
 	str_prefix_p2p_bets: 'P2P BETS',
 	str_see_all: 'See all',
-	swipe_up_for_more_bets:'Swipe up for more bets'
+	swipe_up_for_more_bets: 'Swipe up for more bets',
+	app_sharing_text:
+		'😱 %s is sharing ' +
+		app.expo.name +
+		' with you\n\nClick on the link to download the app and bet on any topic you can imagine 🤯 🚀 👇\n\n',
+	jury_banned:
+		"You have been banned as a Jury so you won't be able to perform any activity related to Jury.",
+	watching: 'watching',
+	//Notification Type
+	notification_types: {
+		match_trending: 'MATCH_TRENDING',
+		live_streaming_trending: 'LIVE_STREAMING_TRENDING',
+		bet_replicate_trending: 'BET_REPLICATED_TRENDING',
+		most_followers: 'MOST_FOLLOWERS',
+		trending_category: 'CATEGORY_TRENDING',
+		trending_sub_category: 'SUB_CATEGORY_TRENDING',
+		numerious_bets_created: 'NUMERIOUS_BETS_CREATED'
+	},
+	push_notification_types: {
+		event_Suggestion: 'EVENT_BET_SUGGESTION',
+		join_friend_bet: 'JOIN_FRIEND_BET',
+		user_suggestion: 'USER_SUGGESTION'
+	},
+	create_bet_and_win: 'CREATE BET & WIN',
+	see_user_profile: 'SEE USER PROFILE',
+	participate_and_win: 'PARTICIPATE & WIN ',
+	event_sharing_text:
+		"Find out about this event and bet on it before it's over! 🤑 😎  \n\n📅 ",
+	bet_sharing_text:
+		'%s has created this bet! 🤩 \nClick on this link to participate 💪 🤑 \n\n📅 ',
+	join_deadline: 'JOINING DEADLINE:',
+	short_video: 'SHORT VIDEO',
+	upload_video_15s: `Please upload a video that is between ${videoMinimumDuration} to ${videoMaximumDuration} seconds in length.`,
+
+	//video
+	see_your_video_content: 'see your video content',
+	who_can_see_your_videos: 'Who can see your Videos?',
+	video_content: 'Video content',
+	video_creation: 'Video creation',
+	attach_video_to_bets: 'You can attach the video to one of your active bets',
+	no_active_bets: 'You don’t have any active bets',
+	video: 'Video',
+	are_you_sure_you_want_to_delete_this_video:
+		'Are you sure you want to delete this video?',
+	sure: "yes, i'm sure",
+	no_video_found: 'No video found yet',
+	no_video_title: 'Your videos will appear here',
+	well_done_video_has_been_created:
+		'Well done, %s! Your video has been created 🎉',
+	txt_session_expire_login_again: 'Session expired please login again',
+	txt_something_wrong_try_again: 'Something went wrong. Please try again later',
+	txt_insufficient_balance: 'Insufficient Balance'.toUpperCase(),
+	txt_add_more_fund: 'Please add more funds.',
+	txt_contract_approval_error: 'Contract approval error',
+	txt_message_sent_success: 'Message sent successfully.',
+	txt_check_internet_connection:
+		'Please check your internet connection and try again',
+	txt_bet_not_create: 'Bet not created',
+	txt_bet_not_join: 'Bet not joined',
+	txt_amount_not_stake: 'Amount not stake',
+	txt_error: 'Error',
+	txt_edit_email: 'Please edit your email address as per your request.',
+	txt_you_click_expire_link:
+		'You have clicked on expired verification link please try again.',
+	txt_invalid_url: 'Invalid Url.',
+	share_via_dm: 'Share via DM',
+	download_video: 'Download video',
+	downloaded_video: 'Great! Video has been saved successfully to your gallery.',
+	downloading_video: 'Your video is being downloading',
+	enough_gas_fee: `This bet may not be placed as it appears that you don't have enough Matic to cover the gas costs necessary to complete this transaction.`,
+	enough_balance:
+		'You don´t have enough balance to Bet. Please add more funds to your wallet or deposit via credit card.',
+	referral_program: 'Referral program',
+	referral_des:
+		'This is your referral code! Copy and share it with your network and start earning from the bets they make',
+	your_referral_code: 'Your referral code',
+	enter: 'enter',
+	enter_a_friends_code: 'Enter a friends code',
+	referral_buddy: 'YOUR REFERRAL BUDDY IS ',
+	your_rewards: 'Your rewards',
+	your_total_money_won: 'total REWARDS won:',
+	total_money_won: 'Total fees earned:',
+	claim_pending_rewards: 'CLAIM PENDING REWARDS',
+	upload_video: `Please wait while we're uploading your video`,
+	video_processing: `Please wait while we're processing your video`,
+	referral_code: 'Referral code',
+	downloading_video_error: 'Something went wrong while downloading',
+	error_Message: 'There was an error.',
+	try_again: 'Try it again.',
+	video_sharing_text:
+		'%s has created this video! 📹  \n\nClick on this link, watch it and find out if there is a bet attached 👀 🤔',
+	withdraw_via_Credit_Card: 'Withdraw via Credit Card',
+	transfer_amount: 'Transfer amount',
+	recipients_polygon_wallet: `Recipient's Polygon Wallet`,
+	enter_polygon_address: 'Enter Polygon address',
+	i_am_withdrawing_polygon: 'I am withdrawing %s to Polygon',
+	withdrawing:
+		'Are you sure you are withdrawing %S to a wallet address on the Polygon blockchain? Using the wrong blockchain will result in a loss of funds.',
+	you_will_transfer: 'You will transfer',
+	to_address: 'to this address',
+	successful_withdrawal: 'transfer has been successful',
+	enough_balance_to_transfer:
+		'You don´t have enough balance to transfer. Please add more funds to your wallet or deposit via credit card.',
+	just_a_few_more_seconds_your_funds_are_being_transferred_from_your_wallet:
+		'Just a few more seconds! Your funds are being transferred to recipient wallet',
+	no_pending_claim: 'NO PENDING REWARDS TO CLAIM',
+	let_create_market: "Let's create your market",
+	txt_age_validation: 'You must be 18 years old or above to use this app.',
+	copy_referral_desc: 'Referral code copied to clipboard.'
 };
 export default Strings;

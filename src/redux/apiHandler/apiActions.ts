@@ -134,7 +134,7 @@ export const getFeeds = createAsyncThunk(
 	async (data: any) => {
 		const response = await useAxios({
 			method: Api.POST,
-			url: (ApiSecondaryBaseUrl + ApiConstants.getAllMatch),
+			url: ApiSecondaryBaseUrl + ApiConstants.getAllMatch,
 			// headers: {
 			//   'Content-Type': 'application/json',
 			// },
@@ -182,7 +182,7 @@ export const getFilteredFeeds = createAsyncThunk(
 	async (data: any) => {
 		const response = await useAxios({
 			method: Api.POST,
-			url: (ApiSecondaryBaseUrl + ApiConstants.getFilteredFeeds),
+			url: ApiSecondaryBaseUrl + ApiConstants.getFilteredFeeds,
 			// headers: {
 			//   'Content-Type': 'application/json',
 			// },
@@ -271,12 +271,24 @@ export const getLiveStreamingFeeds = createAsyncThunk(
 	}
 );
 
+export const getLiveStreamingData = async (data: any) => {
+	const response = await useAxios({
+		method: Api.POST,
+		url: ApiBaseUrl + ApiConstants.getLiveStreamingFeeds,
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		data: data
+	});
+	return response;
+};
+
 export const getBetsPerFeed = createAsyncThunk(
 	ApiConstants.getBetsPerEvent,
 	async (data: any) => {
 		const response = await useAxios({
 			method: Api.POST,
-			url: (ApiSecondaryBaseUrl + ApiConstants.getBetsPerEvent),
+			url: ApiSecondaryBaseUrl + ApiConstants.getBetsPerEvent,
 			// headers: {
 			//   'Content-Type': 'application/json',
 			// },
@@ -661,10 +673,11 @@ export const getMatchDetails = async (match_id: any) => {
 	return response;
 };
 
-export const getUserBetResult = async (bet_id: string) => {
+export const getUserBetResult = async (data: any) => {
 	const response = await useAxios({
 		method: Api.POST,
-		url: ApiBaseUrl + ApiConstants.getUserBetResult + bet_id
+		url: ApiBaseUrl + ApiConstants.getUserBetResult,
+		data: data
 	});
 	return response;
 };
@@ -885,11 +898,74 @@ export const getAllFaqQuestion = async (data: any) => {
 	});
 	return response;
 };
-export const getRecommendedBets = async (data: any) => {
+export const getExploreData = async (data: any) => {
 	const response = await useAxios({
 		method: Api.POST,
-		url: ApiBaseUrl + ApiConstants.getRecommendedBets,
-		data: data,
+		url: ApiBaseUrl + ApiConstants.getExploreData,
+		data: data
+	});
+	return response;
+};
+
+export const validateJury = async () => {
+	const response = await useAxios({
+		method: Api.POST,
+		url: ApiBaseUrl + ApiConstants.validateJury
+	});
+	return response;
+};
+
+export const getBetsForVideoUpload = async () => {
+	const response = await useAxios({
+		method: Api.GET,
+		url: ApiBaseUrl + ApiConstants.getBetsForVideoUpload
+	});
+	// console.log('RESPONSE::::', JSON.stringify(response));
+	return response;
+};
+
+export const deleteUserVideo = async (data: any) => {
+	const response = await useAxios({
+		method: Api.PUT,
+		url: ApiBaseUrl + ApiConstants.deleteVideo,
+		data: data
+	});
+	return response;
+};
+
+export const getUserVideoList = async (data: any) => {
+	const response = await useAxios({
+		method: Api.POST,
+		url: ApiBaseUrl + ApiConstants.getUserVideos,
+		data: data
+	});
+	// console.log('RESPONSE::::', JSON.stringify(response));
+	return response;
+};
+
+export const markSeen = async (data: any) => {
+	const response = await useAxios({
+		method: Api.POST,
+		url: ApiBaseUrl + ApiConstants.markSeen,
+		data: data
+	});
+	return response;
+};
+
+export const getUserMessageList = async (data: any) => {
+	const response = await useAxios({
+		method: Api.POST,
+		url: ApiBaseUrl + ApiConstants.messageUser,
+		data: data
+	});
+	// console.log('RESPONSE::::', JSON.stringify(response));
+	return response;
+};
+
+export const getUserAncestor = async () => {
+	const response = await useAxios({
+		method: Api.GET,
+		url: ApiBaseUrl + ApiConstants.getUserAncestor
 	});
 	return response;
 };

@@ -1,4 +1,4 @@
-import {Alert, StyleSheet, Text, View} from 'react-native';
+import {Platform, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import moment from 'moment';
 import fonts from '../../theme/fonts';
@@ -29,7 +29,7 @@ import {RootState} from '../../redux/store';
 import {resetBetsPerFeed} from '../../redux/reducerSlices/dashboard';
 import {useNavigation} from '@react-navigation/native';
 import ScreenNames from '../../navigation/screenNames';
-import {dateTimeConvert} from '../../constants/utils/Function';
+import {dateTimeConvert, showErrorAlert} from '../../constants/utils/Function';
 import StreamingNameView from '../StreamingNameView';
 import useUpdateEffect from '../CustomHooks/useUpdateEffect';
 import {updateApiLoader} from '../../redux/reducerSlices/preLogin';
@@ -163,7 +163,8 @@ export const FeedBetsView = ({
 	isFromStreaming,
 	isRecent,
 	handleShareStory,
-	handleShareUrl
+	handleShareUrl,
+	handleBetShare
 }) => {
 	const [images, setImages] = useState([]);
 	const [isSelectedIndex, setIsSelectedIndex] = useState(1);
@@ -484,7 +485,8 @@ export const FeedBetsView = ({
 									break;
 								case 1:
 									setTimeout(() => {
-										handleShareUrl();
+										// handleShareUrl();
+										handleBetShare(selectedDataObj);
 									}, 500);
 									break;
 								case 2:
@@ -532,7 +534,7 @@ export const FeedBetsView = ({
 						console.log('data :: ', data);
 						console.log('====================================');
 						postReportMatch(data).then(res => {
-							Alert.alert('', res?.message ?? Strings.somethingWentWrong);
+							showErrorAlert('', res?.message ?? Strings.somethingWentWrong);
 						});
 					}}
 					isVisible={isReportPopupShown}
@@ -590,7 +592,12 @@ const styles = StyleSheet.create({
 	bottomButtonStyle: {
 		position: 'absolute',
 		bottom: 10,
-		alignSelf: 'center'
+		alignSelf: 'center',
+		...Platform.select({
+			web: {
+				width: '100%'
+			}
+		})
 	},
 	bottomButtonGradientStyle: {
 		width: '100%',

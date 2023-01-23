@@ -1,6 +1,6 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {Alert, View} from 'react-native';
+import {Alert, Platform, View} from 'react-native';
 import ButtonGradient from '../../../../components/ButtonGradient';
 import HeaderComponent from '../../../../components/HeaderComponent';
 import Strings from '../../../../constants/strings';
@@ -16,7 +16,8 @@ import ScreenNames from '../../../../navigation/screenNames';
 import {useBetCreateContract} from '../../../../components/CustomHooks/SmartContract';
 import {
 	getMetamaskBalance,
-	getRoundDecimalValue
+	getRoundDecimalValue,
+	showErrorAlert
 } from '../../../../constants/utils/Function';
 import {useWalletConnect} from '@walletconnect/react-native-dapp';
 import {DebethTokenContractAddress} from '../../../../constants/SmartContract';
@@ -129,9 +130,9 @@ const OpenDisputeInfoScreen: React.FC<any> = () => {
 			parseFloat(disputeDbethToken) >= parseFloat(dbethBalance) ||
 			parseFloat(myBalance) <= 0
 		) {
-			Alert.alert(
-				'Insufficient Balance'.toUpperCase(),
-				'Please add more funds.'
+			showErrorAlert(
+				Strings.txt_insufficient_balance,
+				Strings.txt_add_more_fund
 			);
 			return;
 		}
@@ -139,32 +140,56 @@ const OpenDisputeInfoScreen: React.FC<any> = () => {
 			userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask' &&
 			!connector.connected
 		) {
-			Alert.alert(Strings.txt_session_expire_msg, '', [
-				{
-					text: 'Ok',
-					onPress: () => {
-						dispatch(logout());
-						dispatch(updateDeviceToken({deviceToken: ''}));
-						dispatch(resetProfileData({}));
-					}
+			if (Platform.OS === 'web') {
+				let retVal = confirm(Strings.txt_session_expire_msg);
+				if (retVal == true) {
+					dispatch(logout());
+					dispatch(updateDeviceToken({deviceToken: ''}));
+					dispatch(resetProfileData({}));
+					return true;
+				} else {
+					return false;
 				}
-			]);
+			} else {
+				Alert.alert(Strings.txt_session_expire_msg, '', [
+					{
+						text: 'Ok',
+						onPress: () => {
+							dispatch(logout());
+							dispatch(updateDeviceToken({deviceToken: ''}));
+							dispatch(resetProfileData({}));
+						}
+					}
+				]);
+			}
 			return;
 		} else {
 			if (userInfo?.user?.socialLoginType?.toLowerCase() !== 'metamask') {
 				const loginStatus = await magic.user.isLoggedIn();
 				console.log('loginStatus', loginStatus);
 				if (!loginStatus) {
-					Alert.alert(Strings.txt_session_expire_msg, '', [
-						{
-							text: 'Ok',
-							onPress: () => {
-								dispatch(logout());
-								dispatch(updateDeviceToken({deviceToken: ''}));
-								dispatch(resetProfileData({}));
-							}
+					if (Platform.OS === 'web') {
+						let retVal = confirm(Strings.txt_session_expire_msg);
+						if (retVal == true) {
+							dispatch(logout());
+							dispatch(updateDeviceToken({deviceToken: ''}));
+							dispatch(resetProfileData({}));
+							return true;
+						} else {
+							return false;
 						}
-					]);
+					} else {
+						Alert.alert(Strings.txt_session_expire_msg, '', [
+							{
+								text: 'Ok',
+								onPress: () => {
+									dispatch(logout());
+									dispatch(updateDeviceToken({deviceToken: ''}));
+									dispatch(resetProfileData({}));
+								}
+							}
+						]);
+					}
 					return;
 				}
 			}

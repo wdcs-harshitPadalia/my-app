@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-lone-blocks */
 import React, {useEffect, useState} from 'react';
-import {Alert, BackHandler, View} from 'react-native';
+import {Alert, BackHandler, Platform, View} from 'react-native';
 import {Text} from 'react-native-elements';
 import icons from '../../../../assets/icon';
 import Strings from '../../../../constants/strings';
@@ -17,6 +17,7 @@ import InformationPopUpView from '../../../../components/InformationPopUpView';
 import {
 	addCustomBetResult,
 	claimAmount,
+	getUserAncestor,
 	getUserBetResult,
 	logout
 } from '../../../../redux/apiHandler/apiActions';
@@ -43,8 +44,11 @@ import CustomeProgressBar from '../../../../components/CustomeProgressBar';
 import ButtonGradientWithRightIcon from '../../../../components/ButtonGradientWithRightIcon';
 import {verticalScale} from '../../../../theme';
 import {gradientColorAngle} from '../../../../theme/metrics';
-import {decimalValue} from '../../../../constants/api';
-import {getRoundDecimalValue} from '../../../../constants/utils/Function';
+import {decimalValue, nullAddress} from '../../../../constants/api';
+import {
+	getRoundDecimalValue,
+	showErrorAlert
+} from '../../../../constants/utils/Function';
 
 const BetMakerResultScreen: React.FC<any> = () => {
 	const navigation = useNavigation();
@@ -124,7 +128,8 @@ const BetMakerResultScreen: React.FC<any> = () => {
 		getTokensPerStrike,
 		getPassiveIncome,
 		passiveIncomeAmount,
-		liquidity
+		liquidity,
+		claimUserData
 	} = useBetCreateContract(false);
 
 	const {hashObj, personalSign} = useBetCreateContract(false);
@@ -222,7 +227,7 @@ const BetMakerResultScreen: React.FC<any> = () => {
 	}, [resolveBetAddress]);
 
 	useUpdateEffect(() => {
-		const tokenName = eventBetData?.bet?.tokentypes?.short_name.toUpperCase();
+		const tokenName = eventBetData?.bet?.tokentypes?.short_name?.toUpperCase();
 		let decimals;
 		if (tokenName === 'USDC' || tokenName === 'USDT') {
 			decimals = 6;
@@ -350,7 +355,8 @@ const BetMakerResultScreen: React.FC<any> = () => {
 					maker_winning_amount_usd:
 						parseFloat(betMakerWinningAmount) * parseFloat(convertCurrency),
 					match_cancelled: redirectType === 'MATCH_CANCELLED',
-					passive_income: passiveIncome * (passiveIncomeAmount / 100)
+					passive_income: passiveIncome * (passiveIncomeAmount / 100),
+					referral: claimUserData
 				};
 			} else {
 				const winningAmount =
@@ -363,7 +369,8 @@ const BetMakerResultScreen: React.FC<any> = () => {
 					bet_winning_amount_usd: (
 						winningAmount * parseFloat(convertCurrency)
 					).toFixed(decimalValue),
-					passive_income: passiveIncome * (passiveIncomeAmount / 100)
+					passive_income: passiveIncome * (passiveIncomeAmount / 100),
+					referral: claimUserData
 				};
 			}
 
@@ -381,11 +388,31 @@ const BetMakerResultScreen: React.FC<any> = () => {
 				})
 				.catch(err => {
 					dispatch(updateApiLoader({apiLoader: false}));
-					Alert.alert('Claimamount api error', JSON.stringify(err));
+					showErrorAlert('Claimamount api error', JSON.stringify(err));
 					console.log('claimAmount Data Err : ', err);
 				});
 		}
 	}, [betLiquidyAmount]);
+
+	const getUserAncestorData = () => {
+		dispatch(
+			updateApiLoader({
+				apiLoader: true,
+				showAlertWithText:
+					Strings.just_a_few_more_seconds_your_funds_are_being_transferred_to_your_wallet
+			})
+		);
+		getUserAncestor()
+			.then(res => {
+				console.log('getUserAncestorData Response >>> ', JSON.stringify(res));
+				// dispatch(updateApiLoader({apiLoader: false}));
+				handleClaimWinningAmount(res?.data);
+			})
+			.catch(err => {
+				console.log('getTokenTypeData Data Err >>> ', JSON.stringify(err));
+				dispatch(updateApiLoader({apiLoader: false}));
+			});
+	};
 
 	useUpdateEffect(() => {
 		console.log('eventBetData???????', JSON.stringify(eventBetData));
@@ -527,7 +554,10 @@ const BetMakerResultScreen: React.FC<any> = () => {
 
 	const getUserBetResultData = () => {
 		dispatch(updateApiLoader({apiLoader: true}));
-		getUserBetResult(bet_id)
+		const uploadData = {
+			bet_id: bet_id
+		};
+		getUserBetResult(uploadData)
 			.then(res => {
 				// console.log('getUserBetResult????????????', res);
 
@@ -550,23 +580,35 @@ const BetMakerResultScreen: React.FC<any> = () => {
 			userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask' &&
 			!connector.connected
 		) {
-			Alert.alert(Strings.txt_session_expire_msg);
+			showErrorAlert('', Strings.txt_session_expire_msg);
 			return;
 		} else {
 			if (userInfo?.user?.socialLoginType?.toLowerCase() !== 'metamask') {
 				const loginStatus = await magic.user.isLoggedIn();
 				console.log('loginStatus', loginStatus);
 				if (!loginStatus) {
-					Alert.alert(Strings.txt_session_expire_msg, '', [
-						{
-							text: 'Ok',
-							onPress: () => {
-								dispatch(logout());
-								dispatch(updateDeviceToken({deviceToken: ''}));
-								dispatch(resetProfileData({}));
-							}
+					if (Platform.OS === 'web') {
+						let retVal = confirm(Strings.txt_session_expire_msg);
+						if (retVal == true) {
+							dispatch(logout());
+							dispatch(updateDeviceToken({deviceToken: ''}));
+							dispatch(resetProfileData({}));
+							return true;
+						} else {
+							return false;
 						}
-					]);
+					} else {
+						Alert.alert(Strings.txt_session_expire_msg, '', [
+							{
+								text: 'Ok',
+								onPress: () => {
+									dispatch(logout());
+									dispatch(updateDeviceToken({deviceToken: ''}));
+									dispatch(resetProfileData({}));
+								}
+							}
+						]);
+					}
 					return;
 				}
 			}
@@ -576,10 +618,7 @@ const BetMakerResultScreen: React.FC<any> = () => {
 
 	useUpdateEffect(() => {
 		if (hashObj?.error) {
-			Alert.alert(
-				'Error',
-				'Please check your internet connection and try again'
-			);
+			showErrorAlert(Strings.txt_error, Strings.txt_check_internet_connection);
 		} else {
 			if (step === 3) {
 				addCustomBetResultData('accepted');
@@ -978,7 +1017,7 @@ const BetMakerResultScreen: React.FC<any> = () => {
 		}
 	};
 	//if bet type 0 then pass hash array null, ISCUSTOMIZED_ = false and maker taker signature as null
-	const handleClaimWinningAmount = () => {
+	const handleClaimWinningAmount = (userData: any) => {
 		let bet_type = betObj?.bet_type;
 		let result =
 			eventBetData?.resultData?.isWinner === 'win'
@@ -994,7 +1033,11 @@ const BetMakerResultScreen: React.FC<any> = () => {
 				result,
 				['0x0000000000000000000000000000000000000000000000000000000000000000'],
 				'0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
-				'0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+				'0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+				userData?.users?.length === 0 ? [nullAddress] : userData?.users,
+				userData?.rewardPercentage?.length === 0
+					? [0]
+					: userData?.rewardPercentage
 			);
 		} else {
 			resolveBetResult(
@@ -1002,7 +1045,11 @@ const BetMakerResultScreen: React.FC<any> = () => {
 				result,
 				apiHashObj?.hash,
 				apiHashObj?.makerSignature,
-				apiHashObj?.takerSignature
+				apiHashObj?.takerSignature,
+				userData?.users?.length === 0 ? [nullAddress] : userData?.users,
+				userData?.rewardPercentage?.length === 0
+					? [0]
+					: userData?.rewardPercentage
 			);
 		}
 
@@ -1065,7 +1112,7 @@ const BetMakerResultScreen: React.FC<any> = () => {
 							if (step === 1) {
 								setIsViewNextBackBtn(false);
 								if (eventBetData?.resultData?.isWinner === 'win') {
-									handleClaimWinningAmount();
+									getUserAncestorData();
 								} else if (eventBetData?.resultData?.isWinner === 'loss') {
 									// navigateReset('FeedsRouter');
 									navigation.dispatch(StackActions.popToTop());
@@ -1073,7 +1120,7 @@ const BetMakerResultScreen: React.FC<any> = () => {
 									eventBetData?.resultData?.isWinner === 'draw' ||
 									eventBetData?.resultData?.isWinner === 'Void'
 								) {
-									handleClaimWinningAmount();
+									getUserAncestorData();
 								}
 							} else if (step === 3) {
 								if (redirectType === 'DISPUTE_EVIDENCE') {

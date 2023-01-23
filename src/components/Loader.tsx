@@ -4,12 +4,15 @@ import {
 	Modal,
 	StyleSheet,
 	ActivityIndicator,
-	AppState
+	AppState,
+	Platform
 } from 'react-native';
 import {Text} from 'react-native-elements';
 import Strings from '../constants/strings';
 import fonts from '../theme/fonts';
 import LottieView from 'lottie-react-native';
+import Lottie from 'lottie-react';
+
 import {defaultTheme} from '../theme/defaultTheme';
 import colors from '../theme/colors';
 import useInterval from './CustomHooks/useInterval';
@@ -77,7 +80,7 @@ const Loader: React.FC<LoaderProps> = props => {
 
 				console.log('App has come to the foreground!');
 			}
-			if (animation.current) {
+			if (Platform.OS !== 'web' && animation.current) {
 				animation.current.play();
 			}
 			//appState.current = nextAppState;
@@ -101,16 +104,35 @@ const Loader: React.FC<LoaderProps> = props => {
 								? [styles.dialogView, {backgroundColor: 'rgba(255,255,255,00)'}]
 								: [styles.dialogView]
 						}>
-						{/* <ActivityIndicator size={50} color={'#000'} /> */}
-						<LottieView
-							style={{height: 100, width: 100, padding: 0, alignSelf: 'center'}}
-							source={require('../assets/animations/lf30.json')}
-							autoPlay
-							loop
-							ref={ref => {
-								animation.current = ref;
-							}}
-						/>
+						{Platform.OS === 'web' ? (
+							// <ActivityIndicator size={50} color={"red"} />
+							<Lottie
+								style={{
+									height: 100,
+									width: 100,
+									padding: 0,
+									alignSelf: 'center'
+								}}
+								animationData={require('../assets/animations/lf30.json')}
+								loop={true}
+							/>
+						) : (
+							<LottieView
+								style={{
+									height: 100,
+									width: 100,
+									padding: 0,
+									alignSelf: 'center'
+								}}
+								source={require('../assets/animations/lf30.json')}
+								autoPlay
+								loop
+								ref={ref => {
+									animation.current = ref;
+								}}
+							/>
+						)}
+
 						{shouldShowText && shouldShowRandomMessage ? (
 							<Text style={styles.textStyle}>{randomLoadingMessage}</Text>
 						) : (

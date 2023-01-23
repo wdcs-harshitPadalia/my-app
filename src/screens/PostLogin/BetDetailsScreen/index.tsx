@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-lone-blocks */
 import React, {useEffect, useState} from 'react';
-import {Alert, BackHandler, Share, View} from 'react-native';
+import {Alert, BackHandler, Share, View, Platform} from 'react-native';
 import {Text} from 'react-native-elements';
 import icons from '../../../assets/icon';
 import Strings from '../../../constants/strings';
@@ -17,6 +17,7 @@ import InformationPopUpView from '../../../components/InformationPopUpView';
 import {
 	cancelBet,
 	claimAmount,
+	getUserAncestor,
 	getUserBetResult,
 	logout
 } from '../../../redux/apiHandler/apiActions';
@@ -35,11 +36,17 @@ import {
 	updateDeviceToken
 } from '../../../redux/reducerSlices/userInfo';
 import {magic} from '../../../navigation/routes';
-import {decimalValue, nullHash, nullSignature} from '../../../constants/api';
+import {
+	decimalValue,
+	nullAddress,
+	nullHash,
+	nullSignature
+} from '../../../constants/api';
 import {
 	createJoinBetShareMessage,
 	createJoinBetShareUrl,
-	getRoundDecimalValue
+	getRoundDecimalValue,
+	showErrorAlert
 } from '../../../constants/utils/Function';
 import {deleteItemById} from '../../../redux/reducerSlices/notification';
 import ScreenNames from '../../../navigation/screenNames';
@@ -116,7 +123,10 @@ const BetDetailsScreen: React.FC<any> = () => {
 		betStatus,
 		getPassiveIncome,
 		passiveIncomeAmount,
-		liquidity
+		liquidity,
+		liquidityWithdrawalEvent,
+		cancelBetLiquidityAmount,
+		claimUserData
 	} = useBetCreateContract(false);
 
 	useUpdateEffect(() => {
@@ -141,7 +151,7 @@ const BetDetailsScreen: React.FC<any> = () => {
 	}, [betLiquidity]);
 
 	useUpdateEffect(() => {
-		const tokenName = eventBetData?.bet?.tokentypes?.short_name.toUpperCase();
+		const tokenName = eventBetData?.bet?.tokentypes?.short_name?.toUpperCase();
 		let decimals;
 		if (tokenName === 'USDC' || tokenName === 'USDT') {
 			decimals = 6;
@@ -194,7 +204,8 @@ const BetDetailsScreen: React.FC<any> = () => {
 					maker_winning_amount: betMakerWinningAmount,
 					maker_winning_amount_usd:
 						parseFloat(betMakerWinningAmount) * parseFloat(convertCurrency),
-					passive_income: passiveIncome * (passiveIncomeAmount / 100)
+					passive_income: passiveIncome * (passiveIncomeAmount / 100),
+					referral: claimUserData
 				};
 			} else {
 				const winningAmount =
@@ -207,7 +218,8 @@ const BetDetailsScreen: React.FC<any> = () => {
 					bet_winning_amount_usd: (
 						winningAmount * parseFloat(convertCurrency)
 					).toFixed(decimalValue),
-					passive_income: passiveIncome * (passiveIncomeAmount / 100)
+					passive_income: passiveIncome * (passiveIncomeAmount / 100),
+					referral: claimUserData
 				};
 			}
 
@@ -225,7 +237,7 @@ const BetDetailsScreen: React.FC<any> = () => {
 				})
 				.catch(err => {
 					dispatch(updateApiLoader({apiLoader: false}));
-					Alert.alert('Claimamount api error', JSON.stringify(err));
+					showErrorAlert('Claimamount api error', JSON.stringify(err));
 					console.log('claimAmount Data Err : ', err);
 				});
 		}
@@ -242,43 +254,53 @@ const BetDetailsScreen: React.FC<any> = () => {
 		if (cancle_bet_id) {
 			if (cancle_bet_id === 'Error') {
 				console.log('User denied metamask access');
-				Alert.alert(Strings.somethingWentWrong);
+				showErrorAlert('', Strings.somethingWentWrong);
 			} else {
 				// addBetData();
-				const betClaimAmount =
-					eventBetData?.resultData?.isWinner === 'win'
-						? (parseFloat(betAmount) * parseFloat(odds)).toFixed(decimalValue)
-						: betAmount;
-				const uploadData = {
-					bet_id: bet_id,
-					bet_cancel_contract_address: cancle_bet_id,
-					bet_amount: betClaimAmount,
-					bet_amount_usd: (
-						parseFloat(betClaimAmount) * parseFloat(convertCurrency)
-					).toFixed(decimalValue)
-				};
-				cancelBet(uploadData)
-					.then(res => {
-						dispatch(updateApiLoader({apiLoader: false}));
-						console.log('claimAmount Response : ', JSON.stringify(res));
-						if (res?.statusCode?.toString().includes('200')) {
-							if (params?.notification_id) {
-								dispatch(deleteItemById(params?.notification_id));
-							}
-							Alert.alert('', Strings.bet_cancelled_successfully);
-							navigation.goBack();
-						}
-					})
-					.catch(err => {
-						dispatch(updateApiLoader({apiLoader: false}));
-						Alert.alert('', Strings.somethingWentWrong);
-						console.log('claimAmount Data Err : ', err);
-					});
+				cancelBetData();
 			}
 			console.log(cancle_bet_id, 'bet_id?>>>');
 		}
 	}, [cancle_bet_id]);
 
+	const cancelBetData = () => {
+		const betClaimAmount =
+			eventBetData?.resultData?.isWinner === 'win'
+				? (parseFloat(betAmount) * parseFloat(odds)).toFixed(decimalValue)
+				: betAmount;
+		const uploadData = {
+			bet_id: bet_id,
+			bet_cancel_contract_address:
+				cancle_bet_id || cancelBetLiquidityAmount[0]?.transactionHash,
+			bet_amount: betClaimAmount,
+			bet_amount_usd: (
+				parseFloat(betClaimAmount) * parseFloat(convertCurrency)
+			).toFixed(decimalValue)
+		};
+		console.log(
+			'uploadData',
+			uploadData,
+			cancelBetLiquidityAmount[0]?.transactionHash,
+			cancle_bet_id
+		);
+		cancelBet(uploadData)
+			.then(res => {
+				dispatch(updateApiLoader({apiLoader: false}));
+				console.log('claimAmount Response : ', JSON.stringify(res));
+				if (res?.statusCode?.toString().includes('200')) {
+					if (params?.notification_id) {
+						dispatch(deleteItemById(params?.notification_id));
+					}
+					Alert.alert('', Strings.bet_cancelled_successfully);
+					navigation.goBack();
+				}
+			})
+			.catch(err => {
+				dispatch(updateApiLoader({apiLoader: false}));
+				Alert.alert('', Strings.somethingWentWrong);
+				console.log('claimAmount Data Err : ', err);
+			});
+	};
 	useUpdateEffect(() => {
 		if (eventBetData?.bet?.users?._id === userProfileInfo?.user?._id) {
 			setOdds(eventBetData?.bet?.odds);
@@ -367,7 +389,11 @@ const BetDetailsScreen: React.FC<any> = () => {
 
 	const getUserBetResultData = () => {
 		dispatch(updateApiLoader({apiLoader: true}));
-		getUserBetResult(bet_id)
+		const uploadData = {
+			bet_id: bet_id,
+			user_id: params?.userId
+		};
+		getUserBetResult(uploadData)
 			.then(res => {
 				dispatch(updateApiLoader({apiLoader: false}));
 				console.log(
@@ -378,11 +404,12 @@ const BetDetailsScreen: React.FC<any> = () => {
 				setWinningPercentage(res?.data?.winningPercentage);
 				setBetWinningHelpTitle(res?.data?.tokenContent.title);
 				setBetWinningHelp(res?.data?.tokenContent.content);
+				liquidityWithdrawalEvent(res?.data?.bet?.bet_id);
 			})
 			.catch(err => {
 				dispatch(updateApiLoader({apiLoader: false}));
 				console.log('getUserBet Data Err : ', err);
-				Alert.alert('', Strings.somethingWentWrong);
+				showErrorAlert('', Strings.somethingWentWrong);
 			});
 	};
 
@@ -393,6 +420,26 @@ const BetDetailsScreen: React.FC<any> = () => {
 					? eventBetData?.betTakerData?._id
 					: eventBetData?.bet?.users?._id
 		});
+	};
+
+	const getUserAncestorData = () => {
+		dispatch(
+			updateApiLoader({
+				apiLoader: true,
+				showAlertWithText:
+					Strings.just_a_few_more_seconds_your_funds_are_being_transferred_to_your_wallet
+			})
+		);
+		getUserAncestor()
+			.then(res => {
+				console.log('getUserAncestorData Response >>> ', JSON.stringify(res));
+				// dispatch(updateApiLoader({apiLoader: false}));
+				handleClaimWinningAmount(res?.data);
+			})
+			.catch(err => {
+				console.log('getTokenTypeData Data Err >>> ', JSON.stringify(err));
+				dispatch(updateApiLoader({apiLoader: false}));
+			});
 	};
 
 	const betsMatchDetails = () => {
@@ -604,7 +651,11 @@ const BetDetailsScreen: React.FC<any> = () => {
 				result,
 				[nullHash],
 				nullSignature,
-				nullSignature
+				nullSignature,
+				userData?.users?.length === 0 ? [nullAddress] : userData?.users,
+				userData?.rewardPercentage?.length === 0
+					? [0]
+					: userData?.rewardPercentage
 			);
 		} else {
 			resolveBetResult(
@@ -612,7 +663,11 @@ const BetDetailsScreen: React.FC<any> = () => {
 				result,
 				eventBetData?.HashSignatureObject?.hash,
 				eventBetData?.HashSignatureObject?.makerSignature,
-				eventBetData?.HashSignatureObject?.takerSignature
+				eventBetData?.HashSignatureObject?.takerSignature,
+				userData?.users?.length === 0 ? [nullAddress] : userData?.users,
+				userData?.rewardPercentage?.length === 0
+					? [0]
+					: userData?.rewardPercentage
 			);
 		}
 
@@ -650,61 +705,100 @@ const BetDetailsScreen: React.FC<any> = () => {
 	//     });
 	// };
 
-	const handleCancelBet = isCancel => {
-		Alert.alert(
-			isCancel ? Strings.cancel_bet_desc : Strings.claim_winning_desc,
-			'',
-			[
-				{
-					text: 'Yes',
-					onPress: async () => {
-						if (
-							userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask' &&
-							!connector.connected
-						) {
-							Alert.alert(Strings.txt_session_expire_msg, '', [
-								{
-									text: 'Ok',
-									onPress: () => {
-										dispatch(logout());
-										dispatch(updateDeviceToken({deviceToken: ''}));
-										dispatch(resetProfileData({}));
+	const handleCancelBet = async isCancel => {
+		if (Platform.OS === 'web') {
+			let retVal = confirm(
+				isCancel ? Strings.cancel_bet_desc : Strings.claim_winning_desc
+			);
+			if (retVal == true) {
+				if (
+					userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask' &&
+					!connector.connected
+				) {
+					let retVal = confirm(Strings.txt_session_expire_msg);
+					if (retVal == true || retVal == false) {
+						dispatch(logout());
+						dispatch(updateDeviceToken({deviceToken: ''}));
+						dispatch(resetProfileData({}));
+					}
+					return;
+				} else {
+					if (userInfo?.user?.socialLoginType?.toLowerCase() !== 'metamask') {
+						const loginStatus = await magic.user.isLoggedIn();
+						console.log('loginStatus', loginStatus);
+						if (!loginStatus) {
+							let retVal = confirm(Strings.txt_session_expire_msg);
+							if (retVal == true || retVal == false) {
+								dispatch(logout());
+								dispatch(updateDeviceToken({deviceToken: ''}));
+								dispatch(resetProfileData({}));
+							}
+							return;
+						}
+					}
+				}
+				console.log('bet_id???', eventBetData?.bet?.bet_id);
+				claimBetAmount(eventBetData?.bet?.bet_id);
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			Alert.alert(
+				isCancel ? Strings.cancel_bet_desc : Strings.claim_winning_desc,
+				'',
+				[
+					{
+						text: 'Yes',
+						onPress: async () => {
+							if (
+								userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask' &&
+								!connector.connected
+							) {
+								Alert.alert(Strings.txt_session_expire_msg, '', [
+									{
+										text: 'Ok',
+										onPress: () => {
+											dispatch(logout());
+											dispatch(updateDeviceToken({deviceToken: ''}));
+											dispatch(resetProfileData({}));
+										}
+									}
+								]);
+								return;
+							} else {
+								if (
+									userInfo?.user?.socialLoginType?.toLowerCase() !== 'metamask'
+								) {
+									const loginStatus = await magic.user.isLoggedIn();
+									console.log('loginStatus', loginStatus);
+									if (!loginStatus) {
+										Alert.alert(Strings.txt_session_expire_msg, '', [
+											{
+												text: 'Ok',
+												onPress: () => {
+													dispatch(logout());
+													dispatch(updateDeviceToken({deviceToken: ''}));
+													dispatch(resetProfileData({}));
+												}
+											}
+										]);
+										return;
 									}
 								}
-							]);
-							return;
-						} else {
-							if (
-								userInfo?.user?.socialLoginType?.toLowerCase() !== 'metamask'
-							) {
-								const loginStatus = await magic.user.isLoggedIn();
-								console.log('loginStatus', loginStatus);
-								if (!loginStatus) {
-									Alert.alert(Strings.txt_session_expire_msg, '', [
-										{
-											text: 'Ok',
-											onPress: () => {
-												dispatch(logout());
-												dispatch(updateDeviceToken({deviceToken: ''}));
-												dispatch(resetProfileData({}));
-											}
-										}
-									]);
-									return;
-								}
 							}
-						}
-						console.log('bet_id???', eventBetData?.bet?.bet_id);
-						claimBetAmount(eventBetData?.bet?.bet_id);
+							console.log('bet_id???', eventBetData?.bet?.bet_id);
+							claimBetAmount(eventBetData?.bet?.bet_id);
+						},
+						style: 'destructive'
 					},
-					style: 'destructive'
-				},
-				{
-					text: 'No',
-					onPress: () => {}
-				}
-			]
-		);
+					{
+						text: 'No',
+						onPress: () => {}
+					}
+				]
+			);
+		}
 	};
 
 	const shouldShowClaimButton = () => {
@@ -734,21 +828,31 @@ const BetDetailsScreen: React.FC<any> = () => {
 	};
 
 	const onShare = async (url: string) => {
-		try {
-			const result = await Share.share({
-				message: url
-			});
-			if (result.action === Share.sharedAction) {
-				if (result.activityType) {
-					// shared with activity type of result.activityType
-				} else {
-					// shared
-				}
-			} else if (result.action === Share.dismissedAction) {
-				// dismissed
+		if (Platform.OS === 'web') {
+			try {
+				await navigator.share({
+					text: url
+				});
+			} catch (error) {
+				showErrorAlert('', error?.message);
 			}
-		} catch (error) {
-			Alert.alert(error.message);
+		} else {
+			try {
+				const result = await Share.share({
+					message: url
+				});
+				if (result.action === Share.sharedAction) {
+					if (result.activityType) {
+						// shared with activity type of result.activityType
+					} else {
+						// shared
+					}
+				} else if (result.action === Share.dismissedAction) {
+					// dismissed
+				}
+			} catch (error) {
+				showErrorAlert('', error.message);
+			}
 		}
 	};
 
@@ -797,11 +901,13 @@ const BetDetailsScreen: React.FC<any> = () => {
 							onPress={() => {
 								if (step === 1) {
 									if (eventBetData?.resultData?.isWinner === 'win') {
-										handleClaimWinningAmount();
+										// handleClaimWinningAmount();
+										getUserAncestorData();
 									} else if (eventBetData?.resultData?.isWinner === 'loss') {
 										navigateReset('FeedsRouter');
 									} else if (eventBetData?.resultData?.isWinner === 'draw') {
-										handleClaimWinningAmount();
+										// handleClaimWinningAmount();
+										getUserAncestorData();
 									}
 								}
 							}}
@@ -844,7 +950,12 @@ const BetDetailsScreen: React.FC<any> = () => {
 									//   Object.keys(eventBetData?.betTakerData)?.length,
 									// );
 
-									handleCancelBet(true);
+									if (cancelBetLiquidityAmount.length) {
+										dispatch(updateApiLoader({apiLoader: true}));
+										cancelBetData();
+									} else {
+										handleCancelBet(true);
+									}
 								}}
 								colorArray={defaultTheme.secondaryGradientColor}
 								angle={gradientColorAngle}

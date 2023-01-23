@@ -1,6 +1,6 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {Alert, Share, View} from 'react-native';
+import {Platform, Share, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch} from 'react-redux';
 // import {TouchableOpacity} from 'react-native-gesture-handler';
@@ -9,7 +9,13 @@ import FeedBetsView from '../../../components/Events/feedBetsView';
 import HeaderComponent from '../../../components/HeaderComponent';
 import ShareBottomSheet from '../../../components/ShareBottomSheet';
 import Strings from '../../../constants/strings';
-import {createBetDetailsPreviewShareUrl} from '../../../constants/utils/Function';
+import {
+	createBetDetailsPreviewShareUrl,
+	dateTimeConvert,
+	getBetShareUrl,
+	getEventShareUrl,
+	showErrorAlert
+} from '../../../constants/utils/Function';
 import ScreenNames from '../../../navigation/screenNames';
 import {
 	getFollowers,
@@ -40,11 +46,15 @@ export default function EventDetailsScreen() {
 	const [currentPage, setCurrentPage] = useState(0);
 	const [totalFollowUser, setTotalFollowUser] = useState(-1);
 	const [followUserData, setFollowUserData] = useState([]);
+	const [isFromBackButton, setIsFromBackButton] = useState(false);
 
 	// const MemorizedFeedBetsView = React.useMemo(
 	//   () => <FeedBetsView item={feedObject} />,
 	//   [feedObject],
 	// );
+
+	const eventEndTime =
+		feedObject?.match_end_time && dateTimeConvert(feedObject?.match_end_time);
 
 	useEffect(() => {
 		console.log('title >> ', title);
@@ -72,7 +82,7 @@ export default function EventDetailsScreen() {
 				dispatch(updateApiLoader({apiLoader: false}));
 				console.log(err);
 			});
-	}, [matchId]);
+	}, [matchId, isFromBackButton]);
 
 	const handleShareStory = (isShareFrom, tempFeedObject) => {
 		seIsMenuOpen(false);
@@ -122,28 +132,52 @@ export default function EventDetailsScreen() {
 		getFollowersData();
 	}, [currentPage]);
 
-	const handleShareUrl = async () => {
-		try {
-			const result = await Share.share({
-				message: createBetDetailsPreviewShareUrl(
-					title,
-					matchId,
-					matchId,
-					betCreationType,
-					false
-				)
-			});
-			if (result.action === Share.sharedAction) {
-				if (result.activityType) {
-					// shared with activity type of result.activityType
-				} else {
-					// shared
-				}
-			} else if (result.action === Share.dismissedAction) {
-				// dismissed
+	const handleShareUrl = async (isBet, data) => {
+		if (Platform.OS === 'web') {
+			try {
+				await navigator.share({
+					text: isBet
+						? getBetShareUrl(
+								data?.bets[0]?.users?.displayName ||
+									'@' + data?.bets[0]?.users?.userName,
+								eventEndTime,
+								data?.bet_id,
+								data?.bets[0]?._id,
+								Strings.str_bet_details,
+								betCreationType
+						  )
+						: getEventShareUrl(matchId, eventEndTime, title, betCreationType)
+				});
+			} catch (error) {
+				showErrorAlert('', error.message);
 			}
-		} catch (error) {
-			Alert.alert(error.message);
+		} else {
+			try {
+				const result = await Share.share({
+					message: isBet
+						? getBetShareUrl(
+								data?.bets[0]?.users?.displayName ||
+									'@' + data?.bets[0]?.users?.userName,
+								eventEndTime,
+								data?.bet_id,
+								data?.bets[0]?._id,
+								Strings.str_bet_details,
+								betCreationType
+						  )
+						: getEventShareUrl(matchId, eventEndTime, title, betCreationType)
+				});
+				if (result.action === Share.sharedAction) {
+					if (result.activityType) {
+						// shared with activity type of result.activityType
+					} else {
+						// shared
+					}
+				} else if (result.action === Share.dismissedAction) {
+					// dismissed
+				}
+			} catch (error) {
+				showErrorAlert('', error.message);
+			}
 		}
 	};
 	return (
@@ -151,6 +185,7 @@ export default function EventDetailsScreen() {
 			<View style={styles.container}>
 				<HeaderComponent
 					onLeftMenuPress={() => {
+						setIsFromBackButton(true);
 						navigation.goBack();
 					}}
 					name={Strings.event_details}
@@ -172,7 +207,9 @@ export default function EventDetailsScreen() {
 						selectedBetType={params?.selectedBetType}
 						isRecent={isRecent}
 						handleShareStory={data => handleShareStory('custom_bet', data)}
-						handleShareUrl={handleShareUrl}
+						handleBetShare={(data: any) => {
+							handleShareUrl(true, data);
+						}}
 					/>
 				)}
 				{feedObject && selectedBetType && !params?.isFromStreaming && (
@@ -182,7 +219,9 @@ export default function EventDetailsScreen() {
 						selectedBetType={selectedBetType}
 						isRecent={isRecent}
 						handleShareStory={data => handleShareStory('custom_bet', data)}
-						handleShareUrl={handleShareUrl}
+						handleBetShare={(data: any) => {
+							handleShareUrl(true, data);
+						}}
 					/>
 				)}
 				{/* </KeyboardAwareScrollView> */}
@@ -193,7 +232,9 @@ export default function EventDetailsScreen() {
 					}}
 					users={followUserData}
 					handleShareEvent={() => handleShareStory('match', feedObject)}
-					handleShareUrl={handleShareUrl}
+					handleShareUrl={() => {
+						handleShareUrl(false);
+					}}
 					shareURL={createBetDetailsPreviewShareUrl(
 						title,
 						matchId,

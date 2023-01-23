@@ -1,6 +1,6 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {Alert, Share, StyleSheet, Text, View} from 'react-native';
+import {Platform, Share, StyleSheet, View} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
@@ -14,7 +14,12 @@ import LiveStreamingFlatList from '../../../components/LiveStreamingFlatList';
 import NoDataComponent from '../../../components/NoDataComponent';
 import SelecteableTag from '../../../components/SelecteableTag';
 import Strings from '../../../constants/strings';
-import {createBetDetailsPreviewShareUrl} from '../../../constants/utils/Function';
+import {
+	createBetDetailsPreviewShareUrl,
+	dateTimeConvert,
+	getEventShareUrl,
+	showErrorAlert
+} from '../../../constants/utils/Function';
 import ScreenNames from '../../../navigation/screenNames';
 import {
 	getFilteredFeeds,
@@ -175,28 +180,33 @@ const FeedFilterScreen: React.FC<any> = props => {
 		}
 	}, [currentPage]);
 
-	const handleShare = async matchId => {
-		try {
-			const result = await Share.share({
-				message: createBetDetailsPreviewShareUrl(
-					Strings.feed,
-					matchId,
-					matchId,
-					1,
-					false
-				)
-			});
-			if (result.action === Share.sharedAction) {
-				if (result.activityType) {
-					// shared with activity type of result.activityType
-				} else {
-					// shared
-				}
-			} else if (result.action === Share.dismissedAction) {
-				// dismissed
+	const handleShare = async (matchId, endTime) => {
+		const eventEndTime = dateTimeConvert(endTime);
+		if (Platform.OS === 'web') {
+			try {
+				await navigator.share({
+					text: getEventShareUrl(matchId, eventEndTime, Strings.feed, 1)
+				});
+			} catch (error) {
+				showErrorAlert('', error.message);
 			}
-		} catch (error) {
-			Alert.alert(error.message);
+		} else {
+			try {
+				const result = await Share.share({
+					message: getEventShareUrl(matchId, eventEndTime, Strings.feed, 1)
+				});
+				if (result.action === Share.sharedAction) {
+					if (result.activityType) {
+						// shared with activity type of result.activityType
+					} else {
+						// shared
+					}
+				} else if (result.action === Share.dismissedAction) {
+					// dismissed
+				}
+			} catch (error) {
+				showErrorAlert('', error.message);
+			}
 		}
 	};
 
@@ -306,7 +316,7 @@ const FeedFilterScreen: React.FC<any> = props => {
 							case 1:
 								console.log('item._id >> ', item._id);
 								setTimeout(() => {
-									handleShare(item._id);
+									handleShare(item._id, item?.match_end_time);
 								}, 1000);
 								break;
 							case 2:
@@ -424,7 +434,7 @@ const FeedFilterScreen: React.FC<any> = props => {
 						customTag: tag === 'Other' ? 1 : 0
 					};
 					postReportMatch(data).then(res => {
-						Alert.alert('', res?.message ?? Strings.somethingWentWrong);
+						showErrorAlert('', res?.message ?? Strings.somethingWentWrong);
 					});
 				}}
 				isVisible={isReportPopupShown}

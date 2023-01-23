@@ -26,8 +26,7 @@ import {
 
 import StoryProfileComponent from '../StoryProfileComponent';
 import StoryDetailsContainer from './StoryDetailsContainer';
-
-// const {CubeNavigationHorizontal} = require('react-native-3dcube-navigation');
+import {CubeNavigationHorizontal} from 'react-native-3dcube-navigation';
 
 interface PropsType {
 	data: any;
@@ -113,11 +112,11 @@ const Stories = (props: PropsType) => {
 		}
 	};
 
-	useEffect(() => {
-		console.log('====================================');
-		console.log('props.data ::', JSON.stringify(props.data));
-		console.log('====================================');
-	}, []);
+	// useEffect(() => {
+	// 	console.log('====================================');
+	// 	console.log('props.data ::', JSON.stringify(props.data));
+	// 	console.log('====================================');
+	// }, []);
 
 	return (
 		<View style={styles.container}>
@@ -165,10 +164,12 @@ const Stories = (props: PropsType) => {
 					}
 				}}
 				onRequestClose={onStoryClose}>
-				
+				<CubeNavigationHorizontal
+					callBackAfterSwipe={g => onScrollChange(g)}
+					ref={modalScroll}
+					style={styles.container}>
 					{props.data.map((item, index) => (
 						<>
-							<>{console.log('item >> ', JSON.stringify(item))}</>
 							<StoryDetailsContainer
 								key={item._id}
 								onClose={onStoryClose}
@@ -180,6 +181,7 @@ const Stories = (props: PropsType) => {
 							/>
 						</>
 					))}
+				</CubeNavigationHorizontal>
 			</Modal>
 		</View>
 	);

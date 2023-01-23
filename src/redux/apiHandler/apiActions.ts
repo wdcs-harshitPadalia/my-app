@@ -673,10 +673,11 @@ export const getMatchDetails = async (match_id: any) => {
 	return response;
 };
 
-export const getUserBetResult = async (bet_id: string) => {
+export const getUserBetResult = async (data: any) => {
 	const response = await useAxios({
 		method: Api.POST,
-		url: ApiBaseUrl + ApiConstants.getUserBetResult + bet_id
+		url: ApiBaseUrl + ApiConstants.getUserBetResult,
+		data: data
 	});
 	return response;
 };

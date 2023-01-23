@@ -48,7 +48,10 @@ const OpenDisputeScreen: React.FC<any> = props => {
 	}, [bet_id]);
 
 	const getUserBetResultData = () => {
-		getUserBetResult(bet_id)
+		const uploadData = {
+			bet_id: bet_id
+		};
+		getUserBetResult(uploadData)
 			.then(res => {
 				// console.log('getUserBetResult????????????', res);
 				const betObj = res?.data?.bet;

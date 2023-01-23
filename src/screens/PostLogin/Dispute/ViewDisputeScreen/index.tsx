@@ -234,7 +234,10 @@ const ViewDisputeScreen: React.FC<any> = () => {
 
 	const getUserBetResultData = () => {
 		dispatch(updateApiLoader({apiLoader: true}));
-		getUserBetResult(betId)
+		const uploadData = {
+			bet_id: betId
+		};
+		getUserBetResult(uploadData)
 			.then(res => {
 				// console.log('getUserBetResult????????????', res);
 
@@ -565,7 +568,7 @@ const ViewDisputeScreen: React.FC<any> = () => {
 
 				<ScrollView
 					style={{
-						marginHorizontal: horizontalScale(16),
+						paddingHorizontal: horizontalScale(16),
 						flex: 1,
 						paddingBottom: verticalScale(50)
 					}}

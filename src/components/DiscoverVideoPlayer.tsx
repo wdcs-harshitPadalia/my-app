@@ -461,8 +461,14 @@ const DiscoverVideoPlayer = React.forwardRef((props, parentRef) => {
 	};
 
 	const handleDownloadVideo = async () => {
-		console.log("itemData?.video_url???>>", itemData?.video_url)
-		download(itemData?.video_url, 'defibethouse.mp4');
+		console.log('itemData?.video_url???>>', itemData?.watermark_short_videos);
+		const date = new Date()
+		download(itemData?.watermark_short_videos, `TF_${date.getTime()}.mp4`);
+
+		setTimeout(() => {
+			setIsShowShareModal(false);
+		}, 1000);
+
 		//downloadVideo(itemData?.video_url);
 	};
 	// let reqPermission = await request(

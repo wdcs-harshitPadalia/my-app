@@ -5,7 +5,8 @@ import {
 	TextInputProps,
 	Text,
 	Modal,
-	TouchableOpacity
+	TouchableOpacity,
+	Platform
 } from 'react-native';
 import ExpoFastImage from 'expo-fast-image';
 import {LinearGradient} from 'expo-linear-gradient';
@@ -54,11 +55,21 @@ const WithdrawConformationModal: React.FC<Props> = props => {
 					</View>
 					<View style={styles.titleView}>
 						<Text style={styles.titleStyle}>{Strings.you_will_transfer}</Text>
-						<GradientText
-							colors={defaultTheme.primaryGradientColor}
-							style={styles.gradientStyle}>
-							{' ' + amount + ' '}
-						</GradientText>
+						{Platform.OS === 'web' ? (
+							<Text
+								style={[
+									styles.gradientStyle,
+									{color: defaultTheme.primaryGradientColor[0]}
+								]}>
+								{' ' + amount + ' '}
+							</Text>
+						) : (
+							<GradientText
+								colors={defaultTheme.primaryGradientColor}
+								style={styles.gradientStyle}>
+								{' ' + amount + ' '}
+							</GradientText>
+						)}
 						<Text style={styles.titleStyle}>{Strings.to_address}</Text>
 					</View>
 					<LinearGradient
@@ -66,7 +77,7 @@ const WithdrawConformationModal: React.FC<Props> = props => {
 						useAngle={true}
 						angle={gradientColorAngle}
 						colors={defaultTheme.ternaryGradientColor}>
-						<Text style={styles.addressTextStyle}>{address}</Text>
+						<Text style={styles.addressTextStyle} numberOfLines={2}>{address}</Text>
 					</LinearGradient>
 
 					<View style={styles.viewBackButton}>

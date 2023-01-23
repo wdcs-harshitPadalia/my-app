@@ -322,7 +322,7 @@ const ProfileScreen: React.FC<any> = props => {
 				{userProfileInfo?.user !== {} && (
 					<ScrollView
 						ref={scrollRef}
-						contentContainerStyle={{paddingBottom: 100}}
+						contentContainerStyle={{paddingBottom: 140}}
 						// enableOnAndroid={false}
 						bounces={false}>
 						<View style={styles.viewContain}>

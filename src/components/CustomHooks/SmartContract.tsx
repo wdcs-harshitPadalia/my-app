@@ -1792,13 +1792,13 @@ export const useBetCreateContract = () => {
 					console.log(' claimRewardAmount error', error);
 					setWithdrawAddress('Error');
 					dispatch(updateApiLoader({apiLoader: false}));
-					Alert.alert('', 'Something went wrong. Please try again later');
+					showErrorAlert('', 'Something went wrong. Please try again later');
 				});
 		} catch (error) {
 			console.log('claimRewardAmount error', error);
 			setWithdrawAddress('Error');
 			dispatch(updateApiLoader({apiLoader: false}));
-			Alert.alert('', 'Something went wrong. Please try again later');
+			showErrorAlert('', 'Something went wrong. Please try again later');
 		}
 	};
 
@@ -2487,12 +2487,12 @@ export const useBetCreateContract = () => {
 			);
 
 			if (error?.toString().includes('insufficient funds')) {
-				Alert.alert(
+				showErrorAlert(
 					'Insufficient Balance'.toUpperCase(),
 					Strings.enough_balance_to_transfer
 				);
 			} else {
-				Alert.alert('', 'Something went wrong. Please try again later');
+				showErrorAlert('', 'Something went wrong. Please try again later');
 			}
 		}
 	};
@@ -2541,12 +2541,12 @@ export const useBetCreateContract = () => {
 			dispatch(updateApiLoader({apiLoader: false}));
 			console.log('transferERCToken :: error :: ', error);
 			if (error?.toString().includes('insufficient funds')) {
-				Alert.alert(
+				showErrorAlert(
 					'Insufficient Balance'.toUpperCase(),
 					Strings.enough_balance_to_transfer
 				);
 			} else {
-				Alert.alert('', 'Something went wrong. Please try again later');
+				showErrorAlert('', 'Something went wrong. Please try again later');
 			}
 		}
 	};

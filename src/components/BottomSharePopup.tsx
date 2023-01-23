@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {StyleSheet, ImageSourcePropType, View} from 'react-native';
+import {StyleSheet, ImageSourcePropType, View, Platform} from 'react-native';
 import {Fonts, moderateScale, verticalScale} from '../theme';
 import colors from '../theme/colors';
 import RBSheet from 'react-native-raw-bottom-sheet';
@@ -33,14 +33,14 @@ const BottomSharePopup: React.FC<Props> = props => {
 		<View style={[{...props.style}, styles.container]}>
 			<RBSheet
 				ref={refRBSheet}
-				closeOnDragDown={true}
-				closeOnPressMask={false}
+				closeOnDragDown={Platform.OS !== 'web'}
+				closeOnPressMask={Platform.OS === 'web'}
 				onClose={() => {
 					onPress(undefined);
 				}}
 				customStyles={{
 					wrapper: {
-						backgroundColor: 'transparent'
+						//backgroundColor: 'transparent'
 					},
 					draggableIcon: {
 						backgroundColor: colors.placeholderColor

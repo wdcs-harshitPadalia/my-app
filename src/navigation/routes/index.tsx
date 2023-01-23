@@ -930,7 +930,7 @@ const RootRouter = () => {
 					cardStyleInterpolator: cardStyleType,
 					cardStyle: styles.cardContainerStyle
 				}}>
-				{global.firstTime && (
+				{globalThis.firstTime && (
 					<Stack.Screen
 						name={ScreenNames.SplashScreen}
 						component={SplashScreen}
@@ -995,11 +995,13 @@ const Routes = () => {
 	// console.log('chece',isLoggedin);
 	return (
 		<NavigationContainer
+		    theme={{ colors: { background: '#000' } }}
 			ref={navigationRef}
 			linking={userInfo.token && !userInfo.isNewUser && Linking}
 			onReady={() => {
 				routeNameRef.current = navigationRef.current.getCurrentRoute().name;
 			}}
+			fallback={<Login />}
 			>
 			{/* Render the Magic iframe! */}
 			{/* <magic.Relayer /> */}

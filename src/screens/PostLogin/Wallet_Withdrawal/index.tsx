@@ -91,7 +91,7 @@ export default function WalletWithdrawalScreen() {
 	};
 
 	function isBtnDisable() {
-		if (amount.trim() !== '' && address.trim() !== '' && check) {
+		if (amount.trim() !== '' && parseFloat(amount.trim()) > 0.0 && address.trim() !== '' && check) {
 			return false;
 		}
 		return true;

@@ -426,7 +426,7 @@ const DisputeResultScreen: React.FC<any> = props => {
 		navigation.navigate(ScreenNames.MoreAboutStrikePolicyScreen);
 	};
 
-	const handleClaimWinningAmount = () => {
+	const handleClaimWinningAmount = userData => {
 		console.log('handleClaimWinningAmount??', betObj);
 		let bet_type = betObj?.bet_type;
 		let result =

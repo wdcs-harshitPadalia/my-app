@@ -1117,9 +1117,6 @@ const DiscoverScreen: React.FC<any> = props => {
 					)}
 
 					{isSelectedIndex === 2 && (
-						<KeyboardAwareScrollView
-						showsVerticalScrollIndicator={false}
-						scrollEnabled={true}>
 						<View style={{paddingBottom: verticalScale(120)}}>
 							<ButtonGradient
 								onPress={() => {
@@ -1142,12 +1139,14 @@ const DiscoverScreen: React.FC<any> = props => {
 								contentContainerStyle={{
 									paddingBottom: verticalScale(120),
 									marginTop: verticalScale(16),
-									marginHorizontal: horizontalScale(8)
+									marginHorizontal: horizontalScale(8),
+									height: Dimensions.get('screen').height * 0.57
 								}}
 								bounces={false}
 								data={discoverSearchData}
 								renderItem={renderFollowersUserItem}
 								keyboardShouldPersistTaps={'handled'}
+								onEndReachedThreshold={0.5}
 								onEndReached={() => {
 									console.log(
 										'onEndReached11111',
@@ -1156,7 +1155,8 @@ const DiscoverScreen: React.FC<any> = props => {
 									);
 									if (
 										totalDiscoverSearch !== discoverSearchData?.length &&
-										!isSearchTextEmpty() && !isLoading
+										!isSearchTextEmpty() &&
+										!isLoading
 									) {
 										setIsLoading(true);
 
@@ -1169,7 +1169,6 @@ const DiscoverScreen: React.FC<any> = props => {
 								)}
 							/>
 						</View>
-					 </KeyboardAwareScrollView>
 					)}
 
 					{isShowNoRecent === true && (

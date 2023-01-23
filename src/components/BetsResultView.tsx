@@ -8,8 +8,11 @@ import {
 	Platform
 } from 'react-native';
 import ExpoFastImage from 'expo-fast-image';
+import {useSelector} from 'react-redux';
+
 import icons from '../assets/icon';
 import {decimalValue} from '../constants/api';
+import {RootState} from '../redux/store';
 import Strings from '../constants/strings';
 import {getRoundDecimalValue} from '../constants/utils/Function';
 
@@ -38,6 +41,9 @@ interface Props extends TextInputProps {
 	isShowFee?: boolean;
 	isShowLost?: boolean;
 	bottomTitle?: boolean;
+	betData?: any;
+	visitProfileUserId?: any;
+	isFromResult?: boolean;
 }
 
 const BetsResultView: React.FC<Props> = props => {
@@ -52,13 +58,38 @@ const BetsResultView: React.FC<Props> = props => {
 		winningPercentage,
 		isShowFee,
 		isShowLost,
-		bottomTitle
+		bottomTitle,
+		betData,
+		visitProfileUserId,
+		isFromResult
 	} = props;
+
+	const userProfileInfo = useSelector((state: RootState) => {
+		return state.userInfo.data;
+	});
 
 	return (
 		<View style={styles.container}>
 			<View style={styles.viewDetails}>
-				<Text style={styles.yourBetsStyle}>{Strings.yourBet}</Text>
+				<Text style={styles.yourBetsStyle}>
+					{isFromResult
+						? Strings.yourBet
+						: betData?.bet?.users?._id === userProfileInfo?.user?._id
+						? Strings.yourBet
+						: betData?.betTakerData?._id === userProfileInfo?.user?._id
+						? Strings.yourBet
+						: betData?.bet?.users?._id === visitProfileUserId
+						? Strings.yourBet.replace(
+								'Your',
+								(betData?.bet?.users?.displayName ||
+									betData?.bet?.users?.userName) + `'s`
+						  )
+						: Strings.yourBet.replace(
+								'Your',
+								(betData?.betTakerData?.displayName ||
+									betData?.betTakerData?.userName) + `'s`
+						  )}
+				</Text>
 				<ButtonGradient
 					colorArray={defaultTheme.primaryGradientColor}
 					angle={gradientColorAngle}
@@ -69,7 +100,21 @@ const BetsResultView: React.FC<Props> = props => {
 					style={styles.buttonInputStyle}
 				/>
 				<Text style={styles.betsTypeStyle}>
-					{Strings.you_are_betting.toUpperCase() + ':'}
+					{isFromResult
+						? Strings.you_are_betting.toUpperCase() + ':'
+						: betData?.bet?.users?._id === userProfileInfo?.user?._id
+						? Strings.you_are_betting.toUpperCase() + ':'
+						: betData?.betTakerData?._id === userProfileInfo?.user?._id
+						? Strings.you_are_betting.toUpperCase() + ':'
+						: betData?.bet?.users?._id === visitProfileUserId
+						? (betData?.bet?.users?.displayName ||
+								betData?.bet?.users?.userName) +
+						  ' is betting' +
+						  ':'
+						: (betData?.betTakerData?.displayName ||
+								betData?.betTakerData?.userName) +
+						  ' is betting' +
+						  ':'}
 				</Text>
 				<ButtonGradientWithRightIcon
 					colorArray={defaultTheme.ternaryGradientColor}
@@ -106,7 +151,21 @@ const BetsResultView: React.FC<Props> = props => {
 					<View style={styles.rawContainer}>
 						<Text
 							style={[styles.winAmountStyle, {color: colors.placeholderColor}]}>
-							{Strings.you_will_win + ': '}
+							{isFromResult
+								? Strings.you_will_win + ': '
+								: betData?.bet?.users?._id === userProfileInfo?.user?._id
+								? Strings.you_will_win + ': '
+								: betData?.betTakerData?._id === userProfileInfo?.user?._id
+								? Strings.you_will_win + ': '
+								: betData?.bet?.users?._id === visitProfileUserId
+								? (betData?.bet?.users?.displayName ||
+										betData?.bet?.users?.userName) +
+								  ' will win' +
+								  ': '
+								: (betData?.betTakerData?.displayName ||
+										betData?.betTakerData?.userName) +
+								  ' will win' +
+								  ': '}
 						</Text>
 						{Platform.OS === 'web' ? (
 							<Text

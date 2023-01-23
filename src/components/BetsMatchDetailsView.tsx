@@ -33,6 +33,7 @@ interface Props extends TextInputProps {
 	betData?: any;
 	isShowUserProfile?: boolean;
 	handleRedirectUser?: () => void;
+	visitProfileUserId?: any;
 }
 
 const BetsMatchDetailsView: React.FC<Props> = props => {
@@ -46,7 +47,8 @@ const BetsMatchDetailsView: React.FC<Props> = props => {
 		isSelectedLeagueType,
 		betData,
 		isShowUserProfile,
-		handleRedirectUser
+		handleRedirectUser,
+		visitProfileUserId
 	} = props;
 
 	const userProfileInfo = useSelector((state: RootState) => {
@@ -84,7 +86,11 @@ const BetsMatchDetailsView: React.FC<Props> = props => {
 						<Text style={styles.betTakenStyle}>
 							{betData?.bet?.users?._id === userProfileInfo?.user?._id
 								? Strings.taken_by.toUpperCase()
-								: Strings.maker_by.toUpperCase()}
+								: betData?.betTakerData?._id === userProfileInfo?.user?._id
+								? Strings.maker_by.toUpperCase()
+								: betData?.bet?.users?._id === visitProfileUserId
+								? Strings.maker_by.toUpperCase()
+								: Strings.taken_by.toUpperCase()}
 						</Text>
 
 						<TouchableOpacity
@@ -98,7 +104,12 @@ const BetsMatchDetailsView: React.FC<Props> = props => {
 										uri:
 											betData?.bet?.users?._id === userProfileInfo?.user?._id
 												? betData?.betTakerData?.picture
-												: betData?.bet?.users?.picture
+												: betData?.betTakerData?._id ===
+												  userProfileInfo?.user?._id
+												? betData?.bet?.users?.picture
+												: betData?.bet?.users?._id === visitProfileUserId
+												? betData?.bet?.users?.picture
+												: betData?.betTakerData?.picture
 									}}
 								/>
 								<ExpoFastImage
@@ -108,7 +119,12 @@ const BetsMatchDetailsView: React.FC<Props> = props => {
 										getLevelRank(
 											betData?.bet?.users?._id === userProfileInfo?.user?._id
 												? betData?.betTakerData?.level
-												: betData?.bet?.users?.level
+												: betData?.betTakerData?._id ===
+												  userProfileInfo?.user?._id
+												? betData?.bet?.users?.level
+												: betData?.bet?.users?._id === visitProfileUserId
+												? betData?.bet?.users?.level
+												: betData?.betTakerData?.level
 										)?.image
 									}
 								/>
@@ -117,7 +133,11 @@ const BetsMatchDetailsView: React.FC<Props> = props => {
 							<Text style={styles.betUserNameStyle}>
 								{betData?.bet?.users?._id === userProfileInfo?.user?._id
 									? betData?.betTakerData?.userName
-									: betData?.bet?.users?.userName}
+									: betData?.betTakerData?._id === userProfileInfo?.user?._id
+									? betData?.bet?.users?.userName
+									: betData?.bet?.users?._id === visitProfileUserId
+									? betData?.bet?.users?.userName
+									: betData?.betTakerData?.userName}
 							</Text>
 						</TouchableOpacity>
 					</View>

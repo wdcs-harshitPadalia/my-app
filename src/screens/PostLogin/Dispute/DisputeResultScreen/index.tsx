@@ -15,7 +15,7 @@ import HeaderComponent from '../../../../components/HeaderComponent';
 import InformationPopUpView from '../../../../components/InformationPopUpView';
 import ResultCaseView from '../../../../components/ResultCaseView';
 import ResultHeaderTextView from '../../../../components/ResultHeaderTextView';
-import {decimalValue} from '../../../../constants/api';
+import {decimalValue, nullAddress} from '../../../../constants/api';
 import Strings from '../../../../constants/strings';
 import {
 	getMetamaskBalance,
@@ -446,8 +446,10 @@ const DisputeResultScreen: React.FC<any> = props => {
 				['0x0000000000000000000000000000000000000000000000000000000000000000'],
 				'0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
 				'0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
-				userData?.users,
-				userData?.rewardPercentage
+				userData?.users?.length === 0 ? [nullAddress] : userData?.users,
+				userData?.rewardPercentage?.length === 0
+					? [0]
+					: userData?.rewardPercentage
 			);
 		} else {
 			resolveBetResult(
@@ -456,8 +458,10 @@ const DisputeResultScreen: React.FC<any> = props => {
 				resultData?.HashSignatureObject?.hash,
 				resultData?.HashSignatureObject?.makerSignature,
 				resultData?.HashSignatureObject?.takerSignature,
-				userData?.users,
-				userData?.rewardPercentage
+				userData?.users?.length === 0 ? [nullAddress] : userData?.users,
+				userData?.rewardPercentage?.length === 0
+					? [0]
+					: userData?.rewardPercentage
 			);
 		}
 

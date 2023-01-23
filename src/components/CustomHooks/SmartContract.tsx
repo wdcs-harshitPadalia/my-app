@@ -1622,19 +1622,12 @@ export const useBetCreateContract = () => {
 		setClaimUserData([]);
 		const hashArr = hash?.reverse();
 		let userHash = await web3.eth.accounts.hashMessage(usersAddress.toString());
-		let percentageHash = await web3.eth.accounts.hashMessage(
-			rewardPercentage.toString()
-		);
 
 		let signUser = await web3.eth.accounts.sign(
 			userHash,
 			'a699c008e5bcda9e6b032b930c248eab436690f4f4cfe725553c5d5ed33045a7'
 		);
 
-		let signPercentage = await web3.eth.accounts.sign(
-			percentageHash,
-			'a699c008e5bcda9e6b032b930c248eab436690f4f4cfe725553c5d5ed33045a7'
-		);
 
 		try {
 			// dispatch(
@@ -1654,9 +1647,11 @@ export const useBetCreateContract = () => {
 					taker,
 					usersAddress,
 					rewardPercentage,
-					[userHash, percentageHash],
-					signUser.signature,
-					signPercentage.signature
+					// [userHash, percentageHash],
+					// signUser.signature,
+					// signPercentage.signature
+					userHash,
+					signUser.signature
 				)
 				.send({
 					from: address,

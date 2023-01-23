@@ -36,7 +36,7 @@ const Strings = {
 	connect_metamask: 'connect with metamask',
 	disconnect_metamask: 'disconnect from metamask',
 	welcome: 'Welcome to',
-	defibetHouse: 'defibet.house',
+	defibetHouse: 'truly.fun',
 
 	//Bottom tabs
 	bottomTabLive: 'Live',
@@ -366,7 +366,8 @@ const Strings = {
 	friendRequest: 'Friend Request',
 	Decline_invitation: 'Decline invitation',
 	biometric_authentication: 'Biometric authentication',
-	enable_biometric_id_to_open_defibet: 'Enable biometric id to open defibet',
+	enable_biometric_id_to_open_defibet:
+		'Enable biometric id to open ' + app.expo.name,
 	disputes: 'Disputes',
 	i_want_to_be_jury_in_disputes: 'I want to be jury in disputes',
 
@@ -612,10 +613,10 @@ const Strings = {
 	connect_with_other_users_and_start_betting:
 		'Connect with other users and start betting',
 
-	share_defibet_house: 'Share Defibet.house',
+	share_defibet_house: 'Share ' + app.expo.name,
 	share_the_app_with_your_friends:
 		'Share the app with your friends and challenge them for extra fun and bragging rights!',
-	share_defibet_house_app: 'Share defibet.house app with your friends!',
+	share_defibet_house_app: 'Share ' + app.expo.name + ' app with your friends!',
 	close: 'Close',
 	sync_contacts: 'Sync Contacts',
 	no_conversation_found: 'No conversation history found',
@@ -687,7 +688,9 @@ const Strings = {
 	str_see_all: 'See all',
 	swipe_up_for_more_bets: 'Swipe up for more bets',
 	app_sharing_text:
-		'😱 %s is sharing defibet.house with you\n\nClick on the link to download the app and bet on any topic you can imagine 🤯 🚀 👇\n\n',
+		'😱 %s is sharing ' +
+		app.expo.name +
+		' with you\n\nClick on the link to download the app and bet on any topic you can imagine 🤯 🚀 👇\n\n',
 	jury_banned:
 		"You have been banned as a Jury so you won't be able to perform any activity related to Jury.",
 	watching: 'watching',
@@ -790,6 +793,7 @@ const Strings = {
 		'Just a few more seconds! Your funds are being transferred to recipient wallet',
 	no_pending_claim: 'NO PENDING REWARDS TO CLAIM',
 	let_create_market: "Let's create your market",
-	txt_age_validation : 'You must be 18 years old or above to use this app.'
+	txt_age_validation: 'You must be 18 years old or above to use this app.',
+	copy_referral_desc: 'Referral code copied to clipboard.'
 };
 export default Strings;

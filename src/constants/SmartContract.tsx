@@ -631,6 +631,19 @@ export const CONFIG_TOKEN_ABI = [
 	},
 	{
 		inputs: [],
+		name: 'freezeOrUnfreezeOperations',
+		outputs: [
+			{
+				internalType: 'bool',
+				name: '',
+				type: 'bool'
+			}
+		],
+		stateMutability: 'nonpayable',
+		type: 'function'
+	},
+	{
+		inputs: [],
 		name: 'getAaveConfig',
 		outputs: [
 			{
@@ -819,6 +832,19 @@ export const CONFIG_TOKEN_ABI = [
 				internalType: 'uint256',
 				name: '',
 				type: 'uint256'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [],
+		name: 'getFreezingStatus',
+		outputs: [
+			{
+				internalType: 'bool',
+				name: '',
+				type: 'bool'
 			}
 		],
 		stateMutability: 'view',
@@ -2442,18 +2468,13 @@ export const BET_ABI = [
 				type: 'uint256[]'
 			},
 			{
-				internalType: 'bytes32[]',
-				name: 'packageHash_',
-				type: 'bytes32[]'
+				internalType: 'bytes32',
+				name: 'verifierHash_',
+				type: 'bytes32'
 			},
 			{
 				internalType: 'bytes',
-				name: 'userPackageSig_',
-				type: 'bytes'
-			},
-			{
-				internalType: 'bytes',
-				name: 'percentagePackageSig',
+				name: 'verifierSig_',
 				type: 'bytes'
 			}
 		],
@@ -4271,18 +4292,13 @@ export const SMART_CONTRACT_ABI = [
 				type: 'uint256[]'
 			},
 			{
-				internalType: 'bytes32[]',
-				name: 'packageHash_',
-				type: 'bytes32[]'
+				internalType: 'bytes32',
+				name: 'verifierHash_',
+				type: 'bytes32'
 			},
 			{
 				internalType: 'bytes',
-				name: 'userPackageSig_',
-				type: 'bytes'
-			},
-			{
-				internalType: 'bytes',
-				name: 'percentagePackageSig',
+				name: 'verifierSig_',
 				type: 'bytes'
 			}
 		],
@@ -6318,21 +6334,21 @@ export const REWARD_DISTRIBUTION_ABI = [
 //TODO: add a way to get the contract address from the network
 
 export const ConfigContractAddress =
-	'0xacFa8D3661425acE092c778E3deC4c9686a91deB';
+	'0x2B19669499Ec3205db298e734025a950f7f9b817';
 
-export const BetContractAddress = '0x80E552EE16B84da8CcCB0b584a1407BF3DBfbEca';
+export const BetContractAddress = '0xf8833309b2C0d8B2494E1B1467FC885138f2C938';
 
 export const DisputeResolutionContractAddress =
-	'0xc1C05fc1923b7eEe11D2fC2e1E26CC6Bc923423D';
+	'0x1E76E682e809c6B46BE3d999EEEAAAAE8BdEd09C';
 
 export const SmartContractAddress =
-	'0xc0BaDE1dFE17526cce0fA34e02aA6D9d940e7e21';
+	'0xf65F5023232b7AC3da6062a2301C5fB0F57EcFd7';
 
 export const DebethTokenContractAddress =
 	'0xf04A870D9124c4bBE1b2C2B80eb6020A11B22499';
 
 export const LiquidityHolderAddress =
-	'0xF339f8C7DD14f280c35CFD31733971A14E7DD760';
+	'0x72a00f65ed20cE7471F2Eef2Fa396585de1da068';
 
 export const RewardDistributionAddress =
-	'0xF49E70BbD85f3e7C6F204D12f1501A54b9c7467e';
+	'0x9E63c96A909F48e7c95754dEA29a30C3E2557e24';

@@ -1628,7 +1628,6 @@ export const useBetCreateContract = () => {
 			'a699c008e5bcda9e6b032b930c248eab436690f4f4cfe725553c5d5ed33045a7'
 		);
 
-
 		try {
 			// dispatch(
 			// 	updateApiLoader({
@@ -2363,24 +2362,24 @@ export const useBetCreateContract = () => {
 		console.log('getPassiveIncome :: address :: ', address);
 		console.log('====================================');
 
-		a.methods
-			.getAaveFeeConfig()
-			.call({from: address})
-			.then(function (result) {
-				console.log('====================================');
-				console.log('getAaveFeeConfig :: result ::', result);
-				console.log('====================================');
-				const tempAmount = parseInt(result['0'] / 2);
-				if (tempAmount > 0) {
-					setPassiveIncomeAmount(tempAmount);
-				} else {
-					setPassiveIncomeAmount(0);
-				}
-			})
-			.catch(function (error) {
-				console.log('error', error);
-				showErrorAlert('', Strings.txt_something_wrong_try_again);
-			});
+		// a.methods
+		// 	.getAaveFeeConfig()
+		// 	.call({from: address})
+		// 	.then(function (result) {
+		// 		console.log('====================================');
+		// 		console.log('getAaveFeeConfig :: result ::', result);
+		// 		console.log('====================================');
+		// 		const tempAmount = parseInt(result['0'] / 2);
+		// 		if (tempAmount > 0) {
+		// 			setPassiveIncomeAmount(tempAmount);
+		// 		} else {
+		// 			setPassiveIncomeAmount(0);
+		// 		}
+		// 	})
+		// 	.catch(function (error) {
+		// 		console.log('error', error);
+		// 		showErrorAlert('', Strings.txt_something_wrong_try_again);
+		// 	});
 	};
 
 	const getLiquidity = async betAddress => {

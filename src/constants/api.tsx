@@ -1,8 +1,8 @@
 // PRODUCTION
 //http://13.59.164.150:5090/api/v1/user/login
 const ApiVersion = 'v1';
-export const ApiPort = '5011'; // client build port - 5009, local build port - 5011
-export const SecondaryApiPort = '5012'; // client build port - 5008, local build port - 5012
+export const ApiPort = '5009'; // client build port - 5009, local build port - 5011
+export const SecondaryApiPort = '5008'; // client build port - 5008, local build port - 5012
 
 export const AppSchema = 'https://defibet.house/';
 
@@ -15,8 +15,16 @@ export const serverKey =
 // export const ApiSecondaryBaseUrl = `https://api2.defibet.house/api/${ApiVersion}/`;
 
 // Development - Local
-export const ApiBaseUrl = `http://13.59.164.150:${ApiPort}/api/${ApiVersion}/`;
-export const ApiSecondaryBaseUrl = `http://13.59.164.150:${SecondaryApiPort}/api/${ApiVersion}/`;
+// export const ApiBaseUrl = `http://13.59.164.150:${ApiPort}/api/${ApiVersion}/`;
+// export const ApiSecondaryBaseUrl = `http://13.59.164.150:${SecondaryApiPort}/api/${ApiVersion}/`;
+
+// Development - 5009, 5008
+// export const ApiBaseUrl = `https://defibet-backend.codezeros.com/api/${ApiVersion}/`;
+// export const ApiSecondaryBaseUrl = `https://defibet-backend2.codezeros.com/api/${ApiVersion}/`;
+
+// Development - 5011, 5012
+export const ApiBaseUrl = `https://defibet-backendstaging.codezeros.com/api/${ApiVersion}/`;
+export const ApiSecondaryBaseUrl = `https://defibet-backend2staging.codezeros.com/api/${ApiVersion}/`;
 
 export const nullHash =
 	'0x0000000000000000000000000000000000000000000000000000000000000000';

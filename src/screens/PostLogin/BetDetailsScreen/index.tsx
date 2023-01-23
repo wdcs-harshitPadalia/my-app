@@ -305,6 +305,12 @@ const BetDetailsScreen: React.FC<any> = () => {
 		if (eventBetData?.bet?.users?._id === userProfileInfo?.user?._id) {
 			setOdds(eventBetData?.bet?.odds);
 			setBetAmount(eventBetData?.bet?.bet_amount);
+		} else if (eventBetData?.betTakerData?._id === userProfileInfo?.user?._id) {
+			setOdds(eventBetData?.bet?.opposite_odds);
+			setBetAmount(eventBetData?.bet?.bet_opposite_amount);
+		} else if (eventBetData?.bet?.users?._id === params?.userId) {
+			setOdds(eventBetData?.bet?.odds);
+			setBetAmount(eventBetData?.bet?.bet_amount);
 		} else {
 			setOdds(eventBetData?.bet?.opposite_odds);
 			setBetAmount(eventBetData?.bet?.bet_opposite_amount);
@@ -437,7 +443,7 @@ const BetDetailsScreen: React.FC<any> = () => {
 				handleClaimWinningAmount(res?.data);
 			})
 			.catch(err => {
-				console.log('getTokenTypeData Data Err >>> ', JSON.stringify(err));
+				console.log('getUserAncestorData Data Err >>> ', JSON.stringify(err));
 				dispatch(updateApiLoader({apiLoader: false}));
 			});
 	};
@@ -484,6 +490,7 @@ const BetDetailsScreen: React.FC<any> = () => {
 						: true
 				}
 				handleRedirectUser={handleRedirectUser}
+				visitProfileUserId={params?.userId}
 			/>
 		);
 	};
@@ -507,6 +514,10 @@ const BetDetailsScreen: React.FC<any> = () => {
 							}
 							visitorTeamName={
 								eventBetData?.bet?.user_id === userInfo?.user?._id
+									? eventBetData?.bet?.bet_creator_side_option
+									: eventBetData?.betTakerData?._id === userInfo?.user?._id
+									? eventBetData?.bet?.bet_opposite_side_option
+									: eventBetData?.bet?.users?._id === params?.userId
 									? eventBetData?.bet?.bet_creator_side_option
 									: eventBetData?.bet?.bet_opposite_side_option
 							}
@@ -563,6 +574,8 @@ const BetDetailsScreen: React.FC<any> = () => {
 									? Strings.you_won
 									: Strings.you_lost
 							}
+							betData={eventBetData}
+							visitProfileUserId={params?.userId}
 						/>
 					</KeyboardAwareScrollView>
 				);
@@ -584,6 +597,10 @@ const BetDetailsScreen: React.FC<any> = () => {
 							}
 							visitorTeamName={
 								eventBetData?.bet?.user_id === userInfo?.user?._id
+									? eventBetData?.bet?.bet_creator_side_option
+									: eventBetData?.betTakerData?._id === userInfo?.user?._id
+									? eventBetData?.bet?.bet_opposite_side_option
+									: eventBetData?.bet?.users?._id === params?.userId
 									? eventBetData?.bet?.bet_creator_side_option
 									: eventBetData?.bet?.bet_opposite_side_option
 							}
@@ -630,12 +647,14 @@ const BetDetailsScreen: React.FC<any> = () => {
 									  )
 							}
 							isShowLost={false}
+							betData={eventBetData}
+							visitProfileUserId={params?.userId}
 						/>
 					</KeyboardAwareScrollView>
 				);
 		}
 	};
-	const handleClaimWinningAmount = () => {
+	const handleClaimWinningAmount = userData => {
 		let bet_type = eventBetData?.bet?.bet_type;
 		let result =
 			eventBetData?.resultData?.isWinner === 'win'
@@ -896,7 +915,8 @@ const BetDetailsScreen: React.FC<any> = () => {
 						shouldShowClaimButton()) ||
 						(eventBetData?.resultData?.isWinner === 'draw' &&
 							shouldShowClaimButton()) ||
-						eventBetData?.resultData?.isWinner === 'loss') && (
+						eventBetData?.resultData?.isWinner === 'loss') &&
+					!params?.userId && (
 						<ButtonGradient
 							onPress={() => {
 								if (step === 1) {

@@ -234,7 +234,8 @@ const MyBetListScreen: React.FC<any> = props => {
 									navigation.navigate(ScreenNames.BetDetailsScreen, {
 										bet_id: item?._id,
 										redirectType: item.betStatus,
-										isFromOtherUser: userId ? true : false
+										isFromOtherUser: userId ? true : false,
+										userId: userId
 									});
 								}}
 								matchName={item?.match?.matchName}
@@ -297,7 +298,12 @@ const MyBetListScreen: React.FC<any> = props => {
 						bounces={false}
 						onEndReached={() => {
 							console.log('myBetPage', myBetPage, totalPage);
-							if (myBetPage <= totalPage && totalPage !== 1 && isFocus && !isLoading) {
+							if (
+								myBetPage <= totalPage &&
+								totalPage !== 1 &&
+								isFocus &&
+								!isLoading
+							) {
 								setIsLoading(true);
 								myBetPage = myBetPage + 1;
 								getUserBetData();

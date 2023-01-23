@@ -44,7 +44,7 @@ import CustomeProgressBar from '../../../../components/CustomeProgressBar';
 import ButtonGradientWithRightIcon from '../../../../components/ButtonGradientWithRightIcon';
 import {verticalScale} from '../../../../theme';
 import {gradientColorAngle} from '../../../../theme/metrics';
-import {decimalValue} from '../../../../constants/api';
+import {decimalValue, nullAddress} from '../../../../constants/api';
 import {
 	getRoundDecimalValue,
 	showErrorAlert
@@ -1034,8 +1034,10 @@ const BetMakerResultScreen: React.FC<any> = () => {
 				['0x0000000000000000000000000000000000000000000000000000000000000000'],
 				'0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
 				'0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
-				userData?.users,
-				userData?.rewardPercentage
+				userData?.users?.length === 0 ? [nullAddress] : userData?.users,
+				userData?.rewardPercentage?.length === 0
+					? [0]
+					: userData?.rewardPercentage
 			);
 		} else {
 			resolveBetResult(
@@ -1044,8 +1046,10 @@ const BetMakerResultScreen: React.FC<any> = () => {
 				apiHashObj?.hash,
 				apiHashObj?.makerSignature,
 				apiHashObj?.takerSignature,
-				userData?.users,
-				userData?.rewardPercentage
+				userData?.users?.length === 0 ? [nullAddress] : userData?.users,
+				userData?.rewardPercentage?.length === 0
+					? [0]
+					: userData?.rewardPercentage
 			);
 		}
 

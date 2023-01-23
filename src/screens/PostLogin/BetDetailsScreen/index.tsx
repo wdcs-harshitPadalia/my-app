@@ -36,7 +36,12 @@ import {
 	updateDeviceToken
 } from '../../../redux/reducerSlices/userInfo';
 import {magic} from '../../../navigation/routes';
-import {decimalValue, nullHash, nullSignature} from '../../../constants/api';
+import {
+	decimalValue,
+	nullAddress,
+	nullHash,
+	nullSignature
+} from '../../../constants/api';
 import {
 	createJoinBetShareMessage,
 	createJoinBetShareUrl,
@@ -647,8 +652,10 @@ const BetDetailsScreen: React.FC<any> = () => {
 				[nullHash],
 				nullSignature,
 				nullSignature,
-				userData?.users,
-				userData?.rewardPercentage
+				userData?.users?.length === 0 ? [nullAddress] : userData?.users,
+				userData?.rewardPercentage?.length === 0
+					? [0]
+					: userData?.rewardPercentage
 			);
 		} else {
 			resolveBetResult(
@@ -657,8 +664,10 @@ const BetDetailsScreen: React.FC<any> = () => {
 				eventBetData?.HashSignatureObject?.hash,
 				eventBetData?.HashSignatureObject?.makerSignature,
 				eventBetData?.HashSignatureObject?.takerSignature,
-				userData?.users,
-				userData?.rewardPercentage
+				userData?.users?.length === 0 ? [nullAddress] : userData?.users,
+				userData?.rewardPercentage?.length === 0
+					? [0]
+					: userData?.rewardPercentage
 			);
 		}
 

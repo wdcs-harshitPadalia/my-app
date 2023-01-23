@@ -7,7 +7,8 @@ import {
 	TouchableOpacity,
 	ImageSourcePropType,
 	ViewStyle,
-	Animated
+	Animated,
+	Platform
 } from 'react-native';
 import ExpoFastImage from 'expo-fast-image';
 import icons from '../assets/icon';
@@ -163,7 +164,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		flex: 1,
-		paddingVertical: verticalScale(10)
+		paddingVertical: Platform.OS === 'ios' ? verticalScale(10) : 0
 	},
 	leftImg: {
 		height: 16,
@@ -186,7 +187,7 @@ const styles = StyleSheet.create({
 		fontFamily: fonts.type.Inter_Regular,
 		//backgroundColor: 'red',
 		textAlignVertical: 'center',
-		marginTop: -6
+		marginTop: Platform.OS === 'ios' ? -6 : 0
 	},
 	errStyle: {
 		color: colors.red,

@@ -21,6 +21,7 @@ import {gradientColorAngle} from '../theme/metrics';
 import {decimalValue} from '../constants/api';
 import ButtonGradient from './ButtonGradient';
 import Clipboard from '@react-native-clipboard/clipboard';
+import { showErrorAlert } from '../constants/utils/Function';
 interface ReferralRewardsViewProps {
 	style: ViewStyle;
 	affiliateCode: string;
@@ -60,7 +61,7 @@ export default function ReferralRewardsView(props: ReferralRewardsViewProps) {
 						hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
 						onPress={async () => {
 							await Clipboard.setString(props?.affiliateCode);
-							Alert.alert(Strings.copy_wallet_add_desc);
+							showErrorAlert('', Strings.copy_referral_desc);
 						}}>
 						<ExpoFastImage style={styles.imageStyle} source={icons.clipboard} />
 					</TouchableOpacity>

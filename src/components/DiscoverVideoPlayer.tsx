@@ -12,7 +12,6 @@ import React, {
 	memo,
 	useMemo,
 	useState,
-	forwardRef,
 	useRef,
 	useImperativeHandle,
 	useEffect
@@ -24,9 +23,7 @@ import {
 	ActivityIndicator,
 	TouchableOpacity,
 	Share,
-	Platform,
-	StatusBar,
-	Alert
+	Platform
 } from 'react-native';
 import ExpoFastImage from 'expo-fast-image';
 import {LinearGradient} from 'expo-linear-gradient';
@@ -34,30 +31,20 @@ import {Video} from 'expo-av';
 import {useDispatch} from 'react-redux';
 import icons from '../assets/icon';
 import {
-	downloadVideo,
 	getVideoShareMessage,
 	getVideoShareUrl,
 	showErrorAlert,
 	uniqueIdGenerateFrom2Ids
 } from '../constants/utils/Function';
 import ScreenNames from '../navigation/screenNames';
-import {
-	getUserMessageList,
-	updateChannel
-} from '../redux/apiHandler/apiActions';
+import {updateChannel} from '../redux/apiHandler/apiActions';
 import {updateApiLoader} from '../redux/reducerSlices/preLogin';
 import {RootState} from '../redux/store';
 
 import {horizontalScale, verticalScale} from '../theme';
 import colors from '../theme/colors';
 import {defaultTheme} from '../theme/defaultTheme';
-import {
-	gradientColorAngle,
-	height,
-	Metrics,
-	screenWidth,
-	width
-} from '../theme/metrics';
+import {gradientColorAngle, screenWidth} from '../theme/metrics';
 import OtherUserProfileReplicateBetComponent from './OtherUserProfileReplicateBetComponent';
 import useDownloader from 'react-use-downloader';
 import ShareVideoModal from './ShareVideoModal';
@@ -65,9 +52,7 @@ const {v4: uuidv4} = require('uuid');
 import {useSelector} from 'react-redux';
 // import convertToProxyURL from 'react-native-video-cache';
 // import {openSettings, PERMISSIONS, request} from 'react-native-permissions';
-import Strings from '../constants/strings';
 import ReactPlayer from 'react-player';
-import VisibilitySensor from '@svanboxel/visibility-sensor-react-native';
 
 interface Props {
 	parentIndex: number;
@@ -104,7 +89,9 @@ const DiscoverVideoPlayer = React.forwardRef((props, parentRef) => {
 		item,
 		screenOriginalHeight,
 		ViewableItem,
-		_id
+		_id,
+		friendList,
+		onEndReach
 	} = props;
 	const navigation = useNavigation();
 	const dispatch = useDispatch();
@@ -237,40 +224,6 @@ const DiscoverVideoPlayer = React.forwardRef((props, parentRef) => {
 		setpaused(!paused);
 	};
 
-	// api call for getting the friend list
-	const getAllUserList = () => {
-		if (pageUser === 0) {
-			dispatch(updateApiLoader({apiLoader: true}));
-		}
-
-		const uploadData = {
-			skip: pageUser,
-			limit: '10'
-		};
-
-		getUserMessageList(uploadData)
-			.then(res => {
-				dispatch(updateApiLoader({apiLoader: false}));
-
-				// console.log('getAllUserList :: getUserVideoList :: res ::', res);
-				if (pageUser !== 0) {
-					setUserListData(userListData.concat(res?.data?.userList));
-					setIsNoData(userListData.length === 0 ? true : false);
-				} else {
-					setUserListData(res?.data?.userList);
-					setIsNoData(res?.data?.userList?.length === 0 ? true : false);
-				}
-				// console.log('length ::', res?.data?.videoCount);
-				setTotalUser(res?.data?.userCount);
-				if (res?.statusCode?.toString() === '200') {
-					!isShowShareModal && setIsShowShareModal(!isShowShareModal);
-				}
-			})
-			.catch(err => {
-				dispatch(updateApiLoader({apiLoader: false}));
-				// console.log('getAllUserList :: getUserVideoList :: res ::', err);
-			});
-	};
 	// For sharing video
 	const handleShareVideo = async () => {
 		if (Platform.OS === 'web') {
@@ -310,13 +263,6 @@ const DiscoverVideoPlayer = React.forwardRef((props, parentRef) => {
 			}
 		}
 	};
-
-	function onEndReached() {
-		if (totalUser !== userListData.length) {
-			setPageUser(pageUser + 1);
-			getAllUserList();
-		}
-	}
 
 	const sendVideoLinkWithFriend = async item => {
 		const data = {
@@ -710,9 +656,9 @@ const DiscoverVideoPlayer = React.forwardRef((props, parentRef) => {
 				{!isLoadVideoFromStory && (
 					<TouchableOpacity
 						onPress={() => {
-							getAllUserList();
+							setIsShowShareModal(!isShowShareModal);
 						}}
-						hitSlop={{top: 15, bottom: 15, left: 15, right: 15}}
+						hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
 						style={styles.shareView}>
 						<LinearGradient
 							useAngle={true}
@@ -735,13 +681,11 @@ const DiscoverVideoPlayer = React.forwardRef((props, parentRef) => {
 				onBtnClose={() => {
 					setIsShowShareModal(!isShowShareModal);
 				}}
-				friendList={userListData}
+				friendList={friendList}
 				onSendLink={() => {
 					handleShareVideo();
 				}}
-				onEndReach={() => {
-					onEndReached();
-				}}
+				onEndReach={onEndReach}
 				onBtnDownload={() => {
 					handleDownloadVideo();
 				}}

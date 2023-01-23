@@ -999,7 +999,7 @@ const DiscoverScreen: React.FC<any> = props => {
 	// };
 	const AfterSearchClickComponent = () => {
 		return (
-			<SafeAreaView style={styles.viewSubContain}>
+			<View style={styles.viewSubContain}>
 				{/* <FlingGestureComponent
 					onSwipeLeft={() => onSwipeHandle(Directions.LEFT, true)}
 					onSwipeRight={() => onSwipeHandle(Directions.RIGHT, true)}> */}
@@ -1263,7 +1263,7 @@ const DiscoverScreen: React.FC<any> = props => {
 					)}
 				</>
 				{/* </FlingGestureComponent> */}
-			</SafeAreaView>
+			</View>
 		);
 	};
 
@@ -1723,7 +1723,7 @@ const DiscoverScreen: React.FC<any> = props => {
 				))}
 
 			{searchClicked && (
-				<>
+				<SafeAreaView style={{flex: 1}}>
 					<View style={styles.viewSearch}>
 						<SearchBarWIthBack
 							placeholderText={searchBarPlaceHolderText}
@@ -1769,7 +1769,7 @@ const DiscoverScreen: React.FC<any> = props => {
 						}}
 					/>
 					<AfterSearchClickComponent />
-				</>
+				</SafeAreaView>
 			)}
 			{beforeClickTopTabIndex === 1 && !searchClicked && (
 				<View

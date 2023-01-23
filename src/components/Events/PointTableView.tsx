@@ -250,9 +250,7 @@ export default function PointTableView({standings, sportName, standingsImage}) {
 							<Text
 								numberOfLines={1}
 								style={[styles.textStyle, {marginVertical: 0, marginLeft: 2}]}>
-								{item?.name?.toUpperCase() +
-									item?.name?.toUpperCase() +
-									item?.name?.toUpperCase()}
+								{item?.name?.toUpperCase()}
 							</Text>
 						</View>
 						<View

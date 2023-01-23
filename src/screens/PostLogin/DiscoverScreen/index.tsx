@@ -53,6 +53,7 @@ import {
 	getDiscoverBets,
 	getDiscoverData,
 	getExploreData,
+	getUserMessageList,
 	markSeen,
 	updateChannel
 } from '../../../redux/apiHandler/apiActions';
@@ -159,6 +160,11 @@ const DiscoverScreen: React.FC<any> = props => {
 	const scrollRef = useRef(null);
 	useScrollToTop(scrollRef);
 
+	const [isNoData, setIsNoData] = useState(false);
+	const [userListData, setUserListData] = useState([]);
+	const [totalUser, setTotalUser] = useState(0);
+	const [pageUser, setPageUser] = useState(0);
+
 	const beforeClickTopTabData = [
 		{id: 1, title: Strings.str_for_you},
 		{id: 2, title: Strings.str_live_chat}
@@ -193,13 +199,15 @@ const DiscoverScreen: React.FC<any> = props => {
 		description_text: ''
 	};
 
-	useEffect(() => {
-		getDiscoverMatchData();
-		// screenActualHeight !== 0 &&
-		// 	setTimeout(() => {
-		// 		!params?.video_id && getDiscoverMatchData();
-		// 	}, 400);
-	}, []);
+	// useEffect(() => {
+	// 	setDiscoverPage(0);
+	// 	getDiscoverMatchData();
+	// 	// screenActualHeight !== 0 &&
+	// 	// 	setTimeout(() => {
+	// 	// 		!params?.video_id && getDiscoverMatchData();
+	// 	// 	}, 400);
+	// 	getAllUserList();
+	// }, []);
 
 	useEffect(() => {
 		connectClient({
@@ -218,6 +226,42 @@ const DiscoverScreen: React.FC<any> = props => {
 	// 	getDiscoverMatchData();
 	// }, []);
 
+	const getAllUserList = () => {
+		if (pageUser === 0) {
+			dispatch(updateApiLoader({apiLoader: true}));
+		}
+
+		const uploadData = {
+			skip: pageUser,
+			limit: '10'
+		};
+
+		getUserMessageList(uploadData)
+			.then(res => {
+				dispatch(updateApiLoader({apiLoader: false}));
+
+				if (pageUser !== 0) {
+					setUserListData(userListData.concat(res?.data?.userList));
+					setIsNoData(userListData.length === 0 ? true : false);
+				} else {
+					setUserListData(res?.data?.userList);
+					setIsNoData(res?.data?.userList?.length === 0 ? true : false);
+				}
+
+				setTotalUser(res?.data?.userCount);
+			})
+			.catch(err => {
+				dispatch(updateApiLoader({apiLoader: false}));
+				setIsShowShareModal(!isShowShareModal);
+			});
+	};
+	function onEndReached() {
+		if (totalUser !== userListData.length) {
+			setPageUser(pageUser + 1);
+			getAllUserList();
+		}
+	}
+
 	useUpdateEffect(() => {
 		setIsVideoFocus(isVideoPlay);
 	}, [isVideoPlay]);
@@ -225,7 +269,8 @@ const DiscoverScreen: React.FC<any> = props => {
 	useEffect(() => {
 		if (!isFocused) {
 			navigation.setParams({
-				isFromFollowerFollowing: false
+				isFromFollowerFollowing: false,
+				video_id: undefined
 			});
 		}
 		if (isFocused && isShowSwipeUp) {
@@ -331,8 +376,23 @@ const DiscoverScreen: React.FC<any> = props => {
 	// }, []);
 
 	useEffect(() => {
-		getDiscoverMatchData();
+		console.log('params?.video_id1??>', params?.video_id);
+		getDiscoverMatchData(params?.video_id);
 	}, [discoverPage]);
+
+	useUpdateEffect(() => {
+		// console.log('params?.video_id??>', params?.video_id, discoverPage);
+		// if (discoverPage == 0) {
+		// 	setDiscoverMatchData([])
+		// 	setDiscoverPage(undefined);
+		// 	setDiscoverPage(0);
+		// } else {
+		// 	setDiscoverMatchData([])
+		// 	setDiscoverPage(0);
+		// }
+		// setDiscoverMatchData([])
+		getDiscoverMatchData(params?.video_id, 'error');
+	}, [params?.video_id, isFocused]);
 
 	useUpdateEffect(() => {
 		console.log('isSelectedIndex ::', isSelectedIndex);
@@ -385,7 +445,11 @@ const DiscoverScreen: React.FC<any> = props => {
 		}
 	};
 
-	const getDiscoverMatchData = (videoId?: string) => {
+	const getDiscoverMatchData = (videoId?: string, temp) => {
+		if (discoverPage === undefined) {
+			setDiscoverMatchData([])
+			return;
+		}
 		if (discoverPage === 0) {
 			setVisibleParentIndex(0);
 			dispatch(updateApiLoader({apiLoader: true}));
@@ -393,9 +457,9 @@ const DiscoverScreen: React.FC<any> = props => {
 			setIsLoadDiscoverMatch(true);
 		}
 		const uploadData = {
-			skip: discoverPage,
+			skip: videoId === 'error' ? 0 : discoverPage,
 			limit: '10',
-			video_id: videoId ?? undefined
+			video_id: videoId === 'error' ?  temp === 'error' ? videoId :  undefined : videoId ?? undefined
 		};
 
 		getExploreData(uploadData)
@@ -789,10 +853,14 @@ const DiscoverScreen: React.FC<any> = props => {
 					itemData={item}
 					ViewableItem={ViewableItem}
 					_id={item?._id}
+					friendList={userListData}
 					// isFocus={isFocused}
 					// parentIndex={visibleParentIndex}
 					// index={index}
 					screenOriginalHeight={height}
+					onEndReach={() => {
+						onEndReached();
+					}}
 				/>
 			</View>
 		) : (
@@ -1557,8 +1625,14 @@ const DiscoverScreen: React.FC<any> = props => {
 					<View style={styles.fullScreenImageBg}>
 						<ErrorComponent
 							onPress={() => {
+								// if(discoverPage === 0) {
+								// 	setDiscoverPage(undefined)
+								// } else {
+								// 	setDiscoverPage(0)
+								// }
 								// discoverPage = 0;
-								// getDiscoverMatchData();
+								setDiscoverPage(0);
+								getDiscoverMatchData('error');
 							}}
 						/>
 					</View>
@@ -1649,7 +1723,7 @@ const DiscoverScreen: React.FC<any> = props => {
 				))}
 
 			{searchClicked && (
-				<>
+				<SafeAreaView style={{flex: 1}}>
 					<View style={styles.viewSearch}>
 						<SearchBarWIthBack
 							placeholderText={searchBarPlaceHolderText}
@@ -1695,7 +1769,7 @@ const DiscoverScreen: React.FC<any> = props => {
 						}}
 					/>
 					<AfterSearchClickComponent />
-				</>
+				</SafeAreaView>
 			)}
 			{beforeClickTopTabIndex === 1 && !searchClicked && (
 				<View

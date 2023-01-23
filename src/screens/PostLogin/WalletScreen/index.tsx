@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Linking, RefreshControl, View, ScrollView} from 'react-native';
+import {Linking, View,RefreshControl, ScrollView} from 'react-native';
 
 import {useNavigation, useScrollToTop} from '@react-navigation/native';
 import {useWalletConnect} from '@walletconnect/react-native-dapp';
@@ -41,6 +41,7 @@ import HeaderComponent from '../../../components/HeaderComponent';
 import WalletQrCodeModalComponent from '../../../components/Wallet/WalletQrCodeModalComponent';
 import {useBetCreateContract} from '../../../components/CustomHooks/SmartContract';
 import {async} from 'q';
+// import { RefreshControl } from 'react-native-web-refresh-control'
 
 let totalBalance = 0;
 let showTokenWiseBalance = false;

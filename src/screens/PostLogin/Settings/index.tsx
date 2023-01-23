@@ -451,24 +451,27 @@ const SettingsScreen: React.FC<any> = () => {
 								title={Strings.sync_contacts.toUpperCase()}
 								isEnabled={isSyncEnable}
 							/>
+							<Text style={styles.connectTypeStyle}>
+							{Strings.your_are_connected_with + ' '}
+							<Text
+								style={[
+									styles.connectTypeStyle,
+									{textTransform: 'capitalize'}
+								]}>
+								{userInfo?.user?.socialLoginType}
+							</Text>
+						</Text>
+						<ButtonGradient
+							onPress={handleLogout}
+							colorArray={defaultTheme.ternaryGradientColor}
+							angle={gradientColorAngle}
+							buttonTextcolor={colors.white}
+							buttonText={Strings.logOut}
+							style={styles.marginInput}
+						/>
 						</View>
 					</View>
 				</ScrollView>
-				<Text style={styles.connectTypeStyle}>
-					{Strings.your_are_connected_with + ' '}
-					<Text
-						style={[styles.connectTypeStyle, {textTransform: 'capitalize'}]}>
-						{userInfo?.user?.socialLoginType}
-					</Text>
-				</Text>
-				<ButtonGradient
-					onPress={handleLogout}
-					colorArray={defaultTheme.ternaryGradientColor}
-					angle={gradientColorAngle}
-					buttonTextcolor={colors.white}
-					buttonText={Strings.logOut}
-					style={styles.marginInput}
-				/>
 			</View>
 		</SafeAreaView>
 	);

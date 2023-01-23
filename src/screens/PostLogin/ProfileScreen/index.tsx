@@ -447,9 +447,6 @@ const ProfileScreen: React.FC<any> = props => {
 									walletBtnText={Strings.str_wallet.toUpperCase()}
 									walletBtnColorArray={defaultTheme.primaryGradientColor}
 									videosCount={userProfileInfo?.user?.videoCount}
-									isVideoViewVisible={
-										userProfileInfo?.user?.videoCount > 0 ? true : false
-									}
 									isSendMsgShow={true}
 								/>
 							</View>

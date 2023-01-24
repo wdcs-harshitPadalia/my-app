@@ -36,6 +36,7 @@ import {moderateScale} from '../../../theme';
 import colors from '../../../theme/colors';
 import useDebounce from '../../../components/CustomHooks/useDebounce';
 import useUpdateEffect from '../../../components/CustomHooks/useUpdateEffect';
+import {height} from '../../../theme/metrics';
 
 const ChatListScreen: React.FC<any> = props => {
 	const navigation = useNavigation();
@@ -65,7 +66,7 @@ const ChatListScreen: React.FC<any> = props => {
 
 	useUpdateEffect(() => {
 		resetFeedApiData();
-		if(currentPage === 0) {
+		if (currentPage === 0) {
 			getFollowersData();
 		}
 	}, [debouncedValue]);
@@ -271,9 +272,9 @@ const ChatListScreen: React.FC<any> = props => {
 					//bounces={false}
 					data={followUserData}
 					renderItem={renderFollowersUserItem}
-					contentContainerStyle={{flexGrow: 1}}
-					//onEndReachedThreshold={0.1}
-					onMomentumScrollEnd={() => {
+					contentContainerStyle={{height: height}}
+					onEndReachedThreshold={0.5}
+					onEndReached={() => {
 						if (totalFollowUser > followUserData.length) {
 							setCurrentPage(currentPage + 1);
 						}

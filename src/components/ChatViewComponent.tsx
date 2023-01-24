@@ -80,7 +80,7 @@ import * as ImagePicker from 'expo-image-picker';
 import FullScreenImageComponent from './FullScreenImageComponent';
 import {date} from 'yup';
 import ScreenNames from '../navigation/screenNames';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 const {v4: uuidv4} = require('uuid');
 interface Props extends TextInputProps {
@@ -155,7 +155,6 @@ const ChatViewComponent: React.FC<Props> = props => {
 	const {loading, prevPage, error} = options ?? {};
 
 	const navigation = useNavigation();
-
 
 	useEffect(() => {
 		if (chatType === 'amity') {
@@ -615,231 +614,451 @@ const ChatViewComponent: React.FC<Props> = props => {
 			]}>
 			{isTitleShown && <Text style={styles.chatTextStyle}>Chat</Text>}
 			{/* <input type="file" name="file" onChange={changeHandler} />; */}
-			{chatType === 'amity' && (
-				<Chat
-					enableAnimation
-					showUserNames
-					messages={messages}
-					onSendPress={handleSendPress}
-					user={user}
-					//dateFormat="DD/MM/YYYY"
-					customDateHeaderText={date => dateFormatConvert(date)}
-					// showDateHeader={false}
-					// showTimeHeader={false}
-					//timeFormat="DD/MM/YYYY"
-					showUserAvatars
-					renderImageMessage={message =>
-						Platform.OS === 'web' ? (
-							<TouchableOpacity
-								onPress={() =>
-									imageURL === message.uri
-										? setIsShowImagePreview(true)
-										: setImageURL(message.uri)
-								}
-								style={{
-									backgroundColor: defaultTheme.backGroundColor,
-									padding: 4
-								}}>
-								<ImageIndicator
-									style={styles.imageStyle}
-									source={{uri: message.uri}}
-								/>
-								<Text style={styles.messageTimeStyle}>
-									{moment(message.createdAt).format('hh:mm A')}
-								</Text>
-							</TouchableOpacity>
-						) : (
-							<View
-								style={{
-									backgroundColor: defaultTheme.backGroundColor,
-									padding: 4
-								}}>
-								<ImageIndicator
-									style={styles.imageStyle}
-									source={{uri: message.uri}}
-								/>
-								<Text style={styles.messageTimeStyle}>
-									{moment(message.createdAt).format('hh:mm A')}
-								</Text>
-							</View>
-						)
-					}
-					// emptyState={() => (
-					//   <View
-					//     style={{height: height, width: '100%'}}
-					//   />
-					// )}
-					customBottomComponent={() => (
-						<View style={styles.bottomComponent}>
-							{console.log('riendData??????', friendData)}
-							{(shouldShowSendMsg() ||
-								!shouldShowMessageHistory ||
-								channelId == '1') && (
-								<CommentInput
-									profileImage={!friend_id && userInfo.user?.picture}
-									style={{backgroundColor: defaultTheme.backGroundColor}}
-									rightIconPath={icons.ic_chatSend}
-									placeholder="Type a message..."
-									rightIconClick={
-										text => handleSendPress({text: text, type: 'text'})
-										//handleImageSelection()
-									}
-									shouldShowGallery={allowImageUpload}
-									onGallaryPress={handleImageSelection}
-									onLeftIconPress={() => setIsEmojiModalVisible(true)}
-								/>
-							)}
-						</View>
-					)}
-					renderTextMessage={message => (
-						<>
-							{message?.isVideoType ? (
+			{chatType === 'amity' &&
+				(Platform.OS === 'web' ? (
+					<Chat
+						enableAnimation
+						showUserNames
+						messages={messages}
+						onSendPress={handleSendPress}
+						user={user}
+						//dateFormat="DD/MM/YYYY"
+						customDateHeaderText={date => dateFormatConvert(date)}
+						// showDateHeader={false}
+						// showTimeHeader={false}
+						//timeFormat="DD/MM/YYYY"
+						showUserAvatars
+						renderImageMessage={message =>
+							Platform.OS === 'web' ? (
 								<TouchableOpacity
-									onPress={() => {
-										console.log('MESSAGE::::', message);
-										navigation.navigate(ScreenNames.BottomTabScreen, {
-											screen: ScreenNames.DiscoverRouter,
-											params: {
-												screen: ScreenNames.DiscoverScreen,
-												params: {
-													video_id: message?.video_id
-												}
-											}
-										});
+									onPress={() =>
+										imageURL === message.uri
+											? setIsShowImagePreview(true)
+											: setImageURL(message.uri)
+									}
+									style={{
+										backgroundColor: defaultTheme.backGroundColor,
+										padding: 4
 									}}>
-									<View style={styles.videoContainer}>
-										<ImageIndicator
-											style={styles.imageStyle}
-											source={{uri: message.video_thumbnail}}>
-											<ExpoFastImage
-												source={icons.playIcon}
-												style={styles.playImageStyle}
-											/>
-										</ImageIndicator>
-										<Text style={styles.messageTimeStyle}>
-											{moment(message.createdAt).format('hh:mm A')}
-										</Text>
-									</View>
+									<ImageIndicator
+										style={styles.imageStyle}
+										source={{uri: message.uri}}
+									/>
+									<Text style={styles.messageTimeStyle}>
+										{moment(message.createdAt).format('hh:mm A')}
+									</Text>
 								</TouchableOpacity>
 							) : (
-								<View style={{padding: 4}}>
-									{userInfo?.user?._id &&
-										message.author.id !== userInfo?.user?._id &&
-										!friend_id && (
-											<Text
-												style={{
-													//marginTop: 2,
-													//marginBottom: -12,
-													marginLeft: 4,
-													fontSize: 12,
-													fontWeight: '500',
-													lineHeight: 24,
-													color: colors.white,
-													fontFamily: fonts.type.Inter_Regular
-												}}>
-												{'@' + message.author.firstName}
-											</Text>
-										)}
-									<LinearGradient
-										colors={
-											message.author.id === userInfo?.user?._id
-												? defaultTheme.primaryGradientColor
-												: defaultTheme.ternaryGradientColor
-										}
-										useAngle={true}
-										style={{
-											paddingHorizontal: 16,
-											paddingVertical: 12,
-											borderRadius: 8,
-											fontFamily: fonts.type.Inter_Regular
-										}}
-										angle={gradientColorAngle}>
-										{/* {console.log(
-                  "???message.text.split(' ')?.some(str => isValidUrl(str))",
-                  message.text,
-                  message.text.split(' ')?.some(str => isValidUrl(str)),
-                )} */}
-										{/* {message.text.split(' ')?.some(str => isValidUrl(str)) ? (
-                  <LinkPreview text={message.text} />
-                ) : ( */}
-										{/* <Text
-                  style={{
-                    fontSize: 14,
-                    fontWeight: '500',
-                    //lineHeight: 24,
-                    color: '#ffffff',
-                    fontFamily: fonts.type.Inter_Regular,
-                  }}>
-                  {message.text}
-                </Text> */}
-										<HyperLink
-											linkStyle={{
-												color: '#fff',
-												fontSize: 14,
-												fontFamily: fonts.type.Inter_Bold
-											}}
-											linkDefault={true}>
-											<Text
-												style={{
-													fontSize: 14,
-													color: '#fff',
-													fontFamily: fonts.type.Inter_Medium
-												}}>
-												{message.text}
-											</Text>
-										</HyperLink>
-										{/* )} */}
-
-										{/* <Text
-                  style={{
-                    fontSize: 14,
-                    fontWeight: '500',
-                    //lineHeight: 24,
-                    color: '#ffffff',
-                    fontFamily: fonts.type.Inter_Regular,
-                  }}>
-                  {message.text}
-                </Text> */}
-									</LinearGradient>
+								<View
+									style={{
+										backgroundColor: defaultTheme.backGroundColor,
+										padding: 4
+									}}>
+									<ImageIndicator
+										style={styles.imageStyle}
+										source={{uri: message.uri}}
+									/>
 									<Text style={styles.messageTimeStyle}>
 										{moment(message.createdAt).format('hh:mm A')}
 									</Text>
 								</View>
-							)}
-						</>
-					)}
-					textInputProps={{
-						placeholder: 'Type a message...',
-						color: 'red',
-						fontFamily: fonts.type.Inter_Regular
-					}}
-					sendButtonVisibilityMode="always"
-					// key={message => {
-					//   return message.id;
-					// }}
-					theme={{
-						...defaultTheme1,
-						colors: {
-							...defaultTheme1.colors,
-							userAvatarNameColors: ['red'],
-							background: backGroundColor ?? defaultTheme.backGroundColor,
-							primary: 'transparent',
-							secondary: 'transparent'
+							)
 						}
-					}}
-					// onMessagePress={message => console.log(message)}
-					//onEndReached={handleLoadMore}
-					flatListProps={{
-						inverted: true,
-						nestedScrollEnabled: true,
-						keyExtractor: message => message.id,
-						onMomentumScrollEnd: () => {
-							handleLoadMore();
+						// emptyState={() => (
+						//   <View
+						//     style={{height: height, width: '100%'}}
+						//   />
+						// )}
+						customBottomComponent={() => (
+							<View style={styles.bottomComponent}>
+								{console.log('riendData??????', friendData)}
+								{(shouldShowSendMsg() ||
+									!shouldShowMessageHistory ||
+									channelId == '1') && (
+									<CommentInput
+										profileImage={!friend_id && userInfo.user?.picture}
+										style={{backgroundColor: defaultTheme.backGroundColor}}
+										rightIconPath={icons.ic_chatSend}
+										placeholder="Type a message..."
+										rightIconClick={
+											text => handleSendPress({text: text, type: 'text'})
+											//handleImageSelection()
+										}
+										shouldShowGallery={allowImageUpload}
+										onGallaryPress={handleImageSelection}
+										onLeftIconPress={() => setIsEmojiModalVisible(true)}
+									/>
+								)}
+							</View>
+						)}
+						renderTextMessage={message => (
+							<>
+								{message?.isVideoType ? (
+									<TouchableOpacity
+										onPress={() => {
+											console.log('MESSAGE::::', message);
+											navigation.navigate(ScreenNames.BottomTabScreen, {
+												screen: ScreenNames.DiscoverRouter,
+												params: {
+													screen: ScreenNames.DiscoverScreen,
+													params: {
+														video_id: message?.video_id
+													}
+												}
+											});
+										}}>
+										<View style={styles.videoContainer}>
+											<ImageIndicator
+												style={styles.imageStyle}
+												source={{uri: message.video_thumbnail}}>
+												<ExpoFastImage
+													source={icons.playIcon}
+													style={styles.playImageStyle}
+												/>
+											</ImageIndicator>
+											<Text style={styles.messageTimeStyle}>
+												{moment(message.createdAt).format('hh:mm A')}
+											</Text>
+										</View>
+									</TouchableOpacity>
+								) : (
+									<View style={{padding: 4}}>
+										{userInfo?.user?._id &&
+											message.author.id !== userInfo?.user?._id &&
+											!friend_id && (
+												<Text
+													style={{
+														//marginTop: 2,
+														//marginBottom: -12,
+														marginLeft: 4,
+														fontSize: 12,
+														fontWeight: '500',
+														lineHeight: 24,
+														color: colors.white,
+														fontFamily: fonts.type.Inter_Regular
+													}}>
+													{'@' + message.author.firstName}
+												</Text>
+											)}
+										<LinearGradient
+											colors={
+												message.author.id === userInfo?.user?._id
+													? defaultTheme.primaryGradientColor
+													: defaultTheme.ternaryGradientColor
+											}
+											useAngle={true}
+											style={{
+												paddingHorizontal: 16,
+												paddingVertical: 12,
+												borderRadius: 8,
+												fontFamily: fonts.type.Inter_Regular
+											}}
+											angle={gradientColorAngle}>
+											{/* {console.log(
+                  "???message.text.split(' ')?.some(str => isValidUrl(str))",
+                  message.text,
+                  message.text.split(' ')?.some(str => isValidUrl(str)),
+                )} */}
+											{/* {message.text.split(' ')?.some(str => isValidUrl(str)) ? (
+                  <LinkPreview text={message.text} />
+                ) : ( */}
+											{/* <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: '500',
+                    //lineHeight: 24,
+                    color: '#ffffff',
+                    fontFamily: fonts.type.Inter_Regular,
+                  }}>
+                  {message.text}
+                </Text> */}
+											<HyperLink
+												linkStyle={{
+													color: '#fff',
+													fontSize: 14,
+													fontFamily: fonts.type.Inter_Bold
+												}}
+												linkDefault={true}>
+												<Text
+													style={{
+														fontSize: 14,
+														color: '#fff',
+														fontFamily: fonts.type.Inter_Medium
+													}}>
+													{message.text}
+												</Text>
+											</HyperLink>
+											{/* )} */}
+
+											{/* <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: '500',
+                    //lineHeight: 24,
+                    color: '#ffffff',
+                    fontFamily: fonts.type.Inter_Regular,
+                  }}>
+                  {message.text}
+                </Text> */}
+										</LinearGradient>
+										<Text style={styles.messageTimeStyle}>
+											{moment(message.createdAt).format('hh:mm A')}
+										</Text>
+									</View>
+								)}
+							</>
+						)}
+						textInputProps={{
+							placeholder: 'Type a message...',
+							color: 'red',
+							fontFamily: fonts.type.Inter_Regular
+						}}
+						sendButtonVisibilityMode="always"
+						// key={message => {
+						//   return message.id;
+						// }}
+						theme={{
+							...defaultTheme1,
+							colors: {
+								...defaultTheme1.colors,
+								userAvatarNameColors: ['red'],
+								background: backGroundColor ?? defaultTheme.backGroundColor,
+								primary: 'transparent',
+								secondary: 'transparent'
+							}
+						}}
+						// onMessagePress={message => console.log(message)}
+						onEndReached={handleLoadMore}
+						flatListProps={{
+							inverted: true,
+							nestedScrollEnabled: true,
+							keyExtractor: message => message.id
+						}}
+					/>
+				) : (
+					<Chat
+						enableAnimation
+						showUserNames
+						messages={messages}
+						onSendPress={handleSendPress}
+						user={user}
+						//dateFormat="DD/MM/YYYY"
+						customDateHeaderText={date => dateFormatConvert(date)}
+						// showDateHeader={false}
+						// showTimeHeader={false}
+						//timeFormat="DD/MM/YYYY"
+						showUserAvatars
+						renderImageMessage={message =>
+							Platform.OS === 'web' ? (
+								<TouchableOpacity
+									onPress={() =>
+										imageURL === message.uri
+											? setIsShowImagePreview(true)
+											: setImageURL(message.uri)
+									}
+									style={{
+										backgroundColor: defaultTheme.backGroundColor,
+										padding: 4
+									}}>
+									<ImageIndicator
+										style={styles.imageStyle}
+										source={{uri: message.uri}}
+									/>
+									<Text style={styles.messageTimeStyle}>
+										{moment(message.createdAt).format('hh:mm A')}
+									</Text>
+								</TouchableOpacity>
+							) : (
+								<View
+									style={{
+										backgroundColor: defaultTheme.backGroundColor,
+										padding: 4
+									}}>
+									<ImageIndicator
+										style={styles.imageStyle}
+										source={{uri: message.uri}}
+									/>
+									<Text style={styles.messageTimeStyle}>
+										{moment(message.createdAt).format('hh:mm A')}
+									</Text>
+								</View>
+							)
 						}
-					}}
-					//NEUTRAL_2
-				/>
-			)}
+						// emptyState={() => (
+						//   <View
+						//     style={{height: height, width: '100%'}}
+						//   />
+						// )}
+						customBottomComponent={() => (
+							<View style={styles.bottomComponent}>
+								{console.log('riendData??????', friendData)}
+								{(shouldShowSendMsg() ||
+									!shouldShowMessageHistory ||
+									channelId == '1') && (
+									<CommentInput
+										profileImage={!friend_id && userInfo.user?.picture}
+										style={{backgroundColor: defaultTheme.backGroundColor}}
+										rightIconPath={icons.ic_chatSend}
+										placeholder="Type a message..."
+										rightIconClick={
+											text => handleSendPress({text: text, type: 'text'})
+											//handleImageSelection()
+										}
+										shouldShowGallery={allowImageUpload}
+										onGallaryPress={handleImageSelection}
+										onLeftIconPress={() => setIsEmojiModalVisible(true)}
+									/>
+								)}
+							</View>
+						)}
+						renderTextMessage={message => (
+							<>
+								{message?.isVideoType ? (
+									<TouchableOpacity
+										onPress={() => {
+											console.log('MESSAGE::::', message);
+											navigation.navigate(ScreenNames.BottomTabScreen, {
+												screen: ScreenNames.DiscoverRouter,
+												params: {
+													screen: ScreenNames.DiscoverScreen,
+													params: {
+														video_id: message?.video_id
+													}
+												}
+											});
+										}}>
+										<View style={styles.videoContainer}>
+											<ImageIndicator
+												style={styles.imageStyle}
+												source={{uri: message.video_thumbnail}}>
+												<ExpoFastImage
+													source={icons.playIcon}
+													style={styles.playImageStyle}
+												/>
+											</ImageIndicator>
+											<Text style={styles.messageTimeStyle}>
+												{moment(message.createdAt).format('hh:mm A')}
+											</Text>
+										</View>
+									</TouchableOpacity>
+								) : (
+									<View style={{padding: 4}}>
+										{userInfo?.user?._id &&
+											message.author.id !== userInfo?.user?._id &&
+											!friend_id && (
+												<Text
+													style={{
+														//marginTop: 2,
+														//marginBottom: -12,
+														marginLeft: 4,
+														fontSize: 12,
+														fontWeight: '500',
+														lineHeight: 24,
+														color: colors.white,
+														fontFamily: fonts.type.Inter_Regular
+													}}>
+													{'@' + message.author.firstName}
+												</Text>
+											)}
+										<LinearGradient
+											colors={
+												message.author.id === userInfo?.user?._id
+													? defaultTheme.primaryGradientColor
+													: defaultTheme.ternaryGradientColor
+											}
+											useAngle={true}
+											style={{
+												paddingHorizontal: 16,
+												paddingVertical: 12,
+												borderRadius: 8,
+												fontFamily: fonts.type.Inter_Regular
+											}}
+											angle={gradientColorAngle}>
+											{/* {console.log(
+                  "???message.text.split(' ')?.some(str => isValidUrl(str))",
+                  message.text,
+                  message.text.split(' ')?.some(str => isValidUrl(str)),
+                )} */}
+											{/* {message.text.split(' ')?.some(str => isValidUrl(str)) ? (
+                  <LinkPreview text={message.text} />
+                ) : ( */}
+											{/* <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: '500',
+                    //lineHeight: 24,
+                    color: '#ffffff',
+                    fontFamily: fonts.type.Inter_Regular,
+                  }}>
+                  {message.text}
+                </Text> */}
+											<HyperLink
+												linkStyle={{
+													color: '#fff',
+													fontSize: 14,
+													fontFamily: fonts.type.Inter_Bold
+												}}
+												linkDefault={true}>
+												<Text
+													style={{
+														fontSize: 14,
+														color: '#fff',
+														fontFamily: fonts.type.Inter_Medium
+													}}>
+													{message.text}
+												</Text>
+											</HyperLink>
+											{/* )} */}
+
+											{/* <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: '500',
+                    //lineHeight: 24,
+                    color: '#ffffff',
+                    fontFamily: fonts.type.Inter_Regular,
+                  }}>
+                  {message.text}
+                </Text> */}
+										</LinearGradient>
+										<Text style={styles.messageTimeStyle}>
+											{moment(message.createdAt).format('hh:mm A')}
+										</Text>
+									</View>
+								)}
+							</>
+						)}
+						textInputProps={{
+							placeholder: 'Type a message...',
+							color: 'red',
+							fontFamily: fonts.type.Inter_Regular
+						}}
+						sendButtonVisibilityMode="always"
+						// key={message => {
+						//   return message.id;
+						// }}
+						theme={{
+							...defaultTheme1,
+							colors: {
+								...defaultTheme1.colors,
+								userAvatarNameColors: ['red'],
+								background: backGroundColor ?? defaultTheme.backGroundColor,
+								primary: 'transparent',
+								secondary: 'transparent'
+							}
+						}}
+						// onMessagePress={message => console.log(message)}
+						//onEndReached={handleLoadMore}
+						flatListProps={{
+							inverted: true,
+							nestedScrollEnabled: true,
+							keyExtractor: message => message.id,
+							onMomentumScrollEnd: () => {
+								handleLoadMore();
+							}
+						}}
+					/>
+				))}
 			{chatType === 'api' && (
 				<>
 					<FlatList
@@ -1115,5 +1334,5 @@ const styles = StyleSheet.create({
 		tintColor: 'rgba(255,255,255,0.9)',
 		backgroundColor: colors.graytransparent,
 		borderRadius: verticalScale(24)
-	},
+	}
 });

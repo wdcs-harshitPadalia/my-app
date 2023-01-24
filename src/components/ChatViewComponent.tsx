@@ -321,74 +321,86 @@ const ChatViewComponent: React.FC<Props> = props => {
 		}
 	};
 
-	// useEffect(
-	//   () =>
-	//     observeMessages(channelId, {
-	//       onEvent: (
-	//         action: MessageAction,
-	//         message: Amity.Snapshot<Amity.Message>,
-	//       ) => {
-	//         // console.log('message>?:::::::', JSON.stringify(message), action);
-	//         // if (action === 'onCreate') {
-	//         console.log('message>?:::::::', JSON.stringify(message), action);
-	//         //dispatch({notifyOnNewMessageSent(message.data)});
-	//         // if (message.data?.type == 'image' && message.data?.editedAt) {
-	//         setMessages(prevMessages => [
-	//           message.data?.metadata.data!,
-	//           ...prevMessages,
-	//         ]);
-	//         // } else if (
-	//         //   message.data?.type !== 'image' &&
-	//         //   message.data?.editedAt
-	//         // ) {
-	//         //   setMessages(prevMessages => [
-	//         //     message.data?.metadata.data!,
-	//         //     ...prevMessages,
-	//         //   ]);
-	//         // }
-	//         // }
-	//         dispatch(notifyOnNewMessageSend(message));
-	//       },
-	//     }),
-	//   [channelId],
-	// );
-	const ChannelItem = useCallback(
-		channelID => {
-			observeMessages(channelID, {
+	useEffect(
+		() =>
+			observeMessages(channelId, {
 				onEvent: (
 					action: MessageAction,
 					message: Amity.Snapshot<Amity.Message>
 				) => {
-					console.log('message OBserver Callds,ld,s>?:::::::');
-					if (action === 'onCreate') {
-						console.log('message>?:::::::', JSON.stringify(message), action);
-						//dispatch({notifyOnNewMessageSent(message.data)});
-						if (message.data?.type == 'image' && message.data?.editedAt) {
-							setMessages(prevMessages => [
-								message.data?.metadata.data!,
-								...prevMessages
-							]);
-						} else if (
-							message.data?.type !== 'image' &&
-							message.data?.editedAt
+					// console.log('message>?:::::::', JSON.stringify(message), action);
+					// if (action === 'onCreate') {
+					console.log('message>?:::::::', JSON.stringify(message), action);
+					if (
+						messages.filter(item => item.id === message.data?.metadata.data.id)
+							?.length > 0
+					) {
+						if (
+							messages.filter(
+								item => item.id === message.data?.metadata.data.id
+							)?.length > 0
 						) {
-							setMessages(prevMessages => [
-								message.data?.metadata.data!,
-								...prevMessages
-							]);
+							return;
 						}
-						dispatch(notifyOnNewMessageSend(message));
 					}
+					//dispatch({notifyOnNewMessageSent(message.data)});
+					// if (message.data?.type == 'image' && message.data?.editedAt) {
+					setMessages(prevMessages => [
+						message.data?.metadata.data!,
+						...prevMessages
+					]);
+					// } else if (
+					//   message.data?.type !== 'image' &&
+					//   message.data?.editedAt
+					// ) {
+					//   setMessages(prevMessages => [
+					//     message.data?.metadata.data!,
+					//     ...prevMessages,
+					//   ]);
+					// }
+					// }
+					dispatch(notifyOnNewMessageSend(message));
 				}
-			});
-		},
-		[channelId]
+			}),
+		[channelId, messages]
 	);
+	// const ChannelItem = useCallback(
+	// 	channelID => {
+	// 		observeMessages(channelID, {
+	// 			onEvent: (
+	// 				action: MessageAction,
+	// 				message: Amity.Snapshot<Amity.Message>
+	// 			) => {
+	// 				console.log('message OBserver Callds,ld,s>?:::::::');
+	// 				if (action === 'onCreate') {
+	// 					console.log('message>?:::::::', JSON.stringify(message), action);
+	// 					//dispatch({notifyOnNewMessageSent(message.data)});
+	// 					if (message.data?.type == 'image' && message.data?.editedAt) {
+	// 						setMessages(prevMessages => [
+	// 							message.data?.metadata.data!,
+	// 							...prevMessages
+	// 						]);
+	// 					} else if (
+	// 						message.data?.type !== 'image' &&
+	// 						message.data?.editedAt
+	// 					) {
+	// 						setMessages(prevMessages => [
+	// 							message.data?.metadata.data!,
+	// 							...prevMessages
+	// 						]);
+	// 					}
+	// 					dispatch(notifyOnNewMessageSend(message));
+	// 				}
+	// 			}
+	// 		});
+	// 	},
+	// 	[channelId]
+	// );
 
-	useEffect(() => {
-		// console.log('channelId?:::::::', channelId);
-		ChannelItem(channelId);
-	}, [channelId]);
+	// useEffect(() => {
+	// 	// console.log('channelId?:::::::', channelId);
+	// 	ChannelItem(channelId);
+	// }, [channelId]);
 
 	const addMessage = (message: MessageType.Any) => {
 		// setMessages([message, ...messages]);

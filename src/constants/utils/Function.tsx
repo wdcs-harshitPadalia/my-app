@@ -440,11 +440,11 @@ export const showErrorAlert = (errTitle = '', errMessage) => {
 	} else {
 		Alert.alert(errTitle, errMessage);
 	}
-}
+};
 
 export const isValidDate = (date?: any) => {
 	return moment(date).toDate().toString() !== 'Invalid Date';
-}
+};
 
 export const getProfileShareUrl = (userName: string) => {
 	return (
@@ -502,24 +502,21 @@ export const getBetShareUrl = (
 
 export const downloadVideo = (fileUrl: string) => {
 	axios({
-        url: fileUrl,
-        method: "GET",
-        //headers: headers,
-        responseType: "blob" // important
-    }).then(response => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute(
-            "download",
-            'abc.mp4'
-        );
-        document.body.appendChild(link);
-        link.click();
+		url: fileUrl,
+		method: 'GET',
+		//headers: headers,
+		responseType: 'blob' // important
+	}).then(response => {
+		const url = window.URL.createObjectURL(new Blob([response.data]));
+		const link = document.createElement('a');
+		link.href = url;
+		link.setAttribute('download', 'abc.mp4');
+		document.body.appendChild(link);
+		link.click();
 
-        // Clean up and remove the link
-        link.parentNode.removeChild(link);
-    });
+		// Clean up and remove the link
+		link.parentNode.removeChild(link);
+	});
 	// const {config} = RNFetchBlob;
 	// const {
 	// 	dirs: {DownloadDir, DocumentDir}
@@ -588,7 +585,3 @@ export const getVideoShareMessage = (userName, id) => {
 };
 
 global.tutorialTimer = {};
-
-export const isValidDate = (date?: any) => {
-  return moment(date).toDate().toString() !== "Invalid Date";
-};

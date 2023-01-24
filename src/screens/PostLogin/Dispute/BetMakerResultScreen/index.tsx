@@ -665,6 +665,11 @@ const BetMakerResultScreen: React.FC<any> = () => {
 					setStep(1);
 					setIsViewNextBackBtn(false);
 					setIsBackButtonDisable(false);
+					setIsSelectChooseSideType(
+						eventBetData?.bet?.users?._id === userProfileInfo?.user?._id
+							? eventBetData?.bet?.bet_creator_side_option
+							: eventBetData?.bet?.bet_opposite_side_option
+					);
 
 					if (eventBetData?.resultData?.isWinner === 'win') {
 						setNextBtnTitle(Strings.claim_winning);

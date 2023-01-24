@@ -5,6 +5,7 @@ import {defaultTheme} from '../../../theme/defaultTheme';
 import ChatViewComponent from '../../../components/ChatViewComponent';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import ChatHeaderView from '../../../components/ChatHeaderView';
+import ScreenNames from '../../../navigation/screenNames';
 
 const ChatDetailsScreen: React.FC<any> = props => {
 	const navigation = useNavigation();
@@ -17,7 +18,8 @@ const ChatDetailsScreen: React.FC<any> = props => {
 		friendName,
 		friendLevel,
 		friendDeviceToken,
-		friendData
+		friendData,
+		redirectType
 	} = params ?? {};
 
 	const arrRadioData = [
@@ -84,7 +86,13 @@ const ChatDetailsScreen: React.FC<any> = props => {
 	return (
 		<SafeAreaView style={styles.container}>
 			<ChatHeaderView
-				onLeftMenuPress={() => navigation.goBack()}
+				onLeftMenuPress={() => {
+					if (redirectType === 'chatUser') {
+						navigation.navigate(ScreenNames.ChatListScreen);
+					} else {
+						navigation.goBack();
+					}
+				}}
 				friendImage={friendImage}
 				friendName={'@' + friendName}
 				friendLevel={friendLevel}

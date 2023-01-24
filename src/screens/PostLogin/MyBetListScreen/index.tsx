@@ -48,7 +48,7 @@ const MyBetListScreen: React.FC<any> = props => {
 
 	const noDataItemArray = [
 		{
-			image_url: icons.star_congrates,
+			image_url: icons.star_congrats,
 			title_text: userId
 				? Strings.No_bets_for_now
 				: Strings.you_have_not_made_any_bets_yet,
@@ -57,7 +57,7 @@ const MyBetListScreen: React.FC<any> = props => {
 				: ''
 		},
 		{
-			image_url: icons.star_congrates,
+			image_url: icons.star_congrats,
 			title_text: Strings.no_prediction_market,
 			description_text: userId
 				? Strings.This_user_has_not_made_any_bets_yet

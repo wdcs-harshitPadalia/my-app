@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
 		fontFamily: fonts.type.Inter_Regular,
 		//backgroundColor: 'red',
 		textAlignVertical: 'center',
-		marginTop: Platform.OS === 'ios' ? -6 : 0
+		marginTop: Platform.OS === 'ios' ? -6 : Platform.OS === 'web' ? 6 : 0
 	},
 	errStyle: {
 		color: colors.red,

@@ -802,6 +802,7 @@ const BetMakerResultScreen: React.FC<any> = () => {
 									? Strings.you_won
 									: Strings.you_lost
 							}
+							isFromResult={true}
 						/>
 						{redirectType === 'ADMIN_RESULT' && strikeLevel !== 0 && (
 							<View

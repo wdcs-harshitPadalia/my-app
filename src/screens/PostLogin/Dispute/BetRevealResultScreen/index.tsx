@@ -342,6 +342,7 @@ const BetRevealResultScreen: React.FC<any> = () => {
 									? Strings.you_won
 									: Strings.you_lost
 							}
+							isFromResult={true}
 						/>
 					</KeyboardAwareScrollView>
 				);

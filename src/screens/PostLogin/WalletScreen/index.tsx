@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Linking, View,RefreshControl, ScrollView} from 'react-native';
+import {Linking, View, RefreshControl, ScrollView} from 'react-native';
 
 import {useNavigation, useScrollToTop} from '@react-navigation/native';
 import {useWalletConnect} from '@walletconnect/react-native-dapp';
@@ -329,7 +329,11 @@ const WalletScreen: React.FC<any> = () => {
 			'&address=' +
 			walletAddress +
 			'&signature=' +
-			cryptoHash;
+			cryptoHash +
+			'&currency=' +
+			'MATIC' +
+			'&currencies=' +
+			'MATIC';
 
 		return webUrl;
 	};

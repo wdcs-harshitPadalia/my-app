@@ -1,11 +1,13 @@
 {
   "expo": {
+    "themeColor": "#000000",
     "name": "truly.fun",
     "slug": "my-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "backgroundColor": "#000000",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -27,7 +29,9 @@
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "backgroundColor": "#000000",
+      "themeColor": "#000000"
     },
     "plugins": [
       "react-native-compressor"

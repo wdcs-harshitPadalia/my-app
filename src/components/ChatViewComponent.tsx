@@ -330,18 +330,13 @@ const ChatViewComponent: React.FC<Props> = props => {
 				) => {
 					// console.log('message>?:::::::', JSON.stringify(message), action);
 					// if (action === 'onCreate') {
-					console.log('message>?:::::::', JSON.stringify(message), action);
+		
+					console.log('message>?:::::::', JSON.stringify(messages) , JSON.stringify(message), action, message.data?.metadata.data.id);
 					if (
 						messages.filter(item => item.id === message.data?.metadata.data.id)
 							?.length > 0
 					) {
-						if (
-							messages.filter(
-								item => item.id === message.data?.metadata.data.id
-							)?.length > 0
-						) {
-							return;
-						}
+						return;
 					}
 					//dispatch({notifyOnNewMessageSent(message.data)});
 					// if (message.data?.type == 'image' && message.data?.editedAt) {
@@ -359,7 +354,9 @@ const ChatViewComponent: React.FC<Props> = props => {
 					//   ]);
 					// }
 					// }
-					dispatch(notifyOnNewMessageSend(message));
+					if(friendData) {
+						dispatch(notifyOnNewMessageSend(message));
+					}
 				}
 			}),
 		[channelId, messages]

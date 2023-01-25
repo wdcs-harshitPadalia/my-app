@@ -272,7 +272,7 @@ const ChatListScreen: React.FC<any> = props => {
 					//bounces={false}
 					data={followUserData}
 					renderItem={renderFollowersUserItem}
-					contentContainerStyle={{height: height}}
+					contentContainerStyle={{height: height * 0.57}}
 					onEndReachedThreshold={0.5}
 					onEndReached={() => {
 						if (totalFollowUser > followUserData.length) {

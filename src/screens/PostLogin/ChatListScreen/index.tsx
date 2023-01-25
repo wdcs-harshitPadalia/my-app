@@ -139,7 +139,7 @@ const ChatListScreen: React.FC<any> = props => {
 		});
 	}, [navigation]);
 
-	useEffect(() => {
+	useUpdateEffect(() => {
 		//channel list
 		// runQuery(
 		//   createQuery(queryChannels, {

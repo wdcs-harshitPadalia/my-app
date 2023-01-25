@@ -230,7 +230,8 @@ const ChatUserSuggestion: React.FC<any> = props => {
 						uniqueIdGenerateFrom2Ids([userData?.user?._id, item?._id]),
 					friendLevel: item?.level,
 					friendDeviceToken: item?.deviceToken,
-					friendData: item
+					friendData: item,
+					redirectType: 'chatUser'
 				});
 			}}
 		/>
@@ -290,8 +291,8 @@ const ChatUserSuggestion: React.FC<any> = props => {
 					data={followUserData}
 					renderItem={renderFollowersUserItem}
 					contentContainerStyle={{flexGrow: 1}}
-					//onEndReachedThreshold={0.1}
-					onMomentumScrollEnd={() => {
+					onEndReachedThreshold={0.5}
+					onEndReached={() => {
 						console.log(
 							'totalFollowUser??',
 							totalFollowUser,

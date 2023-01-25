@@ -1,6 +1,12 @@
-import React, {forwardRef, useImperativeHandle, useState} from 'react';
+import React, {
+	forwardRef,
+	useEffect,
+	useImperativeHandle,
+	useState
+} from 'react';
 import {
 	ImageBackground,
+	Platform,
 	StyleSheet,
 	Text,
 	TouchableOpacity,
@@ -90,9 +96,12 @@ const Story = forwardRef((props: Props, parentRef) => {
 					// }}
 					source={{
 						uri:
-							(story?.subcategories?.imageUrl ?? story?.categories?.imageUrl) +
-							'?' +
-							new Date().getMilliseconds()
+							Platform.OS === 'web'
+								? story?.subcategories?.imageUrl ?? story?.categories?.imageUrl
+								: (story?.subcategories?.imageUrl ??
+										story?.categories?.imageUrl) +
+								  '?' +
+								  new Date().getMilliseconds()
 					}}
 					onLoadEnd={props.onImageLoaded}
 					style={styles.content}
@@ -526,6 +535,9 @@ const Story = forwardRef((props: Props, parentRef) => {
 							// }
 							playing={isPlaying}
 							// playing={!props.pause || props.isNewStory}
+							onReady={() => {
+								console.log('onReady ::');
+							}}
 							onStart={() => {
 								console.log('onStart ::');
 								isVideoLoaded = false;

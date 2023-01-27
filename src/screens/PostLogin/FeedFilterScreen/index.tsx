@@ -322,7 +322,10 @@ const FeedFilterScreen: React.FC<any> = props => {
 							case 2:
 								console.log('2 >> ' + data.text);
 								navigation.navigate(ScreenNames.StoryShareScreen, {
-									feedObject: item
+									feedObject: item,
+									isFromFeed: true,
+									matchId:
+										item?.dataType === 'customBet' ? undefined : item?._id
 								});
 								break;
 

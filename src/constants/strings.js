@@ -645,6 +645,8 @@ const Strings = {
 	//Prediction Market
 	str_for_you: 'Explore',
 	str_live_chat: 'Live chat',
+	str_explore: 'Explore',
+	str_chat: 'Chat',
 	str_active_bets_count: '%d Active bets',
 	str_follow_user_account: '%username',
 	str_follow_more_account: ' and %count more\n follows this account',

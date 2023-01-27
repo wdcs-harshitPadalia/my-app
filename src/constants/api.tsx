@@ -48,6 +48,8 @@ export const RpcURL =
 //Main net RPC
 //export const RpcURL = 'https://rpc-mainnet.maticvigil.com';
 
+export const MagicLinkUrl = 'https://reveal.magic.link/defibet';
+
 //Test net Chain ID
 export const chainIdPolygonNetwork = 80001;
 

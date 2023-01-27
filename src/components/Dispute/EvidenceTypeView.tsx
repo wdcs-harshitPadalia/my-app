@@ -130,22 +130,48 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 			showErrorAlert(Strings.txt_error, Strings.txt_check_internet_connection);
 		} else {
 			if (isOpenDispute) {
-				createDisputeRoom(
-					hashObj?.hash,
-					hashObj?.signature,
-					bet_contract_address,
-					myCase
+				// createDisputeRoom(
+				// 	hashObj?.hash,
+				// 	hashObj?.signature,
+				// 	bet_contract_address,
+				// 	myCase
+				// );
+				setTimeout(
+					() => {
+						createDisputeRoom(
+							hashObj?.hash,
+							hashObj?.signature,
+							bet_contract_address,
+							myCase
+						);
+					},
+					userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask'
+						? 500
+						: 0
 				);
 			} else {
 				if (betUserId === userInfo.user?._id || isAlreadyPaid) {
 					handleUploadEvidence();
 				} else {
 					// Call upload evidence function
-					createDispute(
-						hashObj?.hash,
-						hashObj?.signature,
-						bet_contract_address,
-						myCase
+					// createDispute(
+					// 	hashObj?.hash,
+					// 	hashObj?.signature,
+					// 	bet_contract_address,
+					// 	myCase
+					// );
+					setTimeout(
+						() => {
+							createDispute(
+								hashObj?.hash,
+								hashObj?.signature,
+								bet_contract_address,
+								myCase
+							);
+						},
+						userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask'
+							? 500
+							: 0
 					);
 				}
 			}
@@ -270,7 +296,8 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 			videoMetaData = await getVideoMetaData(responseData);
 			//imageThumbPath = await createThumbnailFromUrl(webkitRelativePath, name);
 			console.log(
-				'createThumbnailFromUrl :: imageThumbPath :: ', videoMetaData?.duration,
+				'createThumbnailFromUrl :: imageThumbPath :: ',
+				videoMetaData?.duration,
 				imageThumbPath
 			);
 		}
@@ -476,7 +503,7 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 					<ImageBackground
 						style={styles.videoEvidenceBg}
 						//source={{uri: item.image_thumb}}
-						>
+					>
 						<TouchableOpacity
 							onPress={() => {
 								setIsShowVideoModal(true);
@@ -545,7 +572,10 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 		);
 		//formData.append('evidenceFile', evidenceItemsArray);
 		evidenceItemsArray.forEach(evidenceFile =>
-			formData.append('evidenceFile', Platform.OS === 'web' ? evidenceFile.uri : evidenceFile)
+			formData.append(
+				'evidenceFile',
+				Platform.OS === 'web' ? evidenceFile.uri : evidenceFile
+			)
 		);
 		console.log('formData >> ', JSON.stringify(formData));
 
@@ -593,7 +623,7 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 		personalSign(bet_contract_address);
 	};
 
-	const handleUploadEvidence = async() => {
+	const handleUploadEvidence = async () => {
 		dispatch(updateApiLoader({apiLoader: true}));
 
 		fetch(ApiBaseUrl + ApiConstants.addResultDispute, {

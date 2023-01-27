@@ -7,7 +7,7 @@ import ExpoFastImage from 'expo-fast-image';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {LinearGradient} from 'expo-linear-gradient';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import icons from '../../../assets/icon';
 import ButtonGradient from '../../../components/ButtonGradient';
 import ButtonGradientWithRightIcon from '../../../components/ButtonGradientWithRightIcon';
@@ -26,6 +26,10 @@ import colors from '../../../theme/colors';
 import {defaultTheme} from '../../../theme/defaultTheme';
 import {gradientColorAngle} from '../../../theme/metrics';
 import styles from './style';
+import * as WebBrowser from "expo-web-browser";
+import * as Crypto from "expo-crypto";
+import { RootState } from '../../../redux/store';
+import { widgetBaseUrl } from '../../../constants/api';
 
 let shouldNavigate = false;
 
@@ -51,6 +55,11 @@ export default function WalletWithdrawalScreen() {
 		ercTokenTransfer
 	} = useBetCreateContract(false);
 
+
+	const userInfo = useSelector((state: RootState) => {
+		return state.userInfo.data;
+	  });
+
 	useEffect(() => {
 		getTokenTypeData();
 	}, []);
@@ -68,6 +77,30 @@ export default function WalletWithdrawalScreen() {
 			navigateToSuccessScreen();
 		}
 	}, [ercTokenTransfer]);
+
+	const getPaymentUrl = () => {
+		const walletAddress = userInfo?.user?.walletAddress;
+		const cryptoHash = Crypto.digestStringAsync(
+		  Crypto.CryptoDigestAlgorithm.SHA512,
+		  "0x8001c03501d88c3Fa61a62786c91f6bdf15CcA0e" +
+			"822c9e5f7149734f927c4b77cdc437cb"
+		);
+	
+		let webUrl =
+		  widgetBaseUrl +
+		  "f49448ba-2a9b-438e-8bb6-fdbdb30f5818" +
+		  "&type=" +
+		  Strings.sell +
+		  "&return_url=" +
+		  Strings.defibetHouseUrl +
+		  "&address=" +
+		  walletAddress +
+		  "&signature=" +
+		  cryptoHash + '&currencies=' +
+		  'MATIC' ;
+	
+		return webUrl;
+	  };
 
 	const getTokenTypeData = () => {
 		dispatch(updateApiLoader({apiLoader: true}));
@@ -281,10 +314,11 @@ export default function WalletWithdrawalScreen() {
 								<ButtonGradient
 									colorArray={defaultTheme.secondaryGradientColor}
 									angle={gradientColorAngle}
-									onPress={() => {
-										navigation.navigate(ScreenNames.TransakWebView, {
-											type: Strings.withdrawal
-										});
+									onPress={async () => {
+										await WebBrowser.openBrowserAsync(getPaymentUrl());
+										// navigation.navigate(ScreenNames.TransakWebView, {
+										// 	type: Strings.withdrawal
+										// });
 									}}
 									buttonTextcolor={colors.white}
 									buttonText={Strings.withdrawal}

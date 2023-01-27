@@ -7,7 +7,7 @@ const icons = {
 	facebook: require('../icon/facebook.png'),
 	apple: require('../icon/apple.png'),
 	metamask: require('../icon/metamask.png'),
-	demo: require('../icon/demo.png'),
+	// demo: require('../icon/demo.png'),
 	//Bottom Tab icons
 
 	// create tab
@@ -61,13 +61,13 @@ const icons = {
 	instagram: require('../icon/instagram.png'),
 	twitter: require('../icon/twitter.png'),
 	search: require('../icon/search.png'),
-	demoImg: require('../icon/demoImg.png'),
+	// demoImg: require('../icon/demoImg.png'),
 	plusWhite: require('../icon/plusWhite.png'),
 	plusGradient: require('../icon/plusGradient.png'),
 
 	Currency_Ethereum: require('../icon/Currency_Ethereum.png'),
 	convertDownArrow: require('../icon/convertDownArrow.png'),
-	demo1: require('../icon/demo1.png'),
+	// demo1: require('../icon/demo1.png'),
 	ic_menu: require('../icon/ic_menu.png'),
 	timer: require('../icon/timer.png'),
 	telegram: require('../icon/telegram.png'),
@@ -79,7 +79,7 @@ const icons = {
 	notifications_gray: require('../icon/notifications_gray.png'),
 	noInternet: require('../icon/noInternet.png'),
 	share: require('../icon/share.png'),
-	soccerBg: require('../icon/soccerBg.jpeg'),
+	// soccerBg: require('../icon/soccerBg.jpeg'),
 	ic_previous: require('../icon/ic_previous.png'),
 	ic_next: require('../icon/ic_next.png'),
 	camera: require('../icon/camera.png'),
@@ -95,8 +95,8 @@ const icons = {
 	photo_camera: require('../icon/photo_camera.png'),
 	delete: require('../icon/delete.png'),
 
-	basketball2: require('../icon/basketball2.png'),
-	soccerBG: require('../icon/unsplash_G1XGl0lPOak.png'),
+	// basketball2: require('../icon/basketball2.png'),
+	// soccerBG: require('../icon/unsplash_G1XGl0lPOak.png'),
 	ic_chatSend: require('../icon/ic_chatSend.png'),
 	ic_emoji: require('../icon/ic_emoji.png'),
 	support: require('../icon/support.png'),

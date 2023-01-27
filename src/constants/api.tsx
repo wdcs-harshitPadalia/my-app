@@ -4,15 +4,15 @@ const ApiVersion = 'v1';
 export const ApiPort = '5009'; // client build port - 5009, local build port - 5011
 export const SecondaryApiPort = '5008'; // client build port - 5008, local build port - 5012
 
-export const AppSchema = 'https://defibet.house/';
+export const AppSchema = 'https://truly.fun/';
 
 //export const ApiBaseUrl = `http://13.59.164.150:5090/api/${ApiVersion}/`;
 export const FireBaseNotification = 'https://fcm.googleapis.com/fcm/send';
 export const serverKey =
 	'key=AAAAkKwuLSo:APA91bGSCoopkCOmjeWHD_XnNyj5MD5Fh3uKiTa5kWVZDuncwMOA0dBoK9sGCSdc_RU4gWsoXxRtUaKwj4NJAt80dDRw6Yf3_3gMylReaXVH6PfYpshzwIlFGSJa3B6kKxAp55ZrMepG';
 // STAGING - Client
-export const ApiBaseUrl = `https://api.defibet.house/api/${ApiVersion}/`;
-export const ApiSecondaryBaseUrl = `https://api2.defibet.house/api/${ApiVersion}/`;
+export const ApiBaseUrl = `https://api.truly.fun/api/${ApiVersion}/`;
+export const ApiSecondaryBaseUrl = `https://api2.truly.fun/api/${ApiVersion}/`;
 
 // Development - Local
 // export const ApiBaseUrl = `http://13.59.164.150:${ApiPort}/api/${ApiVersion}/`;

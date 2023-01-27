@@ -53,12 +53,10 @@ const StoryShareScreen = () => {
 				<ImageBackground
 					source={{
 						uri:
-							feedObject.dataType === 'customBet'
-								? feedObject[0]?.subcategories?.imageUrl ??
-								  feedObject[0]?.categories?.imageUrl ??
-								  feedObject?.subcategories?.imageUrl ??
-								  feedObject?.categories?.imageUrl
-								: feedObject.image
+							feedObject[0]?.subcategories?.imageUrl ??
+							feedObject[0]?.categories?.imageUrl ??
+							feedObject?.subcategories?.imageUrl ??
+							feedObject?.categories?.imageUrl
 					}}
 					style={styles.imageBg}
 					resizeMode={'cover'}>

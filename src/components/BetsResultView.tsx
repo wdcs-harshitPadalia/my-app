@@ -68,6 +68,18 @@ const BetsResultView: React.FC<Props> = props => {
 		return state.userInfo.data;
 	});
 
+	const getUserName = userName => {
+		const userNameLastChar = userName.slice(-1);
+		console.log('userNameLastChar ::', userNameLastChar);
+		let newUserName;
+		if (userNameLastChar === 's') {
+			newUserName = userName;
+		} else {
+			newUserName = userName + `'s`;
+		}
+		return newUserName;
+	};
+
 	return (
 		<View style={styles.container}>
 			<View style={styles.viewDetails}>
@@ -81,13 +93,17 @@ const BetsResultView: React.FC<Props> = props => {
 						: betData?.bet?.users?._id === visitProfileUserId
 						? Strings.yourBet.replace(
 								'Your',
-								(betData?.bet?.users?.displayName ||
-									betData?.bet?.users?.userName) + `'s`
+								getUserName(
+									betData?.bet?.users?.displayName ||
+										betData?.bet?.users?.userName
+								)
 						  )
 						: Strings.yourBet.replace(
 								'Your',
-								(betData?.betTakerData?.displayName ||
-									betData?.betTakerData?.userName) + `'s`
+								getUserName(
+									betData?.betTakerData?.displayName ||
+										betData?.betTakerData?.userName
+								)
 						  )}
 				</Text>
 				<ButtonGradient

@@ -111,7 +111,8 @@ export default function WalletDepositScreen() {
       "&address=" +
       walletAddress +
       "&signature=" +
-      cryptoHash;
+      cryptoHash + '&currencies=' +
+      'MATIC' ;
 
     return webUrl;
   };

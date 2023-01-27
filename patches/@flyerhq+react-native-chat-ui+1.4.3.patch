@@ -1,0 +1,13 @@
+diff --git a/node_modules/@flyerhq/react-native-chat-ui/lib/utils/index.js b/node_modules/@flyerhq/react-native-chat-ui/lib/utils/index.js
+index bffb93a..03be36c 100644
+--- a/node_modules/@flyerhq/react-native-chat-ui/lib/utils/index.js
++++ b/node_modules/@flyerhq/react-native-chat-ui/lib/utils/index.js
+@@ -145,7 +145,7 @@ export const calculateChatMessages = (messages, user, { customDateHeaderText, da
+             },
+             ...chatMessages,
+         ];
+-        if (nextMessageDifferentDay || nextMessageDateThreshold) {
++        if (nextMessageDifferentDay) {
+             const text = (_b = customDateHeaderText === null || customDateHeaderText === void 0 ? void 0 : customDateHeaderText(nextMessage.createdAt)) !== null && _b !== void 0 ? _b : getVerboseDateTimeRepresentation(nextMessage.createdAt, {
+                 dateFormat,
+                 timeFormat,

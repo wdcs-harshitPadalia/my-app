@@ -802,5 +802,6 @@ const Strings = {
 	betting_fees_generated: 'of the betting fees generated!',
 	top_up_with_credit_card: 'top up with credit card',
 	create_a_challenge: 'create a challenge',
+	started_following: 'started following you.',
 };
 export default Strings;

@@ -9,7 +9,7 @@ import * as Yup from 'yup';
 
 import {MAGIC_API_KEY} from '@env';
 import {createAsyncThunk} from '@reduxjs/toolkit';
-const appShareBaseLink = 'https://defibet.house/';
+const appShareBaseLink = 'https://truly.fun/';
 
 import {magic} from '../../navigation/routes';
 import {Alert, Linking, Platform} from 'react-native';

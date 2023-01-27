@@ -530,7 +530,7 @@ const Strings = {
 	available_strike: 'Available Stake',
 	claim_rewards: 'Claimed Rewards',
 	dbeth: 'DBETH',
-	defibetHouseUrl: 'https://defibet.house/',
+	defibetHouseUrl: 'https://truly.fun/',
 	sell: 'sell',
 	buy: 'buy',
 	join_bet: 'Join bet',

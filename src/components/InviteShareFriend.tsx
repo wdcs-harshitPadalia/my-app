@@ -5,7 +5,8 @@ import {
 	TextInputProps,
 	Text,
 	Share,
-	Platform
+	Platform,
+	TouchableOpacity
 } from 'react-native';
 import ExpoFastImage from 'expo-fast-image';
 import {useSelector} from 'react-redux';
@@ -18,6 +19,7 @@ import colors from '../theme/colors';
 import {defaultTheme} from '../theme/defaultTheme';
 import {gradientColorAngle} from '../theme/metrics';
 import ButtonLeftIconGradient from './ButtonLeftIconGradient';
+import {LinearGradient} from 'expo-linear-gradient';
 interface Props extends TextInputProps {
 	onSharePress?: () => void;
 	onSkipPress?: () => void;
@@ -72,7 +74,7 @@ const InviteShareFriend: React.FC<Props> = props => {
 			<View style={styles.centeredView}>
 				<View style={styles.viewDetails}>
 					<View style={styles.skipView}>
-						{/* <LinearGradient
+						<LinearGradient
 							style={styles.circleGradient}
 							useAngle={true}
 							angle={gradientColorAngle}
@@ -80,7 +82,7 @@ const InviteShareFriend: React.FC<Props> = props => {
 							<TouchableOpacity style={styles.skipBtn} onPress={onSkipPress}>
 								<Text style={styles.skipText}>{closeText ?? Strings.skip}</Text>
 							</TouchableOpacity>
-						</LinearGradient> */}
+						</LinearGradient>
 					</View>
 
 					<View style={{alignItems: 'center'}}>

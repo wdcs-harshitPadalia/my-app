@@ -451,7 +451,8 @@ const SettingsScreen: React.FC<any> = () => {
 								title={Strings.sync_contacts.toUpperCase()}
 								isEnabled={isSyncEnable}
 							/>
-							<Text style={styles.connectTypeStyle}>
+						</View>
+						<Text style={styles.connectTypeStyle}>
 							{Strings.your_are_connected_with + ' '}
 							<Text
 								style={[
@@ -469,7 +470,6 @@ const SettingsScreen: React.FC<any> = () => {
 							buttonText={Strings.logOut}
 							style={styles.marginInput}
 						/>
-						</View>
 					</View>
 				</ScrollView>
 			</View>

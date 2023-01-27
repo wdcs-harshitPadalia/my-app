@@ -554,6 +554,7 @@ const EditProfileScreen: React.FC<any> = props => {
 							}}
 							textValue={bioGraphy}
 							multiline={true}
+							maxLength={100}
 						/>
 					</View>
 					<View style={styles.viewContain}>

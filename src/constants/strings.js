@@ -643,6 +643,8 @@ const Strings = {
 	your_opponent_is_betting: 'your opponent is betting:',
 	your_opponent_will_win: 'Your opponent will win',
 	//Prediction Market
+	str_for_you: 'Explore',
+	str_live_chat: 'Live chat',
 	str_explore: 'Explore',
 	str_chat: 'Chat',
 	str_active_bets_count: '%d Active bets',

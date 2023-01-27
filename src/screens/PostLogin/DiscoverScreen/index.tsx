@@ -1864,6 +1864,41 @@ const DiscoverScreen: React.FC<any> = props => {
 					</TouchableOpacity>
 				</View>
 			)}
+
+			{isShowTutorial  && (
+				<TutorialView
+					style={{top: 0, bottom: 0, position: 'absolute'}}
+					isShowPlusIcon={false}
+					isShowTitle={true}
+					isShowEventImg={false}
+					popupTitle={Strings.bottomTabDiscover}
+					buttonTitle={Strings.next}
+					description={Strings.str_tut_discover_desc}
+					onNextPress={async () => {
+						setIsShowTutorial(!isShowTutorial);
+						navigation.navigate(ScreenNames.BottomTabScreen, {
+							screen: ScreenNames.ProfileRouter,
+							params: {
+								screen: ScreenNames.ProfileScreen
+							}
+						});
+					}}
+					onSkipPress={async () => {
+						dispatch(showTutorial({isShowTutorial: false}));
+						setIsShowTutorial(!isShowTutorial);
+						navigation.navigate(ScreenNames.BottomTabScreen, {
+							screen: ScreenNames.FeedsRouter,
+							params: {
+								screen: ScreenNames.FeedScreen
+							}
+						});
+						global.tutorialTimer = setTimeout(() => {
+							dispatch(hideBottomTab({isHideBottomTab: true}));
+							dispatch(showInviteUser({isShowInviteUser: true}));
+						}, 120000);
+					}}
+				/>
+			)}
 		</View>
 	);
 };

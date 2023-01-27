@@ -89,7 +89,7 @@ const icons = {
 	link: require('../icon/link.png'),
 	imageExpander: require('../icon/image_expander.png'),
 	playIcon: require('../icon/play.png'),
-	videoPlaceHolder: require('../icon/video_placeholder.png'),
+	//videoPlaceHolder: require('../icon/video_placeholder.png'),
 	gallary: require('../icon/gallary.png'),
 	photo_collection: require('../icon/photo_collections.png'),
 	photo_camera: require('../icon/photo_camera.png'),

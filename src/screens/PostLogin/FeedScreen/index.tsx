@@ -86,7 +86,7 @@ const FeedScreen: React.FC<any> = props => {
 	const isTutorial = useSelector((state: RootState) => {
 		return state.dashboard.isShowTutorial;
 	});
-	const [isShowTutorial, setIsShowTutorial] = useState(false);
+	const [isShowTutorial, setIsShowTutorial] = useState(isTutorial);
 
 	const [isShowTrendingUser, setIsShowTrendingUser] = useState(false);
 

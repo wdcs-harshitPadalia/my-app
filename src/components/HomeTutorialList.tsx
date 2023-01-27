@@ -21,6 +21,7 @@ import {horizontalScale, width} from '../theme/metrics';
 import ButtonBorderGradient from './ButtonBorderGradient';
 import useUpdateEffect from './CustomHooks/useUpdateEffect';
 import TutorialView from './TutorialView';
+import { FlashList } from '@shopify/flash-list';
 
 interface Props extends TextInputProps {
 	onNextPress?: () => void;
@@ -51,17 +52,12 @@ const HomeTutorialList: React.FC<Props> = props => {
 
 	console.log('selectedIndex', selectedIndex);
 	return (
-		<FlatList
+		<View style={styles.container}>
+		<FlashList
 			ref={flatListRef}
 			scrollEnabled={false}
 			bounces={false}
 			pagingEnabled
-			style={{
-				position: 'absolute',
-				top: 0,
-				bottom: 0,
-				width: '100%'
-			}}
 			horizontal
 			data={arrData}
 			showsHorizontalScrollIndicator={false}
@@ -86,10 +82,18 @@ const HomeTutorialList: React.FC<Props> = props => {
 				/>
 			)}
 		/>
+		</View>
 	);
 };
 
 const styles = StyleSheet.create({
+	container: {
+		position: 'absolute',
+		top: 0,
+		bottom: 0,
+		width: '100%',
+		height:'100%'
+	},
 	bgView: {
 		flex: 1,
 		alignItems: 'center',

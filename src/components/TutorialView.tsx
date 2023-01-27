@@ -15,7 +15,7 @@ import Strings from '../constants/strings';
 import {Fonts, moderateScale, verticalScale} from '../theme';
 import colors from '../theme/colors';
 import {defaultTheme} from '../theme/defaultTheme';
-import {gradientColorAngle, horizontalScale, width} from '../theme/metrics';
+import {gradientColorAngle, height, horizontalScale, width} from '../theme/metrics';
 import ButtonBorderGradient from './ButtonBorderGradient';
 import ButtonGradient from './ButtonGradient';
 import DeviceInfo from 'react-native-device-info';
@@ -109,22 +109,48 @@ const TutorialView: React.FC<Props> = props => {
 
 const styles = StyleSheet.create({
 	bgView: {
-		flex: 1,
-		alignItems: 'center',
+		//flex: 1,
+		...Platform.select({
+			ios: {
+				alignItems: 'center',
+			},
+			android: {
+				alignItems: 'center',
+			}
+		}),
 		justifyContent: 'center',
 		backgroundColor: 'rgba(0,0,0,0.8)',
 		marginTop: 0,
 		marginBottom: 0,
-		width: width
+		width: width,
+		...Platform.select({
+			web: {
+				height: height
+			}
+		}),
 	},
 	centeredView: {
-		alignItems: 'center',
-		justifyContent: 'center'
+		...Platform.select({
+			ios: {
+				alignItems: 'center',
+			},
+			android: {
+				alignItems: 'center',
+			}
+		}),
+		justifyContent: 'center',
 	},
 	viewDetails: {
 		// backgroundColor: defaultTheme.backGroundColor,
 		borderRadius: verticalScale(10),
-		alignItems: 'center',
+		...Platform.select({
+			ios: {
+				alignItems: 'center',
+			},
+			android: {
+				alignItems: 'center',
+			}
+		}),
 		justifyContent: 'center',
 		paddingHorizontal: verticalScale(20)
 	},

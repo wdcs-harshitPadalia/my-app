@@ -22,6 +22,7 @@ import {
 } from '../constants/utils/Function';
 import moment from 'moment';
 import {gradientColorAngle} from '../theme/metrics';
+import strings from '../constants/strings';
 
 interface Props extends TextInputProps {
 	onPress?: () => void;
@@ -68,13 +69,29 @@ const NotificationPromotionView: React.FC<Props> = props => {
 					/>
 				</View>
 				<View style={styles.viewLabelContainer}>
-					<Text style={styles.usernameStyle}>
-						{data?.type === 'NOT_SELECTED_JURY' ||
-						data?.type === 'VOTE_NOT_CONSIDERED' ||
-						data?.type === 'SUPPORT_TICKET'
-							? data?.body
-							: data?.body ?? data?.type}
-					</Text>
+					{data?.type === 'FRIEND_FOLLOWING' ? (
+						<>
+							<Text
+								style={[
+									styles.usernameStyle,
+									{fontFamily: Fonts.type.Inter_ExtraBold}
+								]}>
+								{'@' + data.body?.split(' ')[0] + ' '}
+
+								<Text style={styles.usernameStyle}>
+									{strings.started_following}
+								</Text>
+							</Text>
+						</>
+					) : (
+						<Text style={styles.usernameStyle}>
+							{data?.type === 'NOT_SELECTED_JURY' ||
+							data?.type === 'VOTE_NOT_CONSIDERED' ||
+							data?.type === 'SUPPORT_TICKET'
+								? data?.body
+								: data?.body ?? data?.type}
+						</Text>
+					)}
 
 					<Text style={styles.userTypeStyle}>
 						{/* {dateTimeStreamingConvert(
@@ -105,7 +122,7 @@ const styles = StyleSheet.create({
 	},
 	circleGradient: {
 		borderRadius: verticalScale(8),
-		alignItems: 'center',
+		alignItems: 'flex-start',
 		marginTop: verticalScale(8),
 		marginBottom: verticalScale(8)
 	},

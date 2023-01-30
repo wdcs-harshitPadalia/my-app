@@ -405,9 +405,7 @@ export const CustomTabBar = ({state, descriptors, navigation}) => {
 				buttonLiveTitle={Strings.live_challenge}
 				onPressLiveBtn={() => {
 					setModalVisible(!modalVisible);
-					navigation.navigate(ScreenNames.UserEngagementScreen, {
-						
-					});
+					navigation.navigate(ScreenNames.UserEngagementScreen, {});
 				}}
 				isShowLiveButton={true}
 			/>

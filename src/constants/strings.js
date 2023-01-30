@@ -803,5 +803,10 @@ const Strings = {
 	top_up_with_credit_card: 'top up with credit card',
 	create_a_challenge: 'create a challenge',
 	started_following: 'started following you.',
+	create_a_live_challenge: 'stream a live challenge',
+	live_challenge: 'live challenge',
+	earn_up_to: 'Earn up to',
+	from_streaming_content:
+		'of the fees generated from all the bets matched over your streaming content!',
 };
 export default Strings;

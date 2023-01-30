@@ -388,7 +388,7 @@ export const CustomTabBar = ({state, descriptors, navigation}) => {
 				onPressOk={() => {
 					setModalVisible(!modalVisible);
 					navigation.navigate(ScreenNames.UserEngagementScreen, {
-						isForP2p: true
+						isForP2pBet: true
 					});
 				}}
 				onPressCancel={() => {
@@ -398,10 +398,16 @@ export const CustomTabBar = ({state, descriptors, navigation}) => {
 				onPressSecondButton={() => {
 					setModalVisible(!modalVisible);
 					navigation.navigate(ScreenNames.UserEngagementScreen, {
-						isForP2p: false,
+						isForVideoCreation: true,
 						pickVideoFromGallery: pickVideoFromGallery
 					});
 				}}
+				buttonLiveTitle={Strings.live_challenge}
+				onPressLiveBtn={() => {
+					setModalVisible(!modalVisible);
+					navigation.navigate(ScreenNames.UserEngagementScreen, {});
+				}}
+				isShowLiveButton={true}
 			/>
 			<SelectImageComponet
 				isVisible={isMediaTypeVisible}

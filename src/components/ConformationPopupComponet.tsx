@@ -25,6 +25,10 @@ interface Props extends TextInputProps {
 	onPressCancel?: () => void;
 	isShowSecondButton: boolean;
 	onPressSecondButton?: () => void;
+
+	buttonLiveTitle?: string;
+	isShowLiveButton: boolean;
+	onPressLiveBtn?: () => void;
 }
 
 const ConformationPopupComponet: React.FC<Props> = props => {
@@ -36,13 +40,19 @@ const ConformationPopupComponet: React.FC<Props> = props => {
 		isVisible,
 		style,
 		isShowSecondButton,
-		onPressSecondButton
+		onPressSecondButton,
+		buttonLiveTitle,
+		isShowLiveButton,
+		onPressLiveBtn
 	} = props;
 
 	return (
 		<Modal animationType="fade" transparent={true} visible={isVisible}>
 			<View style={styles.bgView}>
-				<TouchableOpacity activeOpacity={1} onPress={onPressCancel} style={{flex:1}}>
+				<TouchableOpacity
+					activeOpacity={1}
+					onPress={onPressCancel}
+					style={{flex: 1}}>
 					<View style={styles.centeredView}>
 						<View style={styles.viewDetails}>
 							<Text style={[styles.titleStyle, {...style}]}>{popupTitle}</Text>
@@ -54,6 +64,17 @@ const ConformationPopupComponet: React.FC<Props> = props => {
 								buttonText={buttonOkTitle}
 								style={styles.loginButtonSocial}
 							/>
+							{isShowLiveButton && (
+								<ButtonGradient
+									onPress={onPressLiveBtn}
+									colorArray={defaultTheme.ternaryGradientColor}
+									angle={gradientColorAngle}
+									buttonTextcolor={colors.white}
+									buttonText={buttonLiveTitle}
+									style={styles.secondButtonSocial}
+								/>
+							)}
+
 							{isShowSecondButton && (
 								<ButtonGradient
 									onPress={onPressSecondButton}
@@ -106,7 +127,7 @@ const styles = StyleSheet.create({
 	loginButtonSocial: {
 		marginHorizontal: verticalScale(16),
 		marginTop: verticalScale(16),
-    width: "80%",
+		width: '80%'
 	},
 	secondButtonSocial: {
 		borderTopColor: colors.grayLightText,
@@ -114,7 +135,7 @@ const styles = StyleSheet.create({
 		paddingTop: verticalScale(16),
 		marginHorizontal: verticalScale(16),
 		marginTop: verticalScale(16),
-		width: "80%",
+		width: '80%'
 	}
 });
 

@@ -19,7 +19,11 @@ import {
 	getMetamaskBalance,
 	getRoundDecimalValue
 } from '../../../constants/utils/Function';
-import {decimalValue, widgetBaseUrl} from '../../../constants/api';
+import {
+	decimalValue,
+	MagicLinkUrl,
+	widgetBaseUrl
+} from '../../../constants/api';
 
 import {
 	getTokenType,
@@ -399,7 +403,7 @@ const WalletScreen: React.FC<any> = () => {
 							style={{borderRadius: 8}}
 							userData={userInfo?.user}
 							onExportPrivateKeyPressed={() => {
-								Linking.openURL('https://reveal.magic.link/defibet');
+								Linking.openURL(MagicLinkUrl);
 							}}
 							onDepositButtonPressed={() => {
 								navigation.navigate(ScreenNames.WalletDepositScreen);

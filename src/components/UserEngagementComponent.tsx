@@ -52,23 +52,26 @@ const UserEngagementComponent: React.FC<Props> = props => {
 				<View style={styles.titleView}>
 					<Text style={[styles.descriptionTextStyle]}>
 						{data?.description1}
-					</Text>
-					{Platform.OS === 'web' ? (
-						<Text
-							style={[
-								styles.gradientStyle,
-								{color: defaultTheme.primaryGradientColor[0]}
-							]}>
-							{' ' + data?.highlightedText + ' '}
+
+						{Platform.OS === 'web' ? (
+							<Text
+								style={[
+									styles.gradientStyle,
+									{color: defaultTheme.primaryGradientColor[0]}
+								]}>
+								{' ' + data?.highlightedText + ' '}
+							</Text>
+						) : (
+							<GradientText
+								colors={defaultTheme.primaryGradientColor}
+								style={styles.gradientStyle}>
+								{' ' + data?.highlightedText + ' '}
+							</GradientText>
+						)}
+						<Text style={styles.descriptionTextStyle}>
+							{data?.description2}
 						</Text>
-					) : (
-						<GradientText
-							colors={defaultTheme.primaryGradientColor}
-							style={styles.gradientStyle}>
-							{' ' + data?.highlightedText + ' '}
-						</GradientText>
-					)}
-					<Text style={styles.descriptionTextStyle}>{data?.description2}</Text>
+					</Text>
 				</View>
 
 				<ExpoFastImage
@@ -101,7 +104,8 @@ const styles = StyleSheet.create({
 	descriptionTextStyle: {
 		fontSize: verticalScale(22),
 		fontFamily: fonts.type.Inter_Medium,
-		color: colors.white
+		color: colors.white,
+		textAlign: 'center'
 	},
 	titleStyle: {
 		color: colors.white,
@@ -110,13 +114,13 @@ const styles = StyleSheet.create({
 	},
 	gradientStyle: {
 		fontSize: verticalScale(26),
-		fontFamily: fonts.type.Inter_Medium
+		fontFamily: fonts.type.Inter_Medium,
+		textAlign: 'center'
 	},
 	titleView: {
 		flexDirection: 'row',
 		flexWrap: 'wrap',
-		paddingVertical: verticalScale(20),
-		justifyContent: 'center'
+		paddingVertical: verticalScale(20)
 	}
 });
 

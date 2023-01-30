@@ -40,6 +40,8 @@ const UserEngagementScreen = () => {
 			'f49448ba-2a9b-438e-8bb6-fdbdb30f5818' +
 			'&type=' +
 			Strings.buy +
+			'&currencies=' +
+			'MATIC' +
 			'&return_url=' +
 			Strings.defibetHouseUrl +
 			'&address=' +
@@ -56,12 +58,22 @@ const UserEngagementScreen = () => {
 	const onBtnSkipForShortVideo = () => {
 		setIsMediaTypeVisible(true);
 	};
+	const onBtnSkipForLiveChallenge = () => {
+		console.log('onBtnSkipForLiveChallenge');
+	};
 
 	const p2pBetData = {
 		title: Strings.create_a_challenge,
 		description1: Strings.engage_your_audience_and_earn_up_to,
 		description2: Strings.betting_fees_generated,
 		highlightedText: '50%',
+		image: icons.star_congrats
+	};
+	const liveChallenge = {
+		title: Strings.create_a_live_challenge,
+		description1: Strings.earn_up_to,
+		description2: Strings.from_streaming_content,
+		highlightedText: '20%',
 		image: icons.star_congrats
 	};
 
@@ -78,7 +90,13 @@ const UserEngagementScreen = () => {
 			<SafeAreaView style={styles.container}>
 				<View style={styles.container}>
 					<UserEngagementComponent
-						data={params?.isForP2p ? p2pBetData : shortVideoData}
+						data={
+							params?.isForP2pBet
+								? p2pBetData
+								: params?.isForVideoCreation
+								? shortVideoData
+								: liveChallenge
+						}
 					/>
 					<View style={styles.buttonView}>
 						<ButtonGradient
@@ -98,7 +116,11 @@ const UserEngagementScreen = () => {
 
 						<TouchableOpacity
 							onPress={() => {
-								params?.isForP2p ? onBtnSkipForP2p() : onBtnSkipForShortVideo();
+								params?.isForP2pBet
+									? onBtnSkipForP2p()
+									: params?.isForVideoCreation
+									? onBtnSkipForShortVideo()
+									: onBtnSkipForLiveChallenge();
 							}}>
 							<Text style={styles.titleSkip}>{Strings.skip}</Text>
 						</TouchableOpacity>

@@ -324,17 +324,14 @@ const WalletScreen: React.FC<any> = () => {
 			'f49448ba-2a9b-438e-8bb6-fdbdb30f5818' +
 			'&type=' +
 			Strings.buy +
+			'&currencies=' +
+			'MATIC' +
 			'&return_url=' +
 			Strings.defibetHouseUrl +
 			'&address=' +
 			walletAddress +
 			'&signature=' +
-			cryptoHash +
-			'&currency=' +
-			'MATIC' +
-			'&currencies=' +
-			'MATIC';
-
+			cryptoHash;
 		return webUrl;
 	};
 

@@ -50,7 +50,9 @@ const UserEngagementComponent: React.FC<Props> = props => {
 				)}
 
 				<View style={styles.titleView}>
-					<Text style={styles.descriptionTextStyle}>{data?.description1}</Text>
+					<Text style={[styles.descriptionTextStyle]}>
+						{data?.description1}
+					</Text>
 					{Platform.OS === 'web' ? (
 						<Text
 							style={[
@@ -97,7 +99,7 @@ const styles = StyleSheet.create({
 		width: horizontalScale(240)
 	},
 	descriptionTextStyle: {
-		fontSize: verticalScale(24),
+		fontSize: verticalScale(22),
 		fontFamily: fonts.type.Inter_Medium,
 		color: colors.white
 	},
@@ -107,7 +109,7 @@ const styles = StyleSheet.create({
 		fontFamily: fonts.type.Krona_Regular
 	},
 	gradientStyle: {
-		fontSize: verticalScale(28),
+		fontSize: verticalScale(26),
 		fontFamily: fonts.type.Inter_Medium
 	},
 	titleView: {

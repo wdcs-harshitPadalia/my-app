@@ -9,7 +9,6 @@ import * as Yup from 'yup';
 
 import {MAGIC_API_KEY} from '@env';
 import {createAsyncThunk} from '@reduxjs/toolkit';
-const appShareBaseLink = 'https://truly.fun/';
 
 import {magic} from '../../navigation/routes';
 import {Alert, Linking, Platform} from 'react-native';
@@ -192,7 +191,7 @@ export const createJoinBetShareMessage = (userName, betQuestion, betId) => {
 
 export const createJoinBetShareUrl = betId => {
 	const shareUrlString =
-		appShareBaseLink +
+		AppSchema +
 		ScreenNames.JoinBetCreateScreen +
 		joinSharePostFixUrl.replace('%betId', betId).replace('%id', betId);
 	return shareUrlString;
@@ -449,7 +448,7 @@ export const isValidDate = (date?: any) => {
 export const getProfileShareUrl = (userName: string) => {
 	return (
 		Strings.app_sharing_text.replace('%s', userName) +
-		appShareBaseLink +
+		AppSchema +
 		appSharePostFixURL
 	);
 };
@@ -466,7 +465,7 @@ export const getEventShareUrl = (
 		' ' +
 		matchEndTime +
 		'\n\n' +
-		appShareBaseLink +
+		AppSchema +
 		ScreenNames.EventDetailsScreen +
 		eventSharePostFixUrl
 			.replace('%title', title)
@@ -490,7 +489,7 @@ export const getBetShareUrl = (
 		' ' +
 		betEndTime +
 		'\n\n' +
-		appShareBaseLink +
+		AppSchema +
 		ScreenNames.CustomBetDetailsScreen +
 		betSharePostFixURL
 			.replace('%title', title)
@@ -570,7 +569,7 @@ export const downloadVideo = (fileUrl: string) => {
 
 export const getVideoShareUrl = id => {
 	return (
-		appShareBaseLink +
+		AppSchema +
 		ScreenNames.DiscoverScreen +
 		videoSharePostFixUrl.replace('%id', id)
 	);

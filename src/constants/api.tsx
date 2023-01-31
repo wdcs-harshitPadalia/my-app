@@ -167,7 +167,8 @@ export const ApiConstants = {
 	getExploreData: 'video/getExploreData',
 	messageUser: 'video/messageUser',
 	markSeen: 'video/markSeen',
-	getUserAncestor: 'result/getUserAncestor'
+	getUserAncestor: 'result/getUserAncestor',
+	addFeedUser: 'admin/addFeedUser'
 };
 
 export const BotomSharePopupData = [

@@ -619,7 +619,7 @@ const BetsCategoryScreen: React.FC<any> = () => {
 
 	const backAction = () => {
 		if (isProgress === '10%') {
-			navigation.goBack();
+			navigation.dispatch(StackActions.popToTop());
 		} else if (isProgress === '100%') {
 			navigation.dispatch(StackActions.popToTop());
 		} else {
@@ -2998,7 +2998,7 @@ const BetsCategoryScreen: React.FC<any> = () => {
 						} else if (infoPopUpType === 2) {
 							connectMetaMask();
 						} else {
-							navigation.goBack();
+							navigation.dispatch(StackActions.popToTop());
 						}
 					}}
 					onPressCancel={() => {

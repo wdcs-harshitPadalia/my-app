@@ -421,7 +421,8 @@ const Strings = {
 
 	taken_by: 'taken by:',
 	Select_the_final_result: 'Select the final result',
-	problem_with_this_result: 'A problem with this result?',
+	resolver_evidence: 'Resolver’s evidence:',
+	problem_with_this_result: 'A problem with this result or the verification?',
 	open_dispute: 'Open dispute.',
 	you_open_dispute: 'You’ve opened a dispute and your evidence has been sent.',
 	we_will_review_evidence: 'we’ll review your evidence and get back to you',
@@ -808,5 +809,10 @@ const Strings = {
 	earn_up_to: 'Earn up to',
 	from_streaming_content:
 		'of the fees generated from all the bets matched over your streaming content!',
+	optional_evidence: 'Optional evidence',
+	optional_evidence_desc:
+		'You can optionally attach evidence of the result. You can upload a photo, a video or share the links of your choice.',
+	str_and_or: 'and/or',
+	verify_photo_video: 'VERIFY WITH PHOTO or video'
 };
 export default Strings;

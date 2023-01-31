@@ -6,7 +6,7 @@ import {Video, AVPlaybackStatus} from 'expo-av';
 
 import {horizontalScale, verticalScale} from '../theme';
 import {screenHeight} from '../theme/metrics';
-import { defaultTheme } from '../theme/defaultTheme';
+import {defaultTheme} from '../theme/defaultTheme';
 
 interface Props {
 	isVisible?: boolean;
@@ -21,7 +21,9 @@ const VideoPlayerComponent: React.FC<Props> = props => {
 	return (
 		<Modal
 			backdropOpacity={0.9}
-			style={{marginHorizontal: 0, height: screenHeight, width: '100%'}}
+			style={{
+				margin: 0
+			}}
 			isVisible={isVisible}
 			onSwipeComplete={({swipingDirection}) => {
 				onClose();
@@ -56,7 +58,7 @@ const VideoPlayerComponent: React.FC<Props> = props => {
 				src={url}
 				width="100%"
 				style={{
-					backgroundColor: defaultTheme.backGroundColor,
+					backgroundColor: defaultTheme.backGroundColor
 					// paddingBottom: 70
 				}}
 				height={screenHeight}

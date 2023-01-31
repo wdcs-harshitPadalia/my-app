@@ -334,7 +334,7 @@ const FollowingFollowersScreen: React.FC<any> = props => {
 
 				{followUserData?.length > 0 && isSelectedIndex === 1 ? (
 					<>
-						<ButtonGradient
+						{/* <ButtonGradient
 							onPress={() => {
 								navigation.navigate(ScreenNames.DiscoverFindFriendsScreen);
 							}}
@@ -345,7 +345,7 @@ const FollowingFollowersScreen: React.FC<any> = props => {
 							buttonText={Strings.connect_friends}
 							style={styles.loginButtonSocial}
 							leftIconPath={icons.plusRound}
-						/>
+						/> */}
 						<FlatList
 							data={followUserData}
 							renderItem={renderFollowersUserItem}

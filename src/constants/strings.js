@@ -808,5 +808,25 @@ const Strings = {
 	earn_up_to: 'Earn up to',
 	from_streaming_content:
 		'of the fees generated from all the bets matched over your streaming content!',
+	Failed_to_stake_amount: 'Failed to stake amount',
+	live_challenge: 'Live challenge',
+	attach_the_stream: 'Attach the stream',
+	attach_the_channel_link_des:
+		'Even if your challenge doens’t start right now, you can attach the channel link to be displayed at the start time.',
+	stream_name: 'Stream name',
+	stream_link: 'Stream link',
+	set_the_duration_of_the_stream: 'Set the duration of the stream',
+	start_and_End_time: 'Start and End time',
+	pick_start_time: 'PICK START TIME',
+	result_verification: 'Result verification',
+	select_who_verifies_the_challenge: 'Select who verifies the challenge',
+	bet_maker: 'Bet maker',
+	if_you_select_Bet_Maker_des:
+		'If you select Bet Maker, you will be the one to verify the bet. ',
+	bet_taker: 'Bet taker',
+	if_you_select_Bet_taker_des:
+		'If you select Bet taker, you will be the one to verify the bet. ',
+	enter_a_stream_name: 'Enter a Stream name',
+	enter_a_stream_link: 'Enter a Stream link'
 };
 export default Strings;

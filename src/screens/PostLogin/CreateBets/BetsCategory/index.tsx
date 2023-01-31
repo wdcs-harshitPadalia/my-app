@@ -199,6 +199,7 @@ const BetsCategoryScreen: React.FC<any> = () => {
 	const [betWinningHelpTitle, setBetWinningHelpTitle] = useState('');
 	const [betWinningHelp, setBetWinningHelp] = useState('');
 
+	const [whoVerifiesChallenge, setWhoVerifiesChallenge] = useState(-1); // maker for 0 and taker for 1
 	const [isPrivacy, setIsPrivacy] = useState(-1);
 
 	const [isSelectFollowUser, setIsSelectFollowUser] = useState({});
@@ -851,10 +852,14 @@ const BetsCategoryScreen: React.FC<any> = () => {
 					'getTokenTypeData :: getTokenType :: res ::',
 					JSON.stringify(res)
 				);
-				setCurrencyData(res?.data?.tokens);
-				if (Object.keys(isSelectCurrency).length === 0) {
-					setIsSelectCurrency(res?.data?.tokens[0]);
-				}
+				let filteredTokensData = res?.data?.tokens?.filter(function (item) {
+					return item?.short_name.toLowerCase() !== 'dbeth';
+				});
+				setCurrencyData(filteredTokensData);
+
+				// if (Object.keys(isSelectCurrency).length === 0) {
+				// 	setIsSelectCurrency(res?.data?.tokens[0]);
+				// }
 				setBetOdds(res?.data?.odds);
 				console.log(
 					'getTokenTypeData :: getTokenType :: isSelectedLeagueType ::',
@@ -1046,7 +1051,8 @@ const BetsCategoryScreen: React.FC<any> = () => {
 							parseFloat(selectedBetOdds?.decimal) -
 						parseFloat(betAmount.replace(',', '.'))
 					).toFixed(decimalValue) + '',
-				parent_bet_id: bet_id
+				parent_bet_id: bet_id,
+				bet_resolver: whoVerifiesChallenge === 0 ? 'BET_MAKER' : 'BET_TAKER'
 			};
 			// await analytics().logEvent('calledP2pBetApi', {
 			// 	id: bet_id,
@@ -1088,7 +1094,8 @@ const BetsCategoryScreen: React.FC<any> = () => {
 						parseFloat(betAmount.replace(',', '.'))
 					).toFixed(decimalValue) + '',
 				bet_type: '2',
-				parent_bet_id: bet_id
+				parent_bet_id: bet_id,
+				bet_resolver: whoVerifiesChallenge === 0 ? 'BET_MAKER' : 'BET_TAKER'
 			};
 			// await analytics().logEvent('calledP2pBetApi', {
 			// 	id: bet_id,
@@ -1361,10 +1368,17 @@ const BetsCategoryScreen: React.FC<any> = () => {
 				setBetJoinMessage(res?.data?.message);
 				setTimeout(() => {
 					if (res.data.isBet === true) {
-						seIsProgress('80%');
-						seIsTitle(Strings.you_are_almost_done + userInfo.user.userName);
-						setIsBackButtonDisable(true);
-						setStep(9);
+						if (isSelectedLeagueType !== 0) {
+							seIsProgress('75%');
+							seIsTitle(Strings.result_verification);
+							setIsBackButtonDisable(true);
+							setStep(12);
+						} else {
+							seIsProgress('80%');
+							seIsTitle(Strings.you_are_almost_done + userInfo.user.userName);
+							setIsBackButtonDisable(true);
+							setStep(9);
+						}
 					} else {
 						setModalIsBetJoin(true);
 					}
@@ -1649,6 +1663,9 @@ const BetsCategoryScreen: React.FC<any> = () => {
 								setIsBackButtonDisable(true);
 							}
 						}}
+						isShowButtonOption
+						title={Strings.write_Question_Market}
+						placeholder={Strings.write_your_question}
 					/>
 				);
 			case 3:
@@ -1960,6 +1977,7 @@ const BetsCategoryScreen: React.FC<any> = () => {
 							pervSelectedObj={isSelectCurrency}
 							selectedObj={(item: any) => {
 								if (item) {
+									setIsBackButtonDisable(false);
 									setIsSelectCurrency(item);
 									switch (item?.short_name) {
 										case 'MATIC':
@@ -2157,7 +2175,6 @@ const BetsCategoryScreen: React.FC<any> = () => {
 			case 9:
 				return (
 					<BetsPrivacyView
-						popupTitle={Strings.bet_privacy}
 						isSelected={isPrivacy}
 						onPrivatePress={() => {
 							setIsPrivacy(1);
@@ -2167,6 +2184,7 @@ const BetsCategoryScreen: React.FC<any> = () => {
 							setIsPrivacy(0);
 							setIsBackButtonDisable(false);
 						}}
+						popUpType={0}
 					/>
 				);
 			case 10:
@@ -2240,6 +2258,21 @@ const BetsCategoryScreen: React.FC<any> = () => {
 							/>
 						)}
 					</View>
+				);
+			case 12:
+				return (
+					<BetsPrivacyView
+						isSelected={whoVerifiesChallenge}
+						onPrivatePress={() => {
+							setWhoVerifiesChallenge(1);
+							setIsBackButtonDisable(false);
+						}}
+						onPublicPress={() => {
+							setWhoVerifiesChallenge(0);
+							setIsBackButtonDisable(false);
+						}}
+						popUpType={1}
+					/>
 				);
 		}
 	};
@@ -2341,7 +2374,8 @@ const BetsCategoryScreen: React.FC<any> = () => {
 			case 6:
 				seIsProgress('70%');
 				seIsTitle(Strings.select_the_crypto_to_use_in_this_bet);
-				setIsBackButtonDisable(false);
+				setIsBackButtonDisable(true);
+				setIsSelectCurrency({});
 				setStep(7);
 				break;
 			case 7:
@@ -2624,6 +2658,12 @@ const BetsCategoryScreen: React.FC<any> = () => {
 					_ISCUSTOMIZED: isSelectedLeagueType !== 0
 				});
 				break;
+			case 12:
+				seIsProgress('80%');
+				seIsTitle(Strings.you_are_almost_done + userInfo.user.userName);
+				setIsBackButtonDisable(true);
+				setStep(9);
+				break;
 		}
 	};
 
@@ -2790,20 +2830,35 @@ const BetsCategoryScreen: React.FC<any> = () => {
 				setStep(7);
 				break;
 			case 9:
-				seIsProgress('70%');
-				seIsTitle(Strings.review_your_bet);
-				setIsBackButtonDisable(false);
-				setStep(8);
-				setIsPrivacy(-1);
+				if (isSelectedLeagueType !== 0) {
+					seIsProgress('75%');
+					seIsTitle(Strings.result_verification);
+					setIsBackButtonDisable(false);
+					setStep(12);
+					setIsPrivacy(-1);
+				} else {
+					seIsProgress('70%');
+					seIsTitle(Strings.review_your_bet);
+					setIsBackButtonDisable(false);
+					setStep(8);
+					setIsPrivacy(-1);
+				}
 				break;
 
 			case 10:
 				seIsProgress('80%');
-				seIsTitle(Strings.you_are_almost_done);
+				seIsTitle(Strings.you_are_almost_done + userInfo.user.userName);
 				setStep(9);
 				setIsBackButtonDisable(isPrivacy === -1 ? true : false);
 				setIsViewNextBackBtn(true);
 				setNextBtnTitle(Strings.next);
+				break;
+			case 12:
+				seIsProgress('70%');
+				seIsTitle(Strings.review_your_bet);
+				setIsBackButtonDisable(false);
+				setStep(8);
+				setWhoVerifiesChallenge(-1);
 				break;
 		}
 	};

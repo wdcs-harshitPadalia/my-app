@@ -17,18 +17,22 @@ import {gradientColorAngle} from '../theme/metrics';
 import ButtonGradient from './ButtonGradient';
 
 interface Props extends TextInputProps {
-	popupTitle?: string;
 	onPublicPress?: () => void;
 	onPrivatePress?: () => void;
 	isSelected?: number;
+	popUpType?: number; // 0 for Privacy 1 for Result verification
 }
 
 const BetsPrivacyView: React.FC<Props> = props => {
-	const {popupTitle, onPublicPress, isSelected, onPrivatePress} = props;
+	const {popUpType, onPublicPress, isSelected, onPrivatePress} = props;
 
 	return (
 		<View style={styles.container}>
-			<Text style={styles.titleStyle}>{popupTitle}</Text>
+			<Text style={styles.titleStyle}>
+				{popUpType === 0
+					? Strings.bet_privacy
+					: Strings.select_who_verifies_the_challenge}
+			</Text>
 			<TouchableOpacity
 				style={styles.viewDetails}
 				activeOpacity={1}
@@ -49,10 +53,14 @@ const BetsPrivacyView: React.FC<Props> = props => {
 				</LinearGradient>
 				<View style={styles.viewText}>
 					<Text style={styles.nameStyle}>
-						{Strings.public_bet.toUpperCase()}{' '}
+						{popUpType === 0
+							? Strings.public_bet.toUpperCase()
+							: Strings.bet_maker.toUpperCase()}
 					</Text>
 					<Text style={styles.descriptionsStyle}>
-						{Strings.anybody_can_join}
+						{popUpType === 0
+							? Strings.anybody_can_join
+							: Strings.if_you_select_Bet_Maker_des}
 					</Text>
 				</View>
 			</TouchableOpacity>
@@ -76,10 +84,14 @@ const BetsPrivacyView: React.FC<Props> = props => {
 				</LinearGradient>
 				<View style={styles.viewText}>
 					<Text style={styles.nameStyle}>
-						{Strings.private_bet.toUpperCase()}{' '}
+						{popUpType === 0
+							? Strings.private_bet.toUpperCase()
+							: Strings.bet_taker.toUpperCase()}
 					</Text>
 					<Text style={styles.descriptionsStyle}>
-						{Strings.who_participates}
+						{popUpType === 0
+							? Strings.who_participates
+							: Strings.if_you_select_Bet_taker_des}
 					</Text>
 				</View>
 			</TouchableOpacity>
@@ -94,15 +106,15 @@ const styles = StyleSheet.create({
 		alignItems: 'stretch',
 		...Platform.select({
 			ios: {
-				alignItems: 'center',
+				alignItems: 'center'
 			},
 			android: {
-				alignItems: 'center',
+				alignItems: 'center'
 			},
 			web: {
-				alignItems: 'stretch',
-			},
-		  }),
+				alignItems: 'stretch'
+			}
+		}),
 		justifyContent: 'center',
 		padding: horizontalScale(16)
 	},
@@ -112,7 +124,7 @@ const styles = StyleSheet.create({
 		fontFamily: Fonts.type.Krona_Regular,
 		textAlign: 'center',
 		paddingVertical: verticalScale(8),
-		flex:1
+		flex: 1
 	},
 
 	viewDetails: {

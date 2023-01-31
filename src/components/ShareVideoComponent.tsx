@@ -64,17 +64,19 @@ const ShareVideoComponent: React.FC<ShareProps> = props => {
 
 			<View style={styles.lineView} />
 
-			<ButtonGradient
-				onPress={onBtnPress}
-				colorArray={defaultTheme.ternaryGradientColor}
-				angle={gradientColorAngle}
-				buttonTextcolor={colors.white}
-				buttonText={Strings.download_video}
-				style={styles.ButtonView}
-				leftIconPath={icons.download}
-				leftIconStyle={styles.download_img}
-				flex={0}
-			/>
+			{onBtnPress && (
+				<ButtonGradient
+					onPress={onBtnPress}
+					colorArray={defaultTheme.ternaryGradientColor}
+					angle={gradientColorAngle}
+					buttonTextcolor={colors.white}
+					buttonText={Strings.download_video}
+					style={styles.ButtonView}
+					leftIconPath={icons.download}
+					leftIconStyle={styles.download_img}
+					flex={0}
+				/>
+			)}
 		</View>
 	);
 };

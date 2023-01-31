@@ -26,10 +26,10 @@ import colors from '../../../theme/colors';
 import {defaultTheme} from '../../../theme/defaultTheme';
 import {gradientColorAngle} from '../../../theme/metrics';
 import styles from './style';
-import * as WebBrowser from "expo-web-browser";
-import * as Crypto from "expo-crypto";
-import { RootState } from '../../../redux/store';
-import { widgetBaseUrl } from '../../../constants/api';
+import * as WebBrowser from 'expo-web-browser';
+import * as Crypto from 'expo-crypto';
+import {RootState} from '../../../redux/store';
+import {widgetBaseUrl} from '../../../constants/api';
 
 let shouldNavigate = false;
 
@@ -55,10 +55,11 @@ export default function WalletWithdrawalScreen() {
 		ercTokenTransfer
 	} = useBetCreateContract(false);
 
+	const currencyName = 'MATIC';
 
 	const userInfo = useSelector((state: RootState) => {
 		return state.userInfo.data;
-	  });
+	});
 
 	useEffect(() => {
 		getTokenTypeData();
@@ -81,26 +82,28 @@ export default function WalletWithdrawalScreen() {
 	const getPaymentUrl = () => {
 		const walletAddress = userInfo?.user?.walletAddress;
 		const cryptoHash = Crypto.digestStringAsync(
-		  Crypto.CryptoDigestAlgorithm.SHA512,
-		  "0x8001c03501d88c3Fa61a62786c91f6bdf15CcA0e" +
-			"822c9e5f7149734f927c4b77cdc437cb"
+			Crypto.CryptoDigestAlgorithm.SHA512,
+			'0x8001c03501d88c3Fa61a62786c91f6bdf15CcA0e' +
+				'822c9e5f7149734f927c4b77cdc437cb'
 		);
-	
+
 		let webUrl =
-		  widgetBaseUrl +
-		  "f49448ba-2a9b-438e-8bb6-fdbdb30f5818" +
-		  "&type=" +
-		  Strings.sell +
-		  "&return_url=" +
-		  Strings.defibetHouseUrl +
-		  "&address=" +
-		  walletAddress +
-		  "&signature=" +
-		  cryptoHash + '&currencies=' +
-		  'MATIC' ;
-	
+			widgetBaseUrl +
+			'f49448ba-2a9b-438e-8bb6-fdbdb30f5818' +
+			'&type=' +
+			Strings.sell +
+			'&currency=' +
+			currencyName +
+			'&currencies=' +
+			'MATIC' +
+			'&return_url=' +
+			Strings.defibetHouseUrl +
+			'&address=' +
+			walletAddress +
+			'&signature=' +
+			cryptoHash;
 		return webUrl;
-	  };
+	};
 
 	const getTokenTypeData = () => {
 		dispatch(updateApiLoader({apiLoader: true}));
@@ -124,7 +127,12 @@ export default function WalletWithdrawalScreen() {
 	};
 
 	function isBtnDisable() {
-		if (amount.trim() !== '' && parseFloat(amount.trim()) > 0.0 && address.trim() !== '' && check) {
+		if (
+			amount.trim() !== '' &&
+			parseFloat(amount.trim()) > 0.0 &&
+			address.trim() !== '' &&
+			check
+		) {
 			return false;
 		}
 		return true;

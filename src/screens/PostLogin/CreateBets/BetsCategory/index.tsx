@@ -563,11 +563,6 @@ const BetsCategoryScreen: React.FC<any> = () => {
 			setIsLeagueId(params?.matchData?.leagueId);
 
 			setIsSelectBetsType(params?.selectedBetType);
-
-			seIsProgress('40%');
-			seIsTitle(Strings.select_a_market);
-			setIsBackButtonDisable(true);
-			getMainMarketData();
 			if (connector.connected) {
 				getBalance(connector?.accounts[0]);
 			} else {
@@ -2638,7 +2633,7 @@ const BetsCategoryScreen: React.FC<any> = () => {
 		switch (step) {
 			case 1:
 				if (isCategoryId === '') {
-					navigation.goBack();
+					navigation.dispatch(StackActions.popToTop());
 				}
 
 				if (params?.isfromTrendingNotification) {
@@ -2854,7 +2849,7 @@ const BetsCategoryScreen: React.FC<any> = () => {
 				<HeaderComponent
 					onLeftMenuPress={() => {
 						if (isProgress === '10%') {
-							navigation.goBack();
+							navigation.dispatch(StackActions.popToTop());
 						} else if (isProgress === '100%') {
 							navigation.dispatch(StackActions.popToTop());
 						} else {

@@ -387,7 +387,9 @@ export const CustomTabBar = ({state, descriptors, navigation}) => {
 				isVisible={modalVisible}
 				onPressOk={() => {
 					setModalVisible(!modalVisible);
-					navigation.navigate(ScreenNames.BetsCategoryScreen);
+					navigation.navigate(ScreenNames.UserEngagementScreen, {
+						isForP2pBet: true
+					});
 				}}
 				onPressCancel={() => {
 					setModalVisible(!modalVisible);
@@ -395,8 +397,17 @@ export const CustomTabBar = ({state, descriptors, navigation}) => {
 				isShowSecondButton={true}
 				onPressSecondButton={() => {
 					setModalVisible(!modalVisible);
-					setIsMediaTypeVisible(true);
+					navigation.navigate(ScreenNames.UserEngagementScreen, {
+						isForVideoCreation: true,
+						pickVideoFromGallery: pickVideoFromGallery
+					});
 				}}
+				buttonLiveTitle={Strings.live_challenge}
+				onPressLiveBtn={() => {
+					setModalVisible(!modalVisible);
+					navigation.navigate(ScreenNames.UserEngagementScreen, {});
+				}}
+				isShowLiveButton={true}
 			/>
 			<SelectImageComponet
 				isVisible={isMediaTypeVisible}
@@ -442,7 +453,7 @@ const styles = (
 				android: {
 					marginBottom: verticalScale(20)
 				}
-			}),
+			})
 			// left: 8,
 			// right: 8,
 		},

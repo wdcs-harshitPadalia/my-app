@@ -796,6 +796,17 @@ const Strings = {
 	no_pending_claim: 'NO PENDING REWARDS TO CLAIM',
 	let_create_market: "Let's create your market",
 	txt_age_validation: 'You must be 18 years old or above to use this app.',
-	copy_referral_desc: 'Referral code copied to clipboard.'
+	copy_referral_desc: 'Referral code copied to clipboard.',
+	create_a_video_with_bet_attached: 'create a video with bet attached',
+	engage_your_audience_and_earn_up_to: 'Engage your audience and earn up to',
+	betting_fees_generated: 'of the betting fees generated!',
+	top_up_with_credit_card: 'top up with credit card',
+	create_a_challenge: 'create a challenge',
+	started_following: 'started following you.',
+	create_a_live_challenge: 'stream a live challenge',
+	live_challenge: 'live challenge',
+	earn_up_to: 'Earn up to',
+	from_streaming_content:
+		'of the fees generated from all the bets matched over your streaming content!',
 };
 export default Strings;

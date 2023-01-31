@@ -978,3 +978,12 @@ export const addFeedUser = async (data: any) => {
 	});
 	return response;
 };
+
+export const getLiveChallengesData = async (data: any) => {
+	const response = await useAxios({
+		method: Api.POST,
+		url: ApiBaseUrl + ApiConstants.getLiveChallenges,
+		data: data
+	});
+	return response;
+};

@@ -168,6 +168,7 @@ export const ApiConstants = {
 	messageUser: 'video/messageUser',
 	markSeen: 'video/markSeen',
 	getUserAncestor: 'result/getUserAncestor',
+	getLiveChallenges: 'video/getLiveChallenges',
 	addFeedUser: 'admin/addFeedUser'
 };
 

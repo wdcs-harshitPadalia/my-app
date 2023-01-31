@@ -53,6 +53,7 @@ const UserEngagementScreen = () => {
 	};
 
 	function onBtnSkipForP2p() {
+		navigation.goBack();
 		navigation.navigate(ScreenNames.BetsCategoryScreen);
 	}
 	const onBtnSkipForShortVideo = () => {

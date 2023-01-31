@@ -536,6 +536,7 @@ const Login: React.FC<any> = props => {
 								}
 
 								if (success) {
+									global.isFromLogin = true;
 									setWalletAddress(success?.accounts[0]);
 									try {
 										let token = await messaging().getToken();

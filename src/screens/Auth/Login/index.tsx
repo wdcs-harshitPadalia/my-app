@@ -39,6 +39,8 @@ import {
 } from '../../../redux/reducerSlices/dashboard';
 import {magic} from '../../../navigation/routes';
 import {showErrorAlert} from '../../../constants/utils/Function';
+import app from '../../../../app.json';
+
 
 const Login: React.FC<any> = props => {
 	const isNewUser = useSelector((state: RootState) => {
@@ -525,7 +527,7 @@ const Login: React.FC<any> = props => {
 							connector?.connect().then(async success => {
 								if (success.chainId !== chainIdPolygonNetwork) {
 									showErrorAlert(
-										'Defibet',
+										app.expo.name,
 										'Please change your network to Polygon Mainnet(' +
 											chainIdPolygonNetwork +
 											') or add it via https://chainlist.org/'

@@ -208,7 +208,7 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 			// }
 			gameImage={item?.subcategories?.imageUrl ?? item?.categories?.imageUrl}
 			bet_amount={item?.bet_amount}
-			buttonText={'Join Bet'}
+			buttonText={Strings.join_bet}
 			startTime_timestamp={
 				item?.match?.gmt_timestamp ?? new Date(item?.createdAt).getTime()
 			}

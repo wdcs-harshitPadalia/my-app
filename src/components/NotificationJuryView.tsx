@@ -73,21 +73,21 @@ const NotificationJuryView: React.FC<Props> = props => {
 				<View style={styles.viewLabelContainer}>
 					{data?.type !== 'JURY' ? (
 						<Text style={[styles.usernameStyle]}>
-							{'You’ve been selected to be'}
+							{Strings.Youve_been_selected_to_be}
 							<Text
 								style={[
 									styles.usernameStyle,
 									{fontFamily: Fonts.type.Inter_ExtraBold}
 								]}>
-								{' the jury '}
+								{' ' + Strings.the_juy +' '}
 							</Text>
-							{'of an opened dispute.'}
+							{Strings.of_an_opened_dispute}
 							<Text
 								style={[
 									styles.usernameStyle,
 									{fontFamily: Fonts.type.Inter_ExtraBold}
 								]}>
-								{' You have 1 hour to accept the case!'}
+								{' ' +  Strings.You_have_1_hour_to_accept_the_case}
 							</Text>
 						</Text>
 					) : (
@@ -97,7 +97,7 @@ const NotificationJuryView: React.FC<Props> = props => {
 								// {opacity: fadeAnim},
 								//{fontFamily: Fonts.type.Inter_ExtraBold},
 							]}>
-							{'You are jury for the bet '}
+							{Strings.You_are_jury_for_the_bet + ' '}
 							<Text
 								style={[
 									styles.usernameStyle,
@@ -105,7 +105,7 @@ const NotificationJuryView: React.FC<Props> = props => {
 								]}>
 								{data.bet?.betQuestion}
 							</Text>
-							{' you have 24 hours to declare your result.'}
+							{' ' + Strings.you_have_24_hours_to_declare_your_result}
 						</Text>
 					)}
 

@@ -83,7 +83,7 @@ const NotificationFriendsView: React.FC<Props> = props => {
 							]}>
 							{data.user?.userName + ' '}
 							<Text style={styles.usernameStyle}>
-								{'added you as a Friend.'}
+								{Strings.added_you_as_a_Friend}
 							</Text>
 						</Text>
 					) : (
@@ -93,7 +93,7 @@ const NotificationFriendsView: React.FC<Props> = props => {
 								{opacity: fadeAnim}
 								//{fontFamily: Fonts.type.Inter_ExtraBold},
 							]}>
-							{'You are now friends with '}
+							{Strings.You_are_now_friends_with + ' '}
 							<Text
 								style={[
 									styles.usernameStyle,

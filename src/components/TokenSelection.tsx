@@ -52,7 +52,7 @@ const TokenSelection: React.FC<Props> = props => {
 								source={icons.close}
 							/>
 						</TouchableOpacity>
-						<Text style={styles.textStyle}>Select a token</Text>
+						<Text style={styles.textStyle}>{Strings.Select_a_token}</Text>
 						<InputComponent
 							fontSize={moderateScale(12)}
 							style={styles.marginInput}

@@ -35,6 +35,8 @@ export const getInitialDate = () => {
 	return date1;
 };
 
+global.isFromLogin = false;
+
 export const getPieChartDataRounded = (data: number[]) => {
 	return data.map((item, index) => {
 		const randomColor = '#' + Math.floor(Math.random() * 16777215).toString(16);

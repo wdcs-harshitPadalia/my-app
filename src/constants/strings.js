@@ -808,6 +808,9 @@ const Strings = {
 	earn_up_to: 'Earn up to',
 	from_streaming_content:
 		'of the fees generated from all the bets matched over your streaming content!',
+	WATCH_LIVE_STREAM: 'WATCH LIVE STREAM',
+	Is_creating_the_following_challenge_and_ITS_LIVE : 'is creating the following challenge and IT’S LIVE!',
+	START_TIME: 'START TIME',
 	Failed_to_stake_amount: 'Failed to stake amount',
 	live_challenge: 'Live challenge',
 	attach_the_stream: 'Attach the stream',

@@ -1177,7 +1177,7 @@ const DiscoverScreen: React.FC<any> = props => {
 
 					{isSelectedIndex === 2 && (
 						<View style={{paddingBottom: verticalScale(120)}}>
-							<ButtonGradient
+							{/* <ButtonGradient
 								onPress={() => {
 									navigation.navigate(ScreenNames.DiscoverFindFriendsScreen);
 								}}
@@ -1188,7 +1188,7 @@ const DiscoverScreen: React.FC<any> = props => {
 								buttonText={Strings.connect_friends}
 								style={styles.loginButtonSocial}
 								leftIconPath={icons.plusRound}
-							/>
+							/> */}
 							{/* {discoverSearchData?.length > 0 && (
                 <Text style={styles.titleText} numberOfLines={2}>
                   {afterClickTopTabData[isSelectedIndex].title}
@@ -1576,7 +1576,19 @@ const DiscoverScreen: React.FC<any> = props => {
 		<View style={{flex: 1, backgroundColor: defaultTheme.backGroundColor}}>
 			{!searchClicked && isFocused && (
 				<>
-					{beforeClickTopTabIndex === 0 && <DiscoverLiveStreamComponent />}
+					{beforeClickTopTabIndex === 0 && (
+						<DiscoverLiveStreamComponent
+							navigation
+							userInfo
+							friendList={userListData}
+							discoverData={discoverMatchData}
+							onEndReach={() => {
+								onEndReached();
+							}}
+							params
+							dispatch={dispatch}
+						/>
+					)}
 
 					{beforeClickTopTabIndex === 1 && (
 						<>
@@ -1824,7 +1836,7 @@ const DiscoverScreen: React.FC<any> = props => {
 				</View>
 			)}
 
-			{isShowTutorial  && (
+			{isShowTutorial && (
 				<TutorialView
 					style={{top: 0, bottom: 0, position: 'absolute'}}
 					isShowPlusIcon={false}

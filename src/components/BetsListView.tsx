@@ -78,14 +78,14 @@ const BetsListView: React.FC<Props> = (props) => {
             <View style={styles.flexRawSpaceBetween}>
               <View style={{ flexDirection: "column" }}>
                 <Text style={styles.timeWithTeamNameTextTitle}>
-                  {"STARTS: " +
+                  {`${Strings.STARTS} :` +
                     dateTimeConvert(
                       parseFloat(startTime_timestamp)
                     ).toUpperCase()}
                 </Text>
                 {endTime_timestamp && (
                   <Text style={styles.timeWithTeamNameTextTitle}>
-                    {"ENDS: " +
+                    {`${Strings.ENDS} :` +
                       dateTimeConvert(
                         parseFloat(endTime_timestamp)
                       ).toUpperCase()}

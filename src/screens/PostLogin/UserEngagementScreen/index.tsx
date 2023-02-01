@@ -59,7 +59,7 @@ const UserEngagementScreen = () => {
 		setIsMediaTypeVisible(true);
 	};
 	const onBtnSkipForLiveChallenge = () => {
-		console.log('onBtnSkipForLiveChallenge');
+		navigation.navigate(ScreenNames.LiveChallengeScreen);
 	};
 
 	const p2pBetData = {

@@ -10,7 +10,6 @@ import {
 import React from 'react';
 // import FastImage from 'react-native-fast-image';
 import ExpoFastImage from 'expo-fast-image';
-
 import {Fonts, horizontalScale, moderateScale, verticalScale} from '../theme';
 import {defaultTheme} from '../theme/defaultTheme';
 import colors from '../theme/colors';
@@ -21,7 +20,7 @@ import {gradientColorAngle} from '../theme/metrics';
 import {decimalValue} from '../constants/api';
 import ButtonGradient from './ButtonGradient';
 import Clipboard from '@react-native-clipboard/clipboard';
-import { showErrorAlert } from '../constants/utils/Function';
+import {showErrorAlert} from '../constants/utils/Function';
 interface ReferralRewardsViewProps {
 	style: ViewStyle;
 	affiliateCode: string;
@@ -33,7 +32,6 @@ interface ReferralRewardsViewProps {
 	onPressClaim?: () => void;
 	tokenType: string;
 }
-
 export default function ReferralRewardsView(props: ReferralRewardsViewProps) {
 	return (
 		<View style={[styles.container, {...props?.style}]}>
@@ -53,7 +51,6 @@ export default function ReferralRewardsView(props: ReferralRewardsViewProps) {
 					/>
 				</TouchableOpacity>
 			</View>
-
 			{props?.isShowReferral && (
 				<View style={styles.viewCode}>
 					<Text style={styles.codeText}>{props?.affiliateCode}</Text>
@@ -67,7 +64,6 @@ export default function ReferralRewardsView(props: ReferralRewardsViewProps) {
 					</TouchableOpacity>
 				</View>
 			)}
-
 			<View style={styles.moneyBgView}>
 				<Text style={styles.subTitle}>
 					{`${
@@ -100,7 +96,6 @@ export default function ReferralRewardsView(props: ReferralRewardsViewProps) {
 							<ExpoFastImage source={icons.arrow_Top} style={styles.img} />
 						</LinearGradient>
 					)}
-
 					<Text style={styles.balanceAmount}>
 						{`${parseFloat(props?.totalMoney ?? '0').toFixed(decimalValue)}  ${
 							props?.tokenType
@@ -108,11 +103,10 @@ export default function ReferralRewardsView(props: ReferralRewardsViewProps) {
 					</Text>
 				</View>
 			</View>
-
 			{props?.isShowReferral ? (
 				props?.userAffiliationCount > 0 ? (
 					<Text style={styles.codeDesText}>
-						{`${props?.userAffiliationCount} reffered users`.toUpperCase()}
+						{`${props?.userAffiliationCount}${Strings.str_reffered_users}`.toUpperCase()}
 					</Text>
 				) : null
 			) : (
@@ -144,7 +138,6 @@ export default function ReferralRewardsView(props: ReferralRewardsViewProps) {
 		</View>
 	);
 }
-
 const styles = StyleSheet.create({
 	infoView: {
 		flexDirection: 'row',
@@ -170,7 +163,6 @@ const styles = StyleSheet.create({
 		width: 15,
 		margin: 7
 	},
-
 	container: {
 		backgroundColor: colors.black,
 		marginHorizontal: horizontalScale(20),

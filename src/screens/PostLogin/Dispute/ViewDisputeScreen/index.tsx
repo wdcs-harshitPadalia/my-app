@@ -666,7 +666,7 @@ const ViewDisputeScreen: React.FC<any> = () => {
 								isCaseBDataAvailable &&
 								disputeCaseBData.length > 0
 									? Strings.who_case_right
-									: 'Choose Accurate Bet Outcome'
+									: Strings.Choose_Accurate_Bet_Outcome
 							}
 							btnTextArray={caseArray}
 							selectItem={selectedCase}

@@ -120,6 +120,10 @@ const BetMakerResultScreen: React.FC<any> = () => {
 		Array<Object>
 	>([]);
 
+	const [resolverEvidenceItemArray, setResolverEvidenceItemArray] = useState<
+		Array<Object>
+	>([]);
+
 	const userInfo = useSelector((state: RootState) => {
 		return state.userInfo.data;
 	});
@@ -475,6 +479,67 @@ const BetMakerResultScreen: React.FC<any> = () => {
 			redirectType === 'RESULT_VERIFICATION_BETMAKER'
 		) {
 			setIsSelectChooseSideType(eventBetData?.resultData?.winnerOption);
+
+			const resolverEvidenceData = eventBetData?.resultData?.result;
+
+			if (resolverEvidenceData) {
+				const disputeDataArray = [];
+				let disputeEvidenceDataId = 0;
+				const proofLinksArray = resolverEvidenceData?.proofLinks;
+				const proofImagesUrlsArray = resolverEvidenceData?.proofImagesUrls;
+				const proofVideosUrlsArray = resolverEvidenceData?.proofVideosUrls;
+
+				if (proofLinksArray && proofLinksArray.length > 0) {
+					for (let i = 0; i < proofLinksArray.length; i++) {
+						const proofLink = proofLinksArray[i];
+						const disputeDataObj = {
+							id: disputeEvidenceDataId,
+							type: 'url',
+							data_url: proofLink
+						};
+						disputeDataArray.push(disputeDataObj);
+						disputeEvidenceDataId++;
+					}
+					setResolverEvidenceItemArray([
+						...resolverEvidenceItemArray,
+						...disputeDataArray
+					]);
+				}
+				if (proofImagesUrlsArray && proofImagesUrlsArray.length > 0) {
+					for (let i = 0; i < proofImagesUrlsArray.length; i++) {
+						const proofImageUrl = proofImagesUrlsArray[i];
+						const disputeDataObj = {
+							id: disputeEvidenceDataId,
+							type: 'image',
+							data_url: proofImageUrl
+						};
+						disputeDataArray.push(disputeDataObj);
+						disputeEvidenceDataId++;
+					}
+					setResolverEvidenceItemArray([
+						...resolverEvidenceItemArray,
+						...disputeDataArray
+					]);
+				}
+				if (proofVideosUrlsArray && proofVideosUrlsArray.length > 0) {
+					for (let i = 0; i < proofVideosUrlsArray.length; i++) {
+						const proofVideoUrl = proofVideosUrlsArray[i].url;
+						const proofVideoThumb = proofVideosUrlsArray[i].image_thumb;
+						const disputeDataObj = {
+							id: disputeEvidenceDataId,
+							type: 'video',
+							data_url: proofVideoUrl,
+							data_video_thumb: proofVideoThumb
+						};
+						disputeDataArray.push(disputeDataObj);
+						disputeEvidenceDataId++;
+					}
+					setResolverEvidenceItemArray([
+						...resolverEvidenceItemArray,
+						...disputeDataArray
+					]);
+				}
+			}
 		}
 
 		setQuestion(eventBetData?.bet.betQuestion);
@@ -682,80 +747,29 @@ const BetMakerResultScreen: React.FC<any> = () => {
 
 	const addCustomBetResultData = (betResult: string) => {
 		dispatch(updateApiLoader({apiLoader: true}));
-		let uploadData = {};
+		// let uploadData = {};
 
-		if (betResult === 'accepted') {
-			uploadData = {
-				hash: hashObj?.hash,
-				signature: hashObj?.signature,
-				bet_id: bet_id,
-				isAcceptable: true
-			};
-		} else {
-			uploadData = {
-				hash: hashObj?.hash,
-				signature: hashObj?.signature,
-				bet_id: bet_id,
-				winnerOption: isSelectChooseSideType
-			};
-		}
+		// if (betResult === 'accepted') {
+		// 	uploadData = {
+		// 		hash: hashObj?.hash,
+		// 		signature: hashObj?.signature,
+		// 		bet_id: bet_id,
+		// 		isAcceptable: true
+		// 	};
+		// } else {
+		// 	uploadData = {
+		// 		hash: hashObj?.hash,
+		// 		signature: hashObj?.signature,
+		// 		bet_id: bet_id,
+		// 		winnerOption: isSelectChooseSideType
+		// 	};
+		// }
 
-		addCustomBetResult(uploadData)
-			.then(res => {
-				dispatch(updateApiLoader({apiLoader: false}));
-				console.log('addCustomBetResultData Response : ', JSON.stringify(res));
-				// TODO: remove notification
-				setApiHashObj(res?.data?.HashSignatureObject);
-				dispatch(deleteItemById(notification_id));
-				if (betResult === 'accepted') {
-					seIsTitle(
-						Strings.well_done_result_has_been_verified.replace(
-							'%s',
-							userInfo.user.userName
-						)
-					);
-					setStep(1);
-					setIsViewNextBackBtn(false);
-					setIsBackButtonDisable(false);
-					setIsSelectChooseSideType(
-						eventBetData?.bet?.users?._id === userProfileInfo?.user?._id
-							? eventBetData?.bet?.bet_creator_side_option
-							: eventBetData?.bet?.bet_opposite_side_option
-					);
-
-					if (eventBetData?.resultData?.isWinner === 'win') {
-						setNextBtnTitle(Strings.claim_winning);
-					} else if (eventBetData?.resultData?.isWinner === 'loss') {
-						setNextBtnTitle(Strings.continue_to_feed);
-					} else if (eventBetData?.resultData?.isWinner === 'draw') {
-						setNextBtnTitle(Strings.claim_bet_funds);
-					}
-				} else {
-					setIsViewNextBackBtn(false);
-					setNextBtnTitle(Strings.continue_to_feed);
-					setStep(5);
-				}
-			})
-			.catch(err => {
-				dispatch(updateApiLoader({apiLoader: false}));
-				console.log('addCustomBetResultData Data Err : ', err);
-			});
-
-		// fetch(ApiBaseUrl + ApiConstants.addResultDispute, {
-		// 	method: Api.POST,
-		// 	body: createFormData(betResult),
-		// 	headers: {
-		// 		Authorization: 'Bearer ' + userInfo.token
-		// 	}
-		// })
-		// 	.then(response => response.json())
+		// addCustomBetResult(uploadData)
 		// 	.then(res => {
 		// 		dispatch(updateApiLoader({apiLoader: false}));
-		// 		console.log(
-		// 			'addCustomBetResultData Response : ',
-		// 			JSON.stringify(res)
-		// 		);
-
+		// 		console.log('addCustomBetResultData Response : ', JSON.stringify(res));
+		// 		// TODO: remove notification
 		// 		setApiHashObj(res?.data?.HashSignatureObject);
 		// 		dispatch(deleteItemById(notification_id));
 		// 		if (betResult === 'accepted') {
@@ -787,10 +801,62 @@ const BetMakerResultScreen: React.FC<any> = () => {
 		// 			setStep(5);
 		// 		}
 		// 	})
-		// 	.catch(error => {
+		// 	.catch(err => {
 		// 		dispatch(updateApiLoader({apiLoader: false}));
-		// 		console.log('addCustomBetResultData Data Err : ', error);
+		// 		console.log('addCustomBetResultData Data Err : ', err);
 		// 	});
+
+		fetch(ApiBaseUrl + ApiConstants.addCustomBetResult, {
+			method: Api.POST,
+			body: createFormData(betResult),
+			headers: {
+				Authorization: 'Bearer ' + userInfo.token
+			}
+		})
+			.then(response => response.json())
+			.then(res => {
+				dispatch(updateApiLoader({apiLoader: false}));
+				console.log('addCustomBetResultData Response : ', JSON.stringify(res));
+
+				if (res?.statusCode.toString().includes('200')) {
+					setApiHashObj(res?.data?.HashSignatureObject);
+					dispatch(deleteItemById(notification_id));
+					if (betResult === 'accepted') {
+						seIsTitle(
+							Strings.well_done_result_has_been_verified.replace(
+								'%s',
+								userInfo.user.userName
+							)
+						);
+						setStep(1);
+						setIsViewNextBackBtn(false);
+						setIsBackButtonDisable(false);
+						setIsSelectChooseSideType(
+							eventBetData?.bet?.users?._id === userProfileInfo?.user?._id
+								? eventBetData?.bet?.bet_creator_side_option
+								: eventBetData?.bet?.bet_opposite_side_option
+						);
+
+						if (eventBetData?.resultData?.isWinner === 'win') {
+							setNextBtnTitle(Strings.claim_winning);
+						} else if (eventBetData?.resultData?.isWinner === 'loss') {
+							setNextBtnTitle(Strings.continue_to_feed);
+						} else if (eventBetData?.resultData?.isWinner === 'draw') {
+							setNextBtnTitle(Strings.claim_bet_funds);
+						}
+					} else {
+						setIsViewNextBackBtn(false);
+						setNextBtnTitle(Strings.continue_to_feed);
+						setStep(5);
+					}
+				} else {
+					showErrorAlert('', res?.message);
+				}
+			})
+			.catch(error => {
+				dispatch(updateApiLoader({apiLoader: false}));
+				console.log('addCustomBetResultData Data Err : ', error);
+			});
 	};
 
 	const handleRedirectUser = () => {
@@ -846,73 +912,6 @@ const BetMakerResultScreen: React.FC<any> = () => {
 
 	const showViews = () => {
 		console.log('showViews ', step);
-
-		const dataArray = [
-			{
-				id: 0,
-				type: 'url',
-				data_url: 'https://localhost:19006/FeedScreen'
-			},
-			{
-				id: 1,
-				type: 'url',
-				data_url: 'http://jsonviewer.stack.hu/'
-			},
-			{
-				id: 2,
-				type: 'url',
-				data_url: 'https://localhost:19006/FeedScreen'
-			},
-			{
-				id: 3,
-				type: 'url',
-				data_url: 'http://jsonviewer.stack.hu/'
-			},
-			{
-				id: 4,
-				type: 'url',
-				data_url: 'https://localhost:19006/FeedScreen'
-			},
-			{
-				id: 5,
-				name: 'image1.png',
-				type: 'image',
-				data_url:
-					'https://images.unsplash.com/photo-1670012896865-f531c5fb65d9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1169&q=80'
-			},
-			{
-				id: 6,
-				name: 'video1',
-				type: 'video',
-				data_url:
-					'https://assets.mixkit.co/videos/preview/mixkit-fireworks-illuminating-the-beach-sky-4157-large.mp4',
-				data_video_thumb:
-					'https://mixkit.imgix.net/videos/preview/mixkit-fireworks-illuminating-the-beach-sky-4157-0.jpg?q=80&auto=format%2Ccompress&w=460'
-			},
-			{
-				id: 7,
-				name: 'image2.png',
-				type: 'image',
-				data_url:
-					'https://images.unsplash.com/photo-1669839190022-2d6823040638?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80'
-			},
-			{
-				id: 8,
-				name: 'video2',
-				type: 'video',
-				data_url:
-					'https://assets.mixkit.co/videos/preview/mixkit-bright-orange-sunset-on-beach-2168-large.mp4',
-				data_video_thumb:
-					'https://mixkit.imgix.net/videos/preview/mixkit-bright-orange-sunset-on-beach-2168-0.jpg?q=80&auto=format%2Ccompress&w=460'
-			},
-			{
-				id: 9,
-				name: 'image3.png',
-				type: 'image',
-				data_url:
-					'https://images.unsplash.com/photo-1670058769220-f27a4ef60de9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=627&q=80'
-			}
-		];
 
 		switch (step) {
 			case 1:
@@ -1127,8 +1126,10 @@ const BetMakerResultScreen: React.FC<any> = () => {
 										});
 									}
 								}}
-								isShowResolverEvidence={true}
-								resolverEvidenceData={dataArray}
+								isShowResolverEvidence={
+									resolverEvidenceItemArray.length > 0 ?? true
+								}
+								resolverEvidenceData={resolverEvidenceItemArray}
 							/>
 						)}
 					</KeyboardAwareScrollView>

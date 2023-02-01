@@ -16,7 +16,7 @@ import {handleOpenUrlInBrowser} from '../constants/utils/Function';
 import {Fonts, horizontalScale, moderateScale, verticalScale} from '../theme';
 import colors from '../theme/colors';
 import {defaultTheme} from '../theme/defaultTheme';
-import {gradientColorAngle} from '../theme/metrics';
+import {gradientColorAngle, width} from '../theme/metrics';
 import ButtonGradient from './ButtonGradient';
 import FullScreenImageComponent from './FullScreenImageComponent';
 import VideoPlayerComponent from './VideoPlayerComponent';
@@ -44,7 +44,12 @@ const OpenDisputeView: React.FC<Props> = props => {
 
 	const renderItem = ({item}: any) => {
 		return (
-			<View key={item.id} style={{paddingBottom: verticalScale(4)}}>
+			<View
+				key={item.id}
+				style={{
+					paddingBottom: verticalScale(4),
+					width: width - horizontalScale(32)
+				}}>
 				{item.type === 'url' && (
 					<ButtonGradient
 						leftIconPath={icons.link}

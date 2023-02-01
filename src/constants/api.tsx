@@ -11,8 +11,8 @@ export const FireBaseNotification = 'https://fcm.googleapis.com/fcm/send';
 export const serverKey =
 	'key=AAAAkKwuLSo:APA91bGSCoopkCOmjeWHD_XnNyj5MD5Fh3uKiTa5kWVZDuncwMOA0dBoK9sGCSdc_RU4gWsoXxRtUaKwj4NJAt80dDRw6Yf3_3gMylReaXVH6PfYpshzwIlFGSJa3B6kKxAp55ZrMepG';
 // STAGING - Client
-// export const ApiBaseUrl = `https://api.truly.fun/api/${ApiVersion}/`;
-// export const ApiSecondaryBaseUrl = `https://api2.truly.fun/api/${ApiVersion}/`;
+export const ApiBaseUrl = `https://api.truly.fun/api/${ApiVersion}/`;
+export const ApiSecondaryBaseUrl = `https://api2.truly.fun/api/${ApiVersion}/`;
 
 // Development - Local
 // export const ApiBaseUrl = `http://13.59.164.150:${ApiPort}/api/${ApiVersion}/`;
@@ -23,8 +23,8 @@ export const serverKey =
 // export const ApiSecondaryBaseUrl = `https://defibet-backend2.codezeros.com/api/${ApiVersion}/`;
 
 // Development - 5011, 5012
-export const ApiBaseUrl = `https://defibet-backendstaging.codezeros.com/api/${ApiVersion}/`;
-export const ApiSecondaryBaseUrl = `https://defibet-backend2staging.codezeros.com/api/${ApiVersion}/`;
+// export const ApiBaseUrl = `https://defibet-backendstaging.codezeros.com/api/${ApiVersion}/`;
+// export const ApiSecondaryBaseUrl = `https://defibet-backend2staging.codezeros.com/api/${ApiVersion}/`;
 
 export const nullHash =
 	'0x0000000000000000000000000000000000000000000000000000000000000000';

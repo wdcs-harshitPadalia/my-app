@@ -1,5 +1,4 @@
-import {useWalletConnect} from '@walletconnect/react-native-dapp';
-import React, {forwardRef, useState, useImperativeHandle} from 'react';
+import React, {forwardRef, useState, useImperativeHandle, useRef} from 'react';
 import {
 	Alert,
 	FlatList,
@@ -15,8 +14,9 @@ import {
 } from 'react-native';
 
 import {ScrollView} from 'react-native-gesture-handler';
-// import {openSettings, PERMISSIONS, request} from 'react-native-permissions';
 import {useDispatch, useSelector} from 'react-redux';
+import {useWalletConnect} from '@walletconnect/react-native-dapp';
+// import {openSettings, PERMISSIONS, request} from 'react-native-permissions';
 
 import icons from '../../assets/icon';
 
@@ -29,9 +29,10 @@ import {
 	isValidUrl
 } from '../../constants/utils/Function';
 import {validationRegex} from '../../constants/utils/Validation';
-import {magic} from '../../navigation/routes';
-import {logout} from '../../redux/apiHandler/apiActions';
 
+import {magic} from '../../navigation/routes';
+
+import {logout} from '../../redux/apiHandler/apiActions';
 import {updateApiLoader} from '../../redux/reducerSlices/preLogin';
 import {
 	resetProfileData,
@@ -53,6 +54,7 @@ import SelectImageComponentModal from '../SelectImageComponentModal';
 import TokenConfirmationModel from '../TokenConfirmationModel';
 import VideoPlayerComponent from '../VideoPlayerComponent';
 import FullScreenImageComponent from '../FullScreenImageComponent';
+import UploadOptionalEvidenceViewComponent from '../UploadOptionalEvidenceViewComponent';
 
 interface EvidenceProps {
 	style?: ViewStyle;
@@ -105,7 +107,7 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 		[]
 	);
 
-	const myRef = React.useRef();
+	const myRef = useRef();
 
 	const [isShowVideoModal, setIsShowVideoModal] = useState<boolean>(false);
 
@@ -195,44 +197,6 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 		}
 	};
 
-	const checkValidationAndAddURL = () => {
-		if (validationRegex.url.test(urlText) && isValidUrl(urlText)) {
-			var urlItemObj = {
-				id: urlItemsArray.length + 1,
-				url: urlText
-			};
-
-			serUrlItemsArray([...urlItemsArray, urlItemObj]);
-
-			Keyboard.dismiss();
-			setUrlText('');
-
-			handleSendButtonDisable(false);
-		} else {
-			showErrorAlert('', Strings.please_enter_valid_url);
-		}
-	};
-
-	const renderUrlItem = ({item, index}) => (
-		<View key={index}>
-			<ButtonGradient
-				leftIconPath={icons.link}
-				colorArray={defaultTheme.ternaryGradientColor}
-				angle={gradientColorAngle}
-				buttonTextcolor={colors.white}
-				buttonText={item.url}
-				style={{marginTop: 10}}
-				paddingVertical={20}
-				leftIconStyle={{width: 36, height: 36}}
-				onPress={() => handleLinkPress(item.url)}
-			/>
-		</View>
-	);
-
-	const handleLinkPress = (urlTxt: string) => {
-		handleOpenUrlInBrowser(urlTxt);
-	};
-
 	const showHideImageVideoView = () => {
 		if (evidenceItemsArray.length < 5) {
 			if (Platform.OS === 'web') {
@@ -250,31 +214,34 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 		}
 	};
 
+	const checkValidationAndAddURL = () => {
+		if (validationRegex.url.test(urlText) && isValidUrl(urlText)) {
+			var urlItemObj = {
+				id: Date.now(),
+				url: urlText
+			};
+
+			serUrlItemsArray([...urlItemsArray, urlItemObj]);
+
+			Keyboard.dismiss();
+			setUrlText('');
+
+			handleSendButtonDisable(false);
+		} else {
+			showErrorAlert('', Strings.please_enter_valid_url);
+		}
+	};
+
+	const handleLinkPress = (urlTxt: string) => {
+		handleOpenUrlInBrowser(urlTxt);
+	};
+
 	const changeHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (!event.target.files) {
 			return;
 		}
 		checkValidationAndAddEvidenceFormWeb(event.target.files[0]);
 	};
-
-	const getVideoMetaData = async file =>
-		new Promise((resolve, reject) => {
-			const reader = new FileReader();
-			reader.onload = () => {
-				const media = new Audio(reader.result);
-				media.onloadedmetadata = () => resolve(media);
-			};
-			reader.readAsDataURL(file);
-			reader.onerror = error => reject(error);
-		});
-
-	const fileToBase64 = async file =>
-		new Promise((resolve, reject) => {
-			const reader = new FileReader();
-			reader.readAsDataURL(file);
-			reader.onload = () => resolve(reader.result);
-			reader.onerror = e => reject(e);
-		});
 
 	const checkValidationAndAddEvidenceFormWeb = async responseData => {
 		const {type, name, size, length, webkitRelativePath} = responseData;
@@ -324,9 +291,9 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 
 			if (type.includes('video')) {
 				if (parseInt(videoMetaData?.duration) > 30) {
-					alert(Strings.upload_video_30s);
+					showErrorAlert(Strings.upload_video_30s, '');
 				} else if (size / 1024 ** 2 > 30) {
-					alert(Strings.upload_video_30mb);
+					showErrorAlert(Strings.upload_video_30mb, '');
 				} else {
 					setEvidenceItemsArray([...evidenceItemsArray, evidenceItemObj]);
 					handleSendButtonDisable(false);
@@ -337,6 +304,25 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 			}
 		}
 	};
+
+	const getVideoMetaData = async file =>
+		new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.onload = () => {
+				const media = new Audio(reader.result);
+				media.onloadedmetadata = () => resolve(media);
+			};
+			reader.readAsDataURL(file);
+			reader.onerror = error => reject(error);
+		});
+
+	const fileToBase64 = async file =>
+		new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.readAsDataURL(file);
+			reader.onload = () => resolve(reader.result);
+			reader.onerror = e => reject(e);
+		});
 
 	const pickImage = async (from: String) => {
 		// if (from === 'camera') {
@@ -475,65 +461,6 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 		}
 	};
 
-	const renderEvidenceItem = ({item, index}) => {
-		return (
-			<View key={item.id} style={styles.renderEvidenceRootContainer}>
-				{item.type === 'image/png' ||
-				item.type === 'image/jpg' ||
-				item.type === 'image/jpeg' ? (
-					<TouchableOpacity
-						style={styles.imageEvidenceBg}
-						onPress={() => {
-							setIsShowImageModal(true);
-							setImageUrl(Platform.OS === 'web' ? item.file : item.uri);
-						}}>
-						<ImageBackground
-							source={{uri: Platform.OS === 'web' ? item.file : item.uri}}
-							style={styles.imageEvidenceBg}
-							resizeMode={'contain'}>
-							<TouchableOpacity onPress={() => handleRemoveEvidence(item.id)}>
-								<Image
-									source={icons.delete}
-									style={styles.imageEvidenceDeleteIcon}
-								/>
-							</TouchableOpacity>
-						</ImageBackground>
-					</TouchableOpacity>
-				) : (
-					<ImageBackground
-						style={styles.videoEvidenceBg}
-						//source={{uri: item.image_thumb}}
-					>
-						<TouchableOpacity
-							onPress={() => {
-								setIsShowVideoModal(true);
-								// if (Platform.OS === 'android' && item.type.includes('video')) {
-								//   setVideoUrl(
-								//     item.uri.replace('.' + item.type.split('/')[1], ''),
-								//   );
-								// } else {
-								//   setVideoUrl(item.uri);
-								// }
-								setVideoUrl(Platform.OS === 'web' ? item.file : item.uri);
-								setVideoThumb(item.image_thumb);
-							}}
-							activeOpacity={0.8}>
-							<Image source={icons.video_thumb} style={styles.imgPlayIcon} />
-						</TouchableOpacity>
-						<TouchableOpacity
-							style={styles.videoEvidenceDeleteRootContainer}
-							onPress={() => handleRemoveEvidence(item.id)}>
-							<Image
-								source={icons.delete}
-								style={styles.videoEvidenceDeleteIcon}
-							/>
-						</TouchableOpacity>
-					</ImageBackground>
-				)}
-			</View>
-		);
-	};
-
 	// The component instance will be extended
 	// with whatever you return from the callback passed
 	// as the second argument
@@ -651,6 +578,84 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 					error.response?.data?.message ?? Strings.somethingWentWrong
 				);
 			});
+	};
+
+	const renderUrlItem = ({item, index}) => (
+		<View key={index}>
+			<ButtonGradient
+				leftIconPath={icons.link}
+				colorArray={defaultTheme.ternaryGradientColor}
+				angle={gradientColorAngle}
+				buttonTextcolor={colors.white}
+				buttonText={item.url}
+				style={{marginTop: 10}}
+				paddingVertical={20}
+				leftIconStyle={{width: 36, height: 36}}
+				onPress={() => handleLinkPress(item.url)}
+			/>
+		</View>
+	);
+
+	const renderEvidenceItem = ({item, index}) => {
+		return (
+			<View key={item.id} style={styles.renderEvidenceRootContainer}>
+				{item.type === 'image/png' ||
+				item.type === 'image/jpg' ||
+				item.type === 'image/jpeg' ? (
+					<TouchableOpacity
+						style={styles.imageEvidenceBg}
+						onPress={() => {
+							setIsShowImageModal(true);
+							setImageUrl(Platform.OS === 'web' ? item.file : item.uri);
+						}}>
+						<ImageBackground
+							source={{uri: Platform.OS === 'web' ? item.file : item.uri}}
+							style={styles.imageEvidenceBg}
+							resizeMode={'contain'}>
+							<TouchableOpacity onPress={() => handleRemoveEvidence(item.id)}>
+								<Image
+									source={icons.delete}
+									style={styles.imageEvidenceDeleteIcon}
+								/>
+							</TouchableOpacity>
+						</ImageBackground>
+					</TouchableOpacity>
+				) : (
+					<ImageBackground
+						style={styles.videoEvidenceBg}
+						source={{uri: item.image_thumb}}>
+						<TouchableOpacity
+							onPress={() => {
+								setIsShowVideoModal(true);
+								// if (Platform.OS === 'android' && item.type.includes('video')) {
+								//   setVideoUrl(
+								//     item.uri.replace('.' + item.type.split('/')[1], ''),
+								//   );
+								// } else {
+								//   setVideoUrl(item.uri);
+								// }
+								setVideoUrl(Platform.OS === 'web' ? item.file : item.uri);
+								setVideoThumb(item.image_thumb);
+							}}
+							activeOpacity={0.8}>
+							{Platform.OS === 'web' ? (
+								<Image source={icons.video_thumb} style={styles.videoIcon} />
+							) : (
+								<Image source={icons.playIcon} style={styles.imgPlayIcon} />
+							)}
+						</TouchableOpacity>
+						<TouchableOpacity
+							style={styles.videoEvidenceDeleteRootContainer}
+							onPress={() => handleRemoveEvidence(item.id)}>
+							<Image
+								source={icons.delete}
+								style={styles.videoEvidenceDeleteIcon}
+							/>
+						</TouchableOpacity>
+					</ImageBackground>
+				)}
+			</View>
+		);
 	};
 
 	return (
@@ -874,10 +879,17 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		overflow: 'hidden'
 	},
-	imgPlayIcon: {
+	videoIcon: {
 		height: 130,
 		width: 130,
 		//tintColor: 'rgba(255,255,255,0.9)',
+		alignSelf: 'center',
+		justifyContent: 'center'
+	},
+	imgPlayIcon: {
+		height: 48,
+		width: 48,
+		tintColor: 'rgba(255,255,255,0.9)',
 		alignSelf: 'center',
 		justifyContent: 'center'
 	},

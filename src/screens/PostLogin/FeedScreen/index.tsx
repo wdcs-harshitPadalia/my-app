@@ -136,7 +136,19 @@ const FeedScreen: React.FC<any> = props => {
 	});
 
 	useEffect(() => {
-		console.log('connector.connected :: ', connector.connected);
+		console.log(
+			'connector.connected :: ',
+			connector.connected,
+			global.isFromLogin
+		);
+		if (
+			global.isFromLogin === true &&
+			connector.connected === false &&
+			userInfo.user.socialLoginType === 'metamask'
+		) {
+			connector.connect();
+			global.isFromLogin = false;
+		}
 	}, [connector]);
 
 	useEffect(() => {

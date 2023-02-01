@@ -33,6 +33,7 @@ import {RootState} from '../../../redux/store';
 import {horizontalScale, verticalScale} from '../../../theme';
 import styles from './style';
 import FlingGestureComponent from '../../../components/FlingGestureComponent';
+import {AllIconUrl} from '../../../constants/api';
 
 const LiveStreamingScreen: React.FC<any> = props => {
 	const flatListRef = useRef();
@@ -154,8 +155,7 @@ const LiveStreamingScreen: React.FC<any> = props => {
 			resetLiveFeedApiData();
 			const updatedArray = [
 				{
-					imageUrl:
-						'https://res.cloudinary.com/do3zmgnja/image/upload/v1668782632/ic_all_abixvn.png'
+					imageUrl: AllIconUrl
 				},
 				...response.data
 			];
@@ -221,67 +221,66 @@ const LiveStreamingScreen: React.FC<any> = props => {
 							style={{
 								flex: 1
 							}}>
-								
-								<LiveStreamingFlatList
-									data={feedInfo?.matchList}
-									onWatchButtonClicked={item => {
-										console.log('item?>>?', JSON.stringify(item));
-										// navigation.navigate(ScreenNames.EventDetailsScreen, {
-										//   title: Strings.Live_Streaming,
-										//   feedObject: item,
-										//   betCreationType: 1,
-										//   selectedBetType: feedInfo.betType,
-										// });
+							<LiveStreamingFlatList
+								data={feedInfo?.matchList}
+								onWatchButtonClicked={item => {
+									console.log('item?>>?', JSON.stringify(item));
+									// navigation.navigate(ScreenNames.EventDetailsScreen, {
+									//   title: Strings.Live_Streaming,
+									//   feedObject: item,
+									//   betCreationType: 1,
+									//   selectedBetType: feedInfo.betType,
+									// });
+									navigation.navigate(ScreenNames.EventDetailsScreen, {
+										feedObject: item,
+										betCreationType: 1,
+										selectedBetType: feedInfo.betType,
+										isFromStreaming: true
+									});
+								}}
+								cellTapped={
+									item =>
 										navigation.navigate(ScreenNames.EventDetailsScreen, {
+											title: Strings.Live_Streaming,
 											feedObject: item,
 											betCreationType: 1,
 											selectedBetType: feedInfo.betType,
 											isFromStreaming: true
-										});
-									}}
-									cellTapped={
-										item =>
-											navigation.navigate(ScreenNames.EventDetailsScreen, {
-												title: Strings.Live_Streaming,
-												feedObject: item,
-												betCreationType: 1,
-												selectedBetType: feedInfo.betType,
-												isFromStreaming: true
-											})
-										// navigation.navigate(ScreenNames.EventDetailsScreen, {
-										//   title: Strings.feed,
-										//   betCreationType: 1,
-										//   matchId: item._id,
-										//   isFromStreaming: true,
-										//   // feedObject: item,
-										//   // selectedBetType: feedInfo.betType,
-										// })
-									}
-									moreMenuOptionHidden
-									showWatchButton
-									//hideBottomView={true}
-									//cellTapped={() => {}}
-									onNextPageLoaded={() => {
-										totalPage > currentPage + 1 &&
-											setCurrentPage(currentPage + 1);
-									}}
-									isRefreshing={isRefreshing}
-									onRefreshCall={() => {
-										setIsRefreshing(true);
-										resetLiveFeedApiData();
-										callFeedApi();
-										console.log('onRefreshCall>?????');
-									}}
-									isLoading={isLoading}
-								/>
+										})
+									// navigation.navigate(ScreenNames.EventDetailsScreen, {
+									//   title: Strings.feed,
+									//   betCreationType: 1,
+									//   matchId: item._id,
+									//   isFromStreaming: true,
+									//   // feedObject: item,
+									//   // selectedBetType: feedInfo.betType,
+									// })
+								}
+								moreMenuOptionHidden
+								showWatchButton
+								//hideBottomView={true}
+								//cellTapped={() => {}}
+								onNextPageLoaded={() => {
+									totalPage > currentPage + 1 &&
+										setCurrentPage(currentPage + 1);
+								}}
+								isRefreshing={isRefreshing}
+								onRefreshCall={() => {
+									setIsRefreshing(true);
+									resetLiveFeedApiData();
+									callFeedApi();
+									console.log('onRefreshCall>?????');
+								}}
+								isLoading={isLoading}
+							/>
 						</View>
 					)}
 
 					{(feedInfo?.matchList?.length === 0 && feedErrorInfo === true) ||
 					categories.length === 1 ? (
-								<View style={styles.noDataContainer}>
-									<NoDataComponent noData={noDataItem} />
-								</View>
+						<View style={styles.noDataContainer}>
+							<NoDataComponent noData={noDataItem} />
+						</View>
 					) : (
 						<></>
 					)}

@@ -44,11 +44,18 @@ import CustomeProgressBar from '../../../../components/CustomeProgressBar';
 import ButtonGradientWithRightIcon from '../../../../components/ButtonGradientWithRightIcon';
 import {verticalScale} from '../../../../theme';
 import {gradientColorAngle} from '../../../../theme/metrics';
-import {decimalValue, nullAddress} from '../../../../constants/api';
+import {
+	Api,
+	ApiBaseUrl,
+	ApiConstants,
+	decimalValue,
+	nullAddress
+} from '../../../../constants/api';
 import {
 	getRoundDecimalValue,
 	showErrorAlert
 } from '../../../../constants/utils/Function';
+import UploadOptionalEvidenceViewComponent from '../../../../components/UploadOptionalEvidenceViewComponent';
 
 const BetMakerResultScreen: React.FC<any> = () => {
 	const navigation = useNavigation();
@@ -108,6 +115,10 @@ const BetMakerResultScreen: React.FC<any> = () => {
 
 	const [strikeLevel, setStrikeLevel] = useState(0);
 	const [totalParts, setTotalParts] = useState(0);
+
+	const [totalEvidenceItemArray, setTotalEvidenceItemArray] = useState<
+		Array<Object>
+	>([]);
 
 	const userInfo = useSelector((state: RootState) => {
 		return state.userInfo.data;
@@ -628,6 +639,47 @@ const BetMakerResultScreen: React.FC<any> = () => {
 		}
 	}, [hashObj]);
 
+	const createFormData = (betResult: string) => {
+		const urlStringArray = [];
+		const evidenceItemsArray = [];
+
+		if (totalEvidenceItemArray.length > 0) {
+			for (let i = 0; i < totalEvidenceItemArray.length; i++) {
+				if (totalEvidenceItemArray[i]?.type === 'url') {
+					const strUrl = totalEvidenceItemArray[i]?.url;
+					urlStringArray.push(strUrl);
+				} else {
+					evidenceItemsArray.push(totalEvidenceItemArray[i]);
+				}
+			}
+		}
+
+		const formData = new FormData();
+		formData.append('hash', hashObj?.hash);
+		formData.append('signature', hashObj?.signature);
+		formData.append('bet_id', bet_id);
+		if (betResult === 'accepted') {
+			formData.append('isAcceptable', true);
+		} else {
+			formData.append('winnerOption', isSelectChooseSideType);
+		}
+
+		if (urlStringArray.length > 0) {
+			urlStringArray.forEach(proofLink =>
+				formData.append('proofLinks', proofLink)
+			);
+		}
+		if (evidenceItemsArray.length > 0) {
+			evidenceItemsArray.forEach(evidenceFile =>
+				formData.append('evidenceFile', evidenceFile)
+			);
+		}
+
+		console.log('formData >> ', JSON.stringify(formData));
+
+		return formData;
+	};
+
 	const addCustomBetResultData = (betResult: string) => {
 		dispatch(updateApiLoader({apiLoader: true}));
 		let uploadData = {};
@@ -688,6 +740,57 @@ const BetMakerResultScreen: React.FC<any> = () => {
 				dispatch(updateApiLoader({apiLoader: false}));
 				console.log('addCustomBetResultData Data Err : ', err);
 			});
+
+		// fetch(ApiBaseUrl + ApiConstants.addResultDispute, {
+		// 	method: Api.POST,
+		// 	body: createFormData(betResult),
+		// 	headers: {
+		// 		Authorization: 'Bearer ' + userInfo.token
+		// 	}
+		// })
+		// 	.then(response => response.json())
+		// 	.then(res => {
+		// 		dispatch(updateApiLoader({apiLoader: false}));
+		// 		console.log(
+		// 			'addCustomBetResultData Response : ',
+		// 			JSON.stringify(res)
+		// 		);
+
+		// 		setApiHashObj(res?.data?.HashSignatureObject);
+		// 		dispatch(deleteItemById(notification_id));
+		// 		if (betResult === 'accepted') {
+		// 			seIsTitle(
+		// 				Strings.well_done_result_has_been_verified.replace(
+		// 					'%s',
+		// 					userInfo.user.userName
+		// 				)
+		// 			);
+		// 			setStep(1);
+		// 			setIsViewNextBackBtn(false);
+		// 			setIsBackButtonDisable(false);
+		// 			setIsSelectChooseSideType(
+		// 				eventBetData?.bet?.users?._id === userProfileInfo?.user?._id
+		// 					? eventBetData?.bet?.bet_creator_side_option
+		// 					: eventBetData?.bet?.bet_opposite_side_option
+		// 			);
+
+		// 			if (eventBetData?.resultData?.isWinner === 'win') {
+		// 				setNextBtnTitle(Strings.claim_winning);
+		// 			} else if (eventBetData?.resultData?.isWinner === 'loss') {
+		// 				setNextBtnTitle(Strings.continue_to_feed);
+		// 			} else if (eventBetData?.resultData?.isWinner === 'draw') {
+		// 				setNextBtnTitle(Strings.claim_bet_funds);
+		// 			}
+		// 		} else {
+		// 			setIsViewNextBackBtn(false);
+		// 			setNextBtnTitle(Strings.continue_to_feed);
+		// 			setStep(5);
+		// 		}
+		// 	})
+		// 	.catch(error => {
+		// 		dispatch(updateApiLoader({apiLoader: false}));
+		// 		console.log('addCustomBetResultData Data Err : ', error);
+		// 	});
 	};
 
 	const handleRedirectUser = () => {
@@ -737,8 +840,79 @@ const BetMakerResultScreen: React.FC<any> = () => {
 		);
 	};
 
+	const handleUploadOptionalEvidence = evidenceData => {
+		setTotalEvidenceItemArray(evidenceData);
+	};
+
 	const showViews = () => {
 		console.log('showViews ', step);
+
+		const dataArray = [
+			{
+				id: 0,
+				type: 'url',
+				data_url: 'https://localhost:19006/FeedScreen'
+			},
+			{
+				id: 1,
+				type: 'url',
+				data_url: 'http://jsonviewer.stack.hu/'
+			},
+			{
+				id: 2,
+				type: 'url',
+				data_url: 'https://localhost:19006/FeedScreen'
+			},
+			{
+				id: 3,
+				type: 'url',
+				data_url: 'http://jsonviewer.stack.hu/'
+			},
+			{
+				id: 4,
+				type: 'url',
+				data_url: 'https://localhost:19006/FeedScreen'
+			},
+			{
+				id: 5,
+				name: 'image1.png',
+				type: 'image',
+				data_url:
+					'https://images.unsplash.com/photo-1670012896865-f531c5fb65d9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1169&q=80'
+			},
+			{
+				id: 6,
+				name: 'video1',
+				type: 'video',
+				data_url:
+					'https://assets.mixkit.co/videos/preview/mixkit-fireworks-illuminating-the-beach-sky-4157-large.mp4',
+				data_video_thumb:
+					'https://mixkit.imgix.net/videos/preview/mixkit-fireworks-illuminating-the-beach-sky-4157-0.jpg?q=80&auto=format%2Ccompress&w=460'
+			},
+			{
+				id: 7,
+				name: 'image2.png',
+				type: 'image',
+				data_url:
+					'https://images.unsplash.com/photo-1669839190022-2d6823040638?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80'
+			},
+			{
+				id: 8,
+				name: 'video2',
+				type: 'video',
+				data_url:
+					'https://assets.mixkit.co/videos/preview/mixkit-bright-orange-sunset-on-beach-2168-large.mp4',
+				data_video_thumb:
+					'https://mixkit.imgix.net/videos/preview/mixkit-bright-orange-sunset-on-beach-2168-0.jpg?q=80&auto=format%2Ccompress&w=460'
+			},
+			{
+				id: 9,
+				name: 'image3.png',
+				type: 'image',
+				data_url:
+					'https://images.unsplash.com/photo-1670058769220-f27a4ef60de9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=627&q=80'
+			}
+		];
 
 		switch (step) {
 			case 1:
@@ -864,6 +1038,7 @@ const BetMakerResultScreen: React.FC<any> = () => {
 			case 2:
 				return (
 					<KeyboardAwareScrollView
+						keyboardShouldPersistTaps={'handled'}
 						bounces={false}
 						showsVerticalScrollIndicator={false}>
 						<Text style={styles.titleStyle}>{isTitle}</Text>
@@ -903,6 +1078,9 @@ const BetMakerResultScreen: React.FC<any> = () => {
 								setIsBackButtonDisable(false);
 							}}
 							textType={'capitalize'}
+						/>
+						<UploadOptionalEvidenceViewComponent
+							handleUploadOptionalEvidence={handleUploadOptionalEvidence}
 						/>
 					</KeyboardAwareScrollView>
 				);
@@ -949,6 +1127,8 @@ const BetMakerResultScreen: React.FC<any> = () => {
 										});
 									}
 								}}
+								isShowResolverEvidence={true}
+								resolverEvidenceData={dataArray}
 							/>
 						)}
 					</KeyboardAwareScrollView>

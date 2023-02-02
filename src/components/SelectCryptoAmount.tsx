@@ -139,7 +139,7 @@ const SelectCryptoAmount: React.FC<Props> = props => {
 					}
 				} else {
 					Alert.alert(
-						'Insufficient Balance'.toUpperCase(),
+						Strings.txt_insufficient_balance,
 						Strings.enough_balance,
 						[
 							{
@@ -157,7 +157,7 @@ const SelectCryptoAmount: React.FC<Props> = props => {
 	return (
 		<>
 			<Text style={styles.desStyle}>
-				{`You are betting ${Strings.str_dollor}${props?.addedAmount}. So, you have balance in these crypto to make this bet.`}
+				{Strings.You_are_betting_So_you_have_balance_crypto.replace('%d', `${Strings.str_dollor}${props?.addedAmount}`)}
 			</Text>
 			<>
 				{!isLoading && currencyDataArray?.length ? (

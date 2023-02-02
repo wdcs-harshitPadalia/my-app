@@ -421,7 +421,8 @@ const Strings = {
 
 	taken_by: 'taken by:',
 	Select_the_final_result: 'Select the final result',
-	problem_with_this_result: 'A problem with this result?',
+	resolver_evidence: 'Resolver’s evidence:',
+	problem_with_this_result: 'A problem with this result or the verification?',
 	open_dispute: 'Open dispute.',
 	you_open_dispute: 'You’ve opened a dispute and your evidence has been sent.',
 	we_will_review_evidence: 'we’ll review your evidence and get back to you',
@@ -696,7 +697,7 @@ const Strings = {
 	jury_banned:
 		"You have been banned as a Jury so you won't be able to perform any activity related to Jury.",
 	watching: 'watching',
-	//Notification Type
+	//Notification Type do not change this types
 	notification_types: {
 		match_trending: 'MATCH_TRENDING',
 		live_streaming_trending: 'LIVE_STREAMING_TRENDING',
@@ -706,6 +707,7 @@ const Strings = {
 		trending_sub_category: 'SUB_CATEGORY_TRENDING',
 		numerious_bets_created: 'NUMERIOUS_BETS_CREATED'
 	},
+	//Push Notification Type do not change this types
 	push_notification_types: {
 		event_Suggestion: 'EVENT_BET_SUGGESTION',
 		join_friend_bet: 'JOIN_FRIEND_BET',
@@ -796,6 +798,125 @@ const Strings = {
 	no_pending_claim: 'NO PENDING REWARDS TO CLAIM',
 	let_create_market: "Let's create your market",
 	txt_age_validation: 'You must be 18 years old or above to use this app.',
-	copy_referral_desc: 'Referral code copied to clipboard.'
+	copy_referral_desc: 'Referral code copied to clipboard.',
+	create_a_video_with_bet_attached: 'create a video with bet attached',
+	engage_your_audience_and_earn_up_to: 'Engage your audience and earn up to',
+	betting_fees_generated: 'of the betting fees generated!',
+	top_up_with_credit_card: 'top up with credit card',
+	create_a_challenge: 'create a challenge',
+	started_following: 'started following you.',
+	create_a_live_challenge: 'stream a live challenge',
+	live_challenge: 'live challenge',
+	earn_up_to: 'Earn up to',
+	from_streaming_content:
+		'of the fees generated from all the bets matched over your streaming content!',
+	WATCH_LIVE_STREAM: 'WATCH LIVE STREAM',
+	Is_creating_the_following_challenge_and_ITS_LIVE:
+		'is creating the following challenge and IT’S LIVE!',
+	START_TIME: 'START TIME',
+	optional_evidence: 'Optional evidence',
+	optional_evidence_desc:
+		'You can optionally attach evidence of the result. You can upload a photo, a video or share the links of your choice.',
+	str_and_or: 'and/or',
+	verify_photo_video: 'VERIFY WITH PHOTO or video',
+	WATCH_LIVE_STREAM: 'WATCH LIVE STREAM',
+	Is_creating_the_following_challenge_and_ITS_LIVE : 'is creating the following challenge and IT’S LIVE!',
+	START_TIME: 'START TIME',
+	Failed_to_stake_amount: 'Failed to stake amount',
+	live_challenge: 'Live challenge',
+	attach_the_stream: 'Attach the stream',
+	attach_the_channel_link_des:
+		'Even if your challenge doens’t start right now, you can attach the channel link to be displayed at the start time.',
+	stream_name: 'Stream name',
+	stream_link: 'Stream link',
+	set_the_duration_of_the_stream: 'Set the duration of the stream',
+	start_and_End_time: 'Start and End time',
+	pick_start_time: 'PICK START TIME',
+	result_verification: 'Result verification',
+	select_who_verifies_the_challenge: 'Select who verifies the challenge',
+	bet_maker: 'Bet maker',
+	if_you_select_Bet_Maker_des:
+		'If you select Bet Maker, you will be the one to verify the bet. ',
+	bet_taker: 'Bet taker',
+	if_you_select_Bet_taker_des:
+		'If you select Bet taker, you will be the one to verify the bet. ',
+	enter_a_stream_name: 'Enter a Stream name',
+	enter_a_stream_link: 'Enter a Stream link',
+	Choose_Accurate_Bet_Outcome: 'Choose Accurate Bet Outcome',
+	bet_conditions_or_Terms_not_clear: 'bet conditions or Terms not clear',
+	hateful_language_or_symbols: 'hateful language or symbols',
+	False_information: 'False information',
+	Spam: 'Spam',
+	Other: 'Other',
+	head_to_head: 'head to head',
+	won: 'won',
+	tied: 'tied',
+	AVG_scored_goals: 'AVG. scored goals',
+	AVG_goals_against: 'AVG. goals against',
+	resolution_date: 'resolution date',
+	JOINING_DEADLINE: 'JOINING DEADLINE',
+	resolution_method_api: 'resolution method: api',
+	resolution_method_manual: 'resolution method: manual',
+	fee_over_the_winnings: 'fee over the winnings',
+	STARTS: 'STARTS',
+	ENDS: 'ENDS',
+	Your_bet_will_pay: 'Your bet will pay',
+	the_amount_you_are_betting: 'the amount you are betting.',
+	Your_estimated_probability_of_winning_is:
+		'Your estimated probability of winning is',
+	You_are_betting_So_you_have_balance_crypto:
+		'You are betting %d. So, you have balance in these crypto to make this bet.',
+	this_bet: 'this bet',
+	joined: 'joined',
+	bet: 'bet',
+	pick: 'pick',
+	You_are_jury_for_the_bet: 'You are jury for the bet',
+	you_have_24_hours_to_declare_your_result:
+		'you have 24 hours to declare your result.',
+	You_have_1_hour_to_accept_the_case: 'You have 1 hour to accept the case!',
+	Youve_been_selected_to_be: 'You’ve been selected to be',
+	of_an_opened_dispute: 'of an opened dispute.',
+	you_have_24_hours_to_declare_your_result:
+		'you have 24 hours to declare your result.',
+	the_juy: 'the juy',
+	The_bet: 'The bet',
+	added_you_as_a_Friend: 'added you as a Friend.',
+	You_are_now_friends_with: 'You are now friends with',
+	streaming_has_been_ended: 'streaming has been ended!',
+	estimated_end: 'estimated end:',
+	Select_a_token: 'Select a token',
+	str_congrats_you_just_won: 'Congrats! You just won',
+	str_oh_no_you_just_lost: 'Oh no! You just lost',
+	str_from: ' from ',
+	str_bet: ' bet ',
+	str_vs: ' vs ',
+	str_your_bet: 'Your bet ',
+	str_has_end_verify_result: ' has ended. Please verify the result.',
+	str_has_end_provide_result_and_evidence:
+		' has ended. Please provide the result and evidence.',
+	str_has_end_provide_evidence: ' has ended. Please provide a evidence.',
+	str_the_bet: 'The bet ',
+	str_has_end_creator_verify_review_result:
+		' has ended and the creator has verified the result. Please review the result.',
+	str_great_result_for_your_bet: 'Great! The result for your bet ',
+	str_result_for_your_bet: 'The result for your bet ',
+	str_oh_no_result_for_your_bet: 'Oh no! The result for your bet ',
+	str_accept_by_opponent_you_just_won:
+		' has been accepted by your opponent. You just won ',
+	str_accepted_your_oponent_returned_to_your_wallet:
+		' has been accepted by your oponent. The bet has been made Void and the funds will be returned to your Wallet.',
+	str_accept_by_opponent_you_just_lost:
+		' has been accepted by your oponent. You just lost ',
+	str_your_oppent_in_bet: 'Your oponent in your bet ',
+	str_opened_dispute_provide_evidence_result:
+		' has opened a dispute. Please provide evidence to your result.',
+	str_player: 'Player',
+	str_match: 'Match',
+	str_for_your_bet: ' for your bet ',
+	str_has_been: ' has been ',
+	str_you_cancel_bet_recover_fund:
+		'. You can cancel this bet to recover your funds.',
+	str_ago: ' ago',
+	str_reffered_users: ' reffered users'
 };
 export default Strings;

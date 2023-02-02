@@ -119,7 +119,9 @@ import {CameraPage} from '../../components/Camera/CameraPage';
 import {MediaPage} from '../../components/Camera/MediaPage';
 import VideoCreationScreen from '../../screens/PostLogin/VideoCreationScreen';
 import VideoContentScreen from '../../screens/VideoContentScreen';
-import { Platform, StyleSheet } from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
+import UserEngagementScreen from '../../screens/PostLogin/UserEngagementScreen';
+import LiveChallengeScreen from '../../screens/PostLogin/LiveChallengeScreen';
 
 //const Stack = createNativeStackNavigator();
 const options = {
@@ -128,7 +130,10 @@ const options = {
 };
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
-const cardStyleType = Platform.OS === 'web' ? CardStyleInterpolators.forNoAnimation : CardStyleInterpolators.forHorizontalIOS
+const cardStyleType =
+	Platform.OS === 'web'
+		? CardStyleInterpolators.forNoAnimation
+		: CardStyleInterpolators.forHorizontalIOS;
 
 export const BeforeLoginRoutesRoot = () => (
 	<Stack.Navigator
@@ -195,6 +200,11 @@ export const WalletTabRoutes = (_props: any) => (
 			component={WithdrawSuccessScreen}
 			options={{headerShown: false, gestureEnabled: false}}
 		/>
+		<Stack.Screen
+			name={ScreenNames.LiveChallengeScreen}
+			component={LiveChallengeScreen}
+			options={{headerShown: false}}
+		/>
 	</Stack.Navigator>
 );
 
@@ -247,6 +257,16 @@ export const LiveTabRoutes = (_props: any) => (
 		<Stack.Screen
 			name={ScreenNames.VideoContentScreen}
 			component={VideoContentScreen}
+			options={{headerShown: false}}
+		/>
+		<Stack.Screen
+			name={ScreenNames.UserEngagementScreen}
+			component={UserEngagementScreen}
+			options={{headerShown: false}}
+		/>
+		<Stack.Screen
+			name={ScreenNames.LiveChallengeScreen}
+			component={LiveChallengeScreen}
 			options={{headerShown: false}}
 		/>
 	</Stack.Navigator>
@@ -545,6 +565,16 @@ const FeedsRouter = () => (
 			component={VideoContentScreen}
 			options={{headerShown: false}}
 		/>
+		<Stack.Screen
+			name={ScreenNames.UserEngagementScreen}
+			component={UserEngagementScreen}
+			options={{headerShown: false}}
+		/>
+		<Stack.Screen
+			name={ScreenNames.LiveChallengeScreen}
+			component={LiveChallengeScreen}
+			options={{headerShown: false}}
+		/>
 	</Stack.Navigator>
 );
 
@@ -681,6 +711,16 @@ const DiscoverRouter = () => (
 		<Stack.Screen
 			name={ScreenNames.VideoContentScreen}
 			component={VideoContentScreen}
+			options={{headerShown: false}}
+		/>
+		<Stack.Screen
+			name={ScreenNames.UserEngagementScreen}
+			component={UserEngagementScreen}
+			options={{headerShown: false}}
+		/>
+		<Stack.Screen
+			name={ScreenNames.LiveChallengeScreen}
+			component={LiveChallengeScreen}
 			options={{headerShown: false}}
 		/>
 	</Stack.Navigator>
@@ -844,6 +884,16 @@ const ProfileRouter = () => (
 			component={ReferralProgramScreen}
 			options={{headerShown: false}}
 		/>
+		<Stack.Screen
+			name={ScreenNames.UserEngagementScreen}
+			component={UserEngagementScreen}
+			options={{headerShown: false}}
+		/>
+		<Stack.Screen
+			name={ScreenNames.LiveChallengeScreen}
+			component={LiveChallengeScreen}
+			options={{headerShown: false}}
+		/>
 	</Stack.Navigator>
 );
 
@@ -995,14 +1045,13 @@ const Routes = () => {
 	// console.log('chece',isLoggedin);
 	return (
 		<NavigationContainer
-		    theme={{ colors: { background: '#000' } }}
+			theme={{colors: {background: '#000'}}}
 			ref={navigationRef}
 			linking={userInfo.token && !userInfo.isNewUser && Linking}
 			onReady={() => {
 				routeNameRef.current = navigationRef.current.getCurrentRoute().name;
 			}}
-			fallback={<Login />}
-			>
+			fallback={<Login />}>
 			{/* Render the Magic iframe! */}
 			{/* <magic.Relayer /> */}
 			<Loader

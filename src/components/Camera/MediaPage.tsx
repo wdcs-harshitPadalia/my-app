@@ -28,6 +28,7 @@ import {
 	verticalScale
 } from '../../theme/metrics';
 import ScreenNames from '../../navigation/screenNames';
+import {StackActions} from '@react-navigation/native';
 // import { LoadError } from 'react-native-video';
 
 const isVideoOnLoadEvent = (
@@ -113,7 +114,9 @@ export function MediaPage({navigation, route}: Props): React.ReactElement {
 						controls></video>
 					<TouchableOpacity
 						style={styles.closeButton}
-						onPress={navigation.goBack}>
+						onPress={() => {
+							navigation.dispatch(StackActions.popToTop());
+						}}>
 						<Image source={icons.back} style={styles.closeIcon} />
 					</TouchableOpacity>
 					<ButtonGradient

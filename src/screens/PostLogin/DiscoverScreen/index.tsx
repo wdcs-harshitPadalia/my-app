@@ -2,7 +2,6 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
 	FlatList,
 	Keyboard,
-	RefreshControl,
 	Text,
 	Dimensions,
 	TouchableOpacity,
@@ -11,6 +10,7 @@ import {
 	ImageBackground,
 	NativeScrollEvent
 } from 'react-native';
+
 import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {
@@ -21,6 +21,10 @@ import {
 } from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {Directions} from 'react-native-gesture-handler';
+import ExpoFastImage from 'expo-fast-image';
+import LottieView from 'lottie-react-native';
+import Lottie, {LottieRefCurrentProps} from 'lottie-react';
+import {connectClient} from '@amityco/ts-sdk';
 
 import icons from '../../../assets/icon';
 
@@ -35,9 +39,14 @@ import LoadMoreLoaderView from '../../../components/LoadMoreLoaderView';
 import NoDataComponent from '../../../components/NoDataComponent';
 import ScrollableCustomTabView from '../../../components/ScrollableCustomTabView';
 import SearchBarWIthBack from '../../../components/SearchBarWIthBack';
-import TutorialView from '../../../components/TutorialView';
-import FlingGestureComponent from '../../../components/FlingGestureComponent';
 import CustomTopTabView from '../../../components/CustomTopTabVIew';
+import ButtonGradient from '../../../components/ButtonGradient';
+import OtherUserProfileReplicateBetComponent from '../../../components/OtherUserProfileReplicateBetComponent';
+import {BetEventtInfoView} from '../../../components/BetEventtInfoView';
+import DiscoverVideoPlayer from '../../../components/DiscoverVideoPlayer';
+import {useIsForeground} from '../../../components/CustomHooks/useIsForeground';
+import ErrorComponent from '../../../components/ErrorComponent';
+import DiscoverLiveStreamComponent from '../../../components/LiveDiscover/DiscoverLiveStreamComponent';
 
 import Strings from '../../../constants/strings';
 import {
@@ -59,45 +68,22 @@ import {
 } from '../../../redux/apiHandler/apiActions';
 import {updateApiLoader} from '../../../redux/reducerSlices/preLogin';
 import {RootState} from '../../../redux/store';
-import {Colors, horizontalScale, verticalScale} from '../../../theme';
 
 import styles from './style';
-import {defaultTheme} from '../../../theme/defaultTheme';
-import {
-	gradientColorAngle,
-	height,
-	screenHeight,
-	width
-} from '../../../theme/metrics';
-import ButtonGradient from '../../../components/ButtonGradient';
+
 import colors from '../../../theme/colors';
-// import FastImage from 'react-native-fast-image';
-import ExpoFastImage from 'expo-fast-image';
-import OtherUserProfileReplicateBetComponent from '../../../components/OtherUserProfileReplicateBetComponent';
-import {BetEventtInfoView} from '../../../components/BetEventtInfoView';
-import {
-	hideBottomTab,
-	showInviteUser,
-	showTutorial,
-	updateDiscoverRefreshOnFocus
-} from '../../../redux/reducerSlices/dashboard';
-import DeviceInfo from 'react-native-device-info';
-import {LinearGradient} from 'expo-linear-gradient';
-import LottieView from 'lottie-react-native';
-import Lottie, {LottieRefCurrentProps} from 'lottie-react';
-import DiscoverVideoPlayer from '../../../components/DiscoverVideoPlayer';
-import {useIsForeground} from '../../../components/CustomHooks/useIsForeground';
-// import {event} from 'react-native-reanimated';
-import ErrorComponent from '../../../components/ErrorComponent';
-import {connectClient} from '@amityco/ts-sdk';
+import {defaultTheme} from '../../../theme/defaultTheme';
+import {horizontalScale, verticalScale} from '../../../theme';
+import {gradientColorAngle, height, width} from '../../../theme/metrics';
 
 let page = 0;
 let pageBets = 0;
 let searchTextUpdated = '';
-// let discoverPage = 0;
-let hasNotch = false;
 
 const DiscoverScreen: React.FC<any> = props => {
+	const scrollRef = useRef(null);
+	useScrollToTop(scrollRef);
+
 	const navigation = useNavigation();
 	const dispatch = useDispatch();
 	const {params} = useRoute();
@@ -157,8 +143,6 @@ const DiscoverScreen: React.FC<any> = props => {
 	const [visibleParentIndex, setVisibleParentIndex] = React.useState<number>(0);
 	const [isVideoFocus, setIsVideoFocus] = useState(true);
 	const mediaRefs = useRef([]);
-	const scrollRef = useRef(null);
-	useScrollToTop(scrollRef);
 
 	const [isNoData, setIsNoData] = useState(false);
 	const [userListData, setUserListData] = useState([]);
@@ -166,8 +150,9 @@ const DiscoverScreen: React.FC<any> = props => {
 	const [pageUser, setPageUser] = useState(0);
 
 	const beforeClickTopTabData = [
-		{id: 1, title: Strings.str_for_you},
-		{id: 2, title: Strings.str_live_chat}
+		{id: 0, title: Strings.live},
+		{id: 1, title: Strings.str_explore},
+		{id: 2, title: Strings.str_chat}
 	];
 
 	const afterClickTopTabData = [
@@ -199,6 +184,12 @@ const DiscoverScreen: React.FC<any> = props => {
 		description_text: ''
 	};
 
+	const isVideoUnAvailable =
+		discoverMatchData[0]?.dataType === 'notFound' ||
+		discoverMatchData[0]?.dataType === 'videoDeleted' ||
+		discoverMatchData[0]?.dataType === 'videoEnded' ||
+		discoverMatchData[0]?.dataType === 'userOwnVideo';
+
 	// useEffect(() => {
 	// 	setDiscoverPage(0);
 	// 	getDiscoverMatchData();
@@ -214,13 +205,8 @@ const DiscoverScreen: React.FC<any> = props => {
 			userId: userInfo.user?._id,
 			displayName: userInfo.user?.userName
 		});
+		getAllUserList();
 	}, []);
-
-	const isVideoUnAvailable =
-		discoverMatchData[0]?.dataType === 'notFound' ||
-		discoverMatchData[0]?.dataType === 'videoDeleted' ||
-		discoverMatchData[0]?.dataType === 'videoEnded' ||
-		discoverMatchData[0]?.dataType === 'userOwnVideo';
 
 	// useEffect(() => {
 	// 	getDiscoverMatchData();
@@ -376,9 +362,16 @@ const DiscoverScreen: React.FC<any> = props => {
 	// }, []);
 
 	useEffect(() => {
-		console.log('params?.video_id1??>', params?.video_id);
-		getDiscoverMatchData(params?.video_id);
+		console.log('params?.video_id1??>', typeof params?.video_id);
+		getDiscoverMatchData(
+			params?.video_id === 'undefined' ? undefined : params?.video_id
+		);
 	}, [discoverPage]);
+
+	useUpdateEffect(() => {
+		setDiscoverPage(0);
+		getDiscoverMatchData('error');
+	}, [beforeClickTopTabIndex]);
 
 	useUpdateEffect(() => {
 		// console.log('params?.video_id??>', params?.video_id, discoverPage);
@@ -446,8 +439,11 @@ const DiscoverScreen: React.FC<any> = props => {
 	};
 
 	const getDiscoverMatchData = (videoId?: string, temp) => {
+		if (beforeClickTopTabIndex !== 1) {
+			return;
+		}
 		if (discoverPage === undefined) {
-			setDiscoverMatchData([])
+			setDiscoverMatchData([]);
 			return;
 		}
 		if (discoverPage === 0) {
@@ -459,7 +455,12 @@ const DiscoverScreen: React.FC<any> = props => {
 		const uploadData = {
 			skip: videoId === 'error' ? 0 : discoverPage,
 			limit: '10',
-			video_id: videoId === 'error' ?  temp === 'error' ? videoId :  undefined : videoId ?? undefined
+			video_id:
+				videoId === 'error'
+					? temp === 'error'
+						? videoId
+						: undefined
+					: videoId ?? undefined
 		};
 
 		getExploreData(uploadData)
@@ -997,6 +998,7 @@ const DiscoverScreen: React.FC<any> = props => {
 	//     </View>
 	//   );
 	// };
+
 	const AfterSearchClickComponent = () => {
 		return (
 			<View style={styles.viewSubContain}>
@@ -1186,7 +1188,7 @@ const DiscoverScreen: React.FC<any> = props => {
 
 					{isSelectedIndex === 2 && (
 						<View style={{paddingBottom: verticalScale(120)}}>
-							<ButtonGradient
+							{/* <ButtonGradient
 								onPress={() => {
 									navigation.navigate(ScreenNames.DiscoverFindFriendsScreen);
 								}}
@@ -1197,7 +1199,7 @@ const DiscoverScreen: React.FC<any> = props => {
 								buttonText={Strings.connect_friends}
 								style={styles.loginButtonSocial}
 								leftIconPath={icons.plusRound}
-							/>
+							/> */}
 							{/* {discoverSearchData?.length > 0 && (
                 <Text style={styles.titleText} numberOfLines={2}>
                   {afterClickTopTabData[isSelectedIndex].title}
@@ -1541,6 +1543,7 @@ const DiscoverScreen: React.FC<any> = props => {
 	// 		)}
 	// 	</View>
 	// );
+
 	const onScroll = useCallback(
 		(event: NativeSyntheticEvent<NativeScrollEvent>) => {
 			const slideSize = event.nativeEvent.layoutMeasurement.height;
@@ -1560,7 +1563,7 @@ const DiscoverScreen: React.FC<any> = props => {
 			) {
 				setDiscoverPage(discoverPage + 1);
 			}
-			// setVisibleParentIndex(roundIndex);
+			setVisibleParentIndex(roundIndex);
 			// // const cell = mediaRefs.current[discoverMatchData[roundIndex]?._id];
 			// // videoMarkSeen(discoverMatchData[roundIndex].item?._id);
 			// // if (cell) {
@@ -1577,149 +1580,182 @@ const DiscoverScreen: React.FC<any> = props => {
 		if (viewableItems?.viewableItems?.length > 0)
 			SetViewableItem(viewableItems.viewableItems[0].item._id || 0);
 	});
+
 	const viewConfigRef = useRef({viewAreaCoveragePercentThreshold: 70});
 
 	return (
 		<View style={{flex: 1, backgroundColor: defaultTheme.backGroundColor}}>
-			{/* <View style={[styles.tabView]}>
-				<CustomTopTabView
-					dataSource={beforeClickTopTabData}
-					onTabChange={selectedIndex => {
-						setBeforeClickTopTabIndex(selectedIndex);
-					}}
-					selectedIndex={beforeClickTopTabIndex}
-					viewWidth={110}
-				/>
-
-				<TouchableOpacity
-					onPress={() => {
-						setSearchClicked(true);
-						setIsSelectedIndex(0);
-
-						setDiscoverSearchData([]);
-						setRecentMatcheData([]);
-						setRecentFriendData([]);
-						setRecentBetsData([]);
-						setDiscoverSearchBetsData([]);
-
-						page = 0;
-						pageBets = 0;
-
-						setTimeout(() => {
-							getDiscoverSearchData();
-						}, 500);
-					}}
-					style={styles.btnSearch}>
-					<ExpoFastImage
-						style={styles.iconSearch}
-						source={icons.search}
-						resizeMode={'contain'}
-					/>
-				</TouchableOpacity>
-			</View> */}
-			{beforeClickTopTabIndex === 0 &&
-				!searchClicked &&
-				isFocused &&
-				(isVideoUnAvailable ? (
-					<View style={styles.fullScreenImageBg}>
-						<ErrorComponent
-							onPress={() => {
-								// if(discoverPage === 0) {
-								// 	setDiscoverPage(undefined)
-								// } else {
-								// 	setDiscoverPage(0)
-								// }
-								// discoverPage = 0;
-								setDiscoverPage(0);
-								getDiscoverMatchData('error');
+			{!searchClicked && (
+				<>
+					{beforeClickTopTabIndex === 0 ? (
+						<DiscoverLiveStreamComponent
+							userInfo
+							friendList={userListData}
+							onEndReach={() => {
+								onEndReached();
 							}}
+							params
 						/>
-					</View>
-				) : (
-					<View
-						style={{flex: 1, backgroundColor: defaultTheme.backGroundColor}}>
-						<FlatList
-							// style={{flex: 1}}
-							//contentContainerStyle={{flex: 1}}
-							data={discoverMatchData}
-							renderItem={renderForYouItem}
-							pagingEnabled
-							useTextureView={false}
-							playInBackground={false}
-							maxToRenderPerBatch={2}
-							getItemLayout={(_data, index) => ({
-								length: height,
-								offset: height * index,
-								index
-							})}
-							decelerationRate={0.9}
-							// initialNumToRender={1}
-							// removeClippedSubviews
-							disableFocus={false}
-							keyboardShouldPersistTaps={'handled'}
-							keyExtractor={(item, index) => `${item?._id}${index}`}
-							// onEndReachedThreshold={0.0025}
-							// onEndReached={() => {
-							// 	console.log(
-							// 		'getDiscoverMatchData next page'
-							// 	);
-							// 	//if (totalDiscoverMatchCount !== discoverMatchData?.length) {
-							// 		setDiscoverPage(discoverPage + 1);
-							// 	//}
-							// }}
-							disableIntervalMomentum
-							ListFooterComponent={() => (
-								<>{isLoadDiscoverMatch && <LoadMoreLoaderView />}</>
+					) : null}
+
+					{beforeClickTopTabIndex === 1 && (
+						<>
+							{isVideoUnAvailable ? (
+								<View style={styles.fullScreenImageBg}>
+									<ErrorComponent
+										onPress={() => {
+											setDiscoverPage(0);
+											getDiscoverMatchData('error');
+										}}
+									/>
+								</View>
+							) : (
+								isFocused && (
+									<View
+										style={{
+											flex: 1,
+											backgroundColor: defaultTheme.backGroundColor
+										}}>
+										<FlatList
+											// style={{flex: 1}}
+											//contentContainerStyle={{flex: 1}}
+											data={discoverMatchData}
+											renderItem={renderForYouItem}
+											pagingEnabled
+											useTextureView={false}
+											playInBackground={false}
+											maxToRenderPerBatch={2}
+											getItemLayout={(_data, index) => ({
+												length: height,
+												offset: height * index,
+												index
+											})}
+											decelerationRate={0.9}
+											// initialNumToRender={1}
+											// removeClippedSubviews
+											disableFocus={false}
+											keyboardShouldPersistTaps={'handled'}
+											keyExtractor={(item, index) => `${item?._id}${index}`}
+											// onEndReachedThreshold={0.0025}
+											// onEndReached={() => {
+											// 	console.log(
+											// 		'getDiscoverMatchData next page'
+											// 	);
+											// 	//if (totalDiscoverMatchCount !== discoverMatchData?.length) {
+											// 		setDiscoverPage(discoverPage + 1);
+											// 	//}
+											// }}
+											disableIntervalMomentum
+											ListFooterComponent={() => (
+												<>{isLoadDiscoverMatch && <LoadMoreLoaderView />}</>
+											)}
+											// refreshControl={
+											// 	<RefreshControl
+											// 		refreshing={isRefresh}
+											// 		onRefresh={() => {
+											// 			setDiscoverPage(0)
+											// 		}}
+											// 		title="Pull to refresh"
+											// 		tintColor="#fff"
+											// 		titleColor="#fff"
+											// 	/>
+											// }
+											ListEmptyComponent={() => (
+												<>
+													{isShowNoForYou && (
+														<View style={{height: height, width: width}}>
+															<NoDataComponent noData={noDataForYou} />
+														</View>
+													)}
+												</>
+											)}
+											// windowSize={4}
+											// initialNumToRender={1}
+											// maxToRenderPerBatch={1}
+											// snapToInterval={height}
+											// decelerationRate={'normal'}
+											// removeClippedSubviews={false}
+											// snapToAlignment={'center'}
+											// initialScrollIndex={0}
+											// disableIntervalMomentum
+											onScroll={event => {
+												isFocused && setIsShowSwipeUp(false);
+												onScroll(event);
+											}}
+											//onViewableItemsChanged={onViewableItemsChanged.current}
+											//onScroll={onScroll}
+											// viewabilityConfig={{
+											// 	itemVisiblePercentThreshold: 100
+											// 	// minimumViewTime: 2000,
+											// }}
+											onViewableItemsChanged={onViewRef.current}
+											viewabilityConfig={viewConfigRef.current}
+											// onViewableItemsChanged={onViewableItemsChanged}
+											// viewabilityConfigCallbackPairs={
+											// 	viewabilityConfigCallbackPairs.current
+											// }
+											// initialScrollIndex={0}
+										/>
+									</View>
+								)
 							)}
-							// refreshControl={
-							// 	<RefreshControl
-							// 		refreshing={isRefresh}
-							// 		onRefresh={() => {
-							// 			setDiscoverPage(0)
-							// 		}}
-							// 		title="Pull to refresh"
-							// 		tintColor="#fff"
-							// 		titleColor="#fff"
-							// 	/>
-							// }
-							ListEmptyComponent={() => (
-								<>
-									{isShowNoForYou && (
-										<View style={{height: height, width: width}}>
-											<NoDataComponent noData={noDataForYou} />
-										</View>
+							{discoverMatchData.length > 1 && isShowSwipeUp && (
+								<View pointerEvents="none" style={styles.swipeView}>
+									{Platform.OS === 'web' ? (
+										<Lottie
+											style={{
+												height: 150,
+												width: 150,
+												alignSelf: 'center'
+											}}
+											animationData={require('../../../assets/animations/swipe_up.json')}
+											// autoPlay
+											// loop={isShowSwipeUp}
+											lottieRef={lottieRef}
+										/>
+									) : (
+										<LottieView
+											style={{
+												height: 100,
+												width: 100,
+												alignSelf: 'center'
+											}}
+											source={require('../../../assets/animations/swipe_up.json')}
+											autoPlay
+											loop={isShowSwipeUp}
+											ref={ref => {
+												animation.current = ref;
+											}}
+										/>
 									)}
-								</>
+								</View>
 							)}
-							// windowSize={4}
-							// initialNumToRender={1}
-							// maxToRenderPerBatch={1}
-							// snapToInterval={height}
-							// decelerationRate={'normal'}
-							// removeClippedSubviews={false}
-							// snapToAlignment={'center'}
-							// initialScrollIndex={0}
-							// disableIntervalMomentum
-							onScroll={event => {
-								isFocused && setIsShowSwipeUp(false);
-								onScroll(event);
-							}}
-							//onViewableItemsChanged={onViewableItemsChanged.current}
-							//onScroll={onScroll}
-							// viewabilityConfig={{
-							// 	itemVisiblePercentThreshold: 100
-							// 	// minimumViewTime: 2000,
-							// }}
-							onViewableItemsChanged={onViewRef.current}
-							viewabilityConfig={viewConfigRef.current}
-							// onViewableItemsChanged={onViewableItemsChanged}
-							// viewabilityConfigCallbackPairs={
-							// 	viewabilityConfigCallbackPairs.current
-							// }
-							// initialScrollIndex={0}
-						/>
-					</View>
-				))}
+						</>
+					)}
+
+					{beforeClickTopTabIndex === 2 && (
+						<View
+							style={{
+								marginHorizontal: horizontalScale(8),
+								marginBottom: verticalScale(16),
+								height: '83%'
+							}}>
+							<ChatViewComponent
+								// isTitleShown
+								chatType="amity"
+								shouldShowMessageHistory={true}
+								backGroundColor={'black'}
+								style={{
+									borderRadius: 8,
+									overflow: 'hidden'
+								}}
+								channelId={'1'}
+								allowImageUpload={false}
+							/>
+						</View>
+					)}
+				</>
+			)}
 
 			{searchClicked && (
 				<SafeAreaView style={{flex: 1}}>
@@ -1770,61 +1806,6 @@ const DiscoverScreen: React.FC<any> = props => {
 					<AfterSearchClickComponent />
 				</SafeAreaView>
 			)}
-			{beforeClickTopTabIndex === 1 && !searchClicked && (
-				<View
-					style={{
-						marginHorizontal: horizontalScale(8),
-						marginBottom: verticalScale(16),
-						height: '83%'
-					}}>
-					<ChatViewComponent
-						// isTitleShown
-						chatType="amity"
-						shouldShowMessageHistory={true}
-						backGroundColor={'black'}
-						style={{
-							borderRadius: 8,
-							overflow: 'hidden'
-						}}
-						channelId={'1'}
-						allowImageUpload={false}
-					/>
-				</View>
-			)}
-
-			{discoverMatchData.length > 1 &&
-				isShowSwipeUp &&
-				beforeClickTopTabIndex == 0 && (
-					<View pointerEvents="none" style={styles.swipeView}>
-						{Platform.OS === 'web' ? (
-							<Lottie
-								style={{
-									height: 150,
-									width: 150,
-									alignSelf: 'center'
-								}}
-								animationData={require('../../../assets/animations/swipe_up.json')}
-								// autoPlay
-								// loop={isShowSwipeUp}
-								lottieRef={lottieRef}
-							/>
-						) : (
-							<LottieView
-								style={{
-									height: 100,
-									width: 100,
-									alignSelf: 'center'
-								}}
-								source={require('../../../assets/animations/swipe_up.json')}
-								autoPlay
-								loop={isShowSwipeUp}
-								ref={ref => {
-									animation.current = ref;
-								}}
-							/>
-						)}
-					</View>
-				)}
 
 			{!searchClicked && (
 				<View style={[styles.tabView, {top: insets.top}]}>
@@ -1834,7 +1815,7 @@ const DiscoverScreen: React.FC<any> = props => {
 							setBeforeClickTopTabIndex(selectedIndex);
 						}}
 						selectedIndex={beforeClickTopTabIndex}
-						viewWidth={110}
+						viewWidth={74}
 					/>
 
 					<TouchableOpacity
@@ -1865,7 +1846,7 @@ const DiscoverScreen: React.FC<any> = props => {
 				</View>
 			)}
 
-			{isShowTutorial  && (
+			{isShowTutorial && (
 				<TutorialView
 					style={{top: 0, bottom: 0, position: 'absolute'}}
 					isShowPlusIcon={false}
@@ -1904,3 +1885,42 @@ const DiscoverScreen: React.FC<any> = props => {
 };
 
 export default DiscoverScreen;
+
+{
+	/* <View style={[styles.tabView]}>
+				<CustomTopTabView
+					dataSource={beforeClickTopTabData}
+					onTabChange={selectedIndex => {
+						setBeforeClickTopTabIndex(selectedIndex);
+					}}
+					selectedIndex={beforeClickTopTabIndex}
+					viewWidth={110}
+				/>
+
+				<TouchableOpacity
+					onPress={() => {
+						setSearchClicked(true);
+						setIsSelectedIndex(0);
+
+						setDiscoverSearchData([]);
+						setRecentMatcheData([]);
+						setRecentFriendData([]);
+						setRecentBetsData([]);
+						setDiscoverSearchBetsData([]);
+
+						page = 0;
+						pageBets = 0;
+
+						setTimeout(() => {
+							getDiscoverSearchData();
+						}, 500);
+					}}
+					style={styles.btnSearch}>
+					<ExpoFastImage
+						style={styles.iconSearch}
+						source={icons.search}
+						resizeMode={'contain'}
+					/>
+				</TouchableOpacity>
+			</View> */
+}

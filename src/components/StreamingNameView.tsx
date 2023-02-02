@@ -169,6 +169,11 @@ const StreamingNameView: React.FC<Props> = props => {
 					{betInfo.matches?.visitorTeamName}
 				</Text>
 			)}
+			{betInfo?.feed_name && (
+				<Text style={styles.gameTitleStyle}>
+					{betInfo.feed_name}
+				</Text>
+			)}
 
 			{isFocused && <StreamingTimerView betInfo={betInfo} />}
 		</View>

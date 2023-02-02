@@ -134,6 +134,7 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 	const [uniqId, setUniqId] = useState('');
 
 	const [isPrivacy, setIsPrivacy] = useState(-1);
+	const [whoVerifiesChallenge, setWhoVerifiesChallenge] = useState(-1); // maker for 0 and taker for 1
 
 	const [isSelectFollowUser, setIsSelectFollowUser] = useState({});
 
@@ -759,7 +760,8 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 							parseFloat(selectedBetOdds?.decimal) -
 						parseFloat(betAmount.replace(',', '.'))
 					).toFixed(decimalValue) + '',
-				parent_bet_id: eventBetData?.bet_id
+				parent_bet_id: eventBetData?.bet_id,
+				bet_resolver: whoVerifiesChallenge === 0 ? 'BET_MAKER' : 'BET_TAKER'
 			};
 			// await analytics().logEvent('calledP2pBetApi', {
 			// 	id: bet_id,
@@ -800,7 +802,8 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 						parseFloat(betAmount.replace(',', '.'))
 					).toFixed(decimalValue) + '',
 				bet_type: '2',
-				parent_bet_id: eventBetData?.bet_id
+				parent_bet_id: eventBetData?.bet_id,
+				bet_resolver: whoVerifiesChallenge === 0 ? 'BET_MAKER' : 'BET_TAKER'
 			};
 			// await analytics().logEvent('calledP2pBetApi', {
 			// 	id: bet_id,
@@ -878,9 +881,15 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 				getRandomNumberData();
 				setTimeout(() => {
 					if (res.data.isBet === true) {
-						setIsBackButtonDisable(true);
-						setIsViewNextBackBtn(true);
-						setStep(2);
+						if (isSelectedLeagueType !== 0) {
+							setIsBackButtonDisable(true);
+							setIsViewNextBackBtn(true);
+							setStep(5);
+						} else {
+							setIsBackButtonDisable(true);
+							setIsViewNextBackBtn(true);
+							setStep(2);
+						}
 					} else {
 						setModalIsBetJoin(true);
 					}
@@ -1294,7 +1303,6 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 					<>
 						{eventInfo()}
 						<BetsPrivacyView
-							popupTitle={Strings.bet_privacy}
 							isSelected={isPrivacy}
 							onPrivatePress={() => {
 								setIsPrivacy(1);
@@ -1304,6 +1312,7 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 								setIsPrivacy(0);
 								setIsBackButtonDisable(false);
 							}}
+							popUpType={0}
 						/>
 					</>
 				);
@@ -1380,6 +1389,24 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 						)}
 					</View>
 				);
+			case 5:
+				return (
+					<>
+						{eventInfo()}
+						<BetsPrivacyView
+							isSelected={whoVerifiesChallenge}
+							onPrivatePress={() => {
+								setWhoVerifiesChallenge(1);
+								setIsBackButtonDisable(false);
+							}}
+							onPublicPress={() => {
+								setWhoVerifiesChallenge(0);
+								setIsBackButtonDisable(false);
+							}}
+							popUpType={1}
+						/>
+					</>
+				);
 		}
 	};
 
@@ -1412,7 +1439,7 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 						) {
 							setIsBackButtonDisable(false);
 							Alert.alert(
-								'Insufficient Balance'.toUpperCase(),
+								Strings.txt_insufficient_balance,
 								Strings.enough_balance
 							);
 							return;
@@ -1680,6 +1707,11 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 					_ISCUSTOMIZED: isSelectedLeagueType !== 0
 				});
 				break;
+			case 5:
+				setIsBackButtonDisable(true);
+				setIsViewNextBackBtn(true);
+				setStep(2);
+				break;
 		}
 	};
 
@@ -1700,16 +1732,29 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 			//   setStep(3);
 			//   break;
 			case 2:
-				setIsBackButtonDisable(false);
-				setIsViewNextBackBtn(false);
-				setStep(1);
-				setIsPrivacy(-1);
+				if (isSelectedLeagueType !== 0) {
+					setIsBackButtonDisable(false);
+					setIsViewNextBackBtn(true);
+					setStep(5);
+					setIsPrivacy(-1);
+				} else {
+					setIsBackButtonDisable(false);
+					setIsViewNextBackBtn(false);
+					setStep(1);
+					setIsPrivacy(-1);
+				}
 				break;
 			case 3:
 				setStep(2);
 				setIsBackButtonDisable(isPrivacy === -1 ? true : false);
 				setIsViewNextBackBtn(true);
 				setNextBtnTitle(Strings.next);
+				break;
+			case 5:
+				setIsBackButtonDisable(false);
+				setIsViewNextBackBtn(false);
+				setStep(1);
+				setWhoVerifiesChallenge(-1);
 				break;
 		}
 	};

@@ -68,8 +68,11 @@ const ScreenNames = {
 	MediaPage: 'MediaPage',
 	VideoCreationScreen: 'VideoCreationScreen',
 	VideoContentScreen: 'VideoContentScreen',
-	ReferralProgramScreen:'ReferralProgramScreen',
+	ReferralProgramScreen: 'ReferralProgramScreen',
 	WithdrawSuccessScreen: 'WithdrawSuccessScreen',
+	UserEngagementScreen: 'UserEngagementScreen',
+	LiveChallengeScreen: 'LiveChallengeScreen'
+
 };
 
 export default ScreenNames;

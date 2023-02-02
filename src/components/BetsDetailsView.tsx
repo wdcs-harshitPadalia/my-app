@@ -204,19 +204,19 @@ const BetsDetailsView: React.FC<Props> = props => {
 				</View>
 
 				<Text style={styles.betsTypeStyle}>
-					{`resolution date: ${gameEndDate}${gameEndTime}`.toUpperCase()}
+					{`${Strings.resolution_date}: ${gameEndDate}${gameEndTime}`.toUpperCase()}
 				</Text>
 				<Text style={styles.betsTypeStyle}>
-					{`JOINING DEADLINE: ${joinEndTime}`.toUpperCase()}
+					{`${Strings.JOINING_DEADLINE}: ${joinEndTime}`.toUpperCase()}
 				</Text>
 				<Text style={styles.betsTypeStyle}>
 					{isSelectedLeagueType === 0
-						? 'resolution method: api'.toUpperCase()
-						: 'resolution method: manual'.toUpperCase()}
+						? Strings.resolution_method_api.toUpperCase()
+						: Strings.resolution_method_manual.toUpperCase()}
 				</Text>
 				<View style={styles.rawContainer}>
 					<Text style={styles.betsTypeStyle}>
-						{`fee over the winnings: ${winningPercentage}%`.toUpperCase()}
+						{`${Strings.fee_over_the_winnings}: ${winningPercentage}%`.toUpperCase()}
 					</Text>
 					<TouchableOpacity onPress={onPressNeedHelp}>
 						<ExpoFastImage

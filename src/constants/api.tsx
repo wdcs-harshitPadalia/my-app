@@ -49,6 +49,8 @@ export const RpcURL =
 //export const RpcURL = 'https://rpc-mainnet.maticvigil.com';
 
 export const MagicLinkUrl = 'https://reveal.magic.link/defibet';
+export const AllIconUrl =
+	'https://defibet-prod.s3.ap-south-1.amazonaws.com/common/ic_all_abixvn.png';
 
 //Test net Chain ID
 export const chainIdPolygonNetwork = 80001;
@@ -167,7 +169,9 @@ export const ApiConstants = {
 	getExploreData: 'video/getExploreData',
 	messageUser: 'video/messageUser',
 	markSeen: 'video/markSeen',
-	getUserAncestor: 'result/getUserAncestor'
+	getUserAncestor: 'result/getUserAncestor',
+	getLiveChallenges: 'video/getLiveChallenges',
+	addFeedUser: 'admin/addFeedUser'
 };
 
 export const BotomSharePopupData = [

@@ -969,3 +969,21 @@ export const getUserAncestor = async () => {
 	});
 	return response;
 };
+
+export const addFeedUser = async (data: any) => {
+	const response = await useAxios({
+		method: Api.POST,
+		url: ApiBaseUrl + ApiConstants.addFeedUser,
+		data: data
+	});
+	return response;
+};
+
+export const getLiveChallengesData = async (data: any) => {
+	const response = await useAxios({
+		method: Api.POST,
+		url: ApiBaseUrl + ApiConstants.getLiveChallenges,
+		data: data
+	});
+	return response;
+};

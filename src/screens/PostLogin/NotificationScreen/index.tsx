@@ -302,7 +302,8 @@ const NotificationScreen: React.FC<any> = (props) => {
       item.type === Strings.push_notification_types.join_friend_bet ||
       item.type === Strings.push_notification_types.event_Suggestion ||
       item.type === Strings.push_notification_types.user_suggestion ||
-			item.type === 'CLAIM_AFFILIATE_REWARD'
+			item.type === 'CLAIM_AFFILIATE_REWARD' ||
+      item.type === 'FRIEND_FOLLOWING'
     ) {
       return (
         <NotificationPromotionView
@@ -433,6 +434,12 @@ const NotificationScreen: React.FC<any> = (props) => {
 								userId: item?.followID
 							});
 						}
+
+            if (item.type === 'FRIEND_FOLLOWING') {
+              navigation.navigate(ScreenNames.OtherUserProfileScreen, {
+                userId: item?.user?._id,
+              });
+            }
           }}
           colorArray={
             item?.notificationStatus === "UNREAD"

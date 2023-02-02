@@ -277,12 +277,12 @@ const PlaceBetsAmountView: React.FC<Props> = props => {
 			)}
 
 			<Text style={styles.desStyle}>
-				{'Your bet will pay '}
+				{Strings.Your_bet_will_pay + ' '}
 				<Text style={styles.desOddsStyle}>{betOdds + 'x'}</Text>
-				{' the amount you are betting.'}
+				{' ' + Strings.the_amount_you_are_betting}
 				{previousData?.impliedOdds && (
 					<Text style={styles.desStyle}>
-						{'\nYour estimated probability of winning is '}
+						{`\n${Strings.Your_estimated_probability_of_winning_is} `}
 						<Text style={[styles.desOddsStyle, {color: colors.textPink}]}>
 							{+(previousData?.decimal == betOdds
 								? previousData?.impliedOdds

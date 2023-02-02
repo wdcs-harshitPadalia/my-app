@@ -1,5 +1,10 @@
 /* eslint-disable react-native/no-inline-styles */
-import {View, TouchableOpacity, StyleSheet, ImageBackground} from 'react-native';
+import {
+	View,
+	TouchableOpacity,
+	StyleSheet,
+	ImageBackground
+} from 'react-native';
 import React, {useState} from 'react';
 import ExpoFastImage from 'expo-fast-image';
 
@@ -185,6 +190,21 @@ export const EventInfoView = ({
 											: {}
 									]}>
 									{item.matchName}
+								</Text>
+							)}
+
+							{item?.feed_name && (
+								<Text
+									numberOfLines={titleTotalNumOfLines}
+									style={[
+										styles.titleText,
+										props?.titleFontSize
+											? {
+													fontSize: props?.titleFontSize
+											  }
+											: {}
+									]}>
+									{item.feed_name}
 								</Text>
 							)}
 							<Text

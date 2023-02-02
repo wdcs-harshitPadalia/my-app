@@ -14,7 +14,6 @@ import GradientText from './GradientText';
 import icons from '../assets/icon';
 import colors from '../theme/colors';
 import Strings from '../constants/strings';
-import Gradient from 'rgt';
 
 interface DataProps {
 	title?: string;

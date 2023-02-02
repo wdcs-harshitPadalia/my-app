@@ -16,7 +16,6 @@ import moment from 'moment';
 import {gradientColorAngle} from '../theme/metrics';
 import {decimalValue} from '../constants/api';
 import {getRoundDecimalValue} from '../constants/utils/Function';
-
 interface Props extends TextInputProps {
 	onPress?: () => void;
 	onConfirm?: () => void;
@@ -24,12 +23,9 @@ interface Props extends TextInputProps {
 	colorArray?: [];
 	data: Object;
 }
-
 const NotificationBetResultView: React.FC<Props> = props => {
 	const {onPress, colorArray, data} = props;
-
 	const [betType] = useState(data?.type);
-
 	return (
 		<LinearGradient
 			style={styles.circleGradient}
@@ -67,14 +63,14 @@ const NotificationBetResultView: React.FC<Props> = props => {
 					{betType === 'RESULT' && (
 						<Text style={[styles.usernameStyle]}>
 							{(data?.resultData?.isWinner === 'win'
-								? 'Congrats! You just won ' + Strings.str_dollor
-								: 'Oh no! You just lost  ' + Strings.str_dollor) +
+								? Strings.str_congrats_you_just_won + Strings.str_dollor
+								: Strings.str_oh_no_you_just_lost + Strings.str_dollor) +
 								(data?.resultData?.isWinner === 'win'
 									? getRoundDecimalValue(data?.resultData?.betWinningAmount)
 									: getRoundDecimalValue(data?.resultData?.betLossingAmount)) +
 								' ' +
-								' from '}
-
+								Strings.str_from}
+							​
 							<Text
 								style={[
 									styles.usernameStyle,
@@ -82,7 +78,7 @@ const NotificationBetResultView: React.FC<Props> = props => {
 								]}>
 								{data?.resultData?.betCreatorUsername}
 							</Text>
-							<Text style={[styles.usernameStyle]}>{' bet '}</Text>
+							<Text style={[styles.usernameStyle]}>{Strings.str_bet}</Text>
 							<Text
 								style={[
 									styles.usernameStyle,
@@ -91,15 +87,14 @@ const NotificationBetResultView: React.FC<Props> = props => {
 								{data?.match?.matchName
 									? data?.match?.matchName
 									: data?.match?.localTeamName +
-									  ' vs ' +
+									  Strings.str_vs +
 									  data?.match?.visitorTeamName}
 							</Text>
 						</Text>
 					)}
-
 					{betType === 'CUSTOM_BET_RESULT' && (
 						<Text style={[styles.usernameStyle]}>
-							{'Your bet '}
+							{Strings.str_your_bet}
 							<Text
 								style={[
 									styles.usernameStyle,
@@ -107,13 +102,13 @@ const NotificationBetResultView: React.FC<Props> = props => {
 								]}>
 								{data?.bet?.betQuestion}
 							</Text>
-							{' has ended. Please verify the result.'}
+							{Strings.str_has_end_verify_result}
 						</Text>
 					)}
-
+					​
 					{betType === 'CUSTOM_BET_RESULT_TAKER' && (
 						<Text style={[styles.usernameStyle]}>
-							{'Your bet '}
+							{Strings.str_your_bet}
 							<Text
 								style={[
 									styles.usernameStyle,
@@ -121,13 +116,13 @@ const NotificationBetResultView: React.FC<Props> = props => {
 								]}>
 								{data?.bet?.betQuestion}
 							</Text>
-							{' has ended. Please provide the result and evidence.'}
+							{Strings.str_has_end_provide_result_and_evidence}
 						</Text>
 					)}
-
+					​
 					{betType === 'RESULT_VERIFICATION_BETMAKER' && (
 						<Text style={[styles.usernameStyle]}>
-							{'Your bet '}
+							{Strings.str_your_bet}
 							<Text
 								style={[
 									styles.usernameStyle,
@@ -135,13 +130,13 @@ const NotificationBetResultView: React.FC<Props> = props => {
 								]}>
 								{data?.bet?.betQuestion}
 							</Text>
-							{' has ended. Please provide a evidence.'}
+							{Strings.str_has_end_provide_evidence}
 						</Text>
 					)}
-
+					​
 					{betType === 'BET_RESULT_REVIEW' && (
 						<Text style={[styles.usernameStyle]}>
-							{'The bet '}
+							{Strings.str_the_bet}
 							<Text
 								style={[
 									styles.usernameStyle,
@@ -149,20 +144,18 @@ const NotificationBetResultView: React.FC<Props> = props => {
 								]}>
 								{data?.bet?.betQuestion}
 							</Text>
-							{
-								' has ended and the creator has verified the result. Please review the result.'
-							}
+							{Strings.str_has_end_creator_verify_review_result}
 						</Text>
 					)}
-
+					​
 					{betType === 'BET_RESULT_CONFIRMATION' && (
 						<Text style={[styles.usernameStyle]}>
 							{data?.resultData?.isWinner === 'win'
-								? 'Great! The result for your bet '
+								? Strings.str_great_result_for_your_bet
 								: data?.resultData?.isWinner === 'draw' ||
 								  data?.resultData?.isWinner === 'Void'
-								? 'The result for your bet '
-								: 'Oh no! The result for your bet '}
+								? Strings.str_result_for_your_bet
+								: Strings.str_oh_no_result_for_your_bet}
 							<Text
 								style={[
 									styles.usernameStyle,
@@ -171,23 +164,23 @@ const NotificationBetResultView: React.FC<Props> = props => {
 								{data?.bet?.betQuestion}
 							</Text>
 							{data?.resultData?.isWinner === 'win'
-								? ' has been accepted by your opponent. You just won ' +
+								? Strings.str_accept_by_opponent_you_just_won +
 								  Strings.str_dollor +
 								  data?.resultData?.betWinningAmount +
 								  '.'
 								: data?.resultData?.isWinner === 'draw' ||
 								  data?.resultData?.isWinner === 'Void'
-								? ' has been accepted by your oponent. The bet has been made Void and the funds will be returned to your Wallet.'
-								: ' has been accepted by your oponent. You just lost ' +
+								? Strings.str_accepted_your_oponent_returned_to_your_wallet
+								: Strings.str_accept_by_opponent_you_just_lost +
 								  Strings.str_dollor +
 								  data?.resultData?.betLossingAmount +
 								  '.'}
 						</Text>
 					)}
-
+					​
 					{betType === 'DISPUTE_EVIDENCE' && (
 						<Text style={[styles.usernameStyle]}>
-							{'Your oponent in your bet '}
+							{Strings.str_your_oppent_in_bet}
 							<Text
 								style={[
 									styles.usernameStyle,
@@ -195,15 +188,17 @@ const NotificationBetResultView: React.FC<Props> = props => {
 								]}>
 								{data?.bet?.betQuestion}
 							</Text>
-							{' has opened a dispute. Please provide evidence to your result.'}
+							{Strings.str_opened_dispute_provide_evidence_result}
 						</Text>
 					)}
-
+					​
 					{betType === 'MATCH_CANCELLED' && (
 						<Text style={[styles.usernameStyle]}>
 							{`${
-								data?.match_status === 'retired' ? 'Player' : 'Match'
-							} for your bet `}
+								data?.match_status === 'retired'
+									? Strings.str_player
+									: Strings.str_match
+							}${Strings.str_for_your_bet}`}
 							<Text
 								style={[
 									styles.usernameStyle,
@@ -211,7 +206,7 @@ const NotificationBetResultView: React.FC<Props> = props => {
 								]}>
 								{data?.bet?.betQuestion}
 							</Text>
-							{` has been ${data?.match_status}. You can cancel this bet to recover your funds.`}
+							{`${Strings.str_has_been}${data?.match_status}${Strings.str_you_cancel_bet_recover_fund}`}
 						</Text>
 					)}
 					<Text style={styles.userTypeStyle}>
@@ -220,14 +215,13 @@ const NotificationBetResultView: React.FC<Props> = props => {
             ).toUpperCase()} */}
 						{moment(parseFloat(new Date(data?.createdAt).getTime())).fromNow(
 							true
-						) + ' ago'}
+						) + Strings.str_ago}
 					</Text>
 				</View>
 			</TouchableOpacity>
 		</LinearGradient>
 	);
 };
-
 const styles = StyleSheet.create({
 	container: {
 		flexDirection: 'row',
@@ -272,7 +266,6 @@ const styles = StyleSheet.create({
 		fontFamily: Fonts.type.Inter_Medium,
 		textAlign: 'left'
 	},
-
 	userTypeStyle: {
 		fontSize: moderateScale(10),
 		color: colors.whiteFour10,
@@ -294,5 +287,4 @@ const styles = StyleSheet.create({
 		borderRadius: 8
 	}
 });
-
 export default NotificationBetResultView;

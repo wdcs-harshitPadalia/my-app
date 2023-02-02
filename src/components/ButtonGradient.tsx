@@ -13,7 +13,7 @@ import ExpoFastImage from 'expo-fast-image';
 import {Fonts, moderateScale, verticalScale} from '../theme';
 import {LinearGradient} from 'expo-linear-gradient';
 // import FastImage, {ImageStyle} from 'react-native-fast-image';
-import {gradientColorAngle} from '../theme/metrics';
+import {gradientColorAngle, horizontalScale} from '../theme/metrics';
 import fonts from '../theme/fonts';
 
 interface Props extends TextInputProps {
@@ -35,6 +35,8 @@ interface Props extends TextInputProps {
 	activeOpacity?: number;
 	fontFamily?: any;
 	flex?: number;
+	isShowRightIcon?: number;
+	rightIconPress?: () => void;
 }
 
 const ButtonGradient: React.FC<Props> = props => {
@@ -56,7 +58,9 @@ const ButtonGradient: React.FC<Props> = props => {
 		activeOpacity,
 		children,
 		fontFamily,
-		flex = 1
+		flex = 1,
+		isShowRightIcon,
+		rightIconPress
 	} = props;
 
 	return (
@@ -107,13 +111,24 @@ const ButtonGradient: React.FC<Props> = props => {
 				</Text>
 
 				{rightIconPath ? (
-					<View style={styles.rightIconContainer}>
+					<TouchableOpacity
+						style={[
+							styles.rightIconContainer,
+							{marginRight: horizontalScale(isShowRightIcon ? 20 : 0)}
+						]}
+						onPress={rightIconPress}>
 						<ExpoFastImage
 							resizeMode={'contain'}
 							source={rightIconPath}
-							style={[styles.rightImg, rightIconStyle]}
+							style={[
+								styles.rightImg,
+								rightIconStyle,
+								{
+									display: isShowRightIcon ? 'flex' : 'none'
+								}
+							]}
 						/>
-					</View>
+					</TouchableOpacity>
 				) : null}
 			</LinearGradient>
 		</TouchableOpacity>
@@ -154,9 +169,9 @@ const styles = StyleSheet.create({
 	},
 	rightImg: {
 		height: 25,
-		width: 25,
-		marginRight: verticalScale(20),
-		display: 'none'
+		width: 25
+		// marginRight: verticalScale(20),
+		// display: 'none'
 	}
 });
 

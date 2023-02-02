@@ -181,6 +181,8 @@ const icons = {
 	download: require('../icon/download.png'),
 	imageBgSplashHolder: require('../icon/imageBgSplashHolder.png'),
 	money_withdraw: require('../icon/money_withdraw.png'),
-	up_gray: require('../icon/up_gray.png')
+	up_gray: require('../icon/up_gray.png'),
+	ic_follow_user: require('../icon/ic_follow_user.png'),
+	ic_share_popup: require('../icon/ic_share_popup.png'),
 };
 export default icons;

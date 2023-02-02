@@ -205,6 +205,7 @@ const DiscoverScreen: React.FC<any> = props => {
 			userId: userInfo.user?._id,
 			displayName: userInfo.user?.userName
 		});
+		getAllUserList();
 	}, []);
 
 	// useEffect(() => {
@@ -361,9 +362,16 @@ const DiscoverScreen: React.FC<any> = props => {
 	// }, []);
 
 	useEffect(() => {
-		console.log('params?.video_id1??>', params?.video_id);
-		getDiscoverMatchData(params?.video_id);
+		console.log('params?.video_id1??>', typeof params?.video_id);
+		getDiscoverMatchData(
+			params?.video_id === 'undefined' ? undefined : params?.video_id
+		);
 	}, [discoverPage]);
+
+	useUpdateEffect(() => {
+		setDiscoverPage(0);
+		getDiscoverMatchData('error');
+	}, [beforeClickTopTabIndex]);
 
 	useUpdateEffect(() => {
 		// console.log('params?.video_id??>', params?.video_id, discoverPage);
@@ -431,6 +439,9 @@ const DiscoverScreen: React.FC<any> = props => {
 	};
 
 	const getDiscoverMatchData = (videoId?: string, temp) => {
+		if (beforeClickTopTabIndex !== 1) {
+			return;
+		}
 		if (discoverPage === undefined) {
 			setDiscoverMatchData([]);
 			return;
@@ -1552,7 +1563,7 @@ const DiscoverScreen: React.FC<any> = props => {
 			) {
 				setDiscoverPage(discoverPage + 1);
 			}
-			// setVisibleParentIndex(roundIndex);
+			setVisibleParentIndex(roundIndex);
 			// // const cell = mediaRefs.current[discoverMatchData[roundIndex]?._id];
 			// // videoMarkSeen(discoverMatchData[roundIndex].item?._id);
 			// // if (cell) {
@@ -1574,21 +1585,18 @@ const DiscoverScreen: React.FC<any> = props => {
 
 	return (
 		<View style={{flex: 1, backgroundColor: defaultTheme.backGroundColor}}>
-			{!searchClicked && isFocused && (
+			{!searchClicked && (
 				<>
-					{beforeClickTopTabIndex === 0 && (
+					{beforeClickTopTabIndex === 0 ? (
 						<DiscoverLiveStreamComponent
-							navigation
 							userInfo
 							friendList={userListData}
-							discoverData={discoverMatchData}
 							onEndReach={() => {
 								onEndReached();
 							}}
 							params
-							dispatch={dispatch}
 						/>
-					)}
+					) : null}
 
 					{beforeClickTopTabIndex === 1 && (
 						<>
@@ -1602,92 +1610,94 @@ const DiscoverScreen: React.FC<any> = props => {
 									/>
 								</View>
 							) : (
-								<View
-									style={{
-										flex: 1,
-										backgroundColor: defaultTheme.backGroundColor
-									}}>
-									<FlatList
-										// style={{flex: 1}}
-										//contentContainerStyle={{flex: 1}}
-										data={discoverMatchData}
-										renderItem={renderForYouItem}
-										pagingEnabled
-										useTextureView={false}
-										playInBackground={false}
-										maxToRenderPerBatch={2}
-										getItemLayout={(_data, index) => ({
-											length: height,
-											offset: height * index,
-											index
-										})}
-										decelerationRate={0.9}
-										// initialNumToRender={1}
-										// removeClippedSubviews
-										disableFocus={false}
-										keyboardShouldPersistTaps={'handled'}
-										keyExtractor={(item, index) => `${item?._id}${index}`}
-										// onEndReachedThreshold={0.0025}
-										// onEndReached={() => {
-										// 	console.log(
-										// 		'getDiscoverMatchData next page'
-										// 	);
-										// 	//if (totalDiscoverMatchCount !== discoverMatchData?.length) {
-										// 		setDiscoverPage(discoverPage + 1);
-										// 	//}
-										// }}
-										disableIntervalMomentum
-										ListFooterComponent={() => (
-											<>{isLoadDiscoverMatch && <LoadMoreLoaderView />}</>
-										)}
-										// refreshControl={
-										// 	<RefreshControl
-										// 		refreshing={isRefresh}
-										// 		onRefresh={() => {
-										// 			setDiscoverPage(0)
-										// 		}}
-										// 		title="Pull to refresh"
-										// 		tintColor="#fff"
-										// 		titleColor="#fff"
-										// 	/>
-										// }
-										ListEmptyComponent={() => (
-											<>
-												{isShowNoForYou && (
-													<View style={{height: height, width: width}}>
-														<NoDataComponent noData={noDataForYou} />
-													</View>
-												)}
-											</>
-										)}
-										// windowSize={4}
-										// initialNumToRender={1}
-										// maxToRenderPerBatch={1}
-										// snapToInterval={height}
-										// decelerationRate={'normal'}
-										// removeClippedSubviews={false}
-										// snapToAlignment={'center'}
-										// initialScrollIndex={0}
-										// disableIntervalMomentum
-										onScroll={event => {
-											isFocused && setIsShowSwipeUp(false);
-											onScroll(event);
-										}}
-										//onViewableItemsChanged={onViewableItemsChanged.current}
-										//onScroll={onScroll}
-										// viewabilityConfig={{
-										// 	itemVisiblePercentThreshold: 100
-										// 	// minimumViewTime: 2000,
-										// }}
-										onViewableItemsChanged={onViewRef.current}
-										viewabilityConfig={viewConfigRef.current}
-										// onViewableItemsChanged={onViewableItemsChanged}
-										// viewabilityConfigCallbackPairs={
-										// 	viewabilityConfigCallbackPairs.current
-										// }
-										// initialScrollIndex={0}
-									/>
-								</View>
+								isFocused && (
+									<View
+										style={{
+											flex: 1,
+											backgroundColor: defaultTheme.backGroundColor
+										}}>
+										<FlatList
+											// style={{flex: 1}}
+											//contentContainerStyle={{flex: 1}}
+											data={discoverMatchData}
+											renderItem={renderForYouItem}
+											pagingEnabled
+											useTextureView={false}
+											playInBackground={false}
+											maxToRenderPerBatch={2}
+											getItemLayout={(_data, index) => ({
+												length: height,
+												offset: height * index,
+												index
+											})}
+											decelerationRate={0.9}
+											// initialNumToRender={1}
+											// removeClippedSubviews
+											disableFocus={false}
+											keyboardShouldPersistTaps={'handled'}
+											keyExtractor={(item, index) => `${item?._id}${index}`}
+											// onEndReachedThreshold={0.0025}
+											// onEndReached={() => {
+											// 	console.log(
+											// 		'getDiscoverMatchData next page'
+											// 	);
+											// 	//if (totalDiscoverMatchCount !== discoverMatchData?.length) {
+											// 		setDiscoverPage(discoverPage + 1);
+											// 	//}
+											// }}
+											disableIntervalMomentum
+											ListFooterComponent={() => (
+												<>{isLoadDiscoverMatch && <LoadMoreLoaderView />}</>
+											)}
+											// refreshControl={
+											// 	<RefreshControl
+											// 		refreshing={isRefresh}
+											// 		onRefresh={() => {
+											// 			setDiscoverPage(0)
+											// 		}}
+											// 		title="Pull to refresh"
+											// 		tintColor="#fff"
+											// 		titleColor="#fff"
+											// 	/>
+											// }
+											ListEmptyComponent={() => (
+												<>
+													{isShowNoForYou && (
+														<View style={{height: height, width: width}}>
+															<NoDataComponent noData={noDataForYou} />
+														</View>
+													)}
+												</>
+											)}
+											// windowSize={4}
+											// initialNumToRender={1}
+											// maxToRenderPerBatch={1}
+											// snapToInterval={height}
+											// decelerationRate={'normal'}
+											// removeClippedSubviews={false}
+											// snapToAlignment={'center'}
+											// initialScrollIndex={0}
+											// disableIntervalMomentum
+											onScroll={event => {
+												isFocused && setIsShowSwipeUp(false);
+												onScroll(event);
+											}}
+											//onViewableItemsChanged={onViewableItemsChanged.current}
+											//onScroll={onScroll}
+											// viewabilityConfig={{
+											// 	itemVisiblePercentThreshold: 100
+											// 	// minimumViewTime: 2000,
+											// }}
+											onViewableItemsChanged={onViewRef.current}
+											viewabilityConfig={viewConfigRef.current}
+											// onViewableItemsChanged={onViewableItemsChanged}
+											// viewabilityConfigCallbackPairs={
+											// 	viewabilityConfigCallbackPairs.current
+											// }
+											// initialScrollIndex={0}
+										/>
+									</View>
+								)
 							)}
 							{discoverMatchData.length > 1 && isShowSwipeUp && (
 								<View pointerEvents="none" style={styles.swipeView}>

@@ -6,6 +6,7 @@ import fonts from '../../theme/fonts';
 import CounterView from './CounterView';
 import {defaultTheme} from '../../theme/defaultTheme';
 import GradientNumberView from './GradientNumberView';
+import Strings from '../../constants/strings';
 
 export default function HeadToHeadView(props) {
 	useEffect(() => {
@@ -19,7 +20,7 @@ export default function HeadToHeadView(props) {
 			style={styles.container}>
 			<View style={styles.wrapperView}>
 				<Text style={[styles.textStyle, {color: colors.textTitle}]}>
-					{'head to head'.toUpperCase()}
+					{Strings.head_to_head.toUpperCase()}
 				</Text>
 				<View style={styles.teamsView}>
 					<Text style={[styles.textStyle, {marginVertical: 0}]}>
@@ -34,17 +35,17 @@ export default function HeadToHeadView(props) {
 				<View style={styles.counterContainer}>
 					<CounterView
 						count={props?.headToHead?.localTeamWon}
-						label={'won'.toUpperCase()}
+						label={Strings.won.toUpperCase()}
 					/>
 					{/* <SeparatorView /> */}
 					<CounterView
 						count={props?.headToHead?.totalDraw}
-						label={'tied'.toUpperCase()}
+						label={Strings.tied.toUpperCase()}
 					/>
 					{/* <SeparatorView /> */}
 					<CounterView
 						count={props?.headToHead?.visitorTeamWon}
-						label={'won'.toUpperCase()}
+						label={Strings.won.toUpperCase()}
 					/>
 				</View>
 
@@ -56,7 +57,7 @@ export default function HeadToHeadView(props) {
 						fontSize={8}
 					/>
 					<Text style={[styles.textStyle, {marginVertical: 0}]}>
-						{'AVG. scored goals'.toUpperCase()}
+						{Strings.AVG_scored_goals.toUpperCase()}
 					</Text>
 					<GradientNumberView
 						cornerRadius={4}
@@ -75,7 +76,7 @@ export default function HeadToHeadView(props) {
 						fontSize={8}
 					/>
 					<Text style={[styles.textStyle, {marginVertical: 0}]}>
-						{'AVG. goals against'.toUpperCase()}
+						{Strings.AVG_goals_against.toUpperCase()}
 					</Text>
 					<GradientNumberView
 						cornerRadius={4}

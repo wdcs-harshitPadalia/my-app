@@ -69,8 +69,8 @@ const DiscoverLiveStreamComponent = ({
 	params
 }) => {
 	const [isShowShareModal, setIsShowShareModal] = useState(false);
-	const [discoverPage, setDiscoverPage] = useState(0);
-	const [discoverMatchData, setDiscoverMatchData] = useState([]);
+	const [currentPage, setCurrentPage] = useState(0);
+	const [liveChallengeData, setLiveChallengeData] = useState([]);
 	const dispatch = useDispatch();
 
 	const lottieRef = React.useRef<LottieRefCurrentProps>(null);
@@ -80,22 +80,23 @@ const DiscoverLiveStreamComponent = ({
 	const [isShowSwipeUp, setIsShowSwipeUp] = useState(true);
 	const [visibleParentIndex, setVisibleParentIndex] = React.useState<number>(0);
 	const animation = useRef(null);
-	const [isLoadDiscoverMatch, setIsLoadDiscoverMatch] = useState(false);
+	const [isLoadingMore, setIsLoadingMore] = useState(false);
 
 	const navigation = useNavigation();
 	useEffect(() => {
-		if (lottieRef.current) {
+		if (lottieRef?.current) {
 			lottieRef?.current?.play();
 		}
 	}, []);
 
 	useUpdateEffect(() => {
-		eventMarkSeen(discoverMatchData[visibleParentIndex]._id);
+		eventMarkSeen(liveChallengeData[visibleParentIndex]._id);
 	}, [visibleParentIndex]);
 
 	useUpdateEffect(() => {
-		discoverMatchData.length > 0 && eventMarkSeen(discoverMatchData[visibleParentIndex]._id);
-	}, [discoverMatchData]);
+		liveChallengeData.length > 0 &&
+			eventMarkSeen(liveChallengeData[visibleParentIndex]._id);
+	}, [liveChallengeData]);
 
 	const eventMarkSeen = (feed_id: string) => {
 		const uploadData = {
@@ -112,8 +113,8 @@ const DiscoverLiveStreamComponent = ({
 
 	useEffect(() => {
 		console.log('params?.video_id1??>', params?.live_id);
-		getDiscoverMatchData(params?.live_id);
-	}, [discoverPage]);
+		getLiveChallenges(params?.live_id);
+	}, [currentPage]);
 
 	const noDataForYou = {
 		image_url: icons.no_livestreaming,
@@ -124,33 +125,27 @@ const DiscoverLiveStreamComponent = ({
 		followUnfollowUser({follower_id: follower_id})
 			.then(res => {
 				console.log('postFollowUser Response : ', res?.data?.follow);
-				if(res?.data?.follow === 1) {
-					showErrorAlert('', 'User followed')
+				if (res?.data?.follow === 1) {
+					showErrorAlert('', 'User followed');
 				}
 			})
 			.catch(() => {});
 	};
 
-	const getDiscoverMatchData = (videoId?: string, temp) => {
-		if (discoverPage === undefined) {
-			setDiscoverMatchData([]);
+	const getLiveChallenges = (videoId?: string, temp) => {
+		if (currentPage === undefined) {
+			setLiveChallengeData([]);
 			return;
 		}
-		if (discoverPage === 0) {
+		if (currentPage === 0) {
 			setVisibleParentIndex(0);
 			dispatch(updateApiLoader({apiLoader: true}));
 		} else {
-			setIsLoadDiscoverMatch(true);
+			setIsLoadingMore(true);
 		}
 		const uploadData = {
-			skip: videoId === 'error' ? 0 : discoverPage,
+			skip: videoId === 'error' ? 0 : currentPage,
 			limit: '10'
-			// video_id:
-			// 	videoId === 'error'
-			// 		? temp === 'error'
-			// 			? videoId
-			// 			: undefined
-			// 		: videoId ?? undefined
 		};
 
 		getLiveChallengesData(uploadData)
@@ -158,15 +153,15 @@ const DiscoverLiveStreamComponent = ({
 				dispatch(updateApiLoader({apiLoader: false}));
 				console.log('getLiveChallengesData res ::  ', JSON.stringify(res));
 				const discoverMatches = res?.data?.challengesList;
-				if (discoverPage !== 0) {
-					setDiscoverMatchData(discoverMatchData.concat(discoverMatches));
+				if (currentPage !== 0) {
+					setLiveChallengeData(liveChallengeData.concat(discoverMatches));
 				} else {
-					setDiscoverMatchData(discoverMatches);
+					setLiveChallengeData(discoverMatches);
 				}
 				//setIsRefresh(false);
 				setTotalDiscoverMatchCount(res?.data?.challengesCount);
-				setIsLoadDiscoverMatch(false);
-				if (discoverMatches?.length === 0 && discoverMatchData?.length === 0) {
+				setIsLoadingMore(false);
+				if (discoverMatches?.length === 0 && liveChallengeData?.length === 0) {
 					setIsShowNoForYou(true);
 				}
 			})
@@ -174,7 +169,7 @@ const DiscoverLiveStreamComponent = ({
 				dispatch(updateApiLoader({apiLoader: false}));
 				console.log('getDiscoverMatches Data Err : ', err);
 				// setIsRefresh(false);
-				setIsLoadDiscoverMatch(false);
+				setIsLoadingMore(false);
 			});
 	};
 
@@ -364,7 +359,7 @@ const DiscoverLiveStreamComponent = ({
 				setVisibleParentIndex(roundIndex);
 			}
 		},
-		[discoverMatchData]
+		[liveChallengeData]
 	);
 	const renderForYouItem = ({item, index}) => (
 		// </View>
@@ -377,51 +372,19 @@ const DiscoverLiveStreamComponent = ({
 			<View style={styles.innerRootView}>
 				<View style={styles.innerTopView}>
 					<View style={{flexDirection: 'row'}}>
-						<View
-							style={{
-								backgroundColor: colors.blackTransparent05,
-								paddingTop: 12,
-								borderRadius: 8,
-								overflow: 'hidden',
-								flex: 1,
-								marginHorizontal: horizontalScale(16)
-								//width: width - 100
-							}}>
-							<View style={{paddingHorizontal: 12, flexWrap: 'wrap'}}>
-								<Text
-									onPress={() => {
-										navigation.navigate(ScreenNames.OtherUserProfileScreen, {
-											userId: item?.users?._id
-										});
-									}}
-									style={{
-										color: colors.red,
-										fontSize: 10,
-										fontFamily: fonts.type.Krona_Regular,
-										flexShrink: 1
-									}}>
+						<View style={styles.liveStreamInfoView}>
+							<View style={styles.liveStreamViewTopView}>
+								<Text style={styles.liveStreamTopViewText}>
 									{`@${item?.users?.userName} `}
 									<Text style={{color: colors.white, textAlign: 'center'}}>
 										{Strings.Is_creating_the_following_challenge_and_ITS_LIVE}
 									</Text>
 								</Text>
-								<Text
-									numberOfLines={2}
-									style={{
-										color: colors.white,
-										fontSize: 18,
-										fontFamily: fonts.type.Krona_Regular,
-										marginTop: verticalScale(10)
-									}}>
+								<Text numberOfLines={2} style={styles.liveFeedNameText}>
 									{item?.feed_name}
 								</Text>
 							</View>
-							<View
-								style={{
-									backgroundColor: colors.greyTwo,
-									paddingVertical: verticalScale(12),
-									marginTop: verticalScale(10)
-								}}>
+							<View style={styles.liveStreamBottomView}>
 								{item?.isStarted ? (
 									<UserGroupView
 										onPressViewAll={() => {
@@ -432,11 +395,7 @@ const DiscoverLiveStreamComponent = ({
 										rightIcon={false}
 										buttonText={Strings.login}
 										desText={''}
-										style={{
-											padding: 0,
-											margin: 0,
-											paddingHorizontal: horizontalScale(8)
-										}}
+										style={styles.liveStreamWatchingView}
 										shouldShowCloseButton={false}
 										userArray={[
 											{
@@ -872,13 +831,7 @@ const DiscoverLiveStreamComponent = ({
 										isFromLiveDiscover
 									/>
 								) : (
-									<Text
-										style={{
-											textAlign: 'center',
-											fontSize: 12,
-											color: colors.white,
-											fontFamily: fonts.type.Inter_Medium
-										}}>
+									<Text style={styles.streamStartTimeText}>
 										{`${Strings.START_TIME}: ${dateTimeConvert(
 											item?.start_date_time
 										)}`.toUpperCase()}
@@ -897,16 +850,7 @@ const DiscoverLiveStreamComponent = ({
 								</View>
 							</View>
 						</View>
-						<View
-							style={{
-								//width: 40,
-								// backgroundColor: 'green',
-								// height: 100,
-								alignItems: 'center',
-								// marginRight: -16,
-								marginRight: horizontalScale(16)
-								// flex: 0.2
-							}}>
+						<View style={styles.liveStreamActionsView}>
 							<TouchableOpacity
 								activeOpacity={1}
 								onPress={() => {
@@ -925,7 +869,7 @@ const DiscoverLiveStreamComponent = ({
 							<TouchableOpacity
 								activeOpacity={1}
 								onPress={() => {
-									postFollowUser(item?.users?._id)
+									postFollowUser(item?.users?._id);
 								}}
 								style={{position: 'absolute', left: 15, top: 30}}>
 								<ExpoFastImage
@@ -967,23 +911,6 @@ const DiscoverLiveStreamComponent = ({
 					}}
 				/>
 			</View>
-			{/* <TouchableOpacity
-				onPress={() => {
-					setIsShowShareModal(!isShowShareModal);
-				}}
-				hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
-				style={styles.shareView}>
-				<LinearGradient
-					useAngle={true}
-					angle={gradientColorAngle}
-					colors={defaultTheme.ternaryGradientColor}
-					style={styles.bgGradient}>
-					<ExpoFastImage
-						source={icons.ic_share_upload}
-						style={styles.imgUploadStyle}
-					/>
-				</LinearGradient>
-			</TouchableOpacity> */}
 		</ImageBackground>
 	);
 
@@ -992,7 +919,7 @@ const DiscoverLiveStreamComponent = ({
 			<FlatList
 				// style={{flex: 1}}
 				//contentContainerStyle={{flex: 1}}
-				data={discoverMatchData}
+				data={liveChallengeData}
 				renderItem={renderForYouItem}
 				pagingEnabled
 				getItemLayout={(_data, index) => ({
@@ -1005,9 +932,9 @@ const DiscoverLiveStreamComponent = ({
 				keyboardShouldPersistTaps={'handled'}
 				keyExtractor={(item, index) => `${item?._id}${index}`}
 				onEndReached={() => {
-					console.log('getDiscoverMatchData next page');
-					if (totalDiscoverMatchCount !== discoverMatchData?.length) {
-						setDiscoverPage(discoverPage + 1);
+					console.log('getLiveChallenges next page');
+					if (totalDiscoverMatchCount !== liveChallengeData?.length) {
+						setCurrentPage(currentPage + 1);
 					}
 				}}
 				onScroll={event => {
@@ -1015,13 +942,13 @@ const DiscoverLiveStreamComponent = ({
 					onScroll(event);
 				}}
 				ListFooterComponent={() => (
-					<>{isLoadDiscoverMatch && <LoadMoreLoaderView />}</>
+					<>{isLoadingMore && <LoadMoreLoaderView />}</>
 				)}
 				// refreshControl={
 				// 	<RefreshControl
 				// 		refreshing={isRefresh}
 				// 		onRefresh={() => {
-				// 			setDiscoverPage(0)
+				// 			setCurrentPage(0)
 				// 		}}
 				// 		title="Pull to refresh"
 				// 		tintColor="#fff"
@@ -1037,34 +964,8 @@ const DiscoverLiveStreamComponent = ({
 						)}
 					</>
 				)}
-				// windowSize={4}
-				// initialNumToRender={1}
-				// maxToRenderPerBatch={1}
-				// snapToInterval={height}
-				// decelerationRate={'normal'}
-				// removeClippedSubviews={false}
-				// snapToAlignment={'center'}
-				// initialScrollIndex={0}
-				// disableIntervalMomentum
-				// onScroll={event => {
-				// 	isFocused && setIsShowSwipeUp(false);
-				// 	onScroll(event);
-				// }}
-				//onViewableItemsChanged={onViewableItemsChanged.current}
-				//onScroll={onScroll}
-				// viewabilityConfig={{
-				// 	itemVisiblePercentThreshold: 100
-				// 	// minimumViewTime: 2000,
-				// }}
-				// onViewableItemsChanged={onViewRef.current}
-				// viewabilityConfig={viewConfigRef.current}
-				// onViewableItemsChanged={onViewableItemsChanged}
-				// viewabilityConfigCallbackPairs={
-				// 	viewabilityConfigCallbackPairs.current
-				// }
-				// initialScrollIndex={0}
 			/>
-			{discoverMatchData.length > 1 && isShowSwipeUp && (
+			{liveChallengeData.length > 1 && isShowSwipeUp && (
 				<View pointerEvents="none" style={styles.swipeView}>
 					{Platform.OS === 'web' ? (
 						<Lottie
@@ -1104,7 +1005,6 @@ const styles = StyleSheet.create({
 		height: '100%',
 		justifyContent: 'center',
 		alignItems: 'center'
-		// backgroundColor: colors.red
 	},
 	swipeView: {
 		position: 'absolute',
@@ -1118,7 +1018,6 @@ const styles = StyleSheet.create({
 		width: screenWidth,
 		justifyContent: 'center',
 		alignItems: 'center'
-		// paddingHorizontal: 16
 	},
 	innerRootView: {
 		flex: 1,
@@ -1183,6 +1082,47 @@ const styles = StyleSheet.create({
 	imgShareIconStyle: {
 		width: 45,
 		height: 45
+	},
+	liveStreamInfoView: {
+		backgroundColor: colors.blackTransparent05,
+		paddingTop: 12,
+		borderRadius: 8,
+		overflow: 'hidden',
+		flex: 1,
+		marginHorizontal: horizontalScale(16)
+	},
+	liveStreamActionsView: {
+		alignItems: 'center',
+		marginRight: horizontalScale(16)
+	},
+	liveStreamViewTopView: {paddingHorizontal: 12, flexWrap: 'wrap'},
+	liveStreamTopViewText: {
+		color: colors.red,
+		fontSize: 10,
+		fontFamily: fonts.type.Krona_Regular,
+		flexShrink: 1
+	},
+	liveFeedNameText: {
+		color: colors.white,
+		fontSize: 18,
+		fontFamily: fonts.type.Krona_Regular,
+		marginTop: verticalScale(10)
+	},
+	liveStreamBottomView: {
+		backgroundColor: colors.greyTwo,
+		paddingVertical: verticalScale(12),
+		marginTop: verticalScale(10)
+	},
+	liveStreamWatchingView: {
+		padding: 0,
+		margin: 0,
+		paddingHorizontal: horizontalScale(8)
+	},
+	streamStartTimeText: {
+		textAlign: 'center',
+		fontSize: 12,
+		color: colors.white,
+		fontFamily: fonts.type.Inter_Medium
 	}
 });
 

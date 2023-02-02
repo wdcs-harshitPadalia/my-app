@@ -33,7 +33,9 @@ import {
 } from '../../../constants/utils/Function';
 import ScreenNames from '../../../navigation/screenNames';
 import {
+	getLiveChallengesData,
 	getUserBetStats,
+	getUserLiveStreaming,
 	getUserProfile,
 	removeVisitors
 } from '../../../redux/apiHandler/apiActions';
@@ -89,6 +91,8 @@ const ProfileScreen: React.FC<any> = props => {
 	const [shareContent, setShareContent] = useState('');
 	const regex = /(<([^>]+)>)/gi;
 
+	const [liveEventData, setLiveEventData] = useState([]);
+
 	useEffect(() => {
 		dispatch(updateApiLoader({apiLoader: true}));
 		setShareContent(
@@ -96,6 +100,7 @@ const ProfileScreen: React.FC<any> = props => {
 				userProfileInfo?.user?.displayName || userProfileInfo?.user?.userName
 			)
 		);
+		getUserLiveStreamingData();
 	}, []);
 
 	useEffect(() => {
@@ -140,6 +145,17 @@ const ProfileScreen: React.FC<any> = props => {
 			setAllBetLossPercent(lossPercent);
 		}
 	}
+
+	const getUserLiveStreamingData = () => {
+		getUserLiveStreaming()
+			.then(res => {
+				console.log('getLiveChallengesData res ::  ', JSON.stringify(res));
+				setLiveEventData(res?.data?.challengesList);
+			})
+			.catch(err => {
+				console.log('getDiscoverMatches Data Err : ', err);
+			});
+	};
 
 	const getUserBetStatsData = (daysType: any) => {
 		dispatch(updateApiLoader({apiLoader: true}));

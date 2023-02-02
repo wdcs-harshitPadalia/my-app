@@ -75,21 +75,11 @@ const ReportFeedView: React.FC<Props> = props => {
 					setselectedTag(index);
 				}}>
 				{index === selectedTag ? (
-					Platform.OS === 'web' ? (
-						<Text
-							style={[
-								styles.itemTextStyle,
-								{color: defaultTheme.primaryGradientColor[0], opacity: 1}
-							]}>
-							{item}
-						</Text>
-					) : (
-						<GradientText
-							colors={defaultTheme.primaryGradientColor}
-							style={[styles.itemTextStyle, {opacity: 1}]}>
-							{item}
-						</GradientText>
-					)
+					<GradientText
+						colors={defaultTheme.primaryGradientColor}
+						style={[styles.itemTextStyle, {opacity: 1}]}>
+						{item}
+					</GradientText>
 				) : (
 					<Text style={styles.itemTextStyle}>{item}</Text>
 				)}

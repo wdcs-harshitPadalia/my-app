@@ -67,21 +67,11 @@ const JuryDetailsViewComponent = (props: Props) => {
 					<Text style={styles.juryDetailsChildLeftTextStyle}>
 						{Strings.strike_level}
 					</Text>
-					{Platform.OS === 'web' ? (
-						<Text
-							style={[
-								styles.strikeLevelValueText,
-								{color: defaultTheme.primaryGradientColor[0]}
-							]}>
-							{juryStrikeLevel}
-						</Text>
-					) : (
-						<GradientText
-							colors={defaultTheme.primaryGradientColor}
-							style={styles.strikeLevelValueText}>
-							{juryStrikeLevel}
-						</GradientText>
-					)}
+					<GradientText
+						colors={defaultTheme.primaryGradientColor}
+						style={styles.strikeLevelValueText}>
+						{juryStrikeLevel}
+					</GradientText>
 				</View>
 				<View style={styles.juryDetailsChildContainer}>
 					<Text style={styles.juryDetailsChildLeftTextStyle}>
@@ -125,7 +115,7 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.6,
 		elevation: 3,
 		shadowRadius: 8,
-		borderRadius: 34,
+		borderRadius: 34
 	},
 	circleGradient: {
 		width: 68,

@@ -14,6 +14,7 @@ import GradientText from './GradientText';
 import icons from '../assets/icon';
 import colors from '../theme/colors';
 import Strings from '../constants/strings';
+import Gradient from 'rgt';
 
 interface DataProps {
 	title?: string;
@@ -33,41 +34,22 @@ const UserEngagementComponent: React.FC<Props> = props => {
 	return (
 		<>
 			<View style={styles.container}>
-				{Platform.OS === 'web' ? (
-					<Text
-						style={[
-							styles.gradientTextStyle,
-							{color: defaultTheme.primaryGradientColor[0]}
-						]}>
-						{data?.title.toUpperCase()}
-					</Text>
-				) : (
-					<GradientText
-						colors={defaultTheme.primaryGradientColor}
-						style={styles.gradientTextStyle}>
-						{data?.title.toUpperCase()}
-					</GradientText>
-				)}
+				<GradientText
+					colors={defaultTheme.primaryGradientColor}
+					style={styles.gradientTextStyle}>
+					{data?.title.toUpperCase()}
+				</GradientText>
 
 				<View style={styles.titleView}>
 					<Text style={[styles.descriptionTextStyle]}>
 						{data?.description1}
 
-						{Platform.OS === 'web' ? (
-							<Text
-								style={[
-									styles.gradientStyle,
-									{color: defaultTheme.primaryGradientColor[0]}
-								]}>
-								{' ' + data?.highlightedText + ' '}
-							</Text>
-						) : (
-							<GradientText
-								colors={defaultTheme.primaryGradientColor}
-								style={styles.gradientStyle}>
-								{' ' + data?.highlightedText + ' '}
-							</GradientText>
-						)}
+						<GradientText
+							colors={defaultTheme.primaryGradientColor}
+							style={styles.gradientStyle}>
+							{' ' + data?.highlightedText + ' '}
+						</GradientText>
+
 						<Text style={styles.descriptionTextStyle}>
 							{data?.description2}
 						</Text>
@@ -102,7 +84,7 @@ const styles = StyleSheet.create({
 		width: horizontalScale(240)
 	},
 	descriptionTextStyle: {
-		fontSize: verticalScale(22),
+		fontSize: verticalScale(24),
 		fontFamily: fonts.type.Inter_Medium,
 		color: colors.white,
 		textAlign: 'center'

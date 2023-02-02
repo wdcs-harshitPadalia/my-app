@@ -37,21 +37,11 @@ const LeagueView: React.FC<Props> = props => {
 			) : null}
 
 			{isGradient ? (
-				Platform.OS === 'web' ? (
-					<Text
-						style={[
-							styles.titleStyle,
-							{color: defaultTheme.primaryGradientColor[0]}
-						]}>
-						{title}
-					</Text>
-				) : (
-					<GradientText
-						colors={defaultTheme.primaryGradientColor}
-						style={styles.titleStyle}>
-						{title}
-					</GradientText>
-				)
+				<GradientText
+					colors={defaultTheme.primaryGradientColor}
+					style={styles.titleStyle}>
+					{title}
+				</GradientText>
 			) : (
 				<Text style={leftIcon ? styles.titleStyle : styles.titleWithSpaceStyle}>
 					{title}

@@ -58,11 +58,11 @@ const ReportFeedView: React.FC<Props> = props => {
 	const arrTags = ['Spam', 'Nudity', 'Custom'];
 
 	const flatListData = [
-		'bet conditions or Terms not clear',
-		'hateful language or symbols',
-		'False information',
-		'Spam',
-		'Other'
+		Strings.bet_conditions_or_Terms_not_clear,
+		Strings.hateful_language_or_symbols,
+		Strings.False_information,
+		Strings.Spam,
+		Strings.Other
 	];
 
 	const renderItem = ({item, index}) => {

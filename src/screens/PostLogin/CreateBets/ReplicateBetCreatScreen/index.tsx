@@ -1439,7 +1439,7 @@ const ReplicateBetCreatScreen: React.FC<any> = () => {
 						) {
 							setIsBackButtonDisable(false);
 							Alert.alert(
-								'Insufficient Balance'.toUpperCase(),
+								Strings.txt_insufficient_balance,
 								Strings.enough_balance
 							);
 							return;

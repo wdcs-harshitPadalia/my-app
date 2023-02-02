@@ -42,6 +42,7 @@ interface Props extends TextInputProps {
 	isCallFromSuggestedUser?: boolean;
 	prefixText?: string;
 	isFromLive?: boolean;
+	isFromLiveDiscover?: boolean;
 }
 
 const UserGroupView: React.FC<Props> = props => {
@@ -67,7 +68,8 @@ const UserGroupView: React.FC<Props> = props => {
 		volume,
 		isCallFromSuggestedUser,
 		prefixText,
-		isFromLive
+		isFromLive,
+		isFromLiveDiscover
 	} = props;
 
 	// const getUsersName = () => {
@@ -206,7 +208,10 @@ const UserGroupView: React.FC<Props> = props => {
 		return (
 			<View style={[styles.container, {...props.style}]}>
 				<LinearGradient
-					style={styles.circleGradient}
+					style={[
+						styles.circleGradient,
+						{padding: isFromLiveDiscover ? 0 : verticalScale(8)}
+					]}
 					useAngle={true}
 					angle={angle ? angle : gradientColorAngle}
 					colors={colorArray}>
@@ -214,7 +219,10 @@ const UserGroupView: React.FC<Props> = props => {
 						<TouchableOpacity
 							activeOpacity={0.9}
 							onPress={onPressViewAll}
-							style={styles.childView}>
+							style={[
+								styles.childView,
+								{margin: isFromLiveDiscover ? 0 : verticalScale(8)}
+							]}>
 							{userArray?.length > 0 && (
 								<ExpoFastImage
 									resizeMode={'cover'}
@@ -261,11 +269,22 @@ const UserGroupView: React.FC<Props> = props => {
 									<Text style={styles.userNameStyle}>{getUsersName}</Text>
 									{userCount > 0 ? (
 										<>
-											<Text style={styles.andLabelStyle}>{' and '}</Text>
 											<Text
-												style={
-													styles.userNameStyle
-												}>{`${userCount}  more`}</Text>
+												style={[
+													styles.andLabelStyle,
+													isFromLiveDiscover
+														? {fontFamily: Fonts.type.Inter_Regular}
+														: {}
+												]}>
+												{' and '}
+											</Text>
+											<Text
+												style={[
+													styles.userNameStyle,
+													isFromLiveDiscover
+														? {fontFamily: Fonts.type.Inter_Regular}
+														: {}
+												]}>{`${userCount}  more`}</Text>
 										</>
 									) : null}
 									{desText ? (
@@ -279,7 +298,13 @@ const UserGroupView: React.FC<Props> = props => {
 											{desText}
 										</Text>
 									) : (
-										<Text style={styles.andLabelStyle}>
+										<Text
+											style={[
+												styles.andLabelStyle,
+												isFromLiveDiscover
+													? {fontFamily: Fonts.type.Inter_Regular}
+													: {}
+											]}>
 											{`${
 												!userCount
 													? getUsersName === 'You'

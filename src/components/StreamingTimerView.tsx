@@ -33,7 +33,7 @@ const StreamingTimerView = ({betInfo}: any) => {
 	if (currentTime >= betInfo.end_date_time) {
 		return (
 			<Text style={styles.estimatedTimeText}>
-				{'streaming has been ended!'.toUpperCase().toUpperCase()}
+				{Strings.streaming_has_been_ended.toUpperCase().toUpperCase()}
 			</Text>
 		);
 	} else {
@@ -54,7 +54,7 @@ const StreamingTimerView = ({betInfo}: any) => {
 						/>
 						<Text style={styles.estimatedTimeText}>
 							{/* {dateTimeConvert(parseFloat(item.gmt_timestamp)).toUpperCase()} */}
-							{`estimated end: ${duration}`.toUpperCase()}
+							{`${Strings.estimated_end} ${duration}`.toUpperCase()}
 						</Text>
 					</View>
 				)}

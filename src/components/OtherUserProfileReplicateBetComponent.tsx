@@ -165,12 +165,14 @@ const OtherUserProfileReplicateBetComponent: React.FC<Props> = props => {
 					angle={gradientColorAngle}
 					style={styles.betTakerPickedContainer}>
 					<Text style={styles.txtBetTackerPickerStyle} numberOfLines={2}>
-						{'pick ' +
+						{' ' +
+							Strings.pick +
+							' ' +
 							itemData?.bet_opposite_side_option +
-							' (bet ' +
+							` (${Strings.bet} ` +
 							Strings.str_dollor +
 							betUsdAmount +
-							' win ' +
+							` ${Strings.WIN.toLowerCase()} ` +
 							Strings.str_dollor +
 							getRoundDecimalValue(
 								betUsdAmount * itemData?.opposite_odds - betUsdAmount
@@ -219,16 +221,16 @@ const OtherUserProfileReplicateBetComponent: React.FC<Props> = props => {
 							styles.txtBetMakerPickedStyle,
 							{color: defaultTheme.primaryGradientColor[0]}
 						]}>
-						{' joined '}
+						{` ${Strings.joined} `}
 					</Text>
 				) : (
 					<GradientText
 						colors={defaultTheme.primaryGradientColor}
 						style={styles.txtBetMakerPickedStyle}>
-						{' joined '}
+						{` ${Strings.joined} `}
 					</GradientText>
 				)}
-				<Text style={styles.txtBetMakerPickedStyle}>{'this bet'}</Text>
+				<Text style={styles.txtBetMakerPickedStyle}>{Strings.this_bet}</Text>
 			</View>
 		);
 	};

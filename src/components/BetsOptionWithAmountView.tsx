@@ -298,29 +298,16 @@ const BetsOptionWithAmountView: React.FC<Props> = props => {
 					<Text style={[styles.amountStyle, {color: colors.placeholderColor}]}>
 						{Strings.you_will_win + ': '}
 					</Text>
-					{Platform.OS === 'web' ? (
-						<Text
-							style={[
-								styles.amountStyle,
-								{color: defaultTheme.textGradientColor[1]}
-							]}>
-							{'$' +
-								getRoundDecimalValue(
-									addedAmount?.replace(',', '.') * betOdds -
-										addedAmount?.replace(',', '.')
-								)}
-						</Text>
-					) : (
-						<GradientText
-							colors={defaultTheme.textGradientColor}
-							style={styles.amountStyle}>
-							{'$' +
-								getRoundDecimalValue(
-									addedAmount?.replace(',', '.') * betOdds -
-										addedAmount?.replace(',', '.')
-								)}
-						</GradientText>
-					)}
+
+					<GradientText
+						colors={defaultTheme.textGradientColor}
+						style={styles.amountStyle}>
+						{'$' +
+							getRoundDecimalValue(
+								addedAmount?.replace(',', '.') * betOdds -
+									addedAmount?.replace(',', '.')
+							)}
+					</GradientText>
 				</View>
 			)}
 

@@ -71,8 +71,8 @@ const ScreenNames = {
 	ReferralProgramScreen: 'ReferralProgramScreen',
 	WithdrawSuccessScreen: 'WithdrawSuccessScreen',
 	UserEngagementScreen: 'UserEngagementScreen',
-	LiveChallengeScreen: 'LiveChallengeScreen'
-
+	LiveChallengeScreen: 'LiveChallengeScreen',
+	LiveChallengeListScreen: 'LiveChallengeListScreen'
 };
 
 export default ScreenNames;

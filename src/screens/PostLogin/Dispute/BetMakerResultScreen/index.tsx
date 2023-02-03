@@ -736,7 +736,10 @@ const BetMakerResultScreen: React.FC<any> = () => {
 		}
 		if (evidenceItemsArray.length > 0) {
 			evidenceItemsArray.forEach(evidenceFile =>
-				formData.append('evidenceFile', evidenceFile)
+				formData.append(
+					'evidenceFile',
+					Platform.OS === 'web' ? evidenceFile.uri : evidenceFile
+				)
 			);
 		}
 
@@ -745,7 +748,7 @@ const BetMakerResultScreen: React.FC<any> = () => {
 		return formData;
 	};
 
-	const addCustomBetResultData = (betResult: string) => {
+	const addCustomBetResultData = async (betResult: string) => {
 		dispatch(updateApiLoader({apiLoader: true}));
 		// let uploadData = {};
 
@@ -808,7 +811,7 @@ const BetMakerResultScreen: React.FC<any> = () => {
 
 		fetch(ApiBaseUrl + ApiConstants.addCustomBetResult, {
 			method: Api.POST,
-			body: createFormData(betResult),
+			body: await createFormData(betResult),
 			headers: {
 				Authorization: 'Bearer ' + userInfo.token
 			}

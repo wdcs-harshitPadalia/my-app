@@ -93,6 +93,8 @@ const ProfileScreen: React.FC<any> = props => {
 	const regex = /(<([^>]+)>)/gi;
 
 	const [liveEventData, setLiveEventData] = useState([]);
+	const [betData, setBetData] = useState({});
+
 
 	useEffect(() => {
 		dispatch(updateApiLoader({apiLoader: true}));
@@ -155,6 +157,7 @@ const ProfileScreen: React.FC<any> = props => {
 			.then(res => {
 				console.log('getUserLiveStreamingData res ::  ', JSON.stringify(res));
 				setLiveEventData(res?.data?.liveStreaming);
+				setBetData(res?.data?.betType);
 			})
 			.catch(err => {
 				console.log('getUserLiveStreamingData Data Err : ', err);
@@ -361,14 +364,7 @@ const ProfileScreen: React.FC<any> = props => {
 											navigation.navigate(ScreenNames.EventDetailsScreen, {
 												feedObject: liveEventData[0],
 												betCreationType: 1,
-												selectedBetType: {
-													"_id": "62318eb3099d3530771ae880",
-													"name": "Single Match",
-													"active": true,
-													"createdAt": "2022-03-16T07:16:03.804Z",
-													"updatedAt": "2022-03-16T07:16:03.804Z",
-													"__v": 0
-												  },
+												selectedBetType: betData,
 												isFromStreaming: true,
 											});
 										} else {

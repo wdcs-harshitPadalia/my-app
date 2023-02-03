@@ -68,6 +68,8 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 
 	const [isNoData, setIsNoData] = useState(false);
 	const [liveEventData, setLiveEventData] = useState([]);
+	const [betData, setBetData] = useState({});
+
 
 	const noDataItemArray = [
 		{
@@ -133,6 +135,7 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 			.then(res => {
 				console.log('getUserLiveStreamingData res ::  ', JSON.stringify(res));
 				setLiveEventData(res?.data?.liveStreaming);
+				setBetData(res?.data?.betType)
 			})
 			.catch(err => {
 				console.log('getUserLiveStreamingData Data Err : ', err);
@@ -387,16 +390,9 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 									handleOnClick={() => {
 										if (liveEventData.length === 1) {
 											navigation.navigate(ScreenNames.EventDetailsScreen, {
-												feedObject: item,
+												feedObject: liveEventData[0],
 												betCreationType: 1,
-												selectedBetType: {
-													_id: '62318eb3099d3530771ae880',
-													name: 'Single Match',
-													active: true,
-													createdAt: '2022-03-16T07:16:03.804Z',
-													updatedAt: '2022-03-16T07:16:03.804Z',
-													__v: 0
-												},
+												selectedBetType: betData,
 												isFromStreaming: true
 											});
 										} else {

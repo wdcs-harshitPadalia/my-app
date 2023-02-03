@@ -81,6 +81,7 @@ const DiscoverLiveStreamComponent = ({
 	const [visibleParentIndex, setVisibleParentIndex] = React.useState<number>(0);
 	const animation = useRef(null);
 	const [isLoadingMore, setIsLoadingMore] = useState(false);
+	const [betType, setBetType] = useState('');
 
 	const navigation = useNavigation();
 	useEffect(() => {
@@ -153,6 +154,7 @@ const DiscoverLiveStreamComponent = ({
 				dispatch(updateApiLoader({apiLoader: false}));
 				console.log('getLiveChallengesData res ::  ', JSON.stringify(res));
 				const discoverMatches = res?.data?.challengesList;
+				setBetType(res?.data?.betType)
 				if (currentPage !== 0) {
 					setLiveChallengeData(liveChallengeData.concat(discoverMatches));
 				} else {
@@ -846,6 +848,15 @@ const DiscoverLiveStreamComponent = ({
 									<LiveStreamingTag
 										text={Strings.WATCH_LIVE_STREAM}
 										backgroundColor={colors.redTag}
+										onPress={() => {
+											// console.log("item??>>><",item)
+											navigation.navigate(ScreenNames.EventDetailsScreen, {
+												feedObject: item,
+												betCreationType: 1,
+												selectedBetType: betType,
+												isFromStreaming: true,
+											});
+										}}
 									/>
 								</View>
 							</View>

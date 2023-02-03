@@ -386,6 +386,19 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 									profileImgPath={userProfileInfo?.user?.picture}
 									handleOnClick={() => {
 										if (liveEventData.length === 1) {
+											navigation.navigate(ScreenNames.EventDetailsScreen, {
+												feedObject: item,
+												betCreationType: 1,
+												selectedBetType: {
+													_id: '62318eb3099d3530771ae880',
+													name: 'Single Match',
+													active: true,
+													createdAt: '2022-03-16T07:16:03.804Z',
+													updatedAt: '2022-03-16T07:16:03.804Z',
+													__v: 0
+												},
+												isFromStreaming: true
+											});
 										} else {
 											navigation.navigate(ScreenNames.LiveChallengeListScreen, {
 												liveEventData: liveEventData

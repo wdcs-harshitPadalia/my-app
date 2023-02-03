@@ -101,13 +101,13 @@ const ProfileScreen: React.FC<any> = props => {
 				userProfileInfo?.user?.displayName || userProfileInfo?.user?.userName
 			)
 		);
-		getUserLiveStreamingData();
 	}, []);
 
 	useEffect(() => {
 		if (isFocused) {
 			setVisitUserView(false);
 			dispatch(getUserProfile({}));
+			getUserLiveStreamingData();
 		}
 		console.log('isFocused??????', userProfileInfo?.user?.level);
 	}, [isFocused]);
@@ -355,7 +355,22 @@ const ProfileScreen: React.FC<any> = props => {
 								<LiveUserProfileComponent
 									profileImgPath={userProfileInfo?.user?.picture}
 									handleOnClick={() => {
+										console.log(liveEventData.length, "liveEventData.length>>>?????")
 										if (liveEventData.length === 1) {
+											console.log('item??>>><><<<', liveEventData[0]);
+											navigation.navigate(ScreenNames.EventDetailsScreen, {
+												feedObject: liveEventData[0],
+												betCreationType: 1,
+												selectedBetType: {
+													"_id": "62318eb3099d3530771ae880",
+													"name": "Single Match",
+													"active": true,
+													"createdAt": "2022-03-16T07:16:03.804Z",
+													"updatedAt": "2022-03-16T07:16:03.804Z",
+													"__v": 0
+												  },
+												isFromStreaming: true,
+											});
 										} else {
 											navigation.navigate(ScreenNames.LiveChallengeListScreen, {
 												liveEventData: liveEventData

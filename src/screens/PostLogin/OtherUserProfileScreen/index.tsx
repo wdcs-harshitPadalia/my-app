@@ -35,6 +35,7 @@ import {
 import {RootState} from '../../../redux/store';
 import {gradientColorAngle} from '../../../theme/metrics';
 import NoDataComponent from '../../../components/NoDataComponent';
+import LiveUserProfileComponent from '../../../components/LiveUserProfileComponent';
 
 let scrollToViewPosition = 0;
 
@@ -130,11 +131,11 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 		};
 		getUserLiveStreaming(uploadData)
 			.then(res => {
-				console.log('getLiveChallengesData res ::  ', JSON.stringify(res));
-				setLiveEventData(res?.data?.challengesList);
+				console.log('getUserLiveStreamingData res ::  ', JSON.stringify(res));
+				setLiveEventData(res?.data?.liveStreaming);
 			})
 			.catch(err => {
-				console.log('getDiscoverMatches Data Err : ', err);
+				console.log('getUserLiveStreamingData Data Err : ', err);
 			});
 	};
 
@@ -380,10 +381,25 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 				{userProfileInfo && (
 					<ScrollView bounces={false} ref={scrollRef}>
 						<View style={styles.viewContain}>
-							<ProfileComponent
-								profileImgPath={userProfileInfo?.user?.picture}
-								levelRank={userProfileInfo?.user?.level}
-							/>
+							{liveEventData.length ? (
+								<LiveUserProfileComponent
+									profileImgPath={userProfileInfo?.user?.picture}
+									handleOnClick={() => {
+										if (liveEventData.length === 1) {
+										} else {
+											navigation.navigate(ScreenNames.LiveChallengeListScreen, {
+												liveEventData: liveEventData
+											});
+										}
+									}}
+								/>
+							) : (
+								<ProfileComponent
+									profileImgPath={userProfileInfo?.user?.picture}
+									levelRank={userProfileInfo?.user?.level}
+								/>
+							)}
+
 							<Text
 								style={
 									styles.userNameStyle

@@ -148,6 +148,7 @@
     "react-redux": "^7.2.6",
     "react-twitch-embed": "^3.0.1",
     "react-use-downloader": "^1.2.1",
+    "react-use-websocket": "3.0.0",
     "readable-stream": "^1.0.33",
     "reanimated-bottom-sheet": "^1.0.0-alpha.22",
     "redux-persist": "^6.0.0",

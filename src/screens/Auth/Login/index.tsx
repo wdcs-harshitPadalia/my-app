@@ -40,6 +40,7 @@ import {
 import {magic} from '../../../navigation/routes';
 import {showErrorAlert} from '../../../constants/utils/Function';
 import app from '../../../../app.json';
+import useWebSocket from 'react-use-websocket';
 
 
 const Login: React.FC<any> = props => {
@@ -59,6 +60,30 @@ const Login: React.FC<any> = props => {
 	const [randomLoadingMessage] = useState(Strings.we_are_taking);
 
 	const mobileInputRef = useRef();
+
+	const socketUrl = 'wss://echo.websocket.events/123';
+
+	const {
+		sendMessage,
+		sendJsonMessage,
+		lastMessage,
+		lastJsonMessage,
+		readyState,
+		getWebSocket,
+	  } = useWebSocket(socketUrl, {
+		onOpen: () => console.log('useWebSocket opened'),
+		onMessage(event) {
+			console.log('onMessage',event)
+		},
+		//Will attempt to reconnect on all close events, such as server shutting down
+		shouldReconnect: (closeEvent) => true,
+	  });
+
+	  useEffect(() => {
+		if (lastMessage !== null) {
+			console.log('lastMessage: ', lastMessage);
+		}
+	  }, [lastMessage]);
 
 	// useEffect(() => {
 	//   console.log(connector, 'bet_id?>>>');
@@ -410,8 +435,10 @@ const Login: React.FC<any> = props => {
 
 								<ButtonGradient
 									onPress={() => {
-										Keyboard.dismiss();
-										handleSubmit();
+										getWebSocket().send('Hello from WebSocket');
+
+										//Keyboard.dismiss();
+										//handleSubmit();
 										//emailLogin(email);
 										//callLoginApi();
 										//navigation.navigate(ScreenNames.BottomTabScreen);

@@ -987,3 +987,12 @@ export const getLiveChallengesData = async (data: any) => {
 	});
 	return response;
 };
+
+export const getUserLiveStreaming = async (data: any) => {
+	const response = await useAxios({
+		method: Api.POST,
+		url: ApiBaseUrl + ApiConstants.getUserLiveStreaming,
+		data: data
+	});
+	return response;
+};

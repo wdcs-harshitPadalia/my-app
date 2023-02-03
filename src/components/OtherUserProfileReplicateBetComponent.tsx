@@ -99,52 +99,24 @@ const OtherUserProfileReplicateBetComponent: React.FC<Props> = props => {
 				<Text style={styles.txtBetMakerPickedStyle}>
 					{' picked ' + itemData?.bet_creator_side_option}
 				</Text>
-
-				{Platform.OS === 'web' ? (
-					<Text
-						style={[
-							styles.txtBetMakerPickedStyle,
-							{color: defaultTheme.primaryGradientColor[0]}
-						]}>
-						{' ' +
-							Strings.str_dollor +
-							getRoundDecimalValue(itemData?.bet_amount_usd)}
-					</Text>
-				) : (
-					<GradientText
-						colors={defaultTheme.primaryGradientColor}
-						style={styles.txtBetMakerPickedStyle}>
-						{' ' +
-							Strings.str_dollor +
-							getRoundDecimalValue(itemData?.bet_amount_usd)}
-					</GradientText>
-				)}
+				<GradientText
+					colors={defaultTheme.primaryGradientColor}
+					style={styles.txtBetMakerPickedStyle}>
+					{' ' +
+						Strings.str_dollor +
+						getRoundDecimalValue(itemData?.bet_amount_usd)}
+				</GradientText>
 				<Text style={styles.txtBetMakerPickedStyle}>{' to win '}</Text>
-				{Platform.OS === 'web' ? (
-					<Text
-						style={[
-							styles.txtBetMakerPickedStyle,
-							{color: defaultTheme.primaryGradientColor[0]}
-						]}>
-						{Strings.str_dollor +
-							getRoundDecimalValue(
-								parseFloat(itemData?.bet_amount_usd) *
-									parseFloat(itemData?.odds) -
-									parseFloat(itemData?.bet_amount_usd)
-							)}
-					</Text>
-				) : (
-					<GradientText
-						colors={defaultTheme.primaryGradientColor}
-						style={styles.txtBetMakerPickedStyle}>
-						{Strings.str_dollor +
-							getRoundDecimalValue(
-								parseFloat(itemData?.bet_amount_usd) *
-									parseFloat(itemData?.odds) -
-									parseFloat(itemData?.bet_amount_usd)
-							)}
-					</GradientText>
-				)}
+				<GradientText
+					colors={defaultTheme.primaryGradientColor}
+					style={styles.txtBetMakerPickedStyle}>
+					{Strings.str_dollor +
+						getRoundDecimalValue(
+							parseFloat(itemData?.bet_amount_usd) *
+								parseFloat(itemData?.odds) -
+								parseFloat(itemData?.bet_amount_usd)
+						)}
+				</GradientText>
 			</View>
 		);
 	};
@@ -215,21 +187,11 @@ const OtherUserProfileReplicateBetComponent: React.FC<Props> = props => {
 							: '@' + itemData?.betTaker?.takerDetails?.userName}
 					</Text>
 				</TouchableOpacity>
-				{Platform.OS === 'web' ? (
-					<Text
-						style={[
-							styles.txtBetMakerPickedStyle,
-							{color: defaultTheme.primaryGradientColor[0]}
-						]}>
-						{` ${Strings.joined} `}
-					</Text>
-				) : (
-					<GradientText
-						colors={defaultTheme.primaryGradientColor}
-						style={styles.txtBetMakerPickedStyle}>
-						{` ${Strings.joined} `}
-					</GradientText>
-				)}
+				<GradientText
+					colors={defaultTheme.primaryGradientColor}
+					style={styles.txtBetMakerPickedStyle}>
+					{` ${Strings.joined} `}
+				</GradientText>
 				<Text style={styles.txtBetMakerPickedStyle}>{Strings.this_bet}</Text>
 			</View>
 		);

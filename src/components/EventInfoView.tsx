@@ -1,5 +1,10 @@
 /* eslint-disable react-native/no-inline-styles */
-import {View, TouchableOpacity, StyleSheet, ImageBackground} from 'react-native';
+import {
+	View,
+	TouchableOpacity,
+	StyleSheet,
+	ImageBackground
+} from 'react-native';
 import React, {useState} from 'react';
 import ExpoFastImage from 'expo-fast-image';
 
@@ -187,6 +192,21 @@ export const EventInfoView = ({
 									{item.matchName}
 								</Text>
 							)}
+
+							{item?.feed_name && (
+								<Text
+									numberOfLines={titleTotalNumOfLines}
+									style={[
+										styles.titleText,
+										props?.titleFontSize
+											? {
+													fontSize: props?.titleFontSize
+											  }
+											: {}
+									]}>
+									{item.feed_name}
+								</Text>
+							)}
 							<Text
 								numberOfLines={2}
 								style={[
@@ -346,7 +366,9 @@ export const EventInfoView = ({
 					activeOpacity={0.8}
 					style={{flex: 1}}>
 					<UserGroupView
-						userArray={item?.users ?? item?.liveViewUserData}
+						userArray={
+							props.showWatchButton ? item?.liveViewUserData : item?.users
+						}
 						userCount={
 							item?.liveViewsCount ??
 							(item?.betUserCount > 0 && item?.betUserCount)

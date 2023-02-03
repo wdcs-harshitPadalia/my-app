@@ -56,21 +56,11 @@ const ButtonTopIconGradient: React.FC<Props> = props => {
 					style={styles.topImg}
 				/>
 				{buttonTextGradientncolor ? (
-					Platform.OS === 'web' ? (
-						<Text
-							style={[
-								styles.btnTextStyle,
-								{color: buttonTextGradientncolor[0]}
-							]}>
-							{buttonText}
-						</Text>
-					) : (
-						<GradientText
-							colors={buttonTextGradientncolor}
-							style={styles.btnTextStyle}>
-							{buttonText}
-						</GradientText>
-					)
+					<GradientText
+						colors={buttonTextGradientncolor}
+						style={styles.btnTextStyle}>
+						{buttonText}
+					</GradientText>
 				) : (
 					<Text style={styles.btnTextStyle}>{buttonText}</Text>
 				)}

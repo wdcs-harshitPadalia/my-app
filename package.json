@@ -152,6 +152,7 @@
     "reanimated-bottom-sheet": "^1.0.0-alpha.22",
     "redux-persist": "^6.0.0",
     "rgb2hex": "^0.2.5",
+    "rgt": "^1.0.7",
     "rn-swipe-gestures": "^1.0.3",
     "smartlook-react-native-wrapper": "^1.2.8",
     "socket.io-client": "^4.4.1",

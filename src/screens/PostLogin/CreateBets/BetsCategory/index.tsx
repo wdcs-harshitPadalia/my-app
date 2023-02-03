@@ -1032,8 +1032,8 @@ const BetsCategoryScreen: React.FC<any> = () => {
 				bet_id: bet_id,
 				isLiveBet: params?.isLive ?? false,
 				betQuestion: question,
-				betOptionOne: options1,
-				betOptionTwo: options2,
+				betOptionOne: options1.trim(),
+				betOptionTwo: options2.trim(),
 				betEndDate: betEndDate + '',
 				live_feed_id: params?.live_feed_id ?? undefined,
 				bet_creator_side_option: isSelectChooseSideType,
@@ -1042,7 +1042,7 @@ const BetsCategoryScreen: React.FC<any> = () => {
 				bet_opposite_side_option_index:
 					isSelectChooseSideType === options2 ? 0 : 1,
 				bet_opposite_side_option:
-					isSelectChooseSideType === options2 ? options1 : options2,
+					isSelectChooseSideType === options2 ? options1.trim() : options2.trim(),
 				bet_type: '1',
 				betParticipationEndDate: participationEndDate + '',
 				opposite_bet_amount:
@@ -1078,15 +1078,15 @@ const BetsCategoryScreen: React.FC<any> = () => {
 					isPrivacy === 1 ? isSelectFollowUser?.user?._id : '',
 				bet_id: bet_id,
 				betQuestion: question,
-				betOptionOne: options1,
-				betOptionTwo: options2,
+				betOptionOne: options1.trim(),
+				betOptionTwo: options2.trim(),
 				bet_creator_side_option: isSelectChooseSideType,
 				bet_creator_side_option_index:
 					isSelectChooseSideType === options2 ? 1 : 0,
 				bet_opposite_side_option_index:
 					isSelectChooseSideType === options2 ? 0 : 1,
 				bet_opposite_side_option:
-					isSelectChooseSideType === options2 ? options1 : options2,
+					isSelectChooseSideType === options2 ? options1.trim() : options2.trim(),
 				opposite_bet_amount:
 					(
 						parseFloat(betAmount.replace(',', '.')) *
@@ -1899,11 +1899,11 @@ const BetsCategoryScreen: React.FC<any> = () => {
 							button2Title={options2.trim()}
 							isShowSecondButton={true}
 							onButton1Press={() => {
-								setIsSelectChooseSideType(options1);
+								setIsSelectChooseSideType(options1.trim());
 								setIsBackButtonDisable(false);
 							}}
 							onButton2Press={() => {
-								setIsSelectChooseSideType(options2);
+								setIsSelectChooseSideType(options2.trim());
 								setIsBackButtonDisable(false);
 							}}
 							textType={'capitalize'}

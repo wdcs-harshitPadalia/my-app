@@ -183,23 +183,13 @@ const BetsResultView: React.FC<Props> = props => {
 								  ' will win' +
 								  ': '}
 						</Text>
-						{Platform.OS === 'web' ? (
-							<Text
-								style={[
-									styles.winAmountStyle,
-									{color: defaultTheme.textGradientColor[1]}
-								]}>
-								{Strings.str_dollor +
-									getRoundDecimalValue(betUsdAmount * betOdds - betUsdAmount)}
-							</Text>
-						) : (
-							<GradientText
-								colors={defaultTheme.textGradientColor}
-								style={styles.winAmountStyle}>
-								{Strings.str_dollor +
-									getRoundDecimalValue(betUsdAmount * betOdds - betUsdAmount)}
-							</GradientText>
-						)}
+
+						<GradientText
+							colors={defaultTheme.textGradientColor}
+							style={styles.winAmountStyle}>
+							{Strings.str_dollor +
+								getRoundDecimalValue(betUsdAmount * betOdds - betUsdAmount)}
+						</GradientText>
 					</View>
 				)}
 			</View>

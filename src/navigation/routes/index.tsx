@@ -122,6 +122,7 @@ import VideoContentScreen from '../../screens/VideoContentScreen';
 import {Platform, StyleSheet} from 'react-native';
 import UserEngagementScreen from '../../screens/PostLogin/UserEngagementScreen';
 import LiveChallengeScreen from '../../screens/PostLogin/LiveChallengeScreen';
+import LiveChallengeListScreen from '../../screens/PostLogin/LiveChallengeListScreen';
 
 //const Stack = createNativeStackNavigator();
 const options = {
@@ -205,6 +206,11 @@ export const WalletTabRoutes = (_props: any) => (
 			component={LiveChallengeScreen}
 			options={{headerShown: false}}
 		/>
+		<Stack.Screen
+			name={ScreenNames.LiveChallengeListScreen}
+			component={LiveChallengeListScreen}
+			options={{headerShown: false}}
+		/>
 	</Stack.Navigator>
 );
 
@@ -267,6 +273,11 @@ export const LiveTabRoutes = (_props: any) => (
 		<Stack.Screen
 			name={ScreenNames.LiveChallengeScreen}
 			component={LiveChallengeScreen}
+			options={{headerShown: false}}
+		/>
+		<Stack.Screen
+			name={ScreenNames.LiveChallengeListScreen}
+			component={LiveChallengeListScreen}
 			options={{headerShown: false}}
 		/>
 	</Stack.Navigator>
@@ -575,6 +586,11 @@ const FeedsRouter = () => (
 			component={LiveChallengeScreen}
 			options={{headerShown: false}}
 		/>
+		<Stack.Screen
+			name={ScreenNames.LiveChallengeListScreen}
+			component={LiveChallengeListScreen}
+			options={{headerShown: false}}
+		/>
 	</Stack.Navigator>
 );
 
@@ -721,6 +737,11 @@ const DiscoverRouter = () => (
 		<Stack.Screen
 			name={ScreenNames.LiveChallengeScreen}
 			component={LiveChallengeScreen}
+			options={{headerShown: false}}
+		/>
+		<Stack.Screen
+			name={ScreenNames.LiveChallengeListScreen}
+			component={LiveChallengeListScreen}
 			options={{headerShown: false}}
 		/>
 	</Stack.Navigator>
@@ -892,6 +913,11 @@ const ProfileRouter = () => (
 		<Stack.Screen
 			name={ScreenNames.LiveChallengeScreen}
 			component={LiveChallengeScreen}
+			options={{headerShown: false}}
+		/>
+		<Stack.Screen
+			name={ScreenNames.LiveChallengeListScreen}
+			component={LiveChallengeListScreen}
 			options={{headerShown: false}}
 		/>
 	</Stack.Navigator>

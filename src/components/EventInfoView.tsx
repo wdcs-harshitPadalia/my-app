@@ -366,7 +366,9 @@ export const EventInfoView = ({
 					activeOpacity={0.8}
 					style={{flex: 1}}>
 					<UserGroupView
-						userArray={item?.users ?? item?.liveViewUserData}
+						userArray={
+							props.showWatchButton ? item?.liveViewUserData : item?.users
+						}
 						userCount={
 							item?.liveViewsCount ??
 							(item?.betUserCount > 0 && item?.betUserCount)

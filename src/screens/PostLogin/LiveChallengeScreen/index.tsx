@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View} from 'react-native';
+import {Platform, View} from 'react-native';
 import {Text} from 'react-native-elements';
 import icons from '../../../assets/icon';
 import Strings from '../../../constants/strings';
@@ -37,10 +37,17 @@ const LiveChallengeScreen: React.FC<any> = props => {
 	const addFeedUserData = () => {
 		dispatch(updateApiLoader({apiLoader: true}));
 
+		let start_date_time = Date.parse(moment.utc(liveStartTime));
+		let end_date_time = Date.parse(moment.utc(liveEndTime));
+		if (Platform.OS === 'web') {
+			start_date_time = Date.parse(liveStartTime);
+			end_date_time = Date.parse(liveEndTime);
+		}
+
 		const uploadData = {
 			feedUrl: streamLink,
-			start_date_time: Date.parse(moment.utc(liveStartTime)),
-			end_date_time: Date.parse(moment.utc(liveEndTime)),
+			start_date_time: start_date_time,
+			end_date_time: end_date_time,
 			feed_name: streamName
 		};
 

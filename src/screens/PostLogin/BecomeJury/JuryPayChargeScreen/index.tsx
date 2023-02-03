@@ -241,21 +241,11 @@ const JuryPayChargeScreen: React.FC<any> = () => {
 				/>
 				<View style={styles.middleRootContainer}>
 					{/* <Text style={styles.titleText}>{Strings.escrow_deposit}</Text> */}
-					{Platform.OS === 'web' ? (
-						<Text
-							style={[
-								styles.amountText,
-								{color: defaultTheme.primaryGradientColor[0]}
-							]}>
-							{juryEscrowDeposit ? juryEscrowDeposit + ' ' + tokenSymbol : ''}
-						</Text>
-					) : (
-						<GradientText
-							colors={defaultTheme.primaryGradientColor}
-							style={styles.amountText}>
-							{juryEscrowDeposit ? juryEscrowDeposit + ' ' + tokenSymbol : ''}
-						</GradientText>
-					)}
+					<GradientText
+						colors={defaultTheme.primaryGradientColor}
+						style={styles.amountText}>
+						{juryEscrowDeposit ? juryEscrowDeposit + ' ' + tokenSymbol : ''}
+					</GradientText>
 					<Text style={styles.descriptionText}>
 						{juryEscrowDeposit
 							? Strings.you_will_be_charged.replace(

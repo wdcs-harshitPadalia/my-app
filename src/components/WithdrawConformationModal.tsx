@@ -55,21 +55,11 @@ const WithdrawConformationModal: React.FC<Props> = props => {
 					</View>
 					<View style={styles.titleView}>
 						<Text style={styles.titleStyle}>{Strings.you_will_transfer}</Text>
-						{Platform.OS === 'web' ? (
-							<Text
-								style={[
-									styles.gradientStyle,
-									{color: defaultTheme.primaryGradientColor[0]}
-								]}>
-								{' ' + amount + ' '}
-							</Text>
-						) : (
-							<GradientText
-								colors={defaultTheme.primaryGradientColor}
-								style={styles.gradientStyle}>
-								{' ' + amount + ' '}
-							</GradientText>
-						)}
+						<GradientText
+							colors={defaultTheme.primaryGradientColor}
+							style={styles.gradientStyle}>
+							{' ' + amount + ' '}
+						</GradientText>
 						<Text style={styles.titleStyle}>{Strings.to_address}</Text>
 					</View>
 					<LinearGradient
@@ -77,7 +67,9 @@ const WithdrawConformationModal: React.FC<Props> = props => {
 						useAngle={true}
 						angle={gradientColorAngle}
 						colors={defaultTheme.ternaryGradientColor}>
-						<Text style={styles.addressTextStyle} numberOfLines={2}>{address}</Text>
+						<Text style={styles.addressTextStyle} numberOfLines={2}>
+							{address}
+						</Text>
 					</LinearGradient>
 
 					<View style={styles.viewBackButton}>

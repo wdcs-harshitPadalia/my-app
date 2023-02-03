@@ -20,6 +20,7 @@ import {
 	followUnfollowUser,
 	getOtherUserProfile,
 	getUserBetStats,
+	getUserLiveStreaming,
 	updateChannel
 } from '../../../redux/apiHandler/apiActions';
 import {updateApiLoader} from '../../../redux/reducerSlices/preLogin';
@@ -65,6 +66,7 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 	const [betLossPercent, setBetLossPercent] = useState(0);
 
 	const [isNoData, setIsNoData] = useState(false);
+	const [liveEventData, setLiveEventData] = useState([]);
 
 	const noDataItemArray = [
 		{
@@ -87,6 +89,7 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 
 	useEffect(() => {
 		getUserProfileData();
+		getUserLiveStreamingData();
 	}, []);
 
 	const getUserProfileData = () => {
@@ -120,6 +123,20 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 
 		setIsNoData(userProfileInfo?.bets?.length === 0 ? true : false);
 	}, [userProfileInfo]);
+
+	const getUserLiveStreamingData = () => {
+		const uploadData = {
+			user_id: userId
+		};
+		getUserLiveStreaming(uploadData)
+			.then(res => {
+				console.log('getLiveChallengesData res ::  ', JSON.stringify(res));
+				setLiveEventData(res?.data?.challengesList);
+			})
+			.catch(err => {
+				console.log('getDiscoverMatches Data Err : ', err);
+			});
+	};
 
 	const getUserBetStatsData = (daysType: any) => {
 		let uploadData = {};
@@ -198,7 +215,7 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 					bet_id: item?._id,
 					redirectType: item.betStatus,
 					isFromOtherUser: true,
-					userId : userId
+					userId: userId
 				});
 			}}
 			// gameImage={
@@ -402,6 +419,9 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 												type: 0,
 												userId: userId
 											});
+											// navigation.push(ScreenNames.LiveChallengeListScreen, {
+											// 	liveEventData: liveEventData
+											// });
 										}
 									}}
 									onFollowingPress={() => {

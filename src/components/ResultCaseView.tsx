@@ -36,21 +36,11 @@ const ResultCaseView: React.FC<Props> = props => {
 					<Text style={styles.caseName}>
 						{caseATitle ? caseATitle : Strings.caseA}
 					</Text>
-					{Platform.OS === 'web' ? (
-						<Text
-							style={[
-								styles.caseValueText,
-								{color: defaultTheme.textGradientColor[1]}
-							]}>
-							{caseAValue}
-						</Text>
-					) : (
-						<GradientText
-							colors={defaultTheme.textGradientColor}
-							style={styles.caseValueText}>
-							{caseAValue}
-						</GradientText>
-					)}
+					<GradientText
+						colors={defaultTheme.textGradientColor}
+						style={styles.caseValueText}>
+						{caseAValue}
+					</GradientText>
 				</View>
 
 				{/* Case B */}
@@ -58,21 +48,11 @@ const ResultCaseView: React.FC<Props> = props => {
 					<Text style={styles.caseName}>
 						{caseBTitle ? caseBTitle : Strings.caseB}
 					</Text>
-					{Platform.OS === 'web' ? (
-						<Text
-							style={[
-								styles.caseValueText,
-								{color: defaultTheme.primaryGradientColor[0]}
-							]}>
-							{caseBValue}
-						</Text>
-					) : (
-						<GradientText
-							colors={defaultTheme.primaryGradientColor}
-							style={styles.caseValueText}>
-							{caseBValue}
-						</GradientText>
-					)}
+					<GradientText
+						colors={defaultTheme.primaryGradientColor}
+						style={styles.caseValueText}>
+						{caseBValue}
+					</GradientText>
 				</View>
 
 				{/* Case Void */}
@@ -80,35 +60,19 @@ const ResultCaseView: React.FC<Props> = props => {
 					<Text style={styles.caseName}>
 						{caseCTitle ? caseCTitle : Strings.void}
 					</Text>
-					{Platform.OS === 'web' ? (
-						<Text
-							style={[
-								styles.caseValueText,
-								{
-									color: defaultTheme.whiteGredientColor[0],
-									marginTop:
-										redirectType === 'DISPUTE_RESULT'
-											? verticalScale(8)
-											: verticalScale(0)
-								}
-							]}>
-							{caseCValue}
-						</Text>
-					) : (
-						<GradientText
-							colors={defaultTheme.whiteGredientColor}
-							style={[
-								styles.caseValueText,
-								{
-									marginTop:
-										redirectType === 'DISPUTE_RESULT'
-											? verticalScale(8)
-											: verticalScale(0)
-								}
-							]}>
-							{caseCValue}
-						</GradientText>
-					)}
+					<GradientText
+						colors={defaultTheme.whiteGredientColor}
+						style={[
+							styles.caseValueText,
+							{
+								marginTop:
+									redirectType === 'DISPUTE_RESULT'
+										? verticalScale(8)
+										: verticalScale(0)
+							}
+						]}>
+						{caseCValue}
+					</GradientText>
 				</View>
 			</View>
 		</View>

@@ -39,42 +39,23 @@ const NotificationPopUpComponent: React.FC<NotificationProps> = props => {
 		<View style={styles.container}>
 			<ExpoFastImage style={styles.img} resizeMode="contain" source={imgPath} />
 			{isTitleGradient ? (
-				Platform.OS === 'web' ? (
-					<Text
-						style={[
-							styles.titleText,
-							{color: defaultTheme.primaryGradientColor[0]}
-						]}>
-						{title}
-					</Text>
-				) : (
-					<GradientText
-						colors={defaultTheme.primaryGradientColor}
-						style={styles.titleText}>
-						{title}
-					</GradientText>
-				)
+				<GradientText
+					colors={defaultTheme.primaryGradientColor}
+					style={styles.titleText}>
+					{title}
+				</GradientText>
 			) : (
 				<Text style={styles.titleText}>{title}</Text>
 			)}
 
 			<View style={styles.descriptionView}>
-				{isDescriptionGradient &&
-					(Platform.OS === 'web' ? (
-						<Text
-							style={[
-								styles.gradientTextStyle,
-								{color: defaultTheme.primaryGradientColor[0]}
-							]}>
-							{highlightedDescription?.toUpperCase()}
-						</Text>
-					) : (
-						<GradientText
-							colors={defaultTheme.primaryGradientColor}
-							style={styles.gradientTextStyle}>
-							{highlightedDescription?.toUpperCase()}
-						</GradientText>
-					))}
+				{isDescriptionGradient && (
+					<GradientText
+						colors={defaultTheme.primaryGradientColor}
+						style={styles.gradientTextStyle}>
+						{highlightedDescription?.toUpperCase()}
+					</GradientText>
+				)}
 				<Text style={styles.descriptionText(colors?.white)}>
 					{!isDescriptionGradient && (
 						<Text style={styles.descriptionText(color)}>

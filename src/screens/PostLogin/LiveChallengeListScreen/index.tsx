@@ -15,7 +15,6 @@ const LiveChallengeListScreen: React.FC<any> = props => {
 	const navigation = useNavigation();
 
 	const {liveEventData} = useRoute().params;
-	const [discoverPage, setDiscoverPage] = useState(0);
 
 	const renderItem = ({item, index}) => (
 		<ButtonGradient
@@ -35,7 +34,7 @@ const LiveChallengeListScreen: React.FC<any> = props => {
 		<SafeAreaView style={styles.container}>
 			<HeaderComponent
 				onLeftMenuPress={() => {
-					navigation.dispatch(StackActions.popToTop());
+					navigation.goBack();
 				}}
 				onLeftIconPath={icons.back}
 				name={Strings.live_challenge}

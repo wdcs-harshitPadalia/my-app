@@ -274,9 +274,9 @@ const Strings = {
 	or_share_with: 'or share with',
 	continue_to_feed: 'continue to feed',
 	well_done_bet_has_been_created:
-		'Well done, %s! Your Challenge has been created ðŸŽ‰',
+		'Well done, %s! Your Challenge has been created!',
 	well_done_bet_has_been_joined:
-		'Well done, %s! You have joined the Challenge successfully ðŸŽ‰',
+		'Well done, %s! You have joined the Challenge successfully!',
 	this_bet_already_joined: 'This Challenge already joined.',
 	well_done_result_has_been_verified:
 		'Well done, %s! The result of your Challenge has been verified!',
@@ -739,7 +739,8 @@ const Strings = {
 	who_can_see_your_videos: 'Who can see your Videos?',
 	video_content: 'Video content',
 	video_creation: 'Video creation',
-	attach_video_to_bets: 'You can attach the video to one of your active bets',
+	attach_video_to_bets:
+		'You can attach the video to one of your active challenges',
 	no_active_bets: "You don't have any active Challenge",
 	video: 'Video',
 	are_you_sure_you_want_to_delete_this_video:
@@ -748,7 +749,7 @@ const Strings = {
 	no_video_found: 'No video found yet',
 	no_video_title: 'Your videos will appear here',
 	well_done_video_has_been_created:
-		'Well done, %s! Your video has been created ðŸŽ‰',
+		'Well done, %s! Your video has been created!',
 	txt_session_expire_login_again: 'Session expired please login again',
 	txt_something_wrong_try_again: 'Something went wrong. Please try again later',
 	txt_insufficient_balance: 'Insufficient Balance'.toUpperCase(),
@@ -925,6 +926,8 @@ const Strings = {
 		'. You can cancel this Challenge to recover your funds.',
 	str_ago: ' ago',
 	str_reffered_users: ' invited users',
+	str_challenge_maker: 'Challenge maker',
+	str_challenges: 'challenges',
 	is_challenging: ' is challenging',
 	str_Hello: 'Hello',
 	str_all: 'All',

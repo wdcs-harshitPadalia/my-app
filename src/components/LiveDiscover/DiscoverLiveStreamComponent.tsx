@@ -399,7 +399,7 @@ const DiscoverLiveStreamComponent = ({friendList, onEndReach, params}) => {
 										angle={gradientColorAngle}
 										rightIcon={false}
 										buttonText={Strings.login}
-										desText={''}
+										//desText={''}
 										style={styles.liveStreamWatchingView}
 										shouldShowCloseButton={false}
 										userArray={item?.liveViewUserData}

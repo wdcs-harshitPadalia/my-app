@@ -309,7 +309,7 @@ const UserGroupView: React.FC<Props> = props => {
 												!userCount
 													? getUsersName === 'You'
 														? ' are'
-														:  isFromLiveDiscover && userArray.length > 0 ? ' are' : ' is'
+														:   ' is'
 													: ' are'
 											} ${
 												isFromLive

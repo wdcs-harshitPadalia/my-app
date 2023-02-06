@@ -370,11 +370,19 @@ const DiscoverScreen: React.FC<any> = props => {
 
 	useUpdateEffect(() => {
 		setDiscoverPage(0);
-		getDiscoverMatchData('error');
+		getDiscoverMatchData(
+			params?.video_id === 'undefined' ? undefined : params?.video_id,
+			'error'
+		);
 	}, [beforeClickTopTabIndex]);
 
 	useUpdateEffect(() => {
-		// console.log('params?.video_id??>', params?.video_id, discoverPage);
+		console.log(
+			'params?.video_id??>',
+			params?.video_id,
+			discoverPage,
+			params?.type
+		);
 		// if (discoverPage == 0) {
 		// 	setDiscoverMatchData([])
 		// 	setDiscoverPage(undefined);
@@ -384,8 +392,11 @@ const DiscoverScreen: React.FC<any> = props => {
 		// 	setDiscoverPage(0);
 		// }
 		// setDiscoverMatchData([])
+		if (params?.type === 'video') {
+			setBeforeClickTopTabIndex(1);
+		}
 		getDiscoverMatchData(params?.video_id, 'error');
-	}, [params?.video_id, isFocused]);
+	}, [params?.video_id, isFocused, params?.type]);
 
 	useUpdateEffect(() => {
 		console.log('isSelectedIndex ::', isSelectedIndex);

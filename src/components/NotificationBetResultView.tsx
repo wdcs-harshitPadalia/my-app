@@ -106,7 +106,7 @@ const NotificationBetResultView: React.FC<Props> = props => {
 						</Text>
 					)}
 					​
-					{betType === 'CUSTOM_BET_RESULT_TAKER' && (
+					{betType === 'CUSTOM_BET_RESULT_NOTRESOLVER' && (
 						<Text style={[styles.usernameStyle]}>
 							{Strings.str_your_bet}
 							<Text
@@ -120,7 +120,7 @@ const NotificationBetResultView: React.FC<Props> = props => {
 						</Text>
 					)}
 					​
-					{betType === 'RESULT_VERIFICATION_BETMAKER' && (
+					{betType === 'RESULT_VERIFICATION_BETRESOLVER' && (
 						<Text style={[styles.usernameStyle]}>
 							{Strings.str_your_bet}
 							<Text

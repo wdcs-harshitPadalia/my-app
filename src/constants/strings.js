@@ -273,9 +273,10 @@ const Strings = {
 	copy_wallet_add_desc: 'Wallet address copied to clipboard.',
 	or_share_with: 'or share with',
 	continue_to_feed: 'continue to feed',
-	well_done_bet_has_been_created: 'Well done, %s! Your Challenge has been created ðŸŽ‰',
+	well_done_bet_has_been_created:
+		'Well done, %s! Your Challenge has been created!',
 	well_done_bet_has_been_joined:
-		'Well done, %s! You have joined the Challenge successfully ðŸŽ‰',
+		'Well done, %s! You have joined the Challenge successfully!',
 	this_bet_already_joined: 'This Challenge already joined.',
 	well_done_result_has_been_verified:
 		'Well done, %s! The result of your Challenge has been verified!',
@@ -288,9 +289,10 @@ const Strings = {
 	search_events_bets: 'Search events and Challenge',
 	search_users: 'Search users',
 
-	time_to_create_your_market: 'Let\'s create your Challenge',
+	time_to_create_your_market: "Let's create your Challenge",
 	write_Question_Market: 'Write Question / Challenge Terms',
-	write_your_question: 'write in the question or terms that accurately define your Challenge',
+	write_your_question:
+		'write in the question or terms that accurately define your Challenge',
 	how_many_results: 'How many results?',
 	results: 'Results',
 	set_the_options: 'Set the options',
@@ -328,7 +330,8 @@ const Strings = {
 	all: 'All',
 	accept: 'accept',
 	reject: 'reject',
-	pick_participate_bet_end_date_time: 'pick participate Challenge end date & time',
+	pick_participate_bet_end_date_time:
+		'pick participate Challenge end date & time',
 	join: 'join',
 	Tags: 'Tags',
 	categories: 'Categories',
@@ -416,15 +419,18 @@ const Strings = {
 	deleteRequest: 'Are you sure you want to cancel request?',
 	event_share_story: 'Your event has been shared in the story successfully.',
 	your_story: 'Your story',
-	bet_end_verify_result: 'Your Challenge has ended! Itâ€™s time to verify the result.',
-	bet_end_provide_evidence: 'Your Challenge has ended! Please provide a evidence.',
+	bet_end_verify_result:
+		'Your Challenge has ended! Itâ€™s time to verify the result.',
+	bet_end_provide_evidence:
+		'Your Challenge has ended! Please provide a evidence.',
 
 	taken_by: 'taken by:',
 	Select_the_final_result: 'Select the final result',
 	resolver_evidence: 'Resolverâ€™s evidence:',
 	problem_with_this_result: 'A problem with this result or the verification?',
 	open_dispute: 'Open dispute.',
-	you_open_dispute: 'Youâ€™ve opened a dispute and your evidence has been sent.',
+	you_open_dispute:
+		'Youâ€™ve opened a dispute and your evidence has been sent.',
 	we_will_review_evidence: 'weâ€™ll review your evidence and get back to you',
 	who_case_right: 'Whose case is right?',
 	thank_you_vote_sent: 'Thank you, your vote has been sent.',
@@ -575,7 +581,8 @@ const Strings = {
 	No_bets_for_now: 'No Challenges for now',
 	you_have_not_made_any_bets_yet: 'You have not made any Challenges yet',
 	no_p2p_bets_desc: 'Be the first to place one',
-	This_user_has_not_made_any_bets_yet: 'This user has not made any Challenges yet',
+	This_user_has_not_made_any_bets_yet:
+		'This user has not made any Challenges yet',
 	no_wallet_stats: 'No stats found',
 	no_wallet_stats_desc: 'Here you can see your statistics',
 	no_recent_search: 'No recent\nsearches',
@@ -599,7 +606,8 @@ const Strings = {
 	str_tut_btn_got_it: 'Got it!',
 	str_tut_create_bet: 'Create a Challenge',
 	str_tut_create_bet_desc: 'Click the + icon to create a Challenge',
-	str_tut_feed_desc: 'Here you can see all the active Challenges of the platform.',
+	str_tut_feed_desc:
+		'Here you can see all the active Challenges of the platform.',
 	str_tut_feed_event_desc:
 		'This is an event, here you will be able to see all Challenges, take them, make new ones...',
 	str_tut_live_desc:
@@ -607,7 +615,8 @@ const Strings = {
 	str_tut_wallet_desc: 'Here you can connect your Metamask wallet.',
 	str_tut_discover_desc:
 		'You can search events, chat with your friends and much more.',
-	str_tut_profile_desc: 'You can follow your friends and see your Challenge stats.',
+	str_tut_profile_desc:
+		'You can follow your friends and see your Challenge stats.',
 	already_voted:
 		'Something went wrong when you submitted your vote for this case. Please click retry to submit your vote again.',
 	skip: 'Skip',
@@ -631,7 +640,8 @@ const Strings = {
 	txt_share_join_bet_message_with_url:
 		'%user is inviting you to participate in the following Challenge: %betInfo.\n\n%shareBetUrl',
 	str_receive_crypto: 'Receive game coins',
-	str_scan_qr_receive_crypto: 'Scan this QR to receive game coins on this wallet',
+	str_scan_qr_receive_crypto:
+		'Scan this QR to receive game coins on this wallet',
 
 	//Prediction Market
 	what_is_your_prediction_market: 'What is your prediction market about?',
@@ -639,7 +649,8 @@ const Strings = {
 	betdecline: 'Are you sure you want to decline the invitation?',
 	you_are_betting: 'Your Challenge amount',
 	you_will_win: 'You will win',
-	select_the_crypto_to_use_in_this_bet: 'Select the Game Coins to use in this Challenge',
+	select_the_crypto_to_use_in_this_bet:
+		'Select the Game Coins to use in this Challenge',
 	total_payout: 'Total payout',
 	your_opponent_is_betting: 'your opponent Challenge amount:',
 	your_opponent_will_win: 'Your opponent will win',
@@ -729,7 +740,8 @@ const Strings = {
 	who_can_see_your_videos: 'Who can see your Videos?',
 	video_content: 'Video content',
 	video_creation: 'Video creation',
-	attach_video_to_bets: 'You can attach the video to one of your active bets',
+	attach_video_to_bets:
+		'You can attach the video to one of your active challenges',
 	no_active_bets: 'You donâ€™t have any active Challenge',
 	video: 'Video',
 	are_you_sure_you_want_to_delete_this_video:
@@ -738,7 +750,7 @@ const Strings = {
 	no_video_found: 'No video found yet',
 	no_video_title: 'Your videos will appear here',
 	well_done_video_has_been_created:
-		'Well done, %s! Your video has been created ðŸŽ‰',
+		'Well done, %s! Your video has been created!',
 	txt_session_expire_login_again: 'Session expired please login again',
 	txt_something_wrong_try_again: 'Something went wrong. Please try again later',
 	txt_insufficient_balance: 'Insufficient Balance'.toUpperCase(),
@@ -914,6 +926,8 @@ const Strings = {
 	str_you_cancel_bet_recover_fund:
 		'. You can cancel this Challenge to recover your funds.',
 	str_ago: ' ago',
-	str_reffered_users: ' invited users'
+	str_reffered_users: ' invited users',
+	str_challenge_maker: 'Challenge maker',
+	str_challenges: 'challenges'
 };
 export default Strings;

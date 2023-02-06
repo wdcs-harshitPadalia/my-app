@@ -476,7 +476,7 @@ const BetMakerResultScreen: React.FC<any> = () => {
 		} else if (
 			redirectType === 'BET_RESULT_REVIEW' ||
 			redirectType === 'DISPUTE_EVIDENCE' ||
-			redirectType === 'RESULT_VERIFICATION_BETMAKER'
+			redirectType === 'RESULT_VERIFICATION_BETRESOLVER'
 		) {
 			setIsSelectChooseSideType(eventBetData?.resultData?.winnerOption);
 
@@ -577,12 +577,12 @@ const BetMakerResultScreen: React.FC<any> = () => {
 			seIsTitle(Strings.bet_end_verify_result);
 			setStep(2);
 		} else if (
-			redirectType === 'CUSTOM_BET_RESULT_TAKER' ||
-			redirectType === 'RESULT_VERIFICATION_BETMAKER'
+			redirectType === 'CUSTOM_BET_RESULT_NOTRESOLVER' ||
+			redirectType === 'RESULT_VERIFICATION_BETRESOLVER'
 		) {
 			seIsTitle(Strings.bet_end_verify_result);
 			setStep(4);
-			if (redirectType === 'RESULT_VERIFICATION_BETMAKER') {
+			if (redirectType === 'RESULT_VERIFICATION_BETRESOLVER') {
 				seIsTitle(Strings.bet_end_provide_evidence);
 				setIsBackButtonDisable(false);
 			}
@@ -1145,7 +1145,7 @@ const BetMakerResultScreen: React.FC<any> = () => {
 						<Text style={styles.titleStyle}>{isTitle}</Text>
 						{betsMatchDetails()}
 
-						{redirectType === 'RESULT_VERIFICATION_BETMAKER' ? (
+						{redirectType === 'RESULT_VERIFICATION_BETRESOLVER' ? (
 							<OptionSelectionView
 								color1Array={defaultTheme.primaryGradientColor}
 								popupTitle={Strings.results}

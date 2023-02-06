@@ -914,6 +914,12 @@ const Strings = {
 	str_you_cancel_bet_recover_fund:
 		'. You can cancel this Challenge to recover your funds.',
 	str_ago: ' ago',
-	str_reffered_users: ' invited users'
+	str_reffered_users: ' invited users',
+	str_Hello: 'Hello',
+	str_all: 'All',
+	str_today: 'Today',
+	str_last_week: 'Last week',
+	str_last_month: 'Last month',
+	str_custom_date_range: 'Custom date range'
 };
 export default Strings;

@@ -547,16 +547,16 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 										}}
 										colorArray={defaultTheme.ternaryGradientColor}
 										angle={gradientColorAngle}
-										buttonText={'All'.toUpperCase()}
+										buttonText={Strings.str_all.toUpperCase()}
 										rightIcon={true}
 										style={styles.userBetsViewStyle}
 										dataSource={[
-											'All',
-											'Today',
+											Strings.str_all,
+											Strings.str_today,
 											// 'Yesterday',
-											'Last week',
-											'Last month',
-											'Custom date range'
+											Strings.str_last_week,
+											Strings.str_last_month,
+											Strings.str_custom_date_range
 										]}
 									/>
 									<BetsProgress

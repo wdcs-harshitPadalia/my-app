@@ -100,6 +100,8 @@ interface Props extends TextInputProps {
 }
 type MessageAction = 'onCreate' | 'onUpdate' | 'onDelete';
 
+let tempMid: string = '';
+
 //TODO: for public chat join the predefined channel with the channelId = 1 and send message to the channel and don't show the message history.
 //for private chat first create a channel with the generated channelId and then join the channel with that channelId and after that fetch the messages from the channel with pagination
 const ChatViewComponent: React.FC<Props> = props => {
@@ -124,6 +126,7 @@ const ChatViewComponent: React.FC<Props> = props => {
 	});
 
 	const [messages, setMessages] = useState<MessageType.Any[]>([]);
+	const [tempMessages, setTempMessages] = useState<MessageType.Any[]>([]);
 
 	const [isShowImagePreview, setIsShowImagePreview] = useState<Boolean>(false);
 
@@ -224,12 +227,21 @@ const ChatViewComponent: React.FC<Props> = props => {
 				//console.log('options>????', options.origin, reset);
 				if (data) {
 					const tempArray = [];
+					const messagetTempArray = [];
 					data.forEach(message => {
 						!messages.includes(message) &&
 							tempArray.push(message.metadata?.data);
 					});
+					data.forEach(message => {
+						!messages.includes(message) && messagetTempArray.push(message);
+					});
 					setMessages(prevPosts =>
 						reset ? tempArray.reverse() : [...prevPosts, ...tempArray.reverse()]
+					);
+					setTempMessages(prevPosts =>
+						reset
+							? messagetTempArray.reverse()
+							: [...prevPosts, ...messagetTempArray.reverse()]
 					);
 				}
 				// }
@@ -320,84 +332,28 @@ const ChatViewComponent: React.FC<Props> = props => {
 			onQueryMessages({page: prevPage});
 		}
 	};
-
-	useEffect(
-		() =>
-			observeMessages(channelId, {
-				onEvent: (
-					action: MessageAction,
-					message: Amity.Snapshot<Amity.Message>
-				) => {
-					// console.log('message>?:::::::', JSON.stringify(message), action);
-					// if (action === 'onCreate') {
-		
-					console.log('message>?:::::::', JSON.stringify(messages) , JSON.stringify(message), action, message.data?.metadata.data.id);
-					if (
-						messages.filter(item => item.id === message.data?.metadata.data.id)
-							?.length > 0
-					) {
-						return;
+	useEffect(() => {
+		observeMessages(channelId, {
+			onEvent: (action, message) => {
+				console.log('message:::::::::::::============', message);
+				if (action == 'onCreate') {
+					if (tempMid != message.data?.messageId) {
+						tempMid = message.data?.messageId;
+						if (tempMessages.find(item => item.messageId == tempMid)) {
+							return;
+						}
+						setMessages(prevMessage => [
+							message?.data?.metadata?.data,
+							...prevMessage
+						]);
 					}
-					//dispatch({notifyOnNewMessageSent(message.data)});
-					// if (message.data?.type == 'image' && message.data?.editedAt) {
-					setMessages(prevMessages => [
-						message.data?.metadata.data!,
-						...prevMessages
-					]);
-					// } else if (
-					//   message.data?.type !== 'image' &&
-					//   message.data?.editedAt
-					// ) {
-					//   setMessages(prevMessages => [
-					//     message.data?.metadata.data!,
-					//     ...prevMessages,
-					//   ]);
-					// }
-					// }
-					if(friendData) {
+					if (friendData) {
 						dispatch(notifyOnNewMessageSend(message));
 					}
 				}
-			}),
-		[channelId, messages]
-	);
-	// const ChannelItem = useCallback(
-	// 	channelID => {
-	// 		observeMessages(channelID, {
-	// 			onEvent: (
-	// 				action: MessageAction,
-	// 				message: Amity.Snapshot<Amity.Message>
-	// 			) => {
-	// 				console.log('message OBserver Callds,ld,s>?:::::::');
-	// 				if (action === 'onCreate') {
-	// 					console.log('message>?:::::::', JSON.stringify(message), action);
-	// 					//dispatch({notifyOnNewMessageSent(message.data)});
-	// 					if (message.data?.type == 'image' && message.data?.editedAt) {
-	// 						setMessages(prevMessages => [
-	// 							message.data?.metadata.data!,
-	// 							...prevMessages
-	// 						]);
-	// 					} else if (
-	// 						message.data?.type !== 'image' &&
-	// 						message.data?.editedAt
-	// 					) {
-	// 						setMessages(prevMessages => [
-	// 							message.data?.metadata.data!,
-	// 							...prevMessages
-	// 						]);
-	// 					}
-	// 					dispatch(notifyOnNewMessageSend(message));
-	// 				}
-	// 			}
-	// 		});
-	// 	},
-	// 	[channelId]
-	// );
-
-	// useEffect(() => {
-	// 	// console.log('channelId?:::::::', channelId);
-	// 	ChannelItem(channelId);
-	// }, [channelId]);
+			}
+		});
+	}, [channelId, messages]);
 
 	const addMessage = (message: MessageType.Any) => {
 		// setMessages([message, ...messages]);
@@ -711,7 +667,8 @@ const ChatViewComponent: React.FC<Props> = props => {
 												params: {
 													screen: ScreenNames.DiscoverScreen,
 													params: {
-														video_id: message?.video_id
+														video_id: message?.video_id,
+														type: 'video'
 													}
 												}
 											});
@@ -931,7 +888,8 @@ const ChatViewComponent: React.FC<Props> = props => {
 												params: {
 													screen: ScreenNames.DiscoverScreen,
 													params: {
-														video_id: message?.video_id
+														video_id: message?.video_id,
+														type: 'video'
 													}
 												}
 											});

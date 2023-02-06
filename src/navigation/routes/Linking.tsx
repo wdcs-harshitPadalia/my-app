@@ -41,7 +41,7 @@ const config = {
                     initialRouteName: ScreenNames.DiscoverScreen,
                     screens: {
                         DiscoverScreen: {
-                            path: 'DiscoverScreen/:video_id?'
+                            path: 'DiscoverScreen/:video_id?/:type?'
                             // parse: {
                             //   betId: (betId: String) => `${betId}`,
                             // },

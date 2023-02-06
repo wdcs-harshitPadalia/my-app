@@ -27,7 +27,7 @@ const eventSharePostFixUrl =
 const betSharePostFixURL =
 	'/?title=%title&betId=%betId&betCreationType=%betCreationType&id=%id&deeplinktype=bet';
 const joinSharePostFixUrl = '/?betId=%betId&id=%id&deeplinktype=bet';
-const videoSharePostFixUrl = '/?video_id=%id&deeplinktype=video';
+const videoSharePostFixUrl = '/?video_id=%id&type=video&deeplinktype=video';
 export const getInitialDate = () => {
 	const date1 = new Date();
 	const subtractYears = 18;

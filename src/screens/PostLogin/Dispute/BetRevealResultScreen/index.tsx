@@ -173,7 +173,7 @@ const BetRevealResultScreen: React.FC<any> = () => {
 		} else if (
 			redirectType === 'BET_RESULT_REVIEW' ||
 			redirectType === 'DISPUTE_EVIDENCE' ||
-			redirectType === 'RESULT_VERIFICATION_BETMAKER'
+			redirectType === 'RESULT_VERIFICATION_BETRESOLVER'
 		) {
 			setIsSelectChooseSideType(eventBetData?.resultData?.winnerOption);
 		}

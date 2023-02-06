@@ -68,6 +68,8 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 
 	const [isNoData, setIsNoData] = useState(false);
 	const [liveEventData, setLiveEventData] = useState([]);
+	const [betData, setBetData] = useState({});
+
 
 	const noDataItemArray = [
 		{
@@ -133,6 +135,7 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 			.then(res => {
 				console.log('getUserLiveStreamingData res ::  ', JSON.stringify(res));
 				setLiveEventData(res?.data?.liveStreaming);
+				setBetData(res?.data?.betType)
 			})
 			.catch(err => {
 				console.log('getUserLiveStreamingData Data Err : ', err);
@@ -386,6 +389,12 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 									profileImgPath={userProfileInfo?.user?.picture}
 									handleOnClick={() => {
 										if (liveEventData.length === 1) {
+											navigation.navigate(ScreenNames.EventDetailsScreen, {
+												feedObject: liveEventData[0],
+												betCreationType: 1,
+												selectedBetType: betData,
+												isFromStreaming: true
+											});
 										} else {
 											navigation.navigate(ScreenNames.LiveChallengeListScreen, {
 												liveEventData: liveEventData

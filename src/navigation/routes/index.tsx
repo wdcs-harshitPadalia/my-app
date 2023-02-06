@@ -211,6 +211,11 @@ export const WalletTabRoutes = (_props: any) => (
 			component={LiveChallengeListScreen}
 			options={{headerShown: false}}
 		/>
+		<Stack.Screen
+			name={ScreenNames.EventDetailsScreen}
+			component={EventDetailsScreen}
+			options={{headerShown: false}}
+		/>
 	</Stack.Navigator>
 );
 
@@ -918,6 +923,11 @@ const ProfileRouter = () => (
 		<Stack.Screen
 			name={ScreenNames.LiveChallengeListScreen}
 			component={LiveChallengeListScreen}
+			options={{headerShown: false}}
+		/>
+		<Stack.Screen
+			name={ScreenNames.EventDetailsScreen}
+			component={EventDetailsScreen}
 			options={{headerShown: false}}
 		/>
 	</Stack.Navigator>

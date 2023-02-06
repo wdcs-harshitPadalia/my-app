@@ -41,6 +41,14 @@ import {magic} from '../../../navigation/routes';
 import {showErrorAlert} from '../../../constants/utils/Function';
 import app from '../../../../app.json';
 
+// Detects if device is on iOS
+const isIos = () => {
+	const userAgent = window.navigator.userAgent.toLowerCase();
+	return /iphone|ipad|ipod/.test(userAgent);
+};
+// Detects if device is in standalone mode
+const isInStandaloneMode = () =>
+	'standalone' in window.navigator && window.navigator.standalone;
 
 const Login: React.FC<any> = props => {
 	const isNewUser = useSelector((state: RootState) => {
@@ -57,6 +65,7 @@ const Login: React.FC<any> = props => {
 	const [walletAddress, setWalletAddress] = useState('');
 	const [isViewclickable, setIsViewclickable] = useState(true);
 	const [randomLoadingMessage] = useState(Strings.we_are_taking);
+	const [showInstallMessage, setShowInstallMessage] = useState(false);
 
 	const mobileInputRef = useRef();
 
@@ -76,6 +85,13 @@ const Login: React.FC<any> = props => {
 			}
 		}
 	}, [isNewUser]);
+
+	// Checks if should display install popup notification:
+	// if (isIos() && !isInStandaloneMode()) {
+	// 	if (showInstallMessage === false) {
+	// 		setShowInstallMessage(true);
+	// 	}
+	// }
 
 	// useEffect(() => {
 	//   dispatch(
@@ -338,7 +354,10 @@ const Login: React.FC<any> = props => {
 			pointerEvents={isViewclickable ? 'box-none' : 'none'}
 			style={styles.container}>
 			<ImageBackground source={icons.loginBg} style={styles.imageStyle} />
-
+			{/* {showInstallMessage && (
+				<View
+					style={{height: 200, width: 400, backgroundColor: 'green'}}></View>
+			)} */}
 			<KeyboardAwareScrollView
 				keyboardShouldPersistTaps={'handled'}
 				enableOnAndroid={false}

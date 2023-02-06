@@ -93,6 +93,8 @@ const ProfileScreen: React.FC<any> = props => {
 	const regex = /(<([^>]+)>)/gi;
 
 	const [liveEventData, setLiveEventData] = useState([]);
+	const [betData, setBetData] = useState({});
+
 
 	useEffect(() => {
 		dispatch(updateApiLoader({apiLoader: true}));
@@ -101,13 +103,13 @@ const ProfileScreen: React.FC<any> = props => {
 				userProfileInfo?.user?.displayName || userProfileInfo?.user?.userName
 			)
 		);
-		getUserLiveStreamingData();
 	}, []);
 
 	useEffect(() => {
 		if (isFocused) {
 			setVisitUserView(false);
 			dispatch(getUserProfile({}));
+			getUserLiveStreamingData();
 		}
 		console.log('isFocused??????', userProfileInfo?.user?.level);
 	}, [isFocused]);
@@ -155,6 +157,7 @@ const ProfileScreen: React.FC<any> = props => {
 			.then(res => {
 				console.log('getUserLiveStreamingData res ::  ', JSON.stringify(res));
 				setLiveEventData(res?.data?.liveStreaming);
+				setBetData(res?.data?.betType);
 			})
 			.catch(err => {
 				console.log('getUserLiveStreamingData Data Err : ', err);
@@ -355,7 +358,15 @@ const ProfileScreen: React.FC<any> = props => {
 								<LiveUserProfileComponent
 									profileImgPath={userProfileInfo?.user?.picture}
 									handleOnClick={() => {
+										console.log(liveEventData.length, "liveEventData.length>>>?????")
 										if (liveEventData.length === 1) {
+											console.log('item??>>><><<<', liveEventData[0]);
+											navigation.navigate(ScreenNames.EventDetailsScreen, {
+												feedObject: liveEventData[0],
+												betCreationType: 1,
+												selectedBetType: betData,
+												isFromStreaming: true,
+											});
 										} else {
 											navigation.navigate(ScreenNames.LiveChallengeListScreen, {
 												liveEventData: liveEventData

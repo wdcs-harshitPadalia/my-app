@@ -65,7 +65,7 @@ export default function WalletStats(props: WalletStatsProps) {
 			</View>
 			<TouchableOpacity style={styles.moneyBgView} onPress={props.changeToken}>
 				<Text style={styles.subTitle}>
-					{`${Strings.Money_won}/${Strings.Lost}`.toUpperCase()}
+					{`${Strings.str_money_won}/${Strings.Lost}`.toUpperCase()}
 				</Text>
 				<View
 					style={{flexDirection: 'row', alignItems: 'center', marginTop: 10}}>

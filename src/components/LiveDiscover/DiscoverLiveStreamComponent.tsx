@@ -53,25 +53,24 @@ import {updateApiLoader} from '../../redux/reducerSlices/preLogin';
 import fonts from '../../theme/fonts';
 import LiveStreamingTag from '../LiveStreamingTag';
 import {useNavigation} from '@react-navigation/native';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import LottieView from 'lottie-react-native';
 import UserGroupView from '../UserGroupView';
 import useUpdateEffect from '../CustomHooks/useUpdateEffect';
 import LoadMoreLoaderView from '../LoadMoreLoaderView';
 import NoDataComponent from '../NoDataComponent';
+import {RootState} from '../../redux/store';
 
 const {v4: uuidv4} = require('uuid');
 
-const DiscoverLiveStreamComponent = ({
-	userInfo,
-	friendList,
-	onEndReach,
-	params
-}) => {
+const DiscoverLiveStreamComponent = ({friendList, onEndReach, params}) => {
 	const [isShowShareModal, setIsShowShareModal] = useState(false);
 	const [currentPage, setCurrentPage] = useState(0);
 	const [liveChallengeData, setLiveChallengeData] = useState([]);
 	const dispatch = useDispatch();
+	const userInfo = useSelector((state: RootState) => {
+		return state.userInfo.data;
+	});
 
 	const lottieRef = React.useRef<LottieRefCurrentProps>(null);
 
@@ -154,7 +153,7 @@ const DiscoverLiveStreamComponent = ({
 				dispatch(updateApiLoader({apiLoader: false}));
 				console.log('getLiveChallengesData res ::  ', JSON.stringify(res));
 				const discoverMatches = res?.data?.challengesList;
-				setBetType(res?.data?.betType)
+				setBetType(res?.data?.betType);
 				if (currentPage !== 0) {
 					setLiveChallengeData(liveChallengeData.concat(discoverMatches));
 				} else {
@@ -377,7 +376,11 @@ const DiscoverLiveStreamComponent = ({
 						<View style={styles.liveStreamInfoView}>
 							<View style={styles.liveStreamViewTopView}>
 								<Text style={styles.liveStreamTopViewText}>
-									{`@${item?.users?.userName} `}
+									<Text onPress={() => {
+										navigation.navigate(ScreenNames.OtherUserProfileScreen, {
+											userId: item?.users?._id
+										});
+									}}>{`@${item?.users?.userName} `}</Text>
 									<Text style={{color: colors.white, textAlign: 'center'}}>
 										{Strings.Is_creating_the_following_challenge_and_ITS_LIVE}
 									</Text>
@@ -387,7 +390,7 @@ const DiscoverLiveStreamComponent = ({
 								</Text>
 							</View>
 							<View style={styles.liveStreamBottomView}>
-								{item?.isStarted ? (
+								{item?.isStarted && item?.liveViewUserData?.length > 0 ? (
 									<UserGroupView
 										onPressViewAll={() => {
 											//navigation.navigate(ScreenNames.UserViewProfileScreen);
@@ -399,445 +402,21 @@ const DiscoverLiveStreamComponent = ({
 										desText={''}
 										style={styles.liveStreamWatchingView}
 										shouldShowCloseButton={false}
-										userArray={[
-											{
-												push_notifications: {
-													pause_all_notifications: false,
-													bet_join: true,
-													bet_replicate: true,
-													bet_invitation: true,
-													new_followers: true,
-													direct_messages: true,
-													events_you_like: true,
-													people_you_know: true,
-													your_friends_bet: true
-												},
-												_id: '63bd0346da24177747ccbfa1',
-												email: 'skstoryuser1@yopmail.com',
-												walletAddress:
-													'0xf388738fb39301eb8bcd4ab68c692623d007ee79',
-												picture:
-													'https://defibet.s3.us-east-2.amazonaws.com/avatars/1669812989074Avatar_2.png',
-												isSocialLogin: true,
-												socialLoginType: 'email',
-												role: 0,
-												loginActivity: [
-													{
-														device: 'iPhone 14',
-														ipaddress: '192.168.0.208',
-														country: 'India',
-														isLoggedOut: true,
-														loggedOutAt: 1673347101133,
-														status: 'INACTIVE',
-														_id: '63bd0346da24177747ccbfa2'
-													},
-													{
-														device: 'iPhone 14 Pro',
-														ipaddress: '192.168.0.208',
-														country: 'India',
-														isLoggedOut: true,
-														loggedOutAt: 1673360707788,
-														status: 'INACTIVE',
-														_id: '63bd411de4191f1fc131253d'
-													},
-													{
-														device: 'OnePlus 3T',
-														ipaddress: '192.168.2.39',
-														country: 'India',
-														isLoggedOut: false,
-														status: 'ACTIVE',
-														_id: '63bd519ee4191f1fc132a432'
-													},
-													{
-														device: 'iPhone 14',
-														ipaddress: '192.168.0.111',
-														country: 'India',
-														isLoggedOut: false,
-														status: 'ACTIVE',
-														_id: '63bd7a7cf990c552887a82f2'
-													},
-													{
-														device: 'iPhone 14 Pro',
-														ipaddress: '192.168.0.111',
-														country: 'India',
-														isLoggedOut: false,
-														status: 'ACTIVE',
-														_id: '63bd7cbbf990c552887a9237'
-													},
-													{
-														device: 'iPhone 14 Pro',
-														ipaddress: '192.168.0.111',
-														country: 'India',
-														isLoggedOut: false,
-														status: 'ACTIVE',
-														_id: '63be554af990c552887adcf1'
-													},
-													{
-														device: 'unknown',
-														ipaddress: 'unknown',
-														country: 'India',
-														isLoggedOut: false,
-														status: 'ACTIVE',
-														_id: '63be5be5f990c552887ae1cf'
-													},
-													{
-														device: 'unknown',
-														ipaddress: 'unknown',
-														country: 'India',
-														isLoggedOut: false,
-														status: 'ACTIVE',
-														_id: '63be8495f990c552887cb599'
-													},
-													{
-														device: 'iPhone 14',
-														ipaddress: '192.168.0.111',
-														country: 'India',
-														isLoggedOut: false,
-														status: 'ACTIVE',
-														_id: '63beba5574c760b9ccbd7505'
-													},
-													{
-														device: 'iPhone 14',
-														ipaddress: '192.168.0.111',
-														country: 'India',
-														isLoggedOut: true,
-														loggedOutAt: 1673513059648,
-														status: 'INACTIVE',
-														_id: '63bfaaddbc01149d97545212'
-													},
-													{
-														device: 'unknown',
-														ipaddress: 'unknown',
-														country: 'India',
-														isLoggedOut: false,
-														status: 'ACTIVE',
-														_id: '63bfcd19bc01149d97575dbe'
-													},
-													{
-														device: 'unknown',
-														ipaddress: 'unknown',
-														country: 'India',
-														isLoggedOut: false,
-														status: 'ACTIVE',
-														_id: '63c0f6e2204d511440789698'
-													},
-													{
-														device: 'unknown',
-														ipaddress: 'unknown',
-														country: 'India',
-														isLoggedOut: false,
-														status: 'ACTIVE',
-														_id: '63c1350f41087143c81ce353'
-													},
-													{
-														device: 'unknown',
-														ipaddress: 'unknown',
-														country: 'India',
-														isLoggedOut: true,
-														loggedOutAt: 1673611212370,
-														status: 'INACTIVE',
-														_id: '63c1436041087143c81d1bb8'
-													},
-													{
-														device: 'unknown',
-														ipaddress: 'unknown',
-														country: 'India',
-														isLoggedOut: true,
-														loggedOutAt: 1673611208071,
-														status: 'INACTIVE',
-														_id: '63c1438f41087143c81d1d34'
-													},
-													{
-														device: 'unknown',
-														ipaddress: 'unknown',
-														country: 'India',
-														isLoggedOut: false,
-														status: 'ACTIVE',
-														_id: '63c4e047e39f189fdd7f14e8'
-													},
-													{
-														device: 'unknown',
-														ipaddress: 'unknown',
-														country: 'India',
-														isLoggedOut: true,
-														loggedOutAt: 1674110199804,
-														status: 'INACTIVE',
-														_id: '63c7840e33e3808951e91d76'
-													},
-													{
-														device: 'unknown',
-														ipaddress: 'unknown',
-														country: 'India',
-														isLoggedOut: false,
-														status: 'ACTIVE',
-														_id: '63c799acfcb169d7863a7827'
-													},
-													{
-														device: 'unknown',
-														ipaddress: 'unknown',
-														country: 'India',
-														isLoggedOut: false,
-														status: 'ACTIVE',
-														_id: '63c8e7a79df6eb2090530f34'
-													},
-													{
-														device: 'iPhone 14',
-														ipaddress: '192.168.0.111',
-														country: 'India',
-														isLoggedOut: true,
-														loggedOutAt: 1674113331097,
-														status: 'INACTIVE',
-														_id: '63c8e7eb9df6eb2090531053'
-													},
-													{
-														device: 'iPhone 8',
-														ipaddress: '192.168.0.111',
-														country: 'India',
-														isLoggedOut: false,
-														status: 'ACTIVE',
-														_id: '63c8eefe9df6eb2090532381'
-													},
-													{
-														device: 'iPhone 14',
-														ipaddress: '192.168.0.111',
-														country: 'India',
-														isLoggedOut: true,
-														loggedOutAt: 1674125803818,
-														status: 'INACTIVE',
-														_id: '63c8f1569df6eb2090532c2e'
-													},
-													{
-														device: 'iPhone 14',
-														ipaddress: '192.168.0.111',
-														country: 'India',
-														isLoggedOut: false,
-														status: 'ACTIVE',
-														_id: '63c9233d9df6eb20905447f9'
-													},
-													{
-														device: 'OnePlus 3T',
-														ipaddress: '192.168.0.141',
-														country: 'India',
-														isLoggedOut: false,
-														status: 'ACTIVE',
-														_id: '63c92cba329d7e912d8dcdc2'
-													},
-													{
-														device: 'iPhone (7)',
-														ipaddress: '192.168.2.15',
-														country: 'India',
-														isLoggedOut: false,
-														status: 'ACTIVE',
-														_id: '63c931b0329d7e912d8e80af'
-													},
-													{
-														device: 'iPhone',
-														ipaddress: '192.168.2.17',
-														country: 'India',
-														isLoggedOut: false,
-														status: 'ACTIVE',
-														_id: '63c938f4329d7e912d8e91db'
-													},
-													{
-														device: 'Redmi note 8 pro',
-														ipaddress: '192.168.2.13',
-														country: 'India',
-														isLoggedOut: false,
-														status: 'ACTIVE',
-														_id: '63c93a85329d7e912d8e93b3'
-													},
-													{
-														device: 'unknown',
-														ipaddress: 'unknown',
-														country: 'India',
-														isLoggedOut: true,
-														loggedOutAt: 1674222072445,
-														status: 'INACTIVE',
-														_id: '63ca99db1a1249dbc6907bf2'
-													},
-													{
-														device: 'iPhone 14 Pro',
-														ipaddress: '192.168.0.111',
-														country: 'India',
-														isLoggedOut: true,
-														loggedOutAt: 1674225922051,
-														status: 'INACTIVE',
-														_id: '63caa8681a1249dbc690833f'
-													},
-													{
-														device: 'unknown',
-														ipaddress: 'unknown',
-														country: 'India',
-														isLoggedOut: true,
-														loggedOutAt: 1674462517499,
-														status: 'INACTIVE',
-														_id: '63ce19a41a1249dbc6913362'
-													},
-													{
-														device: 'unknown',
-														ipaddress: 'unknown',
-														country: 'India',
-														isLoggedOut: true,
-														loggedOutAt: 1674469960315,
-														status: 'INACTIVE',
-														_id: '63ce28391a1249dbc6918fd8'
-													},
-													{
-														device: 'unknown',
-														ipaddress: 'unknown',
-														country: 'India',
-														isLoggedOut: false,
-														status: 'ACTIVE',
-														_id: '63ce68621a1249dbc6934a09'
-													},
-													{
-														device: 'iPhone 14 Pro',
-														ipaddress: '192.168.0.138',
-														country: 'India',
-														isLoggedOut: false,
-														status: 'ACTIVE',
-														_id: '63ce81371a1249dbc693e6ac'
-													},
-													{
-														device: 'unknown',
-														ipaddress: 'unknown',
-														country: 'India',
-														isLoggedOut: false,
-														status: 'ACTIVE',
-														_id: '63cf8bbe0834db750a690537'
-													},
-													{
-														device: 'iPhone 11',
-														ipaddress: '192.168.0.138',
-														country: 'India',
-														isLoggedOut: false,
-														status: 'ACTIVE',
-														_id: '63cf8fc80834db750a691e4f'
-													},
-													{
-														device: 'unknown',
-														ipaddress: 'unknown',
-														country: 'India',
-														isLoggedOut: true,
-														loggedOutAt: 1674563525693,
-														status: 'INACTIVE',
-														_id: '63cf9a880834db750a6930d2'
-													},
-													{
-														device: 'unknown',
-														ipaddress: 'unknown',
-														country: 'India',
-														isLoggedOut: false,
-														status: 'ACTIVE',
-														_id: '63d0c84c7cf6d4e53b3afd08'
-													},
-													{
-														device: 'unknown',
-														ipaddress: 'unknown',
-														country: 'India',
-														isLoggedOut: false,
-														status: 'ACTIVE',
-														_id: '63d7673bf2b20433c95a6eb4'
-													},
-													{
-														device: 'iPhone 14',
-														ipaddress: '192.168.0.138',
-														country: 'India',
-														isLoggedOut: false,
-														status: 'ACTIVE',
-														_id: '63d7c845f2b20433c95c7635'
-													},
-													{
-														device: 'iPhone 14',
-														ipaddress: '192.168.0.138',
-														country: 'India',
-														isLoggedOut: true,
-														loggedOutAt: 1675140096787,
-														status: 'INACTIVE',
-														_id: '63d89a71f2b20433c95cb804'
-													},
-													{
-														device: 'iPhone 14 Pro',
-														ipaddress: '192.168.0.138',
-														country: 'India',
-														isLoggedOut: false,
-														status: 'ACTIVE',
-														_id: '63d89c5cf2b20433c95cd875'
-													},
-													{
-														device: 'unknown',
-														ipaddress: 'unknown',
-														country: 'India',
-														isLoggedOut: false,
-														status: 'ACTIVE',
-														_id: '63d8f9d9c0a3ffc3b26b2739'
-													},
-													{
-														device: 'unknown',
-														ipaddress: 'unknown',
-														country: 'India',
-														isLoggedOut: false,
-														status: 'ACTIVE',
-														_id: '63d9075cc0a3ffc3b26b96d2'
-													},
-													{
-														device: 'unknown',
-														ipaddress: 'unknown',
-														country: 'India',
-														isLoggedOut: false,
-														status: 'ACTIVE',
-														_id: '63d9f7a01d2d8ae2033e153d'
-													},
-													{
-														device: 'unknown',
-														ipaddress: 'unknown',
-														country: 'India',
-														isLoggedOut: false,
-														status: 'ACTIVE',
-														_id: '63d9f9af1d2d8ae2033e3c99'
-													}
-												],
-												visible: true,
-												bettingStatisticsVisible: 'anyone',
-												balanceVisible: 'nobody',
-												betsVisible: 'anyone',
-												messagesVisible: 'anyone',
-												videosVisible: 'anyone',
-												deviceToken: '',
-												isJury: false,
-												level: 1,
-												userStrikeLevel: 1,
-												juryStrikeLevel: 0,
-												juryAdminWithdrawStrikeLevel: 0,
-												isDeleted: false,
-												isActive: true,
-												removedSuggestedUsers: [],
-												favCatIds: ['632c9261b7fbc2dbad023f39'],
-												favSubCatIds: ['622f106da1c8272d4b83c500'],
-												createdAt: '2023-01-10T06:18:46.605Z',
-												updatedAt: '2023-02-01T05:33:35.051Z',
-												__v: 0,
-												birthDate: '10-01-2005',
-												country: 'India',
-												userName: 'Skstoryuser1',
-												affiliateCode: '6FXMIEZ1',
-												referrerAffiliateCode: null,
-												biography: '',
-												displayName: '',
-												preferredSubCategories: ''
-											}
-										]}
-										userCount={0}
-										userID={''}
+										userArray={item?.liveViewUserData}
+										userCount={item?.liveViewsCount}
+										//userID={''}
+										userID={userInfo?.user?._id}
 										isFromLive
 										isFromLiveDiscover
 									/>
 								) : (
-									<Text style={styles.streamStartTimeText}>
-										{`${Strings.START_TIME}: ${dateTimeConvert(
-											item?.start_date_time
-										)}`.toUpperCase()}
-									</Text>
+									!item?.isStarted && (
+										<Text style={styles.streamStartTimeText}>
+											{`${Strings.START_TIME}: ${dateTimeConvert(
+												item?.start_date_time
+											)}`.toUpperCase()}
+										</Text>
+									)
 								)}
 
 								<View
@@ -854,7 +433,7 @@ const DiscoverLiveStreamComponent = ({
 												feedObject: item,
 												betCreationType: 1,
 												selectedBetType: betType,
-												isFromStreaming: true,
+												isFromStreaming: true
 											});
 										}}
 									/>
@@ -1121,19 +700,21 @@ const styles = StyleSheet.create({
 	},
 	liveStreamBottomView: {
 		backgroundColor: colors.greyTwo,
-		paddingVertical: verticalScale(12),
+		paddingBottom: verticalScale(12),
 		marginTop: verticalScale(10)
 	},
 	liveStreamWatchingView: {
 		padding: 0,
 		margin: 0,
-		paddingHorizontal: horizontalScale(8)
+		paddingHorizontal: horizontalScale(8),
+		marginTop: verticalScale(12)
 	},
 	streamStartTimeText: {
 		textAlign: 'center',
 		fontSize: 12,
 		color: colors.white,
-		fontFamily: fonts.type.Inter_Medium
+		fontFamily: fonts.type.Inter_Medium,
+		marginTop: verticalScale(12)
 	}
 });
 

@@ -1590,7 +1590,6 @@ const DiscoverScreen: React.FC<any> = props => {
 				<>
 					{beforeClickTopTabIndex === 0 ? (
 						<DiscoverLiveStreamComponent
-							userInfo
 							friendList={userListData}
 							onEndReach={() => {
 								onEndReached();

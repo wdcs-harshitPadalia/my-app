@@ -153,7 +153,7 @@ const DiscoverScreen: React.FC<any> = props => {
 	const beforeClickTopTabData = [
 		{id: 0, title: Strings.live},
 		{id: 1, title: Strings.str_explore},
-		{id: 2, title: Strings.str_chat}
+		{id: 2, title: Strings.NOTIFICATION_CHAT_MESSAGE}
 	];
 
 	const afterClickTopTabData = [

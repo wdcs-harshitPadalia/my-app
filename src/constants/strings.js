@@ -701,16 +701,16 @@ const Strings = {
 	notification_types: {
 		match_trending: 'MATCH_TRENDING',
 		live_streaming_trending: 'LIVE_STREAMING_TRENDING',
-		bet_replicate_trending: 'CHALLENGE_REPLICATED_TRENDING',
+		bet_replicate_trending: 'BET_REPLICATED_TRENDING',
 		most_followers: 'MOST_FOLLOWERS',
 		trending_category: 'CATEGORY_TRENDING',
 		trending_sub_category: 'SUB_CATEGORY_TRENDING',
-		numerious_bets_created: 'NUMERIOUS_CHALLENGES_CREATED'
+		numerious_bets_created: 'NUMERIOUS_BETS_CREATED'
 	},
 	//Push Notification Type do not change this types
 	push_notification_types: {
-		event_Suggestion: 'EVENT_CHALLENGE_SUGGESTION',
-		join_friend_bet: 'JOIN_FRIEND_CHALLENGE',
+		event_Suggestion: 'EVENT_BET_SUGGESTION',
+		join_friend_bet: 'JOIN_FRIEND_BET',
 		user_suggestion: 'USER_SUGGESTION'
 	},
 	create_bet_and_win: 'CREATE CHALLENGE & WIN',
@@ -914,6 +914,12 @@ const Strings = {
 	str_you_cancel_bet_recover_fund:
 		'. You can cancel this Challenge to recover your funds.',
 	str_ago: ' ago',
-	str_reffered_users: ' invited users'
+	str_reffered_users: ' invited users',
+	str_Hello: 'Hello',
+	str_all: 'All',
+	str_today: 'Today',
+	str_last_week: 'Last week',
+	str_last_month: 'Last month',
+	str_custom_date_range: 'Custom date range'
 };
 export default Strings;

@@ -64,7 +64,7 @@ const DisputeResultScreen: React.FC<any> = props => {
 	const [betUsdAmount, setBetUsdAmount] = useState('0');
 	const [strikeLevel, setStrikeLevel] = useState(0);
 	const [totalParts, setTotalParts] = useState(0);
-	const [tokenTpye, setTokenType] = useState('');
+	const [tokenType, setTokenType] = useState('');
 	const [convertCurrency, setConvertCurrency] = useState();
 	const [betLiquidyAmount, setBetLiquidyAmount] = useState({});
 
@@ -394,13 +394,13 @@ const DisputeResultScreen: React.FC<any> = props => {
 			});
 	};
 
-	useEffect(() => {
-		if (tokenTpye?.short_name === 'MATIC') {
+	useUpdateEffect(() => {
+		if (tokenType?.short_name === 'MATIC') {
 			getBalance(userInfo.user.walletAddress ?? connector?.accounts[0]);
 		} else {
-			getBalanceAsync(tokenTpye?.contractAddress);
+			getBalanceAsync(tokenType?.contractAddress);
 		}
-	}, [tokenTpye]);
+	}, [tokenType]);
 
 	const getBalance = async address => {
 		try {
@@ -621,12 +621,12 @@ const DisputeResultScreen: React.FC<any> = props => {
 									colorArray={defaultTheme.ternaryGradientColor}
 									angle={gradientColorAngle}
 									rightIcon={icons.downGray}
-									rightIconPath={tokenTpye?.tokenImageUrl} //need to change
+									rightIconPath={tokenType?.tokenImageUrl} //need to change
 									styleOfRightIcon={styles.btnRightIcon}
 									// rightIconPath={data?.tokenImageUrl}
 									// onPress={onPressWallets}
 									style={styles.marginInput}
-									short_name={tokenTpye?.short_name}
+									short_name={tokenType?.short_name}
 									onChangeText={(text: string) => {
 										// betAmount({number: text.replace(/^\d+(?:[.,]\d+)*$/gm)});
 										// betAmount(text);
@@ -644,7 +644,7 @@ const DisputeResultScreen: React.FC<any> = props => {
 								/>
 								<View style={styles.contentStyle}>
 									<Text style={styles.AmountStyle}>
-										{tokenTpye?.short_name !== 'DBETH' &&
+										{tokenType?.short_name !== 'DBETH' &&
 											`≈ USD ${betUsdAmount}`}
 									</Text>
 									<Text style={styles.AmountStyle}>

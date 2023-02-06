@@ -35,6 +35,7 @@ import {
 import {RootState} from '../../../redux/store';
 import {gradientColorAngle} from '../../../theme/metrics';
 import NoDataComponent from '../../../components/NoDataComponent';
+import LiveUserProfileComponent from '../../../components/LiveUserProfileComponent';
 
 let scrollToViewPosition = 0;
 
@@ -67,6 +68,8 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 
 	const [isNoData, setIsNoData] = useState(false);
 	const [liveEventData, setLiveEventData] = useState([]);
+	const [betData, setBetData] = useState({});
+
 
 	const noDataItemArray = [
 		{
@@ -130,11 +133,12 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 		};
 		getUserLiveStreaming(uploadData)
 			.then(res => {
-				console.log('getLiveChallengesData res ::  ', JSON.stringify(res));
-				setLiveEventData(res?.data?.challengesList);
+				console.log('getUserLiveStreamingData res ::  ', JSON.stringify(res));
+				setLiveEventData(res?.data?.liveStreaming);
+				setBetData(res?.data?.betType)
 			})
 			.catch(err => {
-				console.log('getDiscoverMatches Data Err : ', err);
+				console.log('getUserLiveStreamingData Data Err : ', err);
 			});
 	};
 
@@ -380,10 +384,31 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 				{userProfileInfo && (
 					<ScrollView bounces={false} ref={scrollRef}>
 						<View style={styles.viewContain}>
-							<ProfileComponent
-								profileImgPath={userProfileInfo?.user?.picture}
-								levelRank={userProfileInfo?.user?.level}
-							/>
+							{liveEventData.length ? (
+								<LiveUserProfileComponent
+									profileImgPath={userProfileInfo?.user?.picture}
+									handleOnClick={() => {
+										if (liveEventData.length === 1) {
+											navigation.navigate(ScreenNames.EventDetailsScreen, {
+												feedObject: liveEventData[0],
+												betCreationType: 1,
+												selectedBetType: betData,
+												isFromStreaming: true
+											});
+										} else {
+											navigation.navigate(ScreenNames.LiveChallengeListScreen, {
+												liveEventData: liveEventData
+											});
+										}
+									}}
+								/>
+							) : (
+								<ProfileComponent
+									profileImgPath={userProfileInfo?.user?.picture}
+									levelRank={userProfileInfo?.user?.level}
+								/>
+							)}
+
 							<Text
 								style={
 									styles.userNameStyle
@@ -522,16 +547,16 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 										}}
 										colorArray={defaultTheme.ternaryGradientColor}
 										angle={gradientColorAngle}
-										buttonText={'All'.toUpperCase()}
+										buttonText={Strings.str_all.toUpperCase()}
 										rightIcon={true}
 										style={styles.userBetsViewStyle}
 										dataSource={[
-											'All',
-											'Today',
+											Strings.str_all,
+											Strings.str_today,
 											// 'Yesterday',
-											'Last week',
-											'Last month',
-											'Custom date range'
+											Strings.str_last_week,
+											Strings.str_last_month,
+											Strings.str_custom_date_range
 										]}
 									/>
 									<BetsProgress

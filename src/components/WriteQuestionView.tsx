@@ -82,6 +82,7 @@ const styles = StyleSheet.create({
 		textAlign: 'center'
 	},
 	loginButtonSocial: {
+		width : '100%',
 		marginBottom: verticalScale(16),
 		marginTop: verticalScale(16)
 	},

@@ -306,8 +306,8 @@ const DiscoverScreen: React.FC<any> = props => {
 	// }, []);
 
 	useUpdateEffect(() => {
-		if (discoverMatchData[visibleParentIndex].dataType === 'video') {
-			videoMarkSeen(discoverMatchData[visibleParentIndex]._id);
+		if (discoverMatchData[visibleParentIndex]?.dataType === 'video') {
+			videoMarkSeen(discoverMatchData[visibleParentIndex]?._id);
 		}
 	}, [visibleParentIndex]);
 

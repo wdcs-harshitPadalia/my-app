@@ -14,6 +14,7 @@ import {
 	View
 } from 'react-native';
 import {Text} from 'react-native-elements';
+import LottieView from 'lottie-react-native';
 import icons from '../../../../assets/icon';
 import Strings from '../../../../constants/strings';
 import styles from './style';

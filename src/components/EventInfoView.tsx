@@ -28,6 +28,7 @@ import fonts from '../theme/fonts';
 import {useSelector} from 'react-redux';
 import {RootState} from '../redux/store';
 import TagView from './TagView';
+import LiveStreamingTag from './LiveStreamingTag';
 
 export const EventInfoView = ({
 	item,
@@ -141,6 +142,27 @@ export const EventInfoView = ({
 									/>
 								</TouchableOpacity>
 							)}
+						</View>
+						<View style={styles.liveTag}>
+							<LiveStreamingTag
+								text={Strings.STREAMING}
+								backgroundColor={colors.redTag}
+								onPress={() => {
+									// navigation.navigate(ScreenNames.EventDetailsScreen, {
+									//     feedObject: {...item, subCategoryList: []},
+									//     betCreationType: 1,
+									//     selectedBetType: {
+									//         “_id”: “62318eb3099d3530771ae880",
+									//         “name”: “Single Match”,
+									//         “active”: true,
+									//         “createdAt”: “2022-03-16T07:16:03.804Z”,
+									//         “updatedAt”: “2022-03-16T07:16:03.804Z”,
+									//         “__v”: 0
+									//       },
+									//     isFromStreaming: true,
+									// });
+								}}
+							/>
 						</View>
 						<View
 							style={{
@@ -467,5 +489,8 @@ const styles = StyleSheet.create({
 		marginRight: verticalScale(8),
 		// backgroundColor: 'red',
 		alignItems: 'flex-start'
+	},
+	liveTag: {
+		marginTop: verticalScale(10)
 	}
 });

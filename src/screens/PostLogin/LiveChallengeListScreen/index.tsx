@@ -15,7 +15,7 @@ import ScreenNames from '../../../navigation/screenNames';
 const LiveChallengeListScreen: React.FC<any> = props => {
 	const navigation = useNavigation();
 
-	const {liveEventData} = useRoute().params;
+	const {liveEventData, betData} = useRoute().params;
 
 	const renderItem = ({item, index}) => (
 		<ButtonGradient
@@ -24,14 +24,7 @@ const LiveChallengeListScreen: React.FC<any> = props => {
 				navigation.navigate(ScreenNames.EventDetailsScreen, {
 					feedObject: item,
 					betCreationType: 1,
-					selectedBetType: {
-						"_id": "62318eb3099d3530771ae880",
-						"name": "Single Match",
-						"active": true,
-						"createdAt": "2022-03-16T07:16:03.804Z",
-						"updatedAt": "2022-03-16T07:16:03.804Z",
-						"__v": 0
-					  },
+					selectedBetType: betData,
 					isFromStreaming: true,
 				});
 			}}

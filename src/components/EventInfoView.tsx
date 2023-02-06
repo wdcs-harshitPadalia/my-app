@@ -392,7 +392,7 @@ export const EventInfoView = ({
 							props.showWatchButton ? item?.liveViewUserData : item?.users
 						}
 						userCount={
-							item?.liveViewsCount ??
+							props.showWatchButton ? item?.liveViewsCount :
 							(item?.betUserCount > 0 && item?.betUserCount)
 						}
 						onPress={() => {
@@ -415,7 +415,7 @@ export const EventInfoView = ({
 						}}
 						onLeftButtonPress={() => props.onDiscoverButtonClicked(item)}
 						onRightButtonPress={() => props.onCreatBetButtonClicked(item)}
-						desText={''}
+						//desText={''}
 						userID={userInfo?.user?._id}
 						isCustomBet={item?.dataType === 'customBet'}
 						onPressViewAll={() => props.cellTapped && props.cellTapped(item)}

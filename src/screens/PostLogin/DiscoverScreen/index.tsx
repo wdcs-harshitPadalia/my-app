@@ -75,6 +75,7 @@ import colors from '../../../theme/colors';
 import {defaultTheme} from '../../../theme/defaultTheme';
 import {horizontalScale, verticalScale} from '../../../theme';
 import {gradientColorAngle, height, width} from '../../../theme/metrics';
+import TutorialView from '../../../components/TutorialView';
 
 let page = 0;
 let pageBets = 0;
@@ -305,8 +306,8 @@ const DiscoverScreen: React.FC<any> = props => {
 	// }, []);
 
 	useUpdateEffect(() => {
-		if (discoverMatchData[visibleParentIndex].dataType === 'video') {
-			videoMarkSeen(discoverMatchData[visibleParentIndex]._id);
+		if (discoverMatchData[visibleParentIndex]?.dataType === 'video') {
+			videoMarkSeen(discoverMatchData[visibleParentIndex]?._id);
 		}
 	}, [visibleParentIndex]);
 
@@ -370,11 +371,19 @@ const DiscoverScreen: React.FC<any> = props => {
 
 	useUpdateEffect(() => {
 		setDiscoverPage(0);
-		getDiscoverMatchData('error');
+		getDiscoverMatchData(
+			params?.video_id === 'undefined' ? undefined : params?.video_id,
+			'error'
+		);
 	}, [beforeClickTopTabIndex]);
 
 	useUpdateEffect(() => {
-		// console.log('params?.video_id??>', params?.video_id, discoverPage);
+		console.log(
+			'params?.video_id??>',
+			params?.video_id,
+			discoverPage,
+			params?.type
+		);
 		// if (discoverPage == 0) {
 		// 	setDiscoverMatchData([])
 		// 	setDiscoverPage(undefined);
@@ -384,8 +393,11 @@ const DiscoverScreen: React.FC<any> = props => {
 		// 	setDiscoverPage(0);
 		// }
 		// setDiscoverMatchData([])
+		if (params?.type === 'video') {
+			setBeforeClickTopTabIndex(1);
+		}
 		getDiscoverMatchData(params?.video_id, 'error');
-	}, [params?.video_id, isFocused]);
+	}, [params?.video_id, isFocused, params?.type]);
 
 	useUpdateEffect(() => {
 		console.log('isSelectedIndex ::', isSelectedIndex);
@@ -1589,7 +1601,6 @@ const DiscoverScreen: React.FC<any> = props => {
 				<>
 					{beforeClickTopTabIndex === 0 ? (
 						<DiscoverLiveStreamComponent
-							userInfo
 							friendList={userListData}
 							onEndReach={() => {
 								onEndReached();

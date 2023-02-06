@@ -170,14 +170,14 @@ const LiveChallengeScreen: React.FC<any> = props => {
 				<ButtonGradient
 					onPress={() => {
 						if (step === 1) {
-							if (validationRegex.url.test(streamLink)) {
+							if (streamLink.includes('https://www.twitch.tv/') && validationRegex.url.test(streamLink)) {
 								setLiveStartTime();
 								setLiveEndTime();
 
 								setStep(2);
 								setIsBackButtonDisable(true);
 							} else {
-								showErrorAlert('', Strings.please_enter_valid_url);
+								showErrorAlert('', Strings.please_enter_valid_twitch_url);
 							}
 						} else {
 							addFeedUserData();

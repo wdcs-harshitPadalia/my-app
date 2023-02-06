@@ -437,6 +437,7 @@ const Strings = {
 	upload_video_30s: 'Please upload below 30s video',
 	upload_video_30mb: 'Please upload below 30mb video',
 	please_enter_valid_url: 'Please enter valid URL',
+	please_enter_valid_twitch_url: 'Please enter valid twitch URL',
 	reach_max_limit: 'You reached max limit of select evidence',
 
 	maker_by: 'Challenge Creator:',

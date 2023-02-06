@@ -397,7 +397,8 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 											});
 										} else {
 											navigation.navigate(ScreenNames.LiveChallengeListScreen, {
-												liveEventData: liveEventData
+												liveEventData: liveEventData,
+												betData: betData
 											});
 										}
 									}}

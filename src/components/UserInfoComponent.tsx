@@ -156,8 +156,7 @@ const styles = StyleSheet.create({
 	},
 	viewRowStyle: {
 		flexDirection: 'row',
-		justifyContent: 'space-between',
-		height: 55
+		justifyContent: 'space-between'
 	},
 	viewSecondRowStyle: {
 		flexDirection: 'row',
@@ -171,7 +170,8 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: colors.black,
 		borderRadius: 6,
-		justifyContent: 'center'
+		justifyContent: 'center',
+		paddingVertical: verticalScale(2)
 	},
 	viewBGStyle: {
 		flexDirection: 'column',
@@ -188,7 +188,8 @@ const styles = StyleSheet.create({
 		fontSize: moderateScale(10),
 		fontFamily: Fonts.type.Inter_ExtraBold,
 		color: colors.placeholderColor,
-		marginTop: verticalScale(6)
+		marginTop: verticalScale(6),
+		textAlign: 'center'
 	},
 	followingCountText: {
 		fontSize: moderateScale(20),

@@ -55,9 +55,10 @@ const HomeTutorialList: React.FC<Props> = props => {
 		<View style={styles.container}>
 		<FlashList
 			ref={flatListRef}
+			estimatedItemSize={width}
 			scrollEnabled={false}
 			bounces={false}
-			pagingEnabled
+			//pagingEnabled
 			horizontal
 			data={arrData}
 			showsHorizontalScrollIndicator={false}

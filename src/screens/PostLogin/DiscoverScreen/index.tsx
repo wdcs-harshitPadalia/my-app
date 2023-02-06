@@ -75,6 +75,7 @@ import colors from '../../../theme/colors';
 import {defaultTheme} from '../../../theme/defaultTheme';
 import {horizontalScale, verticalScale} from '../../../theme';
 import {gradientColorAngle, height, width} from '../../../theme/metrics';
+import TutorialView from '../../../components/TutorialView';
 
 let page = 0;
 let pageBets = 0;
@@ -305,8 +306,8 @@ const DiscoverScreen: React.FC<any> = props => {
 	// }, []);
 
 	useUpdateEffect(() => {
-		if (discoverMatchData[visibleParentIndex].dataType === 'video') {
-			videoMarkSeen(discoverMatchData[visibleParentIndex]._id);
+		if (discoverMatchData[visibleParentIndex]?.dataType === 'video') {
+			videoMarkSeen(discoverMatchData[visibleParentIndex]?._id);
 		}
 	}, [visibleParentIndex]);
 
@@ -1589,7 +1590,6 @@ const DiscoverScreen: React.FC<any> = props => {
 				<>
 					{beforeClickTopTabIndex === 0 ? (
 						<DiscoverLiveStreamComponent
-							userInfo
 							friendList={userListData}
 							onEndReach={() => {
 								onEndReached();

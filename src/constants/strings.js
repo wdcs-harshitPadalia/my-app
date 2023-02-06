@@ -928,6 +928,12 @@ const Strings = {
 	str_ago: ' ago',
 	str_reffered_users: ' invited users',
 	str_challenge_maker: 'Challenge maker',
-	str_challenges: 'challenges'
+	str_challenges: 'challenges',
+	str_Hello: 'Hello',
+	str_all: 'All',
+	str_today: 'Today',
+	str_last_week: 'Last week',
+	str_last_month: 'Last month',
+	str_custom_date_range: 'Custom date range'
 };
 export default Strings;

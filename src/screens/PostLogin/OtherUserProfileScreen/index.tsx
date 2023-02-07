@@ -271,11 +271,7 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 			}}
 			onPressLive={() => {
 				navigation.navigate(ScreenNames.EventDetailsScreen, {
-					feedObject: {
-						...item?.feeds,
-						subCategoryList: item?.subCategoryList,
-						categories: item?.categories
-					},
+					feedObject: item,
 					betCreationType: 1,
 					selectedBetType: betData,
 					isFromStreaming: true

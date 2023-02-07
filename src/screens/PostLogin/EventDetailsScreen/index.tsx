@@ -204,6 +204,7 @@ export default function EventDetailsScreen() {
 					<FeedBetsView
 						isFromStreaming={title !== Strings.feed}
 						item={params?.feedObject}
+						streamCreator={params?.streamCreator}
 						selectedBetType={params?.selectedBetType}
 						isRecent={isRecent}
 						handleShareStory={data => handleShareStory('custom_bet', data)}

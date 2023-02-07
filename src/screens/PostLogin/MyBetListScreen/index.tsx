@@ -29,6 +29,8 @@ const MyBetListScreen: React.FC<any> = props => {
 	const dispatch = useDispatch();
 	const {userId, isMyProfile} = useRoute().params ?? {};
 	const [userBetList, setUserBetList] = useState([]);
+	const [betType, setBetType] = useState();
+
 	const [totalPage, setTotalPage] = useState(0);
 	const [isLoading, setIsLoading] = useState(false);
 	const [activebetCount, setActivebetCount] = useState(0);
@@ -105,6 +107,7 @@ const MyBetListScreen: React.FC<any> = props => {
 				setIsLoading(false);
 				dispatch(updateApiLoader({apiLoader: false}));
 				console.log('getUserBet Response : ', res);
+				setBetType(res?.data?.betType);
 				if (myBetPage !== 0) {
 					setUserBetList(userBetList.concat(res?.data?.bets));
 					setIsNoData(userBetList?.length === 0 ? true : false);
@@ -289,6 +292,18 @@ const MyBetListScreen: React.FC<any> = props => {
 								handleReplicateBet={() => {
 									navigation.navigate(ScreenNames.ReplicateBetCreatScreen, {
 										eventBetData: item
+									});
+								}}
+								onPressLive={() => {
+									navigation.navigate(ScreenNames.EventDetailsScreen, {
+										feedObject: {
+											...item?.feeds,
+											subCategoryList: item?.subCategoryList,
+											categories: item?.categories
+										},
+										betCreationType: 1,
+										selectedBetType: betType,
+										isFromStreaming: true
 									});
 								}}
 							/>

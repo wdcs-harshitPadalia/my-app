@@ -899,7 +899,7 @@ const Strings = {
 	str_has_end_provide_evidence: ' has ended. Please provide evidence.',
 	str_the_bet: 'The Challenge ',
 	str_has_end_creator_verify_review_result:
-		' has ended and the creator has verified the result. Please review the result.',
+		' has ended and the resolver has verified the result. Please review the result.',
 	str_great_result_for_your_bet: 'Great! The result for your Challenge ',
 	str_result_for_your_bet: 'The result for your Challenge ',
 	str_oh_no_result_for_your_bet: 'Oh no! The result for your Challenge ',

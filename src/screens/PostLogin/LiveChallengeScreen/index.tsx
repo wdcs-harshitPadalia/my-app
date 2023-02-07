@@ -94,9 +94,9 @@ const LiveChallengeScreen: React.FC<any> = props => {
 							style={{marginTop: verticalScale(8)}}
 							title={Strings.stream_name}
 							textValue={streamName}
-							question={que => {
-								setStreamName(que);
-								if (que.trim() !== '' && streamLink.trim() !== '') {
+							question={value => {
+								setStreamName(value);
+								if (value.trim() !== '' && streamLink.trim() !== '') {
 									setIsBackButtonDisable(false);
 								} else {
 									setIsBackButtonDisable(true);
@@ -108,9 +108,9 @@ const LiveChallengeScreen: React.FC<any> = props => {
 							style={{marginTop: verticalScale(16)}}
 							title={Strings.stream_link}
 							textValue={streamLink}
-							question={que => {
-								setStreamLink(que);
-								if (que.trim() !== '' && streamName.trim() !== '') {
+							question={value => {
+								setStreamLink(value);
+								if (value.trim() !== '' && streamName.trim() !== '') {
 									setIsBackButtonDisable(false);
 								} else {
 									setIsBackButtonDisable(true);
@@ -170,12 +170,19 @@ const LiveChallengeScreen: React.FC<any> = props => {
 				<ButtonGradient
 					onPress={() => {
 						if (step === 1) {
-							if (streamLink.includes('https://www.twitch.tv/') && validationRegex.url.test(streamLink)) {
-								setLiveStartTime();
-								setLiveEndTime();
+							if (
+								streamLink.startsWith('https://www.twitch.tv/') &&
+								validationRegex.url.test(streamLink)
+							) {
+								if (streamLink === 'https://www.twitch.tv/') {
+									showErrorAlert('', Strings.please_enter_valid_twitch_url);
+								} else {
+									setLiveStartTime();
+									setLiveEndTime();
 
-								setStep(2);
-								setIsBackButtonDisable(true);
+									setStep(2);
+									setIsBackButtonDisable(true);
+								}
 							} else {
 								showErrorAlert('', Strings.please_enter_valid_twitch_url);
 							}

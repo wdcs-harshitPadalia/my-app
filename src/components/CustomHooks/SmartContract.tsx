@@ -51,6 +51,7 @@ interface Props {
 	_totalBetOption: any;
 	_selectedBetMakerOption: any;
 	_ISCUSTOMIZED: boolean;
+	_streamCreator: any;
 }
 
 interface JoinBet {
@@ -506,6 +507,7 @@ export const useBetCreateContract = () => {
 			const res = await a.methods
 				.ForwardCreateBet(
 					betData._parentBetId,
+					betData._streamCreator,
 					createBetOpponentAmountBigNumber,
 					betData._betEndingDate,
 					betData._tokenId,

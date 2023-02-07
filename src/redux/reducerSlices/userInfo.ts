@@ -44,6 +44,12 @@ export interface UserState {
 			totalBets: number;
 			platformFees: number;
 			totalBalance: string;
+			visitor: [];
+			visitorCount: number;
+			userFollowing: number;
+			userFollower: number;
+			activeBets: number;
+			biography: string;
 		};
 		token: string;
 		isNewUser: boolean;
@@ -94,7 +100,13 @@ const initialState: UserState = {
 			levelWiseBets: 0,
 			totalBets: 0,
 			platformFees: 0,
-			totalBalance: '0'
+			totalBalance: '0',
+			visitor: [],
+			visitorCount: 0,
+			userFollowing: 0,
+			userFollower: 0,
+			activeBets: 0,
+			biography: ''
 		},
 		token: '',
 		isNewUser: false,

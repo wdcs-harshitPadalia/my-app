@@ -37,6 +37,7 @@ interface Props extends TextInputProps {
 	handleBetTackerPicked?: () => void;
 	handleAlreadyBetTackerUserPicked?: () => void;
 	handleReplicateBet?: () => void;
+	onPressLive?: () => void;
 }
 
 const BetsListView: React.FC<Props> = props => {
@@ -53,7 +54,8 @@ const BetsListView: React.FC<Props> = props => {
 		handleBetMakerUserPicked,
 		handleBetTackerPicked,
 		handleAlreadyBetTackerUserPicked,
-		handleReplicateBet
+		handleReplicateBet,
+		onPressLive
 	} = props;
 
 	return (
@@ -122,27 +124,16 @@ const BetsListView: React.FC<Props> = props => {
 								/>
 							)}
 						</View>
-						<View style={styles.liveTag}>
-							<LiveStreamingTag
-								text={Strings.STREAMING}
-								backgroundColor={colors.redTag}
-								onPress={() => {
-									// navigation.navigate(ScreenNames.EventDetailsScreen, {
-									//     feedObject: {...item, subCategoryList: []},
-									//     betCreationType: 1,
-									//     selectedBetType: {
-									//         “_id”: “62318eb3099d3530771ae880",
-									//         “name”: “Single Match”,
-									//         “active”: true,
-									//         “createdAt”: “2022-03-16T07:16:03.804Z”,
-									//         “updatedAt”: “2022-03-16T07:16:03.804Z”,
-									//         “__v”: 0
-									//       },
-									//     isFromStreaming: true,
-									// });
-								}}
-							/>
-						</View>
+						{item?.isLiveBet && (
+							<View style={styles.liveTag}>
+								<LiveStreamingTag
+									text={Strings.STREAMING}
+									backgroundColor={colors.redTag}
+									onPress={onPressLive}
+								/>
+							</View>
+						)}
+
 						{matchName ||
 						!teamName?.toUpperCase().includes('undefined'.toUpperCase()) ? (
 							<Text style={styles.endTimeWithTeamNameTextTitle}>

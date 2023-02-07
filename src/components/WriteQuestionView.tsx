@@ -33,6 +33,13 @@ const WriteQuestionView: React.FC<Props> = props => {
 		placeholder
 	} = props;
 
+	const onSubmitEditing = e => {
+		if (e.keyCode == 13 && !e.shiftKey) {
+			e.preventDefault();
+			return false;
+		}
+	};
+
 	return (
 		<View style={[styles.viewDetails, {...props.style}]}>
 			<Text style={styles.titleStyle}>{title}</Text>
@@ -44,6 +51,7 @@ const WriteQuestionView: React.FC<Props> = props => {
 				onChangeText={(text: string) => {
 					question(text);
 				}}
+				onSubmitEditing={onSubmitEditing}
 				textValue={textValue}
 				maxLength={100}
 			/>

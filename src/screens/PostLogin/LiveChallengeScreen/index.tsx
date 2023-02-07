@@ -43,9 +43,11 @@ const LiveChallengeScreen: React.FC<any> = props => {
 			start_date_time = Date.parse(liveStartTime);
 			end_date_time = Date.parse(liveEndTime);
 		}
-
+		const channelName = streamLink
+			.split('/')
+			[streamLink.split('/')?.length - 1].split('?')[0];
 		const uploadData = {
-			feedUrl: streamLink,
+			feedUrl: `https://player.twitch.tv/?channel=${channelName}&parent=www.truly.fun`,
 			start_date_time: start_date_time,
 			end_date_time: end_date_time,
 			feed_name: streamName
@@ -114,7 +116,10 @@ const LiveChallengeScreen: React.FC<any> = props => {
 									setIsBackButtonDisable(true);
 								}
 							}}
-							placeholder={Strings.enter_a_stream_link}
+							placeholder={
+								Strings.enter_a_stream_link +
+								' in this format https://www.twitch.tv/channleName'
+							}
 						/>
 					</>
 				) : (
@@ -165,14 +170,14 @@ const LiveChallengeScreen: React.FC<any> = props => {
 				<ButtonGradient
 					onPress={() => {
 						if (step === 1) {
-							if (validationRegex.url.test(streamLink)) {
+							if (streamLink.includes('https://www.twitch.tv/') && validationRegex.url.test(streamLink)) {
 								setLiveStartTime();
 								setLiveEndTime();
 
 								setStep(2);
 								setIsBackButtonDisable(true);
 							} else {
-								showErrorAlert('', Strings.please_enter_valid_url);
+								showErrorAlert('', Strings.please_enter_valid_twitch_url);
 							}
 						} else {
 							addFeedUserData();

@@ -449,7 +449,9 @@ const styles = StyleSheet.create({
 		height: '100%',
 		justifyContent: 'flex-start',
 		alignItems: 'center',
-		backgroundColor: defaultTheme.backGroundColor
+		backgroundColor: defaultTheme.backGroundColor,
+		marginHorizontal: 0,
+		marginVertical: 0
 	},
 	progressBarArray: {
 		flexDirection: 'row',

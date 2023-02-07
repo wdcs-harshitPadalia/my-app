@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
 		fontSize: moderateScale(20),
 		fontFamily: Fonts.type.Inter_ExtraBold,
 		color: colors.white,
-		marginRight: horizontalScale(4),
+		// marginRight: horizontalScale(4),
 		textAlign: 'left',
 		flex: 1
 	}

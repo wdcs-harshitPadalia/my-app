@@ -149,7 +149,7 @@ const Story = forwardRef((props: Props, parentRef) => {
 											</Text>
 										)}
 										{story?.bet?.bet_type === 1 && (
-											<Text numberOfLines={1} style={styles.betTitleText}>
+											<Text numberOfLines={2} style={styles.betTitleText}>
 												{story?.bet?.betQuestion}
 											</Text>
 										)}
@@ -587,7 +587,9 @@ const styles = StyleSheet.create({
 		height: '100%',
 		backgroundColor: defaultTheme.backGroundColor,
 		justifyContent: 'center',
-		alignItems: 'center'
+		alignItems: 'center',
+		marginHorizontal: 0,
+		marginVertical: 0
 	},
 	content: {
 		width: '100%',
@@ -655,9 +657,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'space-between'
 	},
-	flexColumnContainer: {
-		flexDirection: 'column'
-	},
+	flexColumnContainer: {flex: 1, flexDirection: 'column'},
 	btnShowAllStyle: {
 		color: colors.textTitle,
 		fontSize: 12,

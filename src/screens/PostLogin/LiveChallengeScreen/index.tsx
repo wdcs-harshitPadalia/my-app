@@ -170,12 +170,19 @@ const LiveChallengeScreen: React.FC<any> = props => {
 				<ButtonGradient
 					onPress={() => {
 						if (step === 1) {
-							if (streamLink.includes('https://www.twitch.tv/') && validationRegex.url.test(streamLink)) {
-								setLiveStartTime();
-								setLiveEndTime();
+							if (
+								streamLink.startsWith('https://www.twitch.tv/') &&
+								validationRegex.url.test(streamLink)
+							) {
+								if (streamLink === 'https://www.twitch.tv/') {
+									showErrorAlert('', Strings.please_enter_valid_twitch_url);
+								} else {
+									setLiveStartTime();
+									setLiveEndTime();
 
-								setStep(2);
-								setIsBackButtonDisable(true);
+									setStep(2);
+									setIsBackButtonDisable(true);
+								}
 							} else {
 								showErrorAlert('', Strings.please_enter_valid_twitch_url);
 							}

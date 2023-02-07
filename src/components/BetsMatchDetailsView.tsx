@@ -83,19 +83,25 @@ const BetsMatchDetailsView: React.FC<Props> = props => {
 				/>
 				{!isShowUserProfile ? (
 					<View style={styles.viewProfile}>
-						<Text style={styles.betTakenStyle}>
-							{betData?.bet?.users?._id === userProfileInfo?.user?._id
-								? Strings.taken_by.toUpperCase()
-								: betData?.betTakerData?._id === userProfileInfo?.user?._id
-								? Strings.maker_by.toUpperCase()
-								: betData?.bet?.users?._id === visitProfileUserId
-								? Strings.maker_by.toUpperCase()
-								: Strings.taken_by.toUpperCase()}
-						</Text>
+						<View>
+							<Text style={styles.betTakenStyle}>
+								{betData?.bet?.users?._id === userProfileInfo?.user?._id
+									? Strings.taken_by.toUpperCase()
+									: betData?.betTakerData?._id === userProfileInfo?.user?._id
+									? Strings.maker_by.toUpperCase()
+									: betData?.bet?.users?._id === visitProfileUserId
+									? Strings.maker_by.toUpperCase()
+									: Strings.taken_by.toUpperCase()}
+							</Text>
+						</View>
 
 						<TouchableOpacity
 							onPress={handleRedirectUser}
-							style={{flexDirection: 'row', alignItems: 'center'}}>
+							style={{
+								flexDirection: 'row',
+								alignItems: 'center',
+								flex: 1
+							}}>
 							<View style={styles.viewImageStyle}>
 								<ExpoFastImage
 									style={styles.imgIconStyle}

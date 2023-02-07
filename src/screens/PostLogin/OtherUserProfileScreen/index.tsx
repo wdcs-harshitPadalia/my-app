@@ -70,7 +70,6 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 	const [liveEventData, setLiveEventData] = useState([]);
 	const [betData, setBetData] = useState({});
 
-
 	const noDataItemArray = [
 		{
 			image_url: icons.star_congrats,
@@ -135,7 +134,7 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 			.then(res => {
 				console.log('getUserLiveStreamingData res ::  ', JSON.stringify(res));
 				setLiveEventData(res?.data?.liveStreaming);
-				setBetData(res?.data?.betType)
+				setBetData(res?.data?.betType);
 			})
 			.catch(err => {
 				console.log('getUserLiveStreamingData Data Err : ', err);
@@ -268,6 +267,18 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 			handleReplicateBet={() => {
 				navigation.navigate(ScreenNames.ReplicateBetCreatScreen, {
 					eventBetData: item
+				});
+			}}
+			onPressLive={() => {
+				navigation.navigate(ScreenNames.EventDetailsScreen, {
+					feedObject: {
+						...item?.feeds,
+						subCategoryList: item?.subCategoryList,
+						categories: item?.categories
+					},
+					betCreationType: 1,
+					selectedBetType: betData,
+					isFromStreaming: true
 				});
 			}}
 		/>

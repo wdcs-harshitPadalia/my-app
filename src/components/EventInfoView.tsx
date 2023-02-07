@@ -35,7 +35,8 @@ export const EventInfoView = ({
 	props,
 	isScreenFocused,
 	onShareSheetOpen,
-	titleTotalNumOfLines
+	titleTotalNumOfLines,
+	showLiveTage
 }) => {
 	const userInfo = useSelector((state: RootState) => {
 		return state.userInfo.data;
@@ -143,27 +144,18 @@ export const EventInfoView = ({
 								</TouchableOpacity>
 							)}
 						</View>
-						<View style={styles.liveTag}>
-							<LiveStreamingTag
-								text={Strings.STREAMING}
-								backgroundColor={colors.redTag}
-								onPress={() => {
-									// navigation.navigate(ScreenNames.EventDetailsScreen, {
-									//     feedObject: {...item, subCategoryList: []},
-									//     betCreationType: 1,
-									//     selectedBetType: {
-									//         “_id”: “62318eb3099d3530771ae880",
-									//         “name”: “Single Match”,
-									//         “active”: true,
-									//         “createdAt”: “2022-03-16T07:16:03.804Z”,
-									//         “updatedAt”: “2022-03-16T07:16:03.804Z”,
-									//         “__v”: 0
-									//       },
-									//     isFromStreaming: true,
-									// });
-								}}
-							/>
-						</View>
+						{showLiveTage && (
+							<View style={styles.liveTag}>
+								<LiveStreamingTag
+									text={Strings.STREAMING}
+									backgroundColor={colors.redTag}
+									onPress={() => {
+										props.onPressLive && props.onPressLive(item);
+									}}
+								/>
+							</View>
+						)}
+
 						<View
 							style={{
 								marginTop: verticalScale(8)
@@ -392,8 +384,9 @@ export const EventInfoView = ({
 							props.showWatchButton ? item?.liveViewUserData : item?.users
 						}
 						userCount={
-							props.showWatchButton ? item?.liveViewsCount :
-							(item?.betUserCount > 0 && item?.betUserCount)
+							props.showWatchButton
+								? item?.liveViewsCount
+								: item?.betUserCount > 0 && item?.betUserCount
 						}
 						onPress={() => {
 							// handleSubmit();

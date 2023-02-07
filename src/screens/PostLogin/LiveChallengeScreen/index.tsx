@@ -94,9 +94,9 @@ const LiveChallengeScreen: React.FC<any> = props => {
 							style={{marginTop: verticalScale(8)}}
 							title={Strings.stream_name}
 							textValue={streamName}
-							question={que => {
-								setStreamName(que);
-								if (que.trim() !== '' && streamLink.trim() !== '') {
+							question={value => {
+								setStreamName(value);
+								if (value.trim() !== '' && streamLink.trim() !== '') {
 									setIsBackButtonDisable(false);
 								} else {
 									setIsBackButtonDisable(true);
@@ -108,9 +108,9 @@ const LiveChallengeScreen: React.FC<any> = props => {
 							style={{marginTop: verticalScale(16)}}
 							title={Strings.stream_link}
 							textValue={streamLink}
-							question={que => {
-								setStreamLink(que);
-								if (que.trim() !== '' && streamName.trim() !== '') {
+							question={value => {
+								setStreamLink(value);
+								if (value.trim() !== '' && streamName.trim() !== '') {
 									setIsBackButtonDisable(false);
 								} else {
 									setIsBackButtonDisable(true);

@@ -414,7 +414,7 @@ export const EventInfoView = ({
 						onPressViewAll={() => props.cellTapped && props.cellTapped(item)}
 						volume={item?.totalVolume}
 						openbet={item?.openBets}
-						prefixText={Strings.str_prefix_p2p_bets}
+						prefixText={Strings.p2pBet}
 						isFromLive={item?.liveViewUserData}
 						isCallFromSuggestedUser={true}
 					/>

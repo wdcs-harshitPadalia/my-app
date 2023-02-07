@@ -92,7 +92,7 @@ import {gradientColorAngle} from '../../../../theme/metrics';
 import PlaceBetsAmountView from '../../../../components/PlaceBetsAmountView';
 import SelectCryptoAmount from '../../../../components/SelectCryptoAmount';
 import EarningsProfitView from '../../../../components/EarningsProfitView';
-import {decimalValue} from '../../../../constants/api';
+import {decimalValue, nullAddress} from '../../../../constants/api';
 import Lottie from 'lottie-react';
 
 let pageLeague = 0;
@@ -431,7 +431,8 @@ const BetsCategoryScreen: React.FC<any> = () => {
 					isSelectChooseSideType === (type0Odds?.decimalName || options1)
 						? 0
 						: 1,
-				_ISCUSTOMIZED: isSelectedLeagueType !== 0
+				_ISCUSTOMIZED: isSelectedLeagueType !== 0,
+				_streamCreator: params?.streamCreator?.walletAddress ?? nullAddress
 			});
 		} else {
 			console.log('====================================');
@@ -546,7 +547,8 @@ const BetsCategoryScreen: React.FC<any> = () => {
 					isSelectChooseSideType === (type0Odds?.decimalName || options1)
 						? 0
 						: 1,
-				_ISCUSTOMIZED: isSelectedLeagueType !== 0
+				_ISCUSTOMIZED: isSelectedLeagueType !== 0,
+				_streamCreator: params?.streamCreator?.walletAddress ?? nullAddress
 			});
 		}
 	};
@@ -1043,7 +1045,9 @@ const BetsCategoryScreen: React.FC<any> = () => {
 				bet_opposite_side_option_index:
 					isSelectChooseSideType === options2 ? 0 : 1,
 				bet_opposite_side_option:
-					isSelectChooseSideType === options2 ? options1.trim() : options2.trim(),
+					isSelectChooseSideType === options2
+						? options1.trim()
+						: options2.trim(),
 				bet_type: '1',
 				betParticipationEndDate: participationEndDate + '',
 				opposite_bet_amount:
@@ -1087,7 +1091,9 @@ const BetsCategoryScreen: React.FC<any> = () => {
 				bet_opposite_side_option_index:
 					isSelectChooseSideType === options2 ? 0 : 1,
 				bet_opposite_side_option:
-					isSelectChooseSideType === options2 ? options1.trim() : options2.trim(),
+					isSelectChooseSideType === options2
+						? options1.trim()
+						: options2.trim(),
 				opposite_bet_amount:
 					(
 						parseFloat(betAmount.replace(',', '.')) *
@@ -2531,7 +2537,8 @@ const BetsCategoryScreen: React.FC<any> = () => {
 							isSelectChooseSideType === (type0Odds?.decimalName || options1)
 								? 0
 								: 1,
-						_ISCUSTOMIZED: isSelectedLeagueType !== 0
+						_ISCUSTOMIZED: isSelectedLeagueType !== 0,
+						_streamCreator: params?.streamCreator?.walletAddress ?? nullAddress
 					});
 				} else if (isPrivacy === 1) {
 					seIsProgress('90%');
@@ -2656,7 +2663,8 @@ const BetsCategoryScreen: React.FC<any> = () => {
 						isSelectChooseSideType === (type0Odds?.decimalName || options1)
 							? 0
 							: 1,
-					_ISCUSTOMIZED: isSelectedLeagueType !== 0
+					_ISCUSTOMIZED: isSelectedLeagueType !== 0,
+					_streamCreator: params?.streamCreator?.walletAddress ?? nullAddress
 				});
 				break;
 			case 12:

@@ -257,6 +257,12 @@ export const CONFIG_TOKEN_ABI = [
 				internalType: 'uint256',
 				name: '',
 				type: 'uint256'
+			},
+			{
+				indexed: false,
+				internalType: 'uint256',
+				name: '',
+				type: 'uint256'
 			}
 		],
 		name: 'FeeDeductionConfigUpdated',
@@ -369,6 +375,19 @@ export const CONFIG_TOKEN_ABI = [
 	{
 		inputs: [],
 		name: 'DBETH_Swap_Amount_With_Trend_Setter',
+		outputs: [
+			{
+				internalType: 'uint256',
+				name: '',
+				type: 'uint256'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [],
+		name: 'Event_Creator_Reward',
 		outputs: [
 			{
 				internalType: 'uint256',
@@ -788,6 +807,11 @@ export const CONFIG_TOKEN_ABI = [
 		inputs: [],
 		name: 'getFeeDeductionConfig',
 		outputs: [
+			{
+				internalType: 'uint256',
+				name: '',
+				type: 'uint256'
+			},
 			{
 				internalType: 'uint256',
 				name: '',
@@ -1315,6 +1339,11 @@ export const CONFIG_TOKEN_ABI = [
 			},
 			{
 				internalType: 'uint256',
+				name: 'Event_creator_reward_',
+				type: 'uint256'
+			},
+			{
+				internalType: 'uint256',
 				name: 'pool_distribution_amount_',
 				type: 'uint256'
 			},
@@ -1771,6 +1800,11 @@ export const BET_ABI = [
 			},
 			{
 				internalType: 'address',
+				name: 'eventCreator',
+				type: 'address'
+			},
+			{
+				internalType: 'address',
 				name: 'betInitiator',
 				type: 'address'
 			},
@@ -1895,6 +1929,11 @@ export const BET_ABI = [
 			{
 				internalType: 'address',
 				name: 'parentBet_',
+				type: 'address'
+			},
+			{
+				internalType: 'address',
+				name: 'eventCreator_',
 				type: 'address'
 			},
 			{
@@ -2885,6 +2924,11 @@ export const DISPUTE_RESOLUTION_TOKEN_ABI = [
 			{
 				internalType: 'address',
 				name: 'parentBet',
+				type: 'address'
+			},
+			{
+				internalType: 'address',
+				name: 'eventCreator',
 				type: 'address'
 			},
 			{
@@ -3922,6 +3966,11 @@ export const SMART_CONTRACT_ABI = [
 				type: 'address'
 			},
 			{
+				internalType: 'address',
+				name: 'eventCreator_',
+				type: 'address'
+			},
+			{
 				internalType: 'uint256',
 				name: 'betTakerRequiredLiquidity_',
 				type: 'uint256'
@@ -4561,6 +4610,19 @@ export const BET_CLAIM_EVENT = [
 		anonymous: false,
 		inputs: [
 			{
+				indexed: false,
+				internalType: 'uint256',
+				name: 'amount_',
+				type: 'uint256'
+			}
+		],
+		name: 'LiquidityWithdrawal',
+		type: 'event'
+	},
+	{
+		anonymous: false,
+		inputs: [
+			{
 				indexed: true,
 				internalType: 'address',
 				name: 'betId_',
@@ -4664,6 +4726,16 @@ export const BET_CLAIM_EVENT = [
 				internalType: 'address',
 				name: 'agreegatorAddress_',
 				type: 'address'
+			},
+			{
+				internalType: 'address[]',
+				name: 'userPackage_',
+				type: 'address[]'
+			},
+			{
+				internalType: 'uint256[]',
+				name: 'percentagePackage_',
+				type: 'uint256[]'
 			}
 		],
 		name: 'claimReward',
@@ -4704,6 +4776,40 @@ export const BET_CLAIM_EVENT = [
 				internalType: 'bool',
 				name: '',
 				type: 'bool'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'address',
+				name: 'registry_',
+				type: 'address'
+			},
+			{
+				internalType: 'address',
+				name: 'agreegatorAddress_',
+				type: 'address'
+			},
+			{
+				internalType: 'address[]',
+				name: 'userPackage_',
+				type: 'address[]'
+			},
+			{
+				internalType: 'uint256[]',
+				name: 'percentagePackage_',
+				type: 'uint256[]'
+			}
+		],
+		name: 'getDistribution',
+		outputs: [
+			{
+				internalType: 'uint256[]',
+				name: '',
+				type: 'uint256[]'
 			}
 		],
 		stateMutability: 'view',
@@ -4920,6 +5026,11 @@ export const BET_CLAIM_EVENT = [
 			{
 				internalType: 'address',
 				name: 'betTrendSetter_',
+				type: 'address'
+			},
+			{
+				internalType: 'address',
+				name: 'eventCreator_',
 				type: 'address'
 			}
 		],
@@ -5423,6 +5534,11 @@ export const LIQUIDITY_EVENT = [
 				internalType: 'address',
 				name: 'betTrendSetter_',
 				type: 'address'
+			},
+			{
+				internalType: 'address',
+				name: 'eventCreator_',
+				type: 'address'
 			}
 		],
 		name: 'receiveLiquidityCreator',
@@ -5854,6 +5970,11 @@ export const REWARD_DISTRIBUTION_ABI = [
 			{
 				internalType: 'address',
 				name: 'parentBet',
+				type: 'address'
+			},
+			{
+				internalType: 'address',
+				name: 'eventCreator',
 				type: 'address'
 			},
 			{
@@ -6334,21 +6455,21 @@ export const REWARD_DISTRIBUTION_ABI = [
 //TODO: add a way to get the contract address from the network
 
 export const ConfigContractAddress =
-	'0x2B19669499Ec3205db298e734025a950f7f9b817';
+	'0xe85e024621Bddeb30880837a0A1F57483E5164ab';
 
-export const BetContractAddress = '0xf8833309b2C0d8B2494E1B1467FC885138f2C938';
+export const BetContractAddress = '0x85c34716dcbFe0eDbc47B25F0b3280F07f241996';
 
 export const DisputeResolutionContractAddress =
-	'0x1E76E682e809c6B46BE3d999EEEAAAAE8BdEd09C';
+	'0x0C7826951062D34488deE31507e9d494Db981882';
 
 export const SmartContractAddress =
-	'0xf65F5023232b7AC3da6062a2301C5fB0F57EcFd7';
+	'0x4c2063cCB9d9dc13b0e25Cb7857cd950d4CbB148';
 
 export const DebethTokenContractAddress =
 	'0xf04A870D9124c4bBE1b2C2B80eb6020A11B22499';
 
 export const LiquidityHolderAddress =
-	'0x72a00f65ed20cE7471F2Eef2Fa396585de1da068';
+	'0xA72C9c84D24a75936106f6134a5B0a561EcdAA2D';
 
 export const RewardDistributionAddress =
-	'0x9E63c96A909F48e7c95754dEA29a30C3E2557e24';
+	'0xa4100ba8D743cef4e45fc5570d1339c67BB1833b';

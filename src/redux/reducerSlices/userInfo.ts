@@ -38,6 +38,12 @@ export interface UserState {
 			videoCount: number;
 			referralUserInfo: {_id: string; userName: string};
 			affiliateCode: string;
+			maximumLevelBets: number;
+			minimumLevelBets: number;
+			levelWiseBets: number;
+			totalBets: number;
+			platformFees: number;
+			totalBalance: string;
 		};
 		token: string;
 		isNewUser: boolean;
@@ -48,11 +54,6 @@ export interface UserState {
 		bets: [];
 		isBiometric: boolean;
 		isSyncContact: boolean;
-		totalBalance: string;
-		maximumLevelBets: number;
-		minimumLevelBets: number;
-		totalBets: number;
-		platformFees: number;
 	};
 }
 
@@ -78,17 +79,23 @@ const initialState: UserState = {
 				events_you_like: false,
 				people_you_know: false,
 				your_friends_bet: false
-			}
+			},
+			videosVisible: '',
+			balanceVisible: '',
+			betsVisible: '',
+			videoCount: 0,
+			referralUserInfo: {
+				_id: '',
+				userName: ''
+			},
+			affiliateCode: '',
+			maximumLevelBets: 0,
+			minimumLevelBets: 0,
+			levelWiseBets: 0,
+			totalBets: 0,
+			platformFees: 0,
+			totalBalance: '0'
 		},
-		videosVisible: '',
-		balanceVisible: '',
-		betsVisible: '',
-		videoCount: 0,
-		referralUserInfo: {
-			_id: '',
-			userName: ''
-		},
-		affiliateCode: '',
 		token: '',
 		isNewUser: false,
 		isAppLaunched: true,
@@ -97,12 +104,7 @@ const initialState: UserState = {
 		bets: [],
 		isBiometric: false,
 		shouldShowChatBadge: false,
-		isSyncContact: true,
-		totalBalance: '0',
-		maximumLevelBets: 0,
-		minimumLevelBets: 0,
-		totalBets: 0,
-		platformFees: 0
+		isSyncContact: true
 	}
 };
 

@@ -83,7 +83,6 @@ const Strings = {
 	followers: 'Followers',
 	following: 'Following',
 	create: 'Create',
-	wallets: 'Wallet',
 	betStatistics: 'Challenge statistics',
 	betsWon: 'Challenges won:',
 	betsLost: 'Challenges lost:',
@@ -185,7 +184,6 @@ const Strings = {
 	View_details: 'View details',
 	won_bets: 'won Challenge',
 	lost_bets: 'lost Challenges',
-	Money_won: 'Money won',
 	Lost: 'Lost',
 	Last_month: 'Last month',
 	your_wallet: 'your wallet',
@@ -439,6 +437,7 @@ const Strings = {
 	upload_video_30s: 'Please upload below 30s video',
 	upload_video_30mb: 'Please upload below 30mb video',
 	please_enter_valid_url: 'Please enter valid URL',
+	please_enter_valid_twitch_url: 'Please enter valid twitch URL',
 	reach_max_limit: 'You reached max limit of select evidence',
 
 	maker_by: 'Challenge Creator:',
@@ -654,10 +653,8 @@ const Strings = {
 	your_opponent_is_betting: 'your opponent Challenge amount:',
 	your_opponent_will_win: 'Your opponent will win',
 	//Prediction Market
-	str_for_you: 'Explore',
 	str_live_chat: 'Live chat',
 	str_explore: 'Explore',
-	str_chat: 'Chat',
 	str_active_bets_count: '%d Active Challenges',
 	str_follow_user_account: '%username',
 	str_follow_more_account: ' and %count more\n follows this account',
@@ -687,7 +684,6 @@ const Strings = {
 	str_show_all: 'Show All',
 	str_show_less: 'Show Less',
 	str_active_bet: 'Active Challenge',
-	str_active_bets: 'Active Challenges',
 	str_followings: 'Followings',
 	just_a_few_more_seconds_your_funds_are_being_transferred_to_your_wallet:
 		'Just a few more seconds! Your funds are being transferred to your wallet',
@@ -697,7 +693,6 @@ const Strings = {
 		'You can only share with up to 10 users',
 	claimable: 'Claimable',
 	us_dollar: 'US$',
-	str_prefix_p2p_bets: 'P2P Challenge',
 	str_see_all: 'See all',
 	swipe_up_for_more_bets: 'Swipe up for more Challenge',
 	app_sharing_text:
@@ -887,7 +882,6 @@ const Strings = {
 	you_have_24_hours_to_declare_your_result:
 		'you have 24 hours to declare your result.',
 	the_juy: 'the jury',
-	The_bet: 'The Challenge',
 	added_you_as_a_Friend: 'added you as a Friend.',
 	You_are_now_friends_with: 'You are now friends with',
 	streaming_has_been_ended: 'streaming has been ended!',

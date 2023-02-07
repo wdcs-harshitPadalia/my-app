@@ -199,7 +199,9 @@ const styles = StyleSheet.create({
 		textAlign: 'center'
 	},
 	modalContainer: {
-		flex: 1
+		flex: 1,
+		marginHorizontal: 0,
+		marginVertical: 0
 	}
 });
 

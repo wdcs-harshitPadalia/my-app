@@ -232,10 +232,12 @@ const LiveStreamingScreen: React.FC<any> = props => {
 									//   selectedBetType: feedInfo.betType,
 									// });
 									navigation.navigate(ScreenNames.EventDetailsScreen, {
+										title: Strings.Live_Streaming,
 										feedObject: item,
 										betCreationType: 1,
 										selectedBetType: feedInfo.betType,
-										isFromStreaming: true
+										isFromStreaming: true,
+										streamCreator: item?.feed_creator === 'User' && item?.users,
 									});
 								}}
 								cellTapped={
@@ -245,7 +247,8 @@ const LiveStreamingScreen: React.FC<any> = props => {
 											feedObject: item,
 											betCreationType: 1,
 											selectedBetType: feedInfo.betType,
-											isFromStreaming: true
+											isFromStreaming: true,
+											streamCreator: item?.feed_creator === 'User' && item?.users,
 										})
 									// navigation.navigate(ScreenNames.EventDetailsScreen, {
 									//   title: Strings.feed,

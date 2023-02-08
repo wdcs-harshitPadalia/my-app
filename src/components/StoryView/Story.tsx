@@ -587,7 +587,9 @@ const styles = StyleSheet.create({
 		height: '100%',
 		backgroundColor: defaultTheme.backGroundColor,
 		justifyContent: 'center',
-		alignItems: 'center'
+		alignItems: 'center',
+		marginHorizontal: 0,
+		marginVertical: 0
 	},
 	content: {
 		width: '100%',

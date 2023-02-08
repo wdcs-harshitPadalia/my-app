@@ -97,7 +97,10 @@ const DisputeResultScreen: React.FC<any> = props => {
 	useEffect(() => {
 		getForwardGetBetData(betObj?.bet_id);
 
-		if (resultData?.isWinner === 'draw' || resultData?.isWinner === 'win') {
+		if (
+			(resultData?.isWinner === 'draw' || resultData?.isWinner === 'win') &&
+			!resultData?.isBetJury
+		) {
 			resolvedBetEvent(betObj?.bet_id, resultData?.isWinner === 'draw');
 		}
 	}, [betObj, resultData]);

@@ -131,16 +131,32 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 		if (hashObj?.error) {
 			showErrorAlert(Strings.txt_error, Strings.txt_check_internet_connection);
 		} else {
-			if (isOpenDispute) {
-				// createDisputeRoom(
-				// 	hashObj?.hash,
-				// 	hashObj?.signature,
-				// 	bet_contract_address,
-				// 	myCase
-				// );
+			console.log('isOpenDispute ::', isOpenDispute);
+			// if (isOpenDispute) {
+			// 	console.log('inside if :: isOpenDispute :: ', isOpenDispute);
+			// 	setTimeout(
+			// 		() => {
+			// 			 createDisputeRoom(
+			// 			 	hashObj?.hash,
+			// 			 	hashObj?.signature,
+			// 				bet_contract_address,
+			// 			 	myCase
+			// 			 );
+			// 		},
+			// 		userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask'
+			// 			? 500
+			// 			: 0
+			// 	);
+			// } else {
+			console.log('inside else :: isAlreadyPaid :: ', isAlreadyPaid);
+			if (isAlreadyPaid) {
+				console.log('inside else :: if :: isAlreadyPaid :: ', isAlreadyPaid);
+				handleUploadEvidence();
+			} else {
+				console.log('inside else :: else :: isAlreadyPaid :: ', isAlreadyPaid);
 				setTimeout(
 					() => {
-						createDisputeRoom(
+						createDispute(
 							hashObj?.hash,
 							hashObj?.signature,
 							bet_contract_address,
@@ -151,32 +167,8 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 						? 500
 						: 0
 				);
-			} else {
-				if (betUserId === userInfo.user?._id || isAlreadyPaid) {
-					handleUploadEvidence();
-				} else {
-					// Call upload evidence function
-					// createDispute(
-					// 	hashObj?.hash,
-					// 	hashObj?.signature,
-					// 	bet_contract_address,
-					// 	myCase
-					// );
-					setTimeout(
-						() => {
-							createDispute(
-								hashObj?.hash,
-								hashObj?.signature,
-								bet_contract_address,
-								myCase
-							);
-						},
-						userInfo?.user?.socialLoginType?.toLowerCase() === 'metamask'
-							? 500
-							: 0
-					);
-				}
 			}
+			// }
 		}
 	}, [hashObj]);
 

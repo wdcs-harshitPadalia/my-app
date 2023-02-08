@@ -134,7 +134,6 @@ const FeedScreen: React.FC<any> = props => {
 	const isShowChatBadgeStatus = useSelector((state: RootState) => {
 		return state.userInfo.data.shouldShowChatBadge;
 	});
-
 	useEffect(() => {
 		console.log(
 			'connector.connected :: ',
@@ -539,6 +538,7 @@ const FeedScreen: React.FC<any> = props => {
 						flex: 1
 					}}>
 					<LiveStreamingFlatList
+						showLiveTage={true}
 						data={feedInfo.matchList}
 						shouldShowBottomButtons
 						tagLeftImagePath={icons.timer}
@@ -561,6 +561,15 @@ const FeedScreen: React.FC<any> = props => {
 									// selectedBetType: feedInfo.betType,
 								});
 							}
+						}}
+						onPressLive={item => {
+							console.log('item', item);
+							navigation.navigate(ScreenNames.EventDetailsScreen, {
+								feedObject: item,
+								betCreationType: 1,
+								selectedBetType: feedInfo?.betType,
+								isFromStreaming: true
+							});
 						}}
 						headerView={
 							<>

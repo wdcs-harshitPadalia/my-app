@@ -153,7 +153,7 @@ const DiscoverScreen: React.FC<any> = props => {
 	const beforeClickTopTabData = [
 		{id: 0, title: Strings.live},
 		{id: 1, title: Strings.str_explore},
-		{id: 2, title: Strings.str_chat}
+		{id: 2, title: Strings.NOTIFICATION_CHAT_MESSAGE}
 	];
 
 	const afterClickTopTabData = [
@@ -371,11 +371,19 @@ const DiscoverScreen: React.FC<any> = props => {
 
 	useUpdateEffect(() => {
 		setDiscoverPage(0);
-		getDiscoverMatchData('error');
+		getDiscoverMatchData(
+			params?.video_id === 'undefined' ? undefined : params?.video_id,
+			'error'
+		);
 	}, [beforeClickTopTabIndex]);
 
 	useUpdateEffect(() => {
-		// console.log('params?.video_id??>', params?.video_id, discoverPage);
+		console.log(
+			'params?.video_id??>',
+			params?.video_id,
+			discoverPage,
+			params?.type
+		);
 		// if (discoverPage == 0) {
 		// 	setDiscoverMatchData([])
 		// 	setDiscoverPage(undefined);
@@ -385,8 +393,11 @@ const DiscoverScreen: React.FC<any> = props => {
 		// 	setDiscoverPage(0);
 		// }
 		// setDiscoverMatchData([])
+		if (params?.type === 'video') {
+			setBeforeClickTopTabIndex(1);
+		}
 		getDiscoverMatchData(params?.video_id, 'error');
-	}, [params?.video_id, isFocused]);
+	}, [params?.video_id, isFocused, params?.type]);
 
 	useUpdateEffect(() => {
 		console.log('isSelectedIndex ::', isSelectedIndex);
@@ -1590,7 +1601,6 @@ const DiscoverScreen: React.FC<any> = props => {
 				<>
 					{beforeClickTopTabIndex === 0 ? (
 						<DiscoverLiveStreamComponent
-							userInfo
 							friendList={userListData}
 							onEndReach={() => {
 								onEndReached();

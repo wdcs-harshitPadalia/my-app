@@ -121,7 +121,7 @@ const FollowingUserView: React.FC<Props> = props => {
 					<Text style={styles.labelCount}>
 						{betsCount + '\n'}
 						<Text style={styles.labelText}>
-							{betsCount > 1 ? Strings.str_active_bets : Strings.str_active_bet}
+							{betsCount > 1 ? Strings.activeBets : Strings.str_active_bet}
 						</Text>
 					</Text>
 				)}

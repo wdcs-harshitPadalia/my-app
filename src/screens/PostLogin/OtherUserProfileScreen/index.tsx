@@ -70,7 +70,6 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 	const [liveEventData, setLiveEventData] = useState([]);
 	const [betData, setBetData] = useState({});
 
-
 	const noDataItemArray = [
 		{
 			image_url: icons.star_congrats,
@@ -135,7 +134,7 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 			.then(res => {
 				console.log('getUserLiveStreamingData res ::  ', JSON.stringify(res));
 				setLiveEventData(res?.data?.liveStreaming);
-				setBetData(res?.data?.betType)
+				setBetData(res?.data?.betType);
 			})
 			.catch(err => {
 				console.log('getUserLiveStreamingData Data Err : ', err);
@@ -270,6 +269,14 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 					eventBetData: item
 				});
 			}}
+			onPressLive={() => {
+				navigation.navigate(ScreenNames.EventDetailsScreen, {
+					feedObject: item,
+					betCreationType: 1,
+					selectedBetType: betData,
+					isFromStreaming: true
+				});
+			}}
 		/>
 	);
 
@@ -397,7 +404,8 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 											});
 										} else {
 											navigation.navigate(ScreenNames.LiveChallengeListScreen, {
-												liveEventData: liveEventData
+												liveEventData: liveEventData,
+												betData: betData
 											});
 										}
 									}}
@@ -547,16 +555,16 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 										}}
 										colorArray={defaultTheme.ternaryGradientColor}
 										angle={gradientColorAngle}
-										buttonText={'All'.toUpperCase()}
+										buttonText={Strings.str_all.toUpperCase()}
 										rightIcon={true}
 										style={styles.userBetsViewStyle}
 										dataSource={[
-											'All',
-											'Today',
+											Strings.str_all,
+											Strings.str_today,
 											// 'Yesterday',
-											'Last week',
-											'Last month',
-											'Custom date range'
+											Strings.str_last_week,
+											Strings.str_last_month,
+											Strings.str_custom_date_range
 										]}
 									/>
 									<BetsProgress

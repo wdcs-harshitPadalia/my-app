@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
 	gradientText: {
 		fontSize: moderateScale(20),
 		fontFamily: Fonts.type.Inter_ExtraBold,
-		marginRight: horizontalScale(4),
+		// marginRight: horizontalScale(4),
 		color: colors.greenLight
 	},
 	followingText: {
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
 		fontSize: moderateScale(20),
 		fontFamily: Fonts.type.Inter_ExtraBold,
 		color: colors.white,
-		marginRight: horizontalScale(4)
+		// marginRight: horizontalScale(4)
 	},
 	inputStyle: {
 		fontSize: moderateScale(12),

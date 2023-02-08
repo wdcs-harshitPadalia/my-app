@@ -164,7 +164,8 @@ export const FeedBetsView = ({
 	isRecent,
 	handleShareStory,
 	handleShareUrl,
-	handleBetShare
+	handleBetShare,
+	streamCreator
 }) => {
 	const [images, setImages] = useState([]);
 	const [isSelectedIndex, setIsSelectedIndex] = useState(1);
@@ -385,7 +386,8 @@ export const FeedBetsView = ({
 								live_feed_id: item?._id,
 								betCreationType: 1,
 								selectedBetType: selectedBetType,
-								isLive: isFromStreaming // is redirect to live
+								isLive: isFromStreaming, // is redirect to live
+								streamCreator: streamCreator,
 							});
 						}}
 						//gradientViewStyle={styles.gradientViewStyle}
@@ -424,7 +426,7 @@ export const FeedBetsView = ({
 									betCreationType: 1,
 									live_feed_id: item?._id,
 									selectedBetType: selectedBetType,
-									isLive: isFromStreaming // is redirect to live
+									isLive: isFromStreaming, // is redirect to live
 								});
 							}}
 							//gradientViewStyle={styles.gradientViewStyle}
@@ -453,7 +455,7 @@ export const FeedBetsView = ({
 								matchData: item.hasOwnProperty('matches') ? item.matches : item,
 								betCreationType: 1,
 								selectedBetType: selectedBetType,
-								isLive: isFromStreaming // is redirect to live
+								isLive: isFromStreaming, // is redirect to live
 							});
 						}}
 						//gradientViewStyle={styles.gradientViewStyle}

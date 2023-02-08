@@ -125,11 +125,11 @@ const BetsResultView: React.FC<Props> = props => {
 						: betData?.bet?.users?._id === visitProfileUserId
 						? (betData?.bet?.users?.displayName ||
 								betData?.bet?.users?.userName) +
-						  ' is betting' +
+						  Strings.is_challenging +
 						  ':'
 						: (betData?.betTakerData?.displayName ||
 								betData?.betTakerData?.userName) +
-						  ' is betting' +
+						  Strings.is_challenging +
 						  ':'}
 				</Text>
 				<ButtonGradientWithRightIcon

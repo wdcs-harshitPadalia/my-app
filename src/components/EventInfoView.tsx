@@ -28,13 +28,15 @@ import fonts from '../theme/fonts';
 import {useSelector} from 'react-redux';
 import {RootState} from '../redux/store';
 import TagView from './TagView';
+import LiveStreamingTag from './LiveStreamingTag';
 
 export const EventInfoView = ({
 	item,
 	props,
 	isScreenFocused,
 	onShareSheetOpen,
-	titleTotalNumOfLines
+	titleTotalNumOfLines,
+	showLiveTage
 }) => {
 	const userInfo = useSelector((state: RootState) => {
 		return state.userInfo.data;
@@ -142,6 +144,18 @@ export const EventInfoView = ({
 								</TouchableOpacity>
 							)}
 						</View>
+						{showLiveTage && (
+							<View style={styles.liveTag}>
+								<LiveStreamingTag
+									text={Strings.STREAMING}
+									backgroundColor={colors.redTag}
+									onPress={() => {
+										props.onPressLive && props.onPressLive(item);
+									}}
+								/>
+							</View>
+						)}
+
 						<View
 							style={{
 								marginTop: verticalScale(8)
@@ -370,8 +384,9 @@ export const EventInfoView = ({
 							props.showWatchButton ? item?.liveViewUserData : item?.users
 						}
 						userCount={
-							item?.liveViewsCount ??
-							(item?.betUserCount > 0 && item?.betUserCount)
+							props.showWatchButton
+								? item?.liveViewsCount
+								: item?.betUserCount > 0 && item?.betUserCount
 						}
 						onPress={() => {
 							// handleSubmit();
@@ -393,13 +408,13 @@ export const EventInfoView = ({
 						}}
 						onLeftButtonPress={() => props.onDiscoverButtonClicked(item)}
 						onRightButtonPress={() => props.onCreatBetButtonClicked(item)}
-						desText={''}
+						//desText={''}
 						userID={userInfo?.user?._id}
 						isCustomBet={item?.dataType === 'customBet'}
 						onPressViewAll={() => props.cellTapped && props.cellTapped(item)}
 						volume={item?.totalVolume}
 						openbet={item?.openBets}
-						prefixText={Strings.str_prefix_p2p_bets}
+						prefixText={Strings.p2pBet}
 						isFromLive={item?.liveViewUserData}
 						isCallFromSuggestedUser={true}
 					/>
@@ -467,5 +482,8 @@ const styles = StyleSheet.create({
 		marginRight: verticalScale(8),
 		// backgroundColor: 'red',
 		alignItems: 'flex-start'
+	},
+	liveTag: {
+		marginTop: verticalScale(10)
 	}
 });

@@ -16,7 +16,6 @@ import {EventInfoView} from './EventInfoView';
 import BottomSharePopup from './BottomSharePopup';
 import {BotomSharePopupData} from '../constants/api';
 
-
 interface LiveStreamingListItemProps {
 	data: any[];
 	onWatchButtonClicked: Function;
@@ -32,6 +31,7 @@ interface LiveStreamingListItemProps {
 	moreMenuOptionHidden: boolean;
 	headerView: ReactElement;
 	hideBottomView: boolean;
+	showLiveTage: boolean;
 }
 
 export default function LiveStreamingFlatList(
@@ -72,6 +72,7 @@ export default function LiveStreamingFlatList(
 							setDataType(item?.dataType);
 							seIsMenuOpen(true);
 						}}
+						showLiveTage={props?.showLiveTage && item?.isLiveBet}
 					/>
 				)}
 				keyExtractor={(item, index) => item._id.toString() + index}

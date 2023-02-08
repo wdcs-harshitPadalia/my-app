@@ -95,7 +95,7 @@ const InviteFriendView: React.FC<Props> = props => {
 					style={styles.userProfileView}
 					username={item?.user?.userName}
 					leftIconPath={item?.user?.picture}
-					subTitle={`Bet maker · ${item?.activeBets} bets`}
+					subTitle={`${Strings.str_challenge_maker} · ${item?.activeBets} ${Strings.str_challenges}`}
 				/>
 			</LinearGradient>
 		</TouchableOpacity>

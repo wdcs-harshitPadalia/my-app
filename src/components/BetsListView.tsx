@@ -124,7 +124,7 @@ const BetsListView: React.FC<Props> = props => {
 								/>
 							)}
 						</View>
-						{item?.isLiveBet && (
+						{item?.isUserLiveStreaming && (
 							<View style={styles.liveTag}>
 								<LiveStreamingTag
 									text={Strings.STREAMING}

@@ -568,7 +568,8 @@ const FeedScreen: React.FC<any> = props => {
 								feedObject: item,
 								betCreationType: 1,
 								selectedBetType: feedInfo?.betType,
-								isFromStreaming: true
+								isFromStreaming: true,
+								streamCreator: item?.liveStreamCreator
 							});
 						}}
 						headerView={

@@ -303,7 +303,8 @@ const MyBetListScreen: React.FC<any> = props => {
 										},
 										betCreationType: 1,
 										selectedBetType: betType,
-										isFromStreaming: true
+										isFromStreaming: true,
+										streamCreator: item?.liveStreamCreator
 									});
 								}}
 							/>

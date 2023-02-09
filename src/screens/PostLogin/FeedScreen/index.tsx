@@ -565,7 +565,10 @@ const FeedScreen: React.FC<any> = props => {
 						onPressLive={item => {
 							console.log('item', item);
 							navigation.navigate(ScreenNames.EventDetailsScreen, {
-								feedObject: item,
+								feedObject: {
+									...item?.feeds,
+									subCategoryList: item?.subCategoryList
+								},
 								betCreationType: 1,
 								selectedBetType: feedInfo?.betType,
 								isFromStreaming: true,

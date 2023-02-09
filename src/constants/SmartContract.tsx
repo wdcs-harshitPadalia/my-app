@@ -6455,21 +6455,21 @@ export const REWARD_DISTRIBUTION_ABI = [
 //TODO: add a way to get the contract address from the network
 
 export const ConfigContractAddress =
-	'0xe85e024621Bddeb30880837a0A1F57483E5164ab';
+	'0xb105b1eD66E7184EdC6fF165Adc8De54b89F99FF';
 
-export const BetContractAddress = '0x85c34716dcbFe0eDbc47B25F0b3280F07f241996';
+export const BetContractAddress = '0x18e4a1F3Bd46eb14533A47115899dAd777cE05ce';
 
 export const DisputeResolutionContractAddress =
-	'0x0C7826951062D34488deE31507e9d494Db981882';
+	'0xA67bD6e80783c482AC0C7f81ca990FdD16423003';
 
 export const SmartContractAddress =
-	'0x4c2063cCB9d9dc13b0e25Cb7857cd950d4CbB148';
+	'0xbC836a096b2eEdFe26F46De7BE36f1cDEA4032E8';
 
 export const DebethTokenContractAddress =
 	'0xf04A870D9124c4bBE1b2C2B80eb6020A11B22499';
 
 export const LiquidityHolderAddress =
-	'0xA72C9c84D24a75936106f6134a5B0a561EcdAA2D';
+	'0x58Ee50ad6F46E80D654FFdb2522C4E63735EE157';
 
 export const RewardDistributionAddress =
-	'0xa4100ba8D743cef4e45fc5570d1339c67BB1833b';
+	'0xEc9b6B2c845cDa4CF832d5519e8B4A338F9Ee2FD';

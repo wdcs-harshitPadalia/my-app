@@ -20,6 +20,7 @@ import Strings from '../strings';
 import {getBundleId} from 'react-native-device-info';
 import {saveToCameraRoll} from '@react-native-community/cameraroll';
 import axios from 'axios';
+import imageCompression from 'browser-image-compression';
 
 const appSharePostFixURL = 'share/?shareapp=true&deeplinktype=share';
 const eventSharePostFixUrl =
@@ -583,6 +584,18 @@ export const getVideoShareMessage = (userName, id) => {
 		'\n\n' +
 		getVideoShareUrl(id)
 	);
+};
+
+export const getCompressedImage = async file => {
+	const compressedFile = await imageCompression(file, {
+		maxSizeMB: 0.5,
+		maxWidthOrHeight: 1920
+	});
+	const newFile = new File([compressedFile], file.name, {
+		type: file.type
+	});
+	// console.log('getCompressedImage  newFile -> ', newFile);
+	return newFile;
 };
 
 global.tutorialTimer = {};

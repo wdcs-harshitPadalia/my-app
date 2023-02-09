@@ -68,19 +68,20 @@ const FullScreenImageComponent: React.FC<Props> = props => {
 					<Image style={styles.imgClose} source={icons.close} />
 				</TouchableOpacity>
 
-				<PinchGestureHandler
-					onGestureEvent={onPinchEvent}
-					onHandlerStateChange={onPinchStateChange}>
-					<AnimatedImage
-						source={{uri: url}}
-						style={{
-							width: '100%',
-							flex: 1,
-							transform: [{scale: scale}]
-						}}
-						resizeMode="contain"
-					/>
-				</PinchGestureHandler>
+				{/* <PinchGestureHandler
+					// onGestureEvent={onPinchEvent}
+					// onHandlerStateChange={onPinchStateChange}
+					> */}
+				<Image
+					source={{uri: url}}
+					style={{
+						width: '100%',
+						flex: 1
+						// transform: [{scale: scale}]
+					}}
+					resizeMode="contain"
+				/>
+				{/* </PinchGestureHandler> */}
 			</View>
 		</Modal>
 	);

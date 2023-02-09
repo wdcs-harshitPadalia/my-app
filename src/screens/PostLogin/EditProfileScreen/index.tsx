@@ -25,6 +25,7 @@ import SelectImageComponet from '../../../components/SelectImageComponet';
 
 import {useDispatch, useSelector} from 'react-redux';
 import {
+	getCompressedImage,
 	ImageIndicator,
 	showErrorAlert
 } from '../../../constants/utils/Function';
@@ -444,12 +445,10 @@ const EditProfileScreen: React.FC<any> = props => {
 		const filestr = event.target.files[0];
 		const imageStrUri = await fileToBase64(filestr);
 
-		// console.log("filestr ::", filestr);
-		// console.log("imageStrUri ::", imageStrUri);
+		let compressedPicture = await getCompressedImage(filestr);
 
 		setModalIsSuccess(false);
-
-		setProfilePic(filestr);
+		setProfilePic(compressedPicture);
 		setProfileImageBase64(imageStrUri);
 		setIsBase64(true);
 		setIsAvatarSelect(false);

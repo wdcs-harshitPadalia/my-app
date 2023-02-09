@@ -1320,7 +1320,8 @@ const BetMakerResultScreen: React.FC<any> = () => {
 									);
 									navigation.navigate(ScreenNames.OpenDisputeScreen, {
 										bet_id: bet_id,
-										bet_contract_address: eventBetData?.bet?.bet_id
+										bet_contract_address: eventBetData?.bet?.bet_id,
+										isAlreadyPaid: true
 									});
 								} else {
 									setIsTokenConfirmationModelVisible(true);

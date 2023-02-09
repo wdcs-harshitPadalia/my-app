@@ -70,7 +70,6 @@ const NotificationBetResultView: React.FC<Props> = props => {
 									: getRoundDecimalValue(data?.resultData?.betLossingAmount)) +
 								' ' +
 								Strings.str_from}
-							​
 							<Text
 								style={[
 									styles.usernameStyle,
@@ -105,7 +104,6 @@ const NotificationBetResultView: React.FC<Props> = props => {
 							{Strings.str_has_end_verify_result}
 						</Text>
 					)}
-					​
 					{betType === 'CUSTOM_BET_RESULT_NOTRESOLVER' && (
 						<Text style={[styles.usernameStyle]}>
 							{Strings.str_your_bet}
@@ -119,7 +117,6 @@ const NotificationBetResultView: React.FC<Props> = props => {
 							{Strings.str_has_end_provide_result_and_evidence}
 						</Text>
 					)}
-					​
 					{betType === 'RESULT_VERIFICATION_BETRESOLVER' && (
 						<Text style={[styles.usernameStyle]}>
 							{Strings.str_your_bet}
@@ -133,7 +130,6 @@ const NotificationBetResultView: React.FC<Props> = props => {
 							{Strings.str_has_end_provide_evidence}
 						</Text>
 					)}
-					​
 					{betType === 'BET_RESULT_REVIEW' && (
 						<Text style={[styles.usernameStyle]}>
 							{Strings.str_the_bet}
@@ -147,7 +143,6 @@ const NotificationBetResultView: React.FC<Props> = props => {
 							{Strings.str_has_end_creator_verify_review_result}
 						</Text>
 					)}
-					​
 					{betType === 'BET_RESULT_CONFIRMATION' && (
 						<Text style={[styles.usernameStyle]}>
 							{data?.resultData?.isWinner === 'win'
@@ -177,7 +172,6 @@ const NotificationBetResultView: React.FC<Props> = props => {
 								  '.'}
 						</Text>
 					)}
-					​
 					{betType === 'DISPUTE_EVIDENCE' && (
 						<Text style={[styles.usernameStyle]}>
 							{Strings.str_your_oppent_in_bet}
@@ -191,7 +185,6 @@ const NotificationBetResultView: React.FC<Props> = props => {
 							{Strings.str_opened_dispute_provide_evidence_result}
 						</Text>
 					)}
-					​
 					{betType === 'MATCH_CANCELLED' && (
 						<Text style={[styles.usernameStyle]}>
 							{`${
@@ -226,8 +219,8 @@ const styles = StyleSheet.create({
 	container: {
 		flexDirection: 'row',
 		paddingVertical: verticalScale(16),
-		paddingHorizontal: verticalScale(14)
-		// alignItems: 'center',
+		paddingHorizontal: verticalScale(14),
+		alignItems: 'center'
 	},
 	circleGradient: {
 		borderRadius: verticalScale(8),

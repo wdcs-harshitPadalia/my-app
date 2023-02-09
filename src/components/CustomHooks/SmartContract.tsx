@@ -12,11 +12,11 @@ import {
 	DebethTokenContractAddress,
 	DisputeResolutionContractAddress,
 	DISPUTE_RESOLUTION_TOKEN_ABI,
-	LiquidityHolderAddress,
+	// LiquidityHolderAddress,
 	LIQUIDITY_EVENT,
-	RewardBalanceAddress,
+	// RewardBalanceAddress,
 	RewardDistributionAddress,
-	REWARD_BALANCE_ABI,
+	// REWARD_BALANCE_ABI,
 	REWARD_DISTRIBUTION_ABI,
 	SmartContractAddress,
 	SMART_CONTRACT_ABI,
@@ -31,7 +31,7 @@ import QRCodeModal from '@walletconnect/qrcode-modal';
 import {
 	chainIdPolygonNetwork,
 	decimalValue,
-	nullHash,
+	// nullHash,
 	RpcURL
 } from '../../constants/api';
 import analytics from '@react-native-firebase/analytics';
@@ -114,16 +114,33 @@ export const useBetCreateContract = () => {
 	});
 
 	useEffect(() => {
-		console.log(init, 'init', userInfo?.walletAddress);
+		console.log(
+			'callCreateP2PBetSmartContract :: init :: userInfo?.walletAddress ::',
+			init,
+			userInfo?.walletAddress
+		);
 		if (init) {
 			callCreateP2PBetSmartContract();
 		}
 	}, [init]);
 
+	const getLoginUserWalletAddress = () => {
+		const loginUserAddress = connector.connected
+			? connector.accounts[0]
+			: userInfo.walletAddress;
+
+		console.log(
+			'getLoginUserWalletAddress :: loginUserAddress :: ',
+			loginUserAddress
+		);
+
+		return loginUserAddress;
+	};
+
 	const handleChange = useCallback((data: Props) => {
 		setBetData(data);
 		setInit(true);
-		console.log(data, 'data');
+		console.log('handleChange :: data ::', data);
 	}, []);
 
 	const handleJoinContract = useCallback((data: JoinBet) => {
@@ -142,30 +159,28 @@ export const useBetCreateContract = () => {
 
 		//const balance = await getMetamaskBalance();
 
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
+		const address = getLoginUserWalletAddress();
 
 		//return;
 		let a = new web3.eth.Contract(TOKEN_ABI, ercContractAddress, {
 			from: address
 		});
-		console.log('address :: ', address);
 
 		a.methods
 			.balanceOf(address)
 			.call({from: address})
 			.then(function (result) {
-				console.log('result :: ', result);
+				console.log('getBalanceFromContract :: balanceOf :: result ::', result);
 				a.methods
 					.symbol()
 					.call({from: address})
 					.then(async function (symbol) {
 						let decimals = await a.methods.decimals().call();
 						console.log(
-							'balanceOfresult',
-							decimals,
-							`${web3.utils.fromWei(result)} ${symbol}`
+							'getBalanceFromContract ::',
+							'decimals :: ' + decimals,
+							'${web3.utils.fromWei(result)} ${symbol} :: ' +
+								`${web3.utils.fromWei(result)} ${symbol}`
 						);
 						setTokenBalance(
 							`${(parseFloat(result) / 10 ** decimals).toFixed(
@@ -203,9 +218,7 @@ export const useBetCreateContract = () => {
 
 		//const balance = await getMetamaskBalance();
 
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
+		const address = getLoginUserWalletAddress();
 
 		//return;
 		try {
@@ -220,7 +233,6 @@ export const useBetCreateContract = () => {
 			let a = new web3.eth.Contract(DBETH_TOKEN_ABI, ercContractAddress, {
 				from: address
 			});
-			console.log('addressdesd>>?', address);
 
 			let allowanceAmountContract;
 			if (isFromCreateBet) {
@@ -230,12 +242,10 @@ export const useBetCreateContract = () => {
 				allowanceAmountContract = allowanceAmount;
 			}
 			//console.log('decimals >>> ', decimals);
-			console.log('allowanceAmount >>> ', allowanceAmount);
+			console.log('approveContract :: allowanceAmount ::', allowanceAmount);
 			console.log(
-				'allowanceAmountContract >>> ',
-				allowanceAmountContract,
-				connector.connected,
-				connector.accounts[0]
+				'approveContract ::',
+				'allowanceAmountContract ::' + allowanceAmountContract
 			);
 
 			a.methods
@@ -253,10 +263,16 @@ export const useBetCreateContract = () => {
 					);
 					dispatch(updateApiLoader({apiLoader: false}));
 
-					console.log('approveContract result?>>>>', JSON.stringify(result));
+					console.log(
+						'approveContract :: approve :: result :: ',
+						JSON.stringify(result)
+					);
 				})
 				.catch(error => {
-					console.log('error >> ', error.toString());
+					console.log(
+						'approveContract :: approve :: error :: ',
+						error.toString()
+					);
 					dispatch(updateApiLoader({apiLoader: false}));
 					setAllowanceAddress('Error');
 					if (error?.toString().includes('insufficient funds')) {
@@ -294,28 +310,25 @@ export const useBetCreateContract = () => {
 
 		//const balance = await getMetamaskBalance();
 
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
-		console.log('temp0??>>>>>>', address);
+		const address = getLoginUserWalletAddress();
 
 		try {
 			//return;
 			let a = new web3.eth.Contract(TOKEN_ABI, ercContractAddress, {
 				from: address
 			});
-			console.log('addressdesd>>?', address);
 
 			a.methods
 				.allowance(address, BetContractAddress)
 				.call({from: address})
 				.then(async function (result) {
-					console.log('getContractAllowance result', result);
+					console.log('getContractAllowance :: allowance :: result ::', result);
 					let decimals = await a.methods.decimals().call();
 					console.log(
-						'balanceOfresult',
-						decimals,
-						`${web3.utils.fromWei(result)}`
+						'getContractAllowance :: allowance ::',
+						'decimals :: ' + decimals,
+						'${web3.utils.fromWei(result)} :: ' +
+							`${web3.utils.fromWei(result)}`
 					);
 					setAllowedToken(`${parseFloat(result) / 10 ** decimals}`);
 					// setAllowedToken(`${web3.utils.fromWei(result)}`);
@@ -427,10 +440,7 @@ export const useBetCreateContract = () => {
 
 		//const balance = await getMetamaskBalance();
 
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
-		console.log('temp0??>>>>>>', address);
+		const address = getLoginUserWalletAddress();
 
 		//console.log('balance', balance);
 		//return;
@@ -442,8 +452,8 @@ export const useBetCreateContract = () => {
 			from: address
 		});
 		console.log(
-			'address ::' + address,
-			'betData._betAmount ::' + betData._betAmount
+			'callCreateP2PBetSmartContract :: betData._betAmount ::' +
+				betData._betAmount
 		);
 		try {
 			dispatch(
@@ -454,20 +464,32 @@ export const useBetCreateContract = () => {
 			);
 			//const nonce_ = await web3.eth.getTransactionCount(address);
 			console.log('====================================');
-			console.log('betData ::', JSON.stringify(betData));
+			console.log(
+				'callCreateP2PBetSmartContract :: betData ::',
+				JSON.stringify(betData)
+			);
 
 			let betContractAmount = betData._betAmount * Math.pow(10, 6);
-			console.log('betContractAmount ::', betContractAmount);
+			console.log(
+				'callCreateP2PBetSmartContract :: betContractAmount ::',
+				betContractAmount
+			);
 
 			let createBetAmount =
 				betData._tokenId === 2 || betData._tokenId === 3
 					? betContractAmount
 					: Web3.utils.toWei(betData._betAmount, 'ether');
 
-			console.log('createBetAmount ::', createBetAmount);
-			console.log('betData._opponentAmount ::', betData._opponentAmount);
 			console.log(
-				"Web3.utils.toWei(parseFloat(betData._opponentAmount).toFixed(decimalValue),'ether') ::",
+				'callCreateP2PBetSmartContract :: createBetAmount ::',
+				createBetAmount
+			);
+			console.log(
+				'callCreateP2PBetSmartContract :: betData._opponentAmount ::',
+				betData._opponentAmount
+			);
+			console.log(
+				"callCreateP2PBetSmartContract :: Web3.utils.toWei(parseFloat(betData._opponentAmount).toFixed(decimalValue),'ether') ::",
 				Web3.utils.toWei(
 					parseFloat(betData._opponentAmount).toFixed(decimalValue),
 					'ether'
@@ -475,9 +497,12 @@ export const useBetCreateContract = () => {
 			);
 
 			let betOpponentAmount = betData._opponentAmount * Math.pow(10, 6);
-			console.log('betOpponentAmount ::', betOpponentAmount);
 			console.log(
-				"Web3.utils.toWei(parseFloat(betData._opponentAmount).toFixed(decimalValue),'ether') ::",
+				'callCreateP2PBetSmartContract :: betOpponentAmount ::',
+				betOpponentAmount
+			);
+			console.log(
+				"callCreateP2PBetSmartContract :: Web3.utils.toWei(parseFloat(betData._opponentAmount).toFixed(decimalValue),'ether') ::",
 				Web3.utils.toWei(
 					parseFloat(betData._opponentAmount).toFixed(decimalValue),
 					'ether'
@@ -492,14 +517,17 @@ export const useBetCreateContract = () => {
 							'ether'
 					  );
 
-			console.log('createBetOpponentAmount ::', createBetOpponentAmount);
+			console.log(
+				'callCreateP2PBetSmartContract :: createBetOpponentAmount ::',
+				createBetOpponentAmount
+			);
 
 			var createBetOpponentAmountBigNumber = await Web3.utils
 				.toBN(parseInt(createBetOpponentAmount))
 				.toString();
 
 			console.log(
-				'createBetOpponentAmountBigNumber ::',
+				'callCreateP2PBetSmartContract :: createBetOpponentAmountBigNumber ::',
 				createBetOpponentAmountBigNumber
 			);
 			console.log('====================================');
@@ -537,7 +565,10 @@ export const useBetCreateContract = () => {
 				);
 			// dispatch(updateApiLoader({apiLoader: false}));
 			console.log('====================================');
-			console.log('callCreateP2PBetSmartContract ::', JSON.stringify(res));
+			console.log(
+				'callCreateP2PBetSmartContract :: res ::',
+				JSON.stringify(res)
+			);
 			console.log('====================================');
 
 			betCreateEvent(res?.transactionHash, res?.blockNumber);
@@ -575,13 +606,16 @@ export const useBetCreateContract = () => {
 				//   input: JSON.stringify(betData),
 				// });
 			} catch (firebaseErr) {
-				console.log('firebaseErr??', firebaseErr);
+				console.log(
+					'callCreateP2PBetSmartContract :: firebaseErr ::',
+					firebaseErr
+				);
 			}
 			console.log(
 				'Error cancelled transaction ::',
-				typeof error,
-				error,
-				typeof error === 'object'
+				'typeof error :: ' + typeof error,
+				'error :: ' + JSON.stringify(error),
+				"typeof error === 'object' :: " + typeof error === 'object'
 			);
 		}
 	};
@@ -609,10 +643,7 @@ export const useBetCreateContract = () => {
 
 		//const balance = await getMetamaskBalance();
 
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
-		console.log('temp0??>>>>>>', address);
+		const address = getLoginUserWalletAddress();
 		dispatch(
 			updateApiLoader({
 				apiLoader: true,
@@ -623,7 +654,7 @@ export const useBetCreateContract = () => {
 		const message = `IAMJOININGBETWITHTHISID${
 			data._betContractId
 		}${date.getMilliseconds()}`;
-		console.log('message???', message);
+		console.log('callJoinP2PBetSmartContract :: message ::', message);
 		const response = await returnMessageSignAndHash(message, web3, address);
 		if (response.error) {
 			dispatch(updateApiLoader({apiLoader: false}));
@@ -631,20 +662,16 @@ export const useBetCreateContract = () => {
 			return;
 		}
 		console.log(
-			'sdkdskdjresponse',
-			data._betContractId,
-			' ',
-			data._betEndTime,
-			' ',
-			response.hash,
-			' ',
-			response.signature,
-			' ',
-			data._betAmount,
-			' ',
-			data._selectedBetTackerOption + 1,
-			' ',
-			data._tokenId
+			'callJoinP2PBetSmartContract ::',
+			'data._betContractId :: ' + data._betContractId,
+			'data._betEndTime :: ' + data._betEndTime,
+			'response.hash :: ' + response.hash,
+			'response.signature :: ' + response.signature,
+			'data._betAmount :: ' + data._betAmount,
+			'data._selectedBetTackerOption + 1 :: ' +
+				data._selectedBetTackerOption +
+				1,
+			'data._tokenId :: ' + data._tokenId
 		);
 
 		//return;
@@ -652,11 +679,10 @@ export const useBetCreateContract = () => {
 			from: address
 		});
 		console.log(
-			'addressdesd>>##############?',
-			address,
-			data,
-			data._betContractId,
-			data._betAmount
+			'callJoinP2PBetSmartContract ::',
+			'data :: ' + data,
+			'data._betContractId :: ' + data._betContractId,
+			'data._betAmount :: ' + data._betAmount
 		);
 		try {
 			// dispatch(
@@ -666,9 +692,12 @@ export const useBetCreateContract = () => {
 			// 	})
 			// );
 			console.log('====================================');
-			console.log('data >> >', JSON.stringify(data));
 			console.log(
-				"Web3.utils.toWei(data._betAmount, 'ether') >>>> ",
+				'callJoinP2PBetSmartContract :: data ::',
+				JSON.stringify(data)
+			);
+			console.log(
+				"callJoinP2PBetSmartContract :: Web3.utils.toWei(data._betAmount, 'ether') >>>> ",
 				Web3.utils.toWei(data._betAmount, 'ether')
 			);
 			console.log('====================================');
@@ -692,16 +721,18 @@ export const useBetCreateContract = () => {
 					});
 				dispatch(updateApiLoader({apiLoader: false}));
 				console.log(
-					'::DFG:: Bet id>??>>',
-					JSON.stringify(res),
-					'::DFG::>???>>'
+					'callJoinP2PBetSmartContract :: res ::',
+					JSON.stringify(res)
 				);
 
 				// const bet_id = res.events.BetDeployed.returnValues._id;
 				// console.log('::DFG:: Bet id>??', JSON.stringify(res), '::DFG::>???');
 				setBet_id('success');
 			} else {
-				console.log('data._betAmount new >> ', data._betAmount);
+				console.log(
+					'callJoinP2PBetSmartContract :: else :: data._betAmount ::',
+					data._betAmount
+				);
 				const res = await a.methods
 					.ForwardJoinBet(
 						data._betContractId,
@@ -720,9 +751,8 @@ export const useBetCreateContract = () => {
 					});
 				dispatch(updateApiLoader({apiLoader: false}));
 				console.log(
-					'::DFG:: Bet id>??>>',
-					JSON.stringify(res),
-					'::DFG::>???>>'
+					'callJoinP2PBetSmartContract :: else :: res ::',
+					JSON.stringify(res)
 				);
 				setBet_id('success');
 			}
@@ -737,15 +767,16 @@ export const useBetCreateContract = () => {
 					//input: JSON.stringify({_bet_amount, _bet_contract_id}),
 				});
 			} catch (firebaseErr) {
-				console.log('firebaseErr??', firebaseErr);
+				console.log(
+					'callJoinP2PBetSmartContract :: firebaseErr ::',
+					firebaseErr
+				);
 			}
 			console.log(
-				'Error cancelled transaction?>??',
-				typeof error,
-				error,
-				// typeof error === 'object',
-				//error.includes('insufficient funds'),
-				JSON.stringify(error)
+				'Error cancelled transaction ::',
+				'typeof error :: ' + typeof error,
+				'error :: ' + JSON.stringify(error),
+				"typeof error === 'object' :: " + typeof error === 'object'
 			);
 			if (error?.toString().includes('insufficient funds')) {
 				showErrorAlert(
@@ -770,11 +801,6 @@ export const useBetCreateContract = () => {
 			web3 = new Web3(magic.rpcProvider);
 		}
 
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
-		console.log('temp0??>>>>>>', address);
-
 		const message = 'MtPelerin-' + uniqCode;
 
 		const generatedPrivateKey = '0x' + privateKey;
@@ -788,19 +814,16 @@ export const useBetCreateContract = () => {
 				'hex'
 			).toString('base64');
 
-			console.log('::MtPelerin: base64Hash :', base64Hash);
+			console.log('getBase64Hash :: base64Hash ::', base64Hash);
 
 			return base64Hash;
 		} catch (error) {
 			console.log(
-				'Error cancelled transaction?>??',
-				typeof error,
-				error,
-				// typeof error === 'object',
-				//error.includes('insufficient funds'),
-				JSON.stringify(error)
+				'Error cancelled transaction ::',
+				'typeof error :: ' + typeof error,
+				'error :: ' + JSON.stringify(error),
+				"typeof error === 'object' :: " + typeof error === 'object'
 			);
-
 			showErrorAlert('', Strings.txt_something_wrong_try_again);
 		}
 	};
@@ -819,7 +842,6 @@ export const useBetCreateContract = () => {
 		let a = new web3.eth.Contract(DBETH_TOKEN_ABI, DebethTokenContractAddress, {
 			from: address
 		});
-		console.log('address>>?', address);
 
 		a.methods
 			.balanceOf(address)
@@ -830,7 +852,7 @@ export const useBetCreateContract = () => {
 					.call({from: address})
 					.then(function (symbol) {
 						console.log(
-							'balanceOfresult',
+							'getDbethTokenBalance :: ${web3.utils.fromWei(result)} ${symbol} ::',
 							`${web3.utils.fromWei(result)} ${symbol}`
 						);
 						setDbethToken(`${web3.utils.fromWei(result)} ${symbol}`);
@@ -851,10 +873,7 @@ export const useBetCreateContract = () => {
 			web3 = await new Web3(magic.rpcProvider);
 		}
 		setAllowanceAddress('');
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
-		console.log('temp0??>>>>>>', address);
+		const address = getLoginUserWalletAddress();
 
 		try {
 			dispatch(
@@ -872,7 +891,7 @@ export const useBetCreateContract = () => {
 					from: address
 				}
 			);
-			console.log('address>>  approve req amont ?', address, amount);
+			console.log('approveDbethTokenAllowance :: amount ::', amount);
 
 			let decimals = await a.methods.decimals().call();
 			const allowanceAmountContract = amount * Math.pow(10, decimals);
@@ -887,15 +906,14 @@ export const useBetCreateContract = () => {
 				})
 				.then(function (result) {
 					console.log(
-						'::DFG:: approveDbethTokenAllowance id>??',
-						JSON.stringify(result),
-						'::DFG::>???'
+						'approveDbethTokenAllowance :: result ::',
+						JSON.stringify(result)
 					);
 
 					const transactionHash = result.events.Approval.returnValues.spender;
 
 					console.log(
-						'::DFG:: approveDbethTokenAllowance transactionHash>??',
+						'approveDbethTokenAllowance :: transactionHash ::',
 						transactionHash
 					);
 					setAllowanceAddress(transactionHash);
@@ -941,20 +959,19 @@ export const useBetCreateContract = () => {
 		}
 		setBetTakerAddress('');
 		setBetTakerLiquidity('');
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
+		const address = getLoginUserWalletAddress();
+
 		let a = new web3.eth.Contract(BET_ABI, BetContractAddress, {
 			from: address
 		});
-		console.log('address>>?', address);
+
 		a.methods
 			.betDetails(bet_address)
 			.call({from: address})
 			.then(function (result) {
 				setBetTakerLiquidity(result?.betTakerRequiredLiquidity);
 				setBetTakerAddress(result?.betTaker);
-				console.log('getBetDetails???', result);
+				console.log('getBetDetails :: result ::', result);
 			})
 			.catch(function () {
 				setBetTakerLiquidity('Error');
@@ -969,16 +986,13 @@ export const useBetCreateContract = () => {
 		} else {
 			web3 = await new Web3(magic.rpcProvider);
 		}
-		console.log('bet_address??????????', bet_address);
+		console.log('getBetClaimDetails :: bet_address ::', bet_address);
 		setBetClaimStatus('');
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
+		const address = getLoginUserWalletAddress();
 
 		let a = new web3.eth.Contract(SMART_CONTRACT_ABI, SmartContractAddress, {
 			from: address
 		});
-		console.log('address>>?', address);
 
 		a.methods
 			.ForwardGetBetStatus(bet_address)
@@ -986,7 +1000,10 @@ export const useBetCreateContract = () => {
 			.then(function (result) {
 				setBetClaimStatus(result?._resolutionStatus);
 				//setBetTakerAddress(result?.isResolved);
-				console.log('getBetClaimDetails???', result);
+				console.log(
+					'getBetClaimDetails :: ForwardGetBetStatus :: result ::',
+					result
+				);
 			})
 			.catch(function () {
 				setBetClaimStatus('Error');
@@ -1003,21 +1020,20 @@ export const useBetCreateContract = () => {
 			web3 = await new Web3(magic.rpcProvider);
 		}
 
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
-		console.log('temp0??>>>>>>', address);
+		const address = getLoginUserWalletAddress();
 
 		let a = new web3.eth.Contract(SMART_CONTRACT_ABI, SmartContractAddress, {
 			from: address
 		});
-		console.log('address>>?', address);
 
 		a.methods
 			.ForwardGetJuryStrike(address)
 			.call({from: address})
 			.then(function (result) {
-				console.log('getJuryStrike', result);
+				console.log(
+					'getJuryStrike :: ForwardGetJuryStrike :: result ::',
+					result
+				);
 				setStrike(result);
 			});
 	};
@@ -1035,13 +1051,15 @@ export const useBetCreateContract = () => {
 		let a = new web3.eth.Contract(SMART_CONTRACT_ABI, SmartContractAddress, {
 			from: address
 		});
-		console.log('address>>?', address);
 
 		a.methods
 			.ForwardGetUserStrike(address)
 			.call({from: address})
 			.then(function (result) {
-				console.log('getUserStrike', result);
+				console.log(
+					'getUserStrike :: ForwardGetUserStrike :: result ::',
+					result
+				);
 				setStrike(result);
 			});
 	};
@@ -1057,21 +1075,17 @@ export const useBetCreateContract = () => {
 			web3 = await new Web3(magic.rpcProvider);
 		}
 
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
-		console.log('temp0??>>>>>>', address);
+		const address = getLoginUserWalletAddress();
 
 		let a = new web3.eth.Contract(CONFIG_TOKEN_ABI, ConfigContractAddress, {
 			from: address
 		});
-		console.log('address :: ', address);
 
 		a.methods
 			.getJuryTokensShare(userStrikes, juryVersion)
 			.call({from: address})
 			.then(function (result) {
-				console.log('getJuryTokensShare', result);
+				console.log('getJuryTokensShare :: result ::', result);
 				setStrikePercentage(result);
 			});
 	};
@@ -1086,21 +1100,17 @@ export const useBetCreateContract = () => {
 			web3 = await new Web3(magic.rpcProvider);
 		}
 
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
-		console.log('temp0??>>>>>>', address);
+		const address = getLoginUserWalletAddress();
 
 		let a = new web3.eth.Contract(CONFIG_TOKEN_ABI, ConfigContractAddress, {
 			from: address
 		});
-		console.log('address>>?', address);
 
 		a.methods
 			.getTokensPerStrike(userStrikes)
 			.call({from: address})
 			.then(function (result) {
-				console.log('getTokensPerStrike', result);
+				console.log('getTokensPerStrike :: result ::', result);
 				setDisputeDbethToken(web3.utils.fromWei(result));
 			});
 	};
@@ -1117,21 +1127,20 @@ export const useBetCreateContract = () => {
 			web3 = await new Web3(magic.rpcProvider);
 		}
 
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
-		console.log('temp0??>>>>>>', address);
+		const address = getLoginUserWalletAddress();
 
 		let a = new web3.eth.Contract(SMART_CONTRACT_ABI, SmartContractAddress, {
 			from: address
 		});
-		console.log('address>>?', address);
 
 		a.methods
 			.ForwardGetJuryStatistics(address)
 			.call({from: address})
 			.then(function (result) {
-				console.log('userInitialStake', result);
+				console.log(
+					'userInitialStake :: ForwardGetJuryStatistics :: result ::',
+					result
+				);
 				setJuryDbethToken(web3.utils.fromWei(result?.userInitialStake_));
 				setLastWithdrawalAmount(web3.utils.fromWei(result?.lastWithdrawal_));
 				setIsJury(result?.isActiveStaker_);
@@ -1151,10 +1160,7 @@ export const useBetCreateContract = () => {
 			web3 = await new Web3(magic.rpcProvider);
 		}
 
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
-		console.log('Stake address0??>>>>>>', address);
+		const address = getLoginUserWalletAddress();
 
 		let a = new web3.eth.Contract(SMART_CONTRACT_ABI, SmartContractAddress, {
 			from: address
@@ -1168,7 +1174,6 @@ export const useBetCreateContract = () => {
 						Strings.do_not_close_refresh_the_page_it_may_take_while
 				})
 			);
-			console.log('Stake address1??>>>>>>', address);
 
 			a.methods
 				.ForwardStaking()
@@ -1180,15 +1185,14 @@ export const useBetCreateContract = () => {
 				})
 				.then(function (result) {
 					console.log(
-						'::DFG:: addDbethStakeToken id>??',
-						JSON.stringify(result),
-						'::DFG::>???'
+						'addDbethStakeToken :: ForwardStaking :: result ::',
+						JSON.stringify(result)
 					);
 
 					const transactionHash = result.transactionHash;
 
 					console.log(
-						'::DFG:: addDbethStakeToken transactionHash>??',
+						'addDbethStakeToken :: ForwardStaking :: transactionHash ::',
 						transactionHash
 					);
 
@@ -1196,7 +1200,7 @@ export const useBetCreateContract = () => {
 					dispatch(updateApiLoader({apiLoader: false}));
 				})
 				.catch(function (error) {
-					console.log('error', error);
+					console.log('addDbethStakeToken :: error ::', error);
 					dispatch(updateApiLoader({apiLoader: false}));
 					setApproveTnsAddress('Error');
 
@@ -1235,7 +1239,11 @@ export const useBetCreateContract = () => {
 				'a699c008e5bcda9e6b032b930c248eab436690f4f4cfe725553c5d5ed33045a7'
 			);
 			// let response = await  web3.eth.accounts.sign(message, 'a699c008e5bcda9e6b032b930c248eab436690f4f4cfe725553c5d5ed33045a7')
-			console.log('validate>>>>', hash, sig);
+			console.log(
+				'returnMessageSignAndHash ::',
+				'hash :: ' + hash,
+				'sig :: ' + sig
+			);
 			// let recoveredData = await  web3.eth.accounts.recover(response)
 			// console.log("recoveredData>>>>", recoveredData)
 			return {hash: hash, signature: sig.signature};
@@ -1246,21 +1254,18 @@ export const useBetCreateContract = () => {
 
 	const personalSign = async bet_address => {
 		let web3;
-		console.log('personalSign??????????????', connector.connected);
 		if (connector.connected) {
 			web3 = await initWeb3();
 		} else {
 			web3 = new Web3(magic.rpcProvider);
 		}
 
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
-		console.log('temp0??>>>>>>', address, bet_address);
+		const address = getLoginUserWalletAddress();
+		console.log('personalSign :: bet_address ::', bet_address);
 		const d = new Date();
 		let message = `IAMACCEPTINGINVITATIONONBET${bet_address}${d.getTime()}`;
 		let hash = await web3.eth.accounts.hashMessage(message);
-		console.log('::hash::Maker?>>>>>>>', hash);
+		console.log('personalSign :: hash ::', hash);
 
 		try {
 			let signature;
@@ -1273,7 +1278,7 @@ export const useBetCreateContract = () => {
 					})
 				);
 				signature = await connector.signPersonalMessage([address, hash]);
-				console.log('::sign::Maker?>>>>>>>', signature);
+				console.log('personalSign :: signature ::', signature);
 				setHashObj({signature: signature, hash: hash});
 				dispatch(updateApiLoader({apiLoader: false}));
 			} else {
@@ -1287,18 +1292,16 @@ export const useBetCreateContract = () => {
 				signature = await web3.eth.personal.sign(hash, address);
 				setHashObj({signature: signature, hash: hash});
 				dispatch(updateApiLoader({apiLoader: false}));
-				console.log('::sign::', signature);
+				console.log('personalSign :: signature :: else ::', signature);
 			}
 		} catch (error) {
 			setHashObj({error: 'Error signing message'});
 			dispatch(updateApiLoader({apiLoader: false}));
 			console.log(
-				'Error cancelled transaction?>??',
-				typeof error,
-				error,
-				// typeof error === 'object',
-				//error.includes('insufficient funds'),
-				JSON.stringify(error)
+				'Error cancelled transaction ::',
+				'typeof error :: ' + typeof error,
+				'error :: ' + JSON.stringify(error),
+				"typeof error === 'object' :: " + typeof error === 'object'
 			);
 
 			showErrorAlert('', Strings.txt_something_wrong_try_again);
@@ -1320,13 +1323,15 @@ export const useBetCreateContract = () => {
 		let a = new web3.eth.Contract(CONFIG_TOKEN_ABI, ConfigContractAddress, {
 			from: address
 		});
-		console.log('address>>?', address);
 
 		a.methods
 			.getDisputeConfig()
 			.call({from: address})
 			.then(function (result) {
-				console.log('getDisputeConfigDbethToken >>?', result);
+				console.log(
+					'getDisputeConfigDbethToken :: getDisputeConfig ::',
+					'result :: ' + result
+				);
 				setJuryDbethToken(web3.utils.fromWei(result['1']));
 				setDisputeDbethToken(web3.utils.fromWei(result['0']));
 			});
@@ -1342,21 +1347,17 @@ export const useBetCreateContract = () => {
 			web3 = await new Web3(magic.rpcProvider);
 		}
 
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
-		console.log('temp0??>>>>>>', address);
+		const address = getLoginUserWalletAddress();
 
 		let a = new web3.eth.Contract(DBETH_TOKEN_ABI, DebethTokenContractAddress, {
 			from: address
 		});
-		console.log('address>>?', address);
 
 		a.methods
 			.symbol()
 			.call({from: address})
 			.then(function (result) {
-				console.log('getSymbol', result);
+				console.log('getSymbol ::symbol ::', 'result ::' + result);
 				setTokenSymbol(result);
 			});
 	};
@@ -1373,21 +1374,21 @@ export const useBetCreateContract = () => {
 			web3 = await new Web3(magic.rpcProvider);
 		}
 
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
-		console.log('temp0??>>>>>>', address);
+		const address = getLoginUserWalletAddress();
 
 		let a = new web3.eth.Contract(SMART_CONTRACT_ABI, SmartContractAddress, {
 			from: address
 		});
-		console.log('address>>?', address);
 
 		a.methods
 			.ForwardGetBetData(bet_address)
 			.call({from: address})
 			.then(function (result) {
-				console.log('setBetStatus', result?._betStatus);
+				console.log(
+					'getForwardGetBetData :: ForwardGetBetData ::',
+					'result?._betStatus ::' + result?._betStatus,
+					'result?._isDisputed :: ' + result?._isDisputed
+				);
 				setBetStatus(result?._betStatus);
 				setIsOpenDispute(result?._isDisputed);
 			});
@@ -1405,15 +1406,11 @@ export const useBetCreateContract = () => {
 			web3 = await new Web3(magic.rpcProvider);
 		}
 
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
-		console.log('temp0??>>>>>>', address);
+		const address = getLoginUserWalletAddress();
 
 		let a = new web3.eth.Contract(SMART_CONTRACT_ABI, SmartContractAddress, {
 			from: address
 		});
-		console.log('address>>?', address);
 
 		try {
 			dispatch(
@@ -1436,7 +1433,7 @@ export const useBetCreateContract = () => {
 					dispatch(updateApiLoader({apiLoader: false}));
 				})
 				.catch(function (error) {
-					console.log('error', error);
+					console.log('benBet :: error ::', error);
 					setCancle_bet_id('Error');
 					dispatch(updateApiLoader({apiLoader: false}));
 					showErrorAlert('', Strings.txt_something_wrong_try_again);
@@ -1467,15 +1464,18 @@ export const useBetCreateContract = () => {
 			web3 = await new Web3(magic.rpcProvider);
 		}
 
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
-		console.log('Value ??>>>>>>', hash, sign, betAddress, resultOption);
+		const address = getLoginUserWalletAddress();
+		console.log(
+			'processVerdict :: ',
+			'hash :: ' + hash,
+			'sign :: ' + sign,
+			'betAddress :: ' + betAddress,
+			'resultOption :: ' + resultOption
+		);
 
 		let a = new web3.eth.Contract(SMART_CONTRACT_ABI, SmartContractAddress, {
 			from: address
 		});
-		console.log('address>>?', address);
 
 		try {
 			dispatch(
@@ -1495,15 +1495,14 @@ export const useBetCreateContract = () => {
 				})
 				.then(function (result) {
 					console.log(
-						'::DFG:: processVerdict id>??',
-						JSON.stringify(result),
-						'::DFG::>???'
+						'processVerdict :: ForwardProvideVerdict ::',
+						'result :: ' + JSON.stringify(result)
 					);
 
 					const transactionHash = result.transactionHash;
 
 					console.log(
-						'::DFG:: processVerdict transactionHash>??',
+						'processVerdict :: ForwardProvideVerdict :: transactionHash ::',
 						transactionHash
 					);
 
@@ -1512,13 +1511,13 @@ export const useBetCreateContract = () => {
 					dispatch(updateApiLoader({apiLoader: false}));
 				})
 				.catch(function (error) {
-					console.log('error', error);
+					console.log('processVerdict :: error ::', error);
 					setVerdictAddress('Error');
 					dispatch(updateApiLoader({apiLoader: false}));
 					showErrorAlert('', Strings.txt_something_wrong_try_again);
 				});
 		} catch (error) {
-			console.log('error', error);
+			console.log('processVerdict :: error ::', error);
 			setVerdictAddress('Error');
 			dispatch(updateApiLoader({apiLoader: false}));
 			showErrorAlert('', Strings.txt_something_wrong_try_again);
@@ -1537,15 +1536,11 @@ export const useBetCreateContract = () => {
 			web3 = await new Web3(magic.rpcProvider);
 		}
 
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
-		console.log('temp0??>>>>>>', address);
+		const address = getLoginUserWalletAddress();
 
 		let a = new web3.eth.Contract(SMART_CONTRACT_ABI, SmartContractAddress, {
 			from: address
 		});
-		console.log('address>>?', address);
 
 		try {
 			dispatch(
@@ -1564,12 +1559,18 @@ export const useBetCreateContract = () => {
 					gasLimit: 6000000
 				})
 				.then(function (result) {
-					console.log('result>>????', result);
+					console.log(
+						'claimBetAmount :: ForwardWithdrawLiquidity :: result ::',
+						result
+					);
 					setCancle_bet_id('success');
 					dispatch(updateApiLoader({apiLoader: false}));
 				})
 				.catch(function (error) {
-					console.log('error', error);
+					console.log(
+						'claimBetAmount :: ForwardWithdrawLiquidity :: error ::',
+						error
+					);
 					setCancle_bet_id('Error');
 					dispatch(updateApiLoader({apiLoader: false}));
 					showErrorAlert('', Strings.txt_something_wrong_try_again);
@@ -1602,24 +1603,18 @@ export const useBetCreateContract = () => {
 			web3 = await new Web3(magic.rpcProvider);
 		}
 
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
-		console.log('temp0??>>>>>>', address);
-
+		const address = getLoginUserWalletAddress();
 		let a = new web3.eth.Contract(SMART_CONTRACT_ABI, SmartContractAddress, {
 			from: address
 		});
-		console.log('address>>?', address);
 
 		console.log(
-			'Claimcontractca;l;eddd?????',
-			betAddress,
-			finalOption,
-			hash,
-			maker,
-			taker
-			// ISCUSTOMIZED
+			'resolveBetResult ::',
+			'betAddress ::' + betAddress,
+			'finalOption ::' + finalOption,
+			'hash ::' + hash,
+			'maker ::' + maker,
+			'taker ::' + taker
 		);
 		setClaimUserData([]);
 		const hashArr = hash?.reverse();
@@ -1661,11 +1656,14 @@ export const useBetCreateContract = () => {
 					gasLimit: 6000000
 				})
 				.then(function (result) {
-					console.log('result>>????', JSON.stringify(result));
+					console.log(
+						'resolveBetResult :: ForwardResolveBet ::',
+						'result :: ' + JSON.stringify(result)
+					);
 					setResolveBetAddress(result?.transactionHash);
 					if (usersAddress.length) {
 						let dataEvent = Object.values(result?.events);
-						console.log('dataEvent result>>????', dataEvent);
+						console.log('resolveBetResult :: dataEvent ::', dataEvent);
 
 						let amountData = [];
 						usersAddress?.map(async eventItem => {
@@ -1680,7 +1678,10 @@ export const useBetCreateContract = () => {
 								amount: parseInt(amountUserObj[0]?.raw?.data) / 10 ** 6
 							});
 						});
-						console.log('ClaimUserData result>>????', amountData);
+						console.log(
+							'resolveBetResult :: ForwardResolveBet ::',
+							'amountData ::' + amountData
+						);
 
 						setClaimUserData(amountData);
 					}
@@ -1709,14 +1710,14 @@ export const useBetCreateContract = () => {
 			web3 = await new Web3(magic.rpcProvider);
 		}
 
-		console.log('temp0??>>>>>>liquidityWithdrawalEvent', betAddress);
+		console.log('liquidityWithdrawalEvent :: betAddress ::', betAddress);
 
 		let a = new web3.eth.Contract(LIQUIDITY_EVENT, betAddress);
 
 		try {
 			//BETADDRESS_, FINALOPTION_, HASH_ , MAKER_,  TAKER_, ISCUSTOMIZED_
 			const currentBlock = await web3.eth.getBlockNumber();
-			console.log('currentBlock ::', currentBlock);
+			console.log('liquidityWithdrawalEvent :: currentBlock ::', currentBlock);
 
 			a.getPastEvents(
 				'LiquidityWithdrawal',
@@ -1727,15 +1728,18 @@ export const useBetCreateContract = () => {
 				},
 				async function (error, result) {
 					if (error) {
-						console.log('liquidityWithdrawalEvent1 :: error ::', error);
+						console.log('liquidityWithdrawalEvent :: if :: error ::', error);
 					} else {
 						setCancelBetLiquidityAmount(result);
-						console.log('liquidityWithdrawalEvent :: result ::', result);
+						console.log(
+							'liquidityWithdrawalEvent :: else :: result ::',
+							result
+						);
 					}
 				}
 			);
 		} catch (error) {
-			console.log('error!!!!!!????', error);
+			console.log('liquidityWithdrawalEvent :: error ::', error);
 		}
 	};
 
@@ -1748,10 +1752,7 @@ export const useBetCreateContract = () => {
 		}
 
 		setWithdrawAddress('');
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
-		console.log('temp0??>>>>>>', address);
+		const address = getLoginUserWalletAddress();
 
 		let a = new web3.eth.Contract(
 			REWARD_DISTRIBUTION_ABI,
@@ -1760,7 +1761,6 @@ export const useBetCreateContract = () => {
 				from: address
 			}
 		);
-		console.log('address>>?', address);
 
 		try {
 			dispatch(
@@ -1779,19 +1779,19 @@ export const useBetCreateContract = () => {
 					gasLimit: 6000000
 				})
 				.then(function (result) {
-					console.log('claimRewardAmount result>>????', result);
+					console.log('claimRewardAmount :: claimReward :: result ::', result);
 					const transactionHash = result.transactionHash;
 					setWithdrawAddress(transactionHash);
 					dispatch(updateApiLoader({apiLoader: false}));
 				})
 				.catch(function (error) {
-					console.log(' claimRewardAmount error', error);
+					console.log('claimRewardAmount :: claimReward :: error ::', error);
 					setWithdrawAddress('Error');
 					dispatch(updateApiLoader({apiLoader: false}));
 					showErrorAlert('', Strings.txt_something_wrong_try_again);
 				});
 		} catch (error) {
-			console.log('claimRewardAmount error', error);
+			console.log('claimRewardAmount :: error ::', error);
 			setWithdrawAddress('Error');
 			dispatch(updateApiLoader({apiLoader: false}));
 			showErrorAlert('', Strings.txt_something_wrong_try_again);
@@ -1806,10 +1806,7 @@ export const useBetCreateContract = () => {
 		} else {
 			web3 = new Web3(magic.rpcProvider);
 		}
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
-		console.log('temp0??>>>>>>', address);
+		const address = getLoginUserWalletAddress();
 
 		try {
 			let a = new web3.eth.Contract(
@@ -1819,13 +1816,12 @@ export const useBetCreateContract = () => {
 					from: address
 				}
 			);
-			console.log('addressdesd>>?', address);
 
 			a.methods
 				.userAllowance(address)
 				.call({from: address})
 				.then(async function (result) {
-					console.log('getclaimRewardAllowance result', result);
+					console.log('getclaimRewardAllowance :: result ::', result);
 					setClaimRewardAllowance(`${web3.utils.fromWei(result)}`);
 				})
 				.catch(error => {
@@ -1848,17 +1844,14 @@ export const useBetCreateContract = () => {
 			web3 = await new Web3(magic.rpcProvider);
 		}
 
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
-		console.log('temp0??>>>>>>', betAddress);
+		const address = getLoginUserWalletAddress();
 
 		let a = new web3.eth.Contract(BET_CLAIM_EVENT, betAddress);
 
 		try {
 			//BETADDRESS_, FINALOPTION_, HASH_ , MAKER_,  TAKER_, ISCUSTOMIZED_
 			const currentBlock = await web3.eth.getBlockNumber();
-			console.log('currentBlock ::', currentBlock);
+			console.log('resolvedBetEvent :: currentBlock ::', currentBlock);
 
 			a.getPastEvents(
 				isDraw ? 'PostDrawDistribution' : 'PostUserLiquidity',
@@ -1883,7 +1876,7 @@ export const useBetCreateContract = () => {
 							.call({from: address})
 							.then(function (totalResult) {
 								console.log(
-									'totalAvailableLiquidity :: totalResult ::',
+									'resolvedBetEvent :: totalAvailableLiquidity :: totalResult ::',
 									totalResult
 								);
 
@@ -1892,8 +1885,8 @@ export const useBetCreateContract = () => {
 									.call({from: address})
 									.then(function (receivedResult) {
 										console.log(
-											'receivedYeild :: receivedResult ::',
-											receivedResult
+											'resolvedBetEvent :: receivedYeild ::',
+											'receivedResult ::' + receivedResult
 										);
 
 										//if (tempLiquidity && tempLiquidity !== 'error') {
@@ -1907,7 +1900,7 @@ export const useBetCreateContract = () => {
 										//return;
 									})
 									.catch(function (error) {
-										console.log('error', error);
+										console.log('resolvedBetEvent :: error ::', error);
 										showErrorAlert('', Strings.txt_something_wrong_try_again);
 										return 'error';
 									});
@@ -1921,7 +1914,7 @@ export const useBetCreateContract = () => {
 				}
 			);
 		} catch (error) {
-			console.log('error!!!!!!????', error);
+			console.log('error ::', error);
 		}
 	};
 
@@ -1933,10 +1926,7 @@ export const useBetCreateContract = () => {
 			web3 = await new Web3(magic.rpcProvider);
 		}
 
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
-		console.log('temp0??>>>>>>', address);
+		const address = getLoginUserWalletAddress();
 
 		let a = new web3.eth.Contract(BET_ABI, BetContractAddress, {
 			from: address
@@ -1979,17 +1969,16 @@ export const useBetCreateContract = () => {
 			},
 			function (error, result) {
 				if (error) {
-					console.log('error ::', error);
-					console.log(error, 'error!!!!!!!!');
+					console.log('betCreateEvent :: error ::', error);
 					dispatch(updateApiLoader({apiLoader: false}));
 				} else {
-					console.log('result ::', result);
+					console.log('betCreateEvent :: result ::', result);
 					// console.log('data event??????', result[0]?.returnValues?.betAddress_);
 					if (result?.length) {
 						const resultValue = result.filter(resObj => {
 							return resObj?.transactionHash === bet_transactionHash;
 						});
-						console.log('resultValue ::', resultValue);
+						console.log('betCreateEvent :: resultValue ::', resultValue);
 						setBet_id(resultValue[0]?.returnValues?.betAddress_);
 					}
 				}
@@ -2014,20 +2003,14 @@ export const useBetCreateContract = () => {
 			web3 = await new Web3(magic.rpcProvider);
 		}
 
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
+		const address = getLoginUserWalletAddress();
 		console.log(
-			'Reveal Result??>>>>>>',
-			address,
-			' ',
-			betAddress,
-			' ',
-			hash,
-			' ',
-			taker,
-			' ',
-			maker
+			'brodcastFinalVerdict :: ',
+			'address :: ' + address,
+			'betAddress :: ' + betAddress,
+			'hash :: ' + hash,
+			'taker :: ' + taker,
+			'maker :: ' + maker
 		);
 
 		let a = new web3.eth.Contract(SMART_CONTRACT_ABI, SmartContractAddress, {
@@ -2052,7 +2035,10 @@ export const useBetCreateContract = () => {
 					gasLimit: 6000000
 				})
 				.then(function (result) {
-					console.log('result>>????', result);
+					console.log(
+						'brodcastFinalVerdict :: ForwardBroadcastFinalVerdict ::',
+						'result :: ' + result
+					);
 					setResolveBetAddress(result?.transactionHash);
 					dispatch(updateApiLoader({apiLoader: false}));
 				})
@@ -2083,15 +2069,11 @@ export const useBetCreateContract = () => {
 		}
 
 		setWithdrawAddress('');
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
-		console.log('temp0??>>>>>>', address);
+		const address = getLoginUserWalletAddress();
 
 		let a = new web3.eth.Contract(SMART_CONTRACT_ABI, SmartContractAddress, {
 			from: address
 		});
-		console.log('address>>?', address);
 
 		try {
 			dispatch(
@@ -2110,7 +2092,10 @@ export const useBetCreateContract = () => {
 					gasLimit: 6000000
 				})
 				.then(function (result) {
-					console.log('result>>????', result);
+					console.log(
+						'claimJuryStackAmount :: ForwardWithdrawal ::',
+						'result :: ' + result
+					);
 					const transactionHash = result.transactionHash;
 					setWithdrawAddress(transactionHash);
 					dispatch(updateApiLoader({apiLoader: false}));
@@ -2147,15 +2132,18 @@ export const useBetCreateContract = () => {
 			web3 = await new Web3(magic.rpcProvider);
 		}
 
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
-		console.log('Value ??>>>>>>', hash, sign, betAddress, resultOption);
+		const address = getLoginUserWalletAddress();
+		console.log(
+			'createDispute ::',
+			'hash :: ' + hash,
+			'sign :: ' + sign,
+			'betAddress :: ' + betAddress,
+			'resultOption :: ' + resultOption
+		);
 
 		let a = new web3.eth.Contract(SMART_CONTRACT_ABI, SmartContractAddress, {
 			from: address
 		});
-		console.log('address>>?', address);
 
 		try {
 			dispatch(
@@ -2175,24 +2163,17 @@ export const useBetCreateContract = () => {
 				})
 				.then(function (result) {
 					console.log(
-						'::DFG:: createDispute id>??',
-						JSON.stringify(result),
-						'::DFG::>???'
+						'createDispute :: ForwardCreateDisputeRoom ::',
+						'result ::' + JSON.stringify(result)
 					);
-
 					const transactionHash = result.transactionHash;
-
-					console.log(
-						'::DFG:: createDispute transactionHash>??',
-						transactionHash
-					);
-
+					console.log('createDispute :: transactionHash :: ', transactionHash);
 					setDisputeAddress(transactionHash);
 
 					dispatch(updateApiLoader({apiLoader: false}));
 				})
 				.catch(function (error) {
-					console.log('error', error);
+					console.log('error ::', error);
 					setDisputeAddress('Error');
 					dispatch(updateApiLoader({apiLoader: false}));
 					showErrorAlert('', Strings.txt_something_wrong_try_again);
@@ -2223,15 +2204,18 @@ export const useBetCreateContract = () => {
 			web3 = await new Web3(magic.rpcProvider);
 		}
 
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
-		console.log('Value ??>>>>>>', hash, sign, betAddress, resultOption);
+		const address = getLoginUserWalletAddress();
+		console.log(
+			'createDisputeRoom ::',
+			'hash :: ' + hash,
+			'sign :: ' + sign,
+			'betAddress :: ' + betAddress,
+			'resultOption :: ' + resultOption
+		);
 
 		let a = new web3.eth.Contract(SMART_CONTRACT_ABI, SmartContractAddress, {
 			from: address
 		});
-		console.log('address>>?', address);
 
 		try {
 			dispatch(
@@ -2251,15 +2235,14 @@ export const useBetCreateContract = () => {
 				})
 				.then(function (result) {
 					console.log(
-						'::DFG:: createDisputeRoom id>??',
-						JSON.stringify(result),
-						'::DFG::>???'
+						'createDisputeRoom :: ForwardBypassDisputeRoom ::',
+						'result ::' + JSON.stringify(result)
 					);
 
 					const transactionHash = result.transactionHash;
 
 					console.log(
-						'::DFG:: createDisputeRoom transactionHash>??',
+						'createDisputeRoom :: transactionHash ::',
 						transactionHash
 					);
 
@@ -2268,7 +2251,7 @@ export const useBetCreateContract = () => {
 					dispatch(updateApiLoader({apiLoader: false}));
 				})
 				.catch(function (error) {
-					console.log('error', error);
+					console.log('createDispute :: error ::', error);
 					setDisputeAddress('Error');
 					dispatch(updateApiLoader({apiLoader: false}));
 					showErrorAlert('', Strings.txt_something_wrong_try_again);
@@ -2291,21 +2274,17 @@ export const useBetCreateContract = () => {
 			web3 = await new Web3(magic.rpcProvider);
 		}
 
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
-		console.log('temp0??>>>>>>', address);
+		const address = getLoginUserWalletAddress();
 
 		let a = new web3.eth.Contract(SMART_CONTRACT_ABI, SmartContractAddress, {
 			from: address
 		});
-		console.log('address>>?', address);
 
 		a.methods
 			.ForwardGetUserVoteStatus(address, betAddress)
 			.call({from: address})
 			.then(function (result) {
-				console.log('getJuryVoteStatus', result);
+				console.log('getJuryVoteStatus :: result ::', result);
 				setIsJuryVoted(result);
 			});
 	};
@@ -2319,10 +2298,7 @@ export const useBetCreateContract = () => {
 			web3 = await new Web3(magic.rpcProvider);
 		}
 
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
-		console.log('getJuryVersion :: address ::', address);
+		const address = getLoginUserWalletAddress();
 
 		let a = new web3.eth.Contract(
 			DISPUTE_RESOLUTION_TOKEN_ABI,
@@ -2331,13 +2307,12 @@ export const useBetCreateContract = () => {
 				from: address
 			}
 		);
-		console.log('address :: a ::', address);
 
 		a.methods
 			.getJuryVersion(address)
 			.call({from: address})
 			.then(function (result) {
-				console.log('getJuryVersion ::', result);
+				console.log('getJuryVersion :: result ::', result);
 				setJuryVersion(result);
 			});
 	};
@@ -2351,18 +2326,11 @@ export const useBetCreateContract = () => {
 			web3 = await new Web3(magic.rpcProvider);
 		}
 
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
-		console.log('temp0??>>>>>>', address);
+		const address = getLoginUserWalletAddress();
 
 		let a = new web3.eth.Contract(CONFIG_TOKEN_ABI, ConfigContractAddress, {
 			from: address
 		});
-
-		console.log('====================================');
-		console.log('getPassiveIncome :: address :: ', address);
-		console.log('====================================');
 
 		// a.methods
 		// 	.getAaveFeeConfig()
@@ -2393,30 +2361,31 @@ export const useBetCreateContract = () => {
 			web3 = await new Web3(magic.rpcProvider);
 		}
 
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
+		const address = getLoginUserWalletAddress();
 
 		let a = new web3.eth.Contract(BET_CLAIM_EVENT, betAddress, {
 			from: address
 		});
 
-		console.log('====================================');
-		console.log('getLiquidity :: address :: ', address);
 		console.log('getLiquidity :: betAddress :: ', betAddress);
-		console.log('====================================');
 
 		a.methods
 			.totalAvailableLiquidity()
 			.call({from: address})
 			.then(function (totalResult) {
-				console.log('totalAvailableLiquidity :: totalResult ::', totalResult);
+				console.log(
+					'getLiquidity :: totalAvailableLiquidity ::',
+					'totalResult ::' + totalResult
+				);
 
 				a.methods
 					.receivedYeild()
 					.call({from: address})
 					.then(function (receivedResult) {
-						console.log('receivedYeild :: receivedResult ::', receivedResult);
+						console.log(
+							'getLiquidity :: receivedYeild ::',
+							'receivedResult ::' + receivedResult
+						);
 						setLiquidity({
 							totalAvailableLiquidity: totalResult,
 							receivedLiquidityFromAave: receivedResult
@@ -2424,13 +2393,16 @@ export const useBetCreateContract = () => {
 						//return;
 					})
 					.catch(function (error) {
-						console.log('error', error);
+						console.log('getLiquidity :: receivedYeild :: error', error);
 						showErrorAlert('', Strings.txt_something_wrong_try_again);
 						return 'error';
 					});
 			})
 			.catch(function (error) {
-				console.log('error', error);
+				console.log(
+					'getLiquidity :: totalAvailableLiquidity :: error ::',
+					error
+				);
 				showErrorAlert('', Strings.txt_something_wrong_try_again);
 				return 'error';
 			});
@@ -2444,10 +2416,7 @@ export const useBetCreateContract = () => {
 		} else {
 			web3 = new Web3(magic.rpcProvider);
 		}
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
-		console.log('transferMaticToken :: address :: ', address);
+		const address = getLoginUserWalletAddress();
 		try {
 			dispatch(
 				updateApiLoader({
@@ -2457,8 +2426,8 @@ export const useBetCreateContract = () => {
 				})
 			);
 			console.log(
-				'transferMaticToken :: amount ::',
-				Web3.utils.toWei('1', 'ether')
+				'transferMaticToken ::',
+				"Web3.utils.toWei('1', 'ether') :: " + Web3.utils.toWei('1', 'ether')
 			);
 			const transactionConfig = {
 				from: address,
@@ -2468,18 +2437,16 @@ export const useBetCreateContract = () => {
 				gasLimit: 4000000
 			};
 			let result = await web3.eth.sendTransaction(transactionConfig);
-			console.log('a :: ', result);
+			console.log('transferMaticToken :: result ::', result);
 			setMaticTransfer(result);
 			dispatch(updateApiLoader({apiLoader: false}));
 		} catch (error) {
 			dispatch(updateApiLoader({apiLoader: false}));
 			console.log(
-				'transferMaticToken :: error ::',
-				// typeof error,
-				// error,
-				// typeof error === 'object',
-				//error.includes('insufficient funds'),
-				JSON.stringify(error)
+				'transferMaticToken ::',
+				'typeof error :: ' + typeof error,
+				'error :: ' + JSON.stringify(error),
+				"typeof error === 'object' :: " + typeof error === 'object'
 			);
 
 			if (error?.toString().includes('insufficient funds')) {
@@ -2505,10 +2472,7 @@ export const useBetCreateContract = () => {
 		} else {
 			web3 = new Web3(magic.rpcProvider);
 		}
-		const address = connector.connected
-			? connector.accounts[0]
-			: userInfo.walletAddress;
-		console.log('transferERCToken ::address :: ', address);
+		const address = getLoginUserWalletAddress();
 		try {
 			dispatch(
 				updateApiLoader({
@@ -2522,8 +2486,11 @@ export const useBetCreateContract = () => {
 			});
 			let decimals = await a.methods.decimals().call();
 			let transferAmountContract = transferAmount * Math.pow(10, decimals);
-			console.log('decimals ::', decimals);
-			console.log('transferAmountContract ::', transferAmountContract);
+			console.log('transferERCToken :: decimals ::', decimals);
+			console.log(
+				'transferERCToken :: transferAmountContract ::',
+				transferAmountContract
+			);
 			const transferedToken = await a.methods
 				.transfer(receiverAddress, transferAmountContract)
 				.send({

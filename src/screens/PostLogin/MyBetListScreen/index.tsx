@@ -309,7 +309,7 @@ const MyBetListScreen: React.FC<any> = props => {
 								}}
 							/>
 						)}
-						contentContainerStyle={{paddingBottom: verticalScale(100)}}
+						// contentContainerStyle={{paddingBottom: verticalScale(100)}}
 						showsVerticalScrollIndicator={false}
 						bounces={false}
 						onEndReached={() => {

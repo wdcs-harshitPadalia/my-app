@@ -13,7 +13,7 @@ import colors from '../../../theme/colors';
 import {defaultTheme} from '../../../theme/defaultTheme';
 import ScreenNames from '../../../navigation/screenNames';
 import useUpdateEffect from '../../../components/CustomHooks/useUpdateEffect';
-import {editProfile} from '../../../redux/apiHandler/apiActions';
+import {editProfile, validateJury} from '../../../redux/apiHandler/apiActions';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../../redux/store';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -115,6 +115,17 @@ const RecoverFundsScreen: React.FC<any> = () => {
 		dispatch(editProfile(requestObject));
 	};
 
+	const getJuryValidateJuryData = () => {
+		validateJury()
+			.then(res => {
+				claimJuryStackAmount();
+				console.log('validateJury :: res ::', res);
+			})
+			.catch(err => {
+				console.log('validateJury :: catch ::', err);
+			});
+	};
+
 	return (
 		<SafeAreaView style={styles.container}>
 			<View style={styles.container}>
@@ -164,7 +175,7 @@ const RecoverFundsScreen: React.FC<any> = () => {
 						colorArray={defaultTheme.primaryGradientColor}
 						angle={gradientColorAngle}
 						onPress={() => {
-							claimJuryStackAmount();
+							getJuryValidateJuryData();
 						}}
 					/>
 				</View>

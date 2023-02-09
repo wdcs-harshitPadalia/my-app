@@ -25,6 +25,7 @@ import SelectImageComponet from '../../../components/SelectImageComponet';
 
 import {useDispatch, useSelector} from 'react-redux';
 import {
+	getCompressedImage,
 	ImageIndicator,
 	showErrorAlert
 } from '../../../constants/utils/Function';
@@ -41,7 +42,6 @@ import {updateApiLoader} from '../../../redux/reducerSlices/preLogin';
 import {Api, ApiBaseUrl, ApiConstants} from '../../../constants/api';
 import SelectAvatarComponent from '../../../components/SelectAvatarComponent';
 import {moderateFontScale} from '../../../theme/metrics';
-import imageCompression from 'browser-image-compression';
 
 const EditProfileScreen: React.FC<any> = props => {
 	const myRef = React.useRef();
@@ -445,18 +445,10 @@ const EditProfileScreen: React.FC<any> = props => {
 		const filestr = event.target.files[0];
 		const imageStrUri = await fileToBase64(filestr);
 
-    	const compressedFile = await imageCompression(filestr, {
-				maxSizeMB: 0.5,
-				maxWidthOrHeight: 1920
-			});
-		const newfile = new File([compressedFile], filestr.name, {type: filestr.type});
-
-		// console.log("filestr ::", filestr);
-		// console.log("imageStrUri ::", imageStrUri);
+		let compressedPicture = await getCompressedImage(filestr);
 
 		setModalIsSuccess(false);
-
-		setProfilePic(newfile);
+		setProfilePic(compressedPicture);
 		setProfileImageBase64(imageStrUri);
 		setIsBase64(true);
 		setIsAvatarSelect(false);

@@ -26,7 +26,8 @@ import {
 	createThumbnailFromUrl,
 	handleOpenUrlInBrowser,
 	showErrorAlert,
-	isValidUrl
+	isValidUrl,
+	getCompressedImage
 } from '../../constants/utils/Function';
 import {validationRegex} from '../../constants/utils/Validation';
 
@@ -248,6 +249,13 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 		//const imageStrUri = await fileToBase64(responseData);
 		let videoMetaData;
 
+		let compressedPictureData;
+		if (type.includes('image')) {
+			compressedPictureData = await getCompressedImage(
+				!type.includes('video') ? responseData : {}
+			);
+		}
+
 		let imageThumbPath;
 		console.log(
 			'createThumbnailFromUrl :: imageThumbPath :: ',
@@ -280,8 +288,10 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 				//       ? uri + '.' + type.split('/')[1]
 				//       : uri
 				//     : uri.replace('file://', ''),
-				uri: responseData,
-				file: await fileToBase64(responseData),
+				uri: type.includes('image') ? compressedPictureData : responseData,
+				file: await fileToBase64(
+					type.includes('image') ? compressedPictureData : responseData
+				),
 				image_thumb: type.includes('video') ? imageThumbPath : ''
 			};
 

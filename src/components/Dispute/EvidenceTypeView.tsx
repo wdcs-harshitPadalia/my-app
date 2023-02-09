@@ -243,9 +243,9 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 
 		let compressedPictureData;
 		if (type.includes('image')) {
-			compressedPictureData = await getCompressedImage(
-				!type.includes('video') ? responseData : {}
-			);
+			compressedPictureData = await getCompressedImage(responseData);
+		} else {
+			compressedPictureData = responseData
 		}
 
 		let imageThumbPath;
@@ -280,10 +280,8 @@ const EvidenceType = forwardRef((props: EvidenceProps, ref) => {
 				//       ? uri + '.' + type.split('/')[1]
 				//       : uri
 				//     : uri.replace('file://', ''),
-				uri: type.includes('image') ? compressedPictureData : responseData,
-				file: await fileToBase64(
-					type.includes('image') ? compressedPictureData : responseData
-				),
+				uri: compressedPictureData,
+				file: await fileToBase64(compressedPictureData),
 				image_thumb: type.includes('video') ? imageThumbPath : ''
 			};
 

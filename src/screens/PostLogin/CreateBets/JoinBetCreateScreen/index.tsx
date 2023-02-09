@@ -677,6 +677,7 @@ const JoinBetCreateScreen: React.FC<any> = () => {
 							}
 							isShowOpponent={true}
 							profileImgPath={userInfo?.user?.picture}
+							betResolver={eventBetData?.bet_resolver}
 							joinEndTime={
 								isSelectedLeagueType === 0
 									? dateConvert(

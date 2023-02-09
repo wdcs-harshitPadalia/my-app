@@ -55,6 +55,7 @@ interface Props extends TextInputProps {
 	isSelectedLeagueType?: number;
 	profileImgPath: string;
 	joinEndTime?: string;
+	betResolver?: string;
 }
 
 const BetsDetailsView: React.FC<Props> = props => {
@@ -79,7 +80,8 @@ const BetsDetailsView: React.FC<Props> = props => {
 		selectMainMarket,
 		isSelectedLeagueType,
 		profileImgPath,
-		joinEndTime
+		joinEndTime,
+		betResolver
 	} = props;
 
 	return (
@@ -199,6 +201,13 @@ const BetsDetailsView: React.FC<Props> = props => {
 				<Text style={styles.betsTypeStyle}>
 					{isSelectedLeagueType === 0
 						? Strings.resolution_method_api.toUpperCase()
+						: betResolver
+						? (
+								Strings.resolution_manual +
+								(betResolver === 'BET_MAKER'
+									? Strings.challenge_creator
+									: Strings.challenge_taker)
+						  ).toUpperCase()
 						: Strings.resolution_method_manual.toUpperCase()}
 				</Text>
 				<View style={styles.rawContainer}>

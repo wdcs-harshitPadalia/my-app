@@ -274,7 +274,8 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 					feedObject: item,
 					betCreationType: 1,
 					selectedBetType: betData,
-					isFromStreaming: true
+					isFromStreaming: true,
+					streamCreator: item?.liveStreamCreator
 				});
 			}}
 		/>
@@ -400,7 +401,8 @@ const OtherUserProfileScreen: React.FC<any> = () => {
 												feedObject: liveEventData[0],
 												betCreationType: 1,
 												selectedBetType: betData,
-												isFromStreaming: true
+												isFromStreaming: true,
+												streamCreator: liveEventData[0]?.liveStreamCreator
 											});
 										} else {
 											navigation.navigate(ScreenNames.LiveChallengeListScreen, {

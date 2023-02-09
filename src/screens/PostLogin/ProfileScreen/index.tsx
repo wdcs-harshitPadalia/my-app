@@ -366,6 +366,7 @@ const ProfileScreen: React.FC<any> = props => {
 												betCreationType: 1,
 												selectedBetType: betData,
 												isFromStreaming: true,
+												streamCreator: liveEventData[0]?.liveStreamCreator
 											});
 										} else {
 											navigation.navigate(ScreenNames.LiveChallengeListScreen, {

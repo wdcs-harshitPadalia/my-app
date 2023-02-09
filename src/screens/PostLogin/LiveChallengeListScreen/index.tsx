@@ -26,6 +26,7 @@ const LiveChallengeListScreen: React.FC<any> = props => {
 					betCreationType: 1,
 					selectedBetType: betData,
 					isFromStreaming: true,
+					streamCreator: item?.liveStreamCreator
 				});
 			}}
 			colorArray={defaultTheme.ternaryGradientColor}

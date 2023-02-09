@@ -72,7 +72,7 @@ export default function LiveStreamingFlatList(
 							setDataType(item?.dataType);
 							seIsMenuOpen(true);
 						}}
-						showLiveTage={props?.showLiveTage && item?.isLiveBet}
+						showLiveTage={props?.showLiveTage && item?.isUserLiveStreaming}
 					/>
 				)}
 				keyExtractor={(item, index) => item._id.toString() + index}

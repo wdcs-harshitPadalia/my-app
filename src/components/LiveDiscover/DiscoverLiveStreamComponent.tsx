@@ -428,12 +428,13 @@ const DiscoverLiveStreamComponent = ({friendList, onEndReach, params}) => {
 										text={Strings.WATCH_LIVE_STREAM}
 										backgroundColor={colors.redTag}
 										onPress={() => {
-											// console.log("item??>>><",item)
+											console.log("item??>>><",item)
 											navigation.navigate(ScreenNames.EventDetailsScreen, {
 												feedObject: item,
 												betCreationType: 1,
 												selectedBetType: betType,
-												isFromStreaming: true
+												isFromStreaming: true,
+												streamCreator: item?.users,
 											});
 										}}
 									/>
